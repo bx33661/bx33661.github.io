@@ -1,0 +1,216 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>.git文件夹解析 | BX同学</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/img/pwa/favicon.ico"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.10"><!-- inject head--><link rel="canonical" href="http://example.com/git%E6%96%87%E4%BB%B6%E5%A4%B9%E8%A7%A3%E6%9E%90.html"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content=".git文件夹解析 .git文件夹是Git版本控制系统的核心组成部分，它位于每个Git仓库的根目录下。这个文件夹包含了所有的元数据和历史记录，是管理项目版本和历史变更的关键。以下是.git文件夹的主要组成部分和它们的作用： config：这个文件包含了项目的配置设置，如远程仓库的URL、用户信息"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="BX同学"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/img/pwa/favicon.ico"><link rel="apple-touch-icon" href="/img/pwa/favicon.ico" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.10' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2024-08-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "Early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: [],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: false,
+    is_page: true,
+    is_home: false,
+    page: '',
+    toc: false,
+    comment: false,
+    ai_text: false
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/%20%7C%7C%20fas%20fa-user-group"><span>Links</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"></div></div></div></div><!-- keyboard--><div class="page" id="body-wrap"><header class="not-top-img" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">Solitude</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">.git文件夹解析</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/%20%7C%7C%20fas%20fa-user-group"><span>Links</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav></header><main class="layout hide-aside" id="content-inner"><div id="page"><div id="article-container"><h1 id="git文件夹解析"><a href="#git文件夹解析" class="headerlink" title=".git文件夹解析"></a>.git文件夹解析</h1><hr>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/image-20240820101803995.png" alt="image-20240820101803995"></p>
+<p><code>.git</code>文件夹是Git版本控制系统的核心组成部分，它位于每个Git仓库的根目录下。这个文件夹包含了所有的元数据和历史记录，是管理项目版本和历史变更的关键。以下是<code>.git</code>文件夹的主要组成部分和它们的作用：</p>
+<ol>
+<li><p><strong>config</strong>：这个文件包含了项目的配置设置，如远程仓库的URL、用户信息、分支的默认行为等。</p>
+</li>
+<li><p><strong>objects</strong>：这是Git存储所有数据的地方，包括文件内容、提交历史、标签等。这个目录下有多个子目录，它们存储了压缩后的对象数据。</p>
+<ul>
+<li><code>info</code>目录：存储一些辅助信息和索引文件，用于加快对象访问速度</li>
+<li><code>pack</code>目录：存储了使用 Git 的打包机制（packing）压缩的对象文件。Git 会定期将一些对象打成一个单独的文件，并使用压缩算法来减小存储空间和提高性能。</li>
+<li><code>哈希</code>目录：除了上述两个子目录外，objects 目录下还包含一系列以两个字符为前缀的子目录，用于存储具体的对象文件。Git 使用 SHA-1 哈希算法对每个对象 进行唯一标识，每个对象的文件名是由哈希值组成的。</li>
+</ul>
+</li>
+<li><p><strong>refs</strong>：这个目录包含了指向提交的指针，通常以分支和标签的形式存在。</p>
+<ul>
+<li><code>heads</code>：<strong>存储分支引用</strong>，每个分支都对应一个文件，文件名与分支名称相同,这些文件中的内容是指向分支最新提交的指针。</li>
+<li><code>tags</code>：<strong>存储标签引用</strong>，每个标签都对应一个文件，文件名与标签名称相同。这些文件中的内容是指向标签的对象的指针。</li>
+<li><code>remotes</code>：<strong>存储远程引用</strong>，每个远程仓库都对应一个子目录，目录名与远程仓库名称相同。在每个远程仓库目录下，可以存储与该远程仓库相关的引用，如远程分支引用。</li>
+</ul>
+</li>
+<li><p><strong>HEAD</strong>：这个文件指向当前分支的引用。它通常指向<code>refs/heads</code>下的一个文件。</p>
+</li>
+<li><p><strong>index</strong>：这个文件（也称为暂存区或缓存区）是一个介于工作目录和Git仓库之间的中间状态，它记录了即将进行下一次提交的文件快照。</p>
+</li>
+<li><p><strong>COMMIT_EDITMSG:</strong>  <code>COMMIT_EDITMSG</code> 是一个文本文件，用于存储最近一次 Git 提交时的提交消息。</p>
+</li>
+<li><p>**description:  **<code>description</code> 是一个纯文本文件，用于提供关于 Git 仓库的简要描述信息。</p>
+</li>
+</ol>
+<h3 id="以下是-git文件夹中一些重要的子目录和文件："><a href="#以下是-git文件夹中一些重要的子目录和文件：" class="headerlink" title="以下是.git文件夹中一些重要的子目录和文件："></a>以下是<code>.git</code>文件夹中一些重要的子目录和文件：</h3><ul>
+<li><strong>hooks</strong>：这个目录包含了脚本，可以在Git执行某些操作（如提交或合并）时触发这些脚本。</li>
+<li><strong>info</strong>：这个目录包含了一些全局性排除文件，如<code>.gitignore</code>。</li>
+<li><strong>logs</strong>：这个目录包含了各种日志文件，记录了分支的更新、引用的变更等历史。</li>
+<li><strong>objects&#x2F;pack</strong>：这个目录包含了打包的对象文件，Git会定期将这些对象打包以节省空间。</li>
+<li><strong>refs&#x2F;remotes</strong>：这个目录包含了远程仓库分支的引用。<br><code>.git</code>文件夹的结构相对复杂，因为它必须高效地处理大量的数据。以下是一些Git操作时<code>.git</code>文件夹的变化示例：</li>
+<li>当你进行提交时，<code>.git/objects</code>目录下会创建新的对象，同时<code>.git/refs</code>目录下的引用可能会更新。</li>
+<li>当你切换分支时，<code>.git/HEAD</code>文件的内容会更新，以指向新的分支。</li>
+<li>当你执行<code>git add</code>命令时，文件的变化会被记录到<code>.git/index</code>文件中。<br>由于<code>.git</code>文件夹对于项目的版本控制至关重要，通常应该避免直接修改这个文件夹的内容。所有的Git操作都应该通过Git命令行工具来进行，以确保数据的一致性和完整性。如果你不小心修改了<code>.git</code>文件夹中的内容，可能会导致仓库损坏。</li>
+</ul>
+</div></div></main><footer id="footer"><div id="footer_deal"></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2024 By&nbsp;<a class="footer-bar-link" href="/">bx33661</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Theme">Theme</a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.10"></script><script src="/js/main.js?v=2.0.10"></script><script src="/js/third_party/waterfall.min.js?v=2.0.10"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["2024/08/23/hello-world/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>
