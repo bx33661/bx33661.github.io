@@ -1705,8 +1705,6 @@ body {
   line-height: 2;
   -webkit-tap-highlight-color: transparent;
   margin: 0;
-  user-select: none;
-  -webkit-user-select: none;
 }
 * {
   box-sizing: border-box;
@@ -7070,33 +7068,6 @@ span.tagsPageCount {
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: blur(20px);
   transform: translateZ(0);
-}
-#about-page .author-content-item.careers {
-  min-height: 400px;
-}
-#about-page .author-content-item.careers img {
-  position: absolute;
-  left: 0;
-  bottom: 20px;
-  width: 100%;
-  transition: 0.6s;
-  user-select: none;
-}
-#about-page .author-content-item.careers .careers-group {
-  margin-top: 12px;
-}
-#about-page .author-content-item.careers .careers-item {
-  display: flex;
-  align-items: center;
-}
-#about-page .author-content-item.careers .careers-item .circle {
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
-  border-radius: 16px;
-}
-#about-page .author-content-item.careers .careers-item .name {
-  color: var(--efu-secondtext);
 }
 #about-page .author-content-item.like-technology {
   background-size: cover;
