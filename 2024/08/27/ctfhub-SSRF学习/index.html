@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ctfhub-SSRF学习 | BX同学</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/img/pwa/favicon.ico"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.10"><!-- inject head--><link rel="canonical" href="http://www.bx33661.com/2024/08/27/ctfhub-SSRF%E5%AD%A6%E4%B9%A0/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="ssrf[toc] SSRF（Server-Side Request Forgery，服务器端请求伪造）是一种网络安全漏洞，攻击者通过它可以利用受害服务器向自己控制或信任的服务器发送恶意请求。简单来说，SSRF 允许攻击者通过受害服务器来访问或操作内部网络资源，这些资源通常在正常情况下是无法从"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="BX同学"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/img/pwa/favicon.ico"><link rel="apple-touch-icon" href="/img/pwa/favicon.ico" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.10' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2024-08-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "Early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: [],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: false,
+    ai_text: false
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">project</div><div class="back-menu-list"><a class="back-menu-item" href="/B" title="0"><span class="back-menu-item-text">0</span></a><a class="back-menu-item" href="/X" title="1"><span class="back-menu-item-text">1</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/%20%7C%7C%20fas%20fa-user-group"><span>友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><div class="back-home-button" tabindex="-1"><i class="back-home-button-icon solitude fab fa-squarespace"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">project</div><div class="back-menu-list"><a class="back-menu-item" href="/B" title="0"><span class="back-menu-item-text">0</span></a><a class="back-menu-item" href="/X" title="1"><span class="back-menu-item-text">1</span></a></div></div></div></div><a id="site-name" href="/" title="返回博客主页"><span class="title">BX33661</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">ctfhub-SSRF学习</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/%20%7C%7C%20fas%20fa-user-group"><span>友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="/img/default.avif" alt="ctfhub-SSRF学习"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><div class="tag_share"><div class="post-meta__tag-list"></div></div></div></div><h1 class="post-title">ctfhub-SSRF学习</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-wordcount"><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><meta name="referrer" content="no-referrer">
+
+<h2 id="ssrf"><a href="#ssrf" class="headerlink" title="ssrf"></a>ssrf</h2><p>[toc]</p>
+<blockquote>
+<p>SSRF（Server-Side Request Forgery，服务器端请求伪造）是一种网络安全漏洞，攻击者通过它可以利用受害服务器向自己控制或信任的服务器发送恶意请求。简单来说，SSRF 允许攻击者通过受害服务器来访问或操作内部网络资源，这些资源通常在正常情况下是无法从外部访问的。</p>
+</blockquote>
+<h3 id="内网访问"><a href="#内网访问" class="headerlink" title="内网访问"></a>内网访问</h3><blockquote>
+<p>题目要求：</p>
+<p>尝试访问位于127.0.0.1的flag.php吧</p>
+</blockquote>
+<p>进入页面发现有一个参数<code>url=</code></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?url=127.0.0.1/flag.php</span><br></pre></td></tr></table></figure>
+
+<p>得到flag</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ctfhub&#123;5706b946ec071bda6cc7f7c5&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h3><blockquote>
+<p>来来来性感CTFHub在线扫端口,据说端口范围是8000-9000哦,</p>
+</blockquote>
+<h4 id="方法一-–-BP"><a href="#方法一-–-BP" class="headerlink" title="方法一 – BP"></a>方法一 – BP</h4><p>在BP的爆破模块</p>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/image-20240827221655844.png" alt="image-20240827221655844"></p>
+<p>设置以上规则，开始爆破</p>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/image-20240827221732200.png" alt="image-20240827221732200"></p>
+<p>发现8833端口长度不一样，发送到发送模块</p>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/image-20240827221820821.png" alt="image-20240827221820821"></p>
+<p>得到flag</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ctfhub&#123;5b8bcb5953759711292d2fee&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="方法二–python脚本"><a href="#方法二–python脚本" class="headerlink" title="方法二–python脚本"></a>方法二–python脚本</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义扫描函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scan_port</span>(<span class="params">host, port</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">with</span> socket.socket(socket.AF_INET, socket.SOCK_STREAM) <span class="keyword">as</span> s:</span><br><span class="line">            s.settimeout(<span class="number">1</span>)</span><br><span class="line">            s.connect((host, port))</span><br><span class="line">            <span class="keyword">return</span> port, <span class="literal">True</span></span><br><span class="line">    <span class="keyword">except</span> (socket.timeout, socket.error):</span><br><span class="line">        <span class="keyword">return</span> port, <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描主机的指定端口范围</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scan_ports</span>(<span class="params">host, start_port, end_port</span>):</span><br><span class="line">    open_ports = []</span><br><span class="line">    <span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">100</span>) <span class="keyword">as</span> executor:</span><br><span class="line">        futures = [executor.submit(scan_port, host, port) <span class="keyword">for</span> port <span class="keyword">in</span> <span class="built_in">range</span>(start_port, end_port + <span class="number">1</span>)]</span><br><span class="line">        <span class="keyword">for</span> future <span class="keyword">in</span> futures:</span><br><span class="line">            port, is_open = future.result()</span><br><span class="line">            <span class="keyword">if</span> is_open:</span><br><span class="line">                open_ports.append(port)</span><br><span class="line">    <span class="keyword">return</span> open_ports</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输入主机地址和端口范围</span></span><br><span class="line">host = <span class="built_in">input</span>(<span class="string">&quot;请输入要扫描的主机地址: &quot;</span>)</span><br><span class="line">start_port = <span class="built_in">int</span>(<span class="built_in">input</span>(<span class="string">&quot;请输入开始端口: &quot;</span>))</span><br><span class="line">end_port = <span class="built_in">int</span>(<span class="built_in">input</span>(<span class="string">&quot;请输入结束端口: &quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描并显示结果</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;正在扫描 <span class="subst">&#123;host&#125;</span> 的端口范围 <span class="subst">&#123;start_port&#125;</span>-<span class="subst">&#123;end_port&#125;</span> ...&quot;</span>)</span><br><span class="line">open_ports = scan_ports(host, start_port, end_port)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> open_ports:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;以下端口是打开的: <span class="subst">&#123;open_ports&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;未发现打开的端口。&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>以上是借助gpt辅助写的</p>
+<h3 id="URL-Bypass"><a href="#URL-Bypass" class="headerlink" title="URL Bypass"></a>URL Bypass</h3><blockquote>
+<p>题目描述：</p>
+<p>请求的URL中必须包含<a target="_blank" rel="noopener" href="http://notfound.ctfhub.com,来尝试利用url的一些特殊地方绕过这个限制吧/">http://notfound.ctfhub.com，来尝试利用URL的一些特殊地方绕过这个限制吧</a></p>
+</blockquote>
+<ol>
+<li>使用?url&#x3D;<a target="_blank" rel="noopener" href="http://notfound.ctfhub.com@127.0.0.1/flag.php">http://notfound.ctfhub.com@127.0.0.1/flag.php</a></li>
+</ol>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://notfound.ctfhub.com@127.0.0.1/flag.php</span><br></pre></td></tr></table></figure>
+
+<p><code>notfound.ctfhub.com</code> 是作为凭据的一部分，而实际的服务器地址是 <code>127.0.0.1</code>（即本地主机）。这种用法通常在现代浏览器中是不会被解析为有效的凭据部分，甚至可能会触发安全警告或被忽略。</p>
+<p><strong>这里做一个测试</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里我尝试访问http://www.bx33661.com@www.google.com</span></span><br></pre></td></tr></table></figure>
+
+<p>直接就到Google主页</p>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/image-20240827224047282.png" alt="image-20240827224047282"></p>
+<blockquote>
+<p>在网上发现大佬的做法：</p>
+<ol>
+<li><p><a target="_blank" rel="noopener" href="http://使用nip.io/">使用nip.io</a></p>
+<blockquote>
+<p><code>.nip.io</code> 是一个特殊的域名后缀，它提供了一种免费且简便的方式，可以将特定格式的域名解析为对应的IP地址，可以作为应用路由的解析服务。这省去了配置本地hosts文件的步骤。</p>
+<p>例如，当访问<code>http://&lt;anything&gt;-&lt;IP Address&gt;.nip.io</code>时，它将解析到对应的IP地址<code>&lt;IP Address&gt;</code>。</p>
+</blockquote>
+<ul>
+<li>payload：<code>?url=http://notfound.ctfhub.com.127.0.0.1.nip.io/flag.php</code></li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://git.acwing.com/w2x/data_bank/-/raw/master/img/study/CTF/CTFHub/web/SSRF/51.png"><img src="https://gitee.com/bx33661/image/raw/master/path/51.png" alt="img"></a></p>
+</li>
+<li><p>利用<code>xip.io</code>（可以直接访问该域名，里面有详细说明）</p>
+<blockquote>
+<p><code>.xip.io</code> 的功能是将 <code>notfound.ctfhub.com</code> 这个子域名解析到本地机器的IP地址 <code>127.0.0.1</code>。</p>
+</blockquote>
+<ul>
+<li>尝试发现，<code>xip.io</code>被ban了</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://git.acwing.com/w2x/data_bank/-/raw/master/img/study/CTF/CTFHub/web/SSRF/52.png"><img src="https://gitee.com/bx33661/image/raw/master/path/52.png" alt="img"></a></p>
+</li>
+</ol>
+</blockquote>
+<h3 id="数字IP-BYPASS"><a href="#数字IP-BYPASS" class="headerlink" title="数字IP BYPASS"></a>数字IP BYPASS</h3><blockquote>
+<p>题目要求：这次ban掉了127以及172.不能使用点分十进制的IP了。但是又要访问127.0.0.1。该怎么办呢</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http://challenge-6a621c5636461c9f.sandbox.ctfhub.com:10800/?url=127.0.0.1/flag.php</span><br><span class="line"></span><br><span class="line">hacker! Ban &#x27;/127|172|@/&#x27;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>进制绕过</li>
+</ol>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">八进制：0177.000.000.001</span><br><span class="line">十进制：127.0.0.1</span><br><span class="line">十六进制：0x7f000001</span><br></pre></td></tr></table></figure>
+
+<p>得到flag</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ctfhub&#123;8a5971c56e6a1ca0282c7a4e&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>使用<code>localhost</code></li>
+<li>IP转为int数字</li>
+</ol>
+<blockquote>
+<p>IP 地址本质上是一个 32 位的二进制数（对于 IPv4 而言），可以被表示为一个整数。这种转换在计算机网络中非常常见，用于将人类可读的点分十进制格式（例如 192.168.1.1）转换为计算机更容易处理的整数格式。</p>
+</blockquote>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/image-20240827225135585.png" alt="image-20240827225135585"></p>
+<h3 id="POST请求"><a href="#POST请求" class="headerlink" title="POST请求"></a>POST请求</h3><blockquote>
+<p>题目要求：这次是发一个HTTP POST请求.对了.ssrf是用php的curl实现的.并且会跟踪302跳转.加油吧骚年</p>
+</blockquote>
+<h4 id="gopher协议"><a href="#gopher协议" class="headerlink" title="gopher协议"></a>gopher协议</h4><p><em>Gopher是Internet上一个非常有名的信息查找系统，它将Internet上的文件组织成某种索引，很方便地将用户从Internet的一处带到另一处。在WWW出现之前，Gopher是Internet上最主要的信息检索工具，Gopher站点也是最主要的站点，使用tcp70端口。但在WWW出现后，Gopher失去了昔日的辉煌。现在它基本过时，人们很少再使用它；</em></p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="/img/pwa/favicon.ico"></a><div class="post-copyright__author_name">BX同学</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">BX同学</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/08/27/ctfHUB-JWT%E5%AD%A6%E4%B9%A0/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">ctfHUB-JWT学习</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="/img/11234.jpg"></div><div class="author-info__description_group"><div class="author-info__description"></div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">bx33661</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/bx33661" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://space.bilibili.com/1329819902" title="E-mail"><i class="solitude  fab fa-bilibili"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ssrf"><span class="toc-text">ssrf</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E8%AE%BF%E9%97%AE"><span class="toc-text">内网访问</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="toc-text">端口扫描</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80-%E2%80%93-BP"><span class="toc-text">方法一 – BP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%E2%80%93python%E8%84%9A%E6%9C%AC"><span class="toc-text">方法二–python脚本</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#URL-Bypass"><span class="toc-text">URL Bypass</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%AD%97IP-BYPASS"><span class="toc-text">数字IP BYPASS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POST%E8%AF%B7%E6%B1%82"><span class="toc-text">POST请求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#gopher%E5%8D%8F%E8%AE%AE"><span class="toc-text">gopher协议</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/08/27/ctfhub-SSRF%E5%AD%A6%E4%B9%A0/" title="ctfhub-SSRF学习"><img alt="ctfhub-SSRF学习" src="/img/default.avif"></a><div class="content"><span class="title" href="/2024/08/27/ctfhub-SSRF%E5%AD%A6%E4%B9%A0/" title="ctfhub-SSRF学习">ctfhub-SSRF学习</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/27/ctfHUB-JWT%E5%AD%A6%E4%B9%A0/" title="ctfHUB-JWT学习"><img alt="ctfHUB-JWT学习" src="/img/default.avif"></a><div class="content"><span class="title" href="/2024/08/27/ctfHUB-JWT%E5%AD%A6%E4%B9%A0/" title="ctfHUB-JWT学习">ctfHUB-JWT学习</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/24/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2LLM/" title="本地部署LLM"><img alt="本地部署LLM" src="/img/default.avif"></a><div class="content"><span class="title" href="/2024/08/24/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2LLM/" title="本地部署LLM">本地部署LLM</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/24/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%B5%8B%E8%AF%95/" title="hexo博客搭建测试"><img alt="hexo博客搭建测试" src="/img/default.avif"></a><div class="content"><span class="title" href="/2024/08/24/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%B5%8B%E8%AF%95/" title="hexo博客搭建测试">hexo博客搭建测试</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/23/git%E6%96%87%E4%BB%B6%E5%A4%B9%E8%A7%A3%E6%9E%90/" title=".git文件夹解析"><img alt=".git文件夹解析" src="/img/default.avif"></a><div class="content"><span class="title" href="/2024/08/23/git%E6%96%87%E4%BB%B6%E5%A4%B9%E8%A7%A3%E6%9E%90/" title=".git文件夹解析">.git文件夹解析</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2024 By&nbsp;<a class="footer-bar-link" href="/">bx33661</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Theme">Theme</a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.10"></script><script src="/js/main.js?v=2.0.10"></script><script src="/js/third_party/waterfall.min.js?v=2.0.10"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["2024/08/27/ctfhub-SSRF学习/","2024/08/27/ctfHUB-JWT学习/","2024/08/24/本地部署LLM/","2024/08/24/hexo博客搭建测试/","2024/08/23/git文件夹解析/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>
