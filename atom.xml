@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-09-21T04:35:51.976Z</updated>
+  <updated>2024-09-21T07:19:43.470Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于PHP原生类的利用</title>
+    <link href="http://www.bx33661.com/4a785101.html"/>
+    <id>http://www.bx33661.com/4a785101.html</id>
+    <published>2024-09-21T07:19:12.000Z</published>
+    <updated>2024-09-21T07:19:43.470Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h1 id=&quot;PHP原生类的利用&quot;&gt;&lt;a href=&quot;#PHP原生类的利用&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>MD5长度扩展攻击</title>
