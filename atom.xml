@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>BX同学</title>
+  
+  <subtitle>bx33661 blog</subtitle>
+  <link href="http://www.bx33661.com/atom.xml" rel="self"/>
+  
+  <link href="http://www.bx33661.com/"/>
+  <updated>2024-09-21T03:12:03.386Z</updated>
+  <id>http://www.bx33661.com/</id>
+  
+  <author>
+    <name>bx33661</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MD5长度扩展攻击</title>
+    <link href="http://www.bx33661.com/MD5%E9%95%BF%E5%BA%A6%E6%89%A9%E5%B1%95%E6%94%BB%E5%87%BB/"/>
+    <id>http://www.bx33661.com/MD5%E9%95%BF%E5%BA%A6%E6%89%A9%E5%B1%95%E6%94%BB%E5%87%BB/</id>
+    <published>2024-09-21T03:11:32.000Z</published>
+    <updated>2024-09-21T03:12:03.386Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;MD5长度扩展攻击&quot;&gt;&lt;a href=&quot;#MD5长度扩展攻击&quot; class=&quot;headerlink&quot; title=&quot;MD5长度扩展攻击&quot;&gt;&lt;/a&gt;MD5长度扩展攻击&lt;/h3&gt;&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;使用工具：&lt;a</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>TypeScript学习Task2</title>
+    <link href="http://www.bx33661.com/TypeScript%E5%AD%A6%E4%B9%A0Task2/"/>
+    <id>http://www.bx33661.com/TypeScript%E5%AD%A6%E4%B9%A0Task2/</id>
+    <published>2024-09-18T12:40:19.000Z</published>
+    <updated>2024-09-18T12:40:59.061Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h2 id=&quot;Task-two&quot;&gt;&lt;a href=&quot;#Task-two&quot; class=&quot;headerlink&quot; title=&quot;Task two&quot;&gt;&lt;/a&gt;Task</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>TypeScript学习Task1</title>
+    <link href="http://www.bx33661.com/TypeScript%E5%AD%A6%E4%B9%A0Task1/"/>
+    <id>http://www.bx33661.com/TypeScript%E5%AD%A6%E4%B9%A0Task1/</id>
+    <published>2024-09-16T09:14:48.000Z</published>
+    <updated>2024-09-18T12:40:36.044Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h2 id=&quot;Task-one&quot;&gt;&lt;a href=&quot;#Task-one&quot; class=&quot;headerlink&quot; title=&quot;Task one&quot;&gt;&lt;/a&gt;Task</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>SSTI的学习与分析</title>
+    <link href="http://www.bx33661.com/SSTI%E7%9A%84%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%88%86%E6%9E%90/"/>
+    <id>http://www.bx33661.com/SSTI%E7%9A%84%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%88%86%E6%9E%90/</id>
+    <published>2024-08-30T13:48:54.000Z</published>
+    <updated>2024-08-31T06:51:35.970Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+## SSTI
+
+&lt;p&gt;[TOC]&lt;/p&gt;
+&lt;p&gt;&lt;img</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>ctfhub-SSRF学习</title>
+    <link href="http://www.bx33661.com/ctfhub-SSRF%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://www.bx33661.com/ctfhub-SSRF%E5%AD%A6%E4%B9%A0/</id>
+    <published>2024-08-27T15:02:23.000Z</published>
+    <updated>2024-08-27T15:06:58.158Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h2 id=&quot;ssrf&quot;&gt;&lt;a href=&quot;#ssrf&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>ctfHUB-JWT学习</title>
+    <link href="http://www.bx33661.com/ctfHUB-JWT%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://www.bx33661.com/ctfHUB-JWT%E5%AD%A6%E4%B9%A0/</id>
+    <published>2024-08-27T09:20:09.000Z</published>
+    <updated>2024-08-28T06:49:51.210Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h2 id=&quot;CTFHhub–JWT&quot;&gt;&lt;a href=&quot;#CTFHhub–JWT&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>本地部署LLM</title>
+    <link href="http://www.bx33661.com/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2LLM/"/>
+    <id>http://www.bx33661.com/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2LLM/</id>
+    <published>2024-08-24T08:42:02.000Z</published>
+    <updated>2024-08-27T15:04:34.726Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;p&gt;&lt;em&gt;最近开源的llama模型非常火，BX同学在这里向大家演示一下，如何本地部署。&lt;br&gt;本文章谨代表BX个人思考&lt;/em&gt;&lt;br&gt;&lt;img</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>hexo博客搭建测试</title>
+    <link href="http://www.bx33661.com/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%B5%8B%E8%AF%95/"/>
+    <id>http://www.bx33661.com/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%B5%8B%E8%AF%95/</id>
+    <published>2024-08-24T07:49:57.000Z</published>
+    <updated>2024-08-26T04:43:44.935Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>.git文件夹解析</title>
+    <link href="http://www.bx33661.com/git%E6%96%87%E4%BB%B6%E5%A4%B9%E8%A7%A3%E6%9E%90/"/>
+    <id>http://www.bx33661.com/git%E6%96%87%E4%BB%B6%E5%A4%B9%E8%A7%A3%E6%9E%90/</id>
+    <published>2024-08-23T09:31:11.000Z</published>
+    <updated>2024-08-27T15:04:46.951Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h1 id=&quot;git文件夹解析&quot;&gt;&lt;a href=&quot;#git文件夹解析&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+</feed>
