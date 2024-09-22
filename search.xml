@@ -203,170 +203,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>TypeScript学习Task2</title>
-    <url>/d8e5ea2f.html</url>
-    <content><![CDATA[<meta name="referrer" content="no-referrer">
-
-<h2 id="Task-two"><a href="#Task-two" class="headerlink" title="Task two"></a>Task two</h2><p>[TOC]</p>
-<blockquote>
-<p>DataWhale课程学习：<a href="https://github.com/datawhalechina/wow-fullstack/tree/main/tutorial/TypeScript">https://github.com/datawhalechina/wow-fullstack/tree/main/tutorial/TypeScript</a></p>
-<p>内容：Task2</p>
-<p>学习者：BX33661</p>
-</blockquote>
-<p><img src="https://gitee.com/bx33661/image/raw/master/path/TS.png" alt="Working With TypeScript: A Practical Guide for Developers"></p>
-<h3 id="Ts中注释"><a href="#Ts中注释" class="headerlink" title="Ts中注释"></a>Ts中注释</h3><ul>
-<li><code>//</code></li>
-<li><code>/* */</code></li>
-<li><code>/** * */</code>文档注释</li>
-</ul>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//注释学习</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Let‘ go’</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 计算两个数字的和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> a 第一个数字</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> b 第二个数字</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> 两个数字的和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">add</span>(<span class="params"><span class="attr">a</span>: <span class="built_in">number</span>, <span class="attr">b</span>: <span class="built_in">number</span></span>): <span class="built_in">number</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="条件语句"><a href="#条件语句" class="headerlink" title="条件语句"></a>条件语句</h3><ul>
-<li><code>if</code></li>
-<li><code>if else</code></li>
-<li><code>if else if else</code></li>
-<li><code>switch case</code></li>
-</ul>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="attr">num1</span>:<span class="built_in">number</span> = <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//if-else if-else语句</span></span><br><span class="line"><span class="keyword">if</span>(num1&lt;<span class="number">10</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;small number&quot;</span>)</span><br><span class="line">&#125;<span class="keyword">else</span> <span class="keyword">if</span>(num1&gt;=<span class="number">10</span>&amp;&amp;num1&lt;=<span class="number">100</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;medium number&quot;</span>)</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;large number&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//switch-case 语句</span></span><br><span class="line"><span class="keyword">switch</span> (num1) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;数字的值为1&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;数字的值为2&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;数字的值为3&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="attr">default</span>:</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Not found&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><h4 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h4><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> ( init; condition; increment )&#123;</span><br><span class="line">    <span class="title function_">statement</span>(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>小例子，阶乘实现</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="attr">num</span>:<span class="built_in">number</span> = <span class="number">5</span></span><br><span class="line"><span class="keyword">let</span> <span class="attr">result</span>:<span class="built_in">number</span> = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">1</span>;i&lt;=num;i++)&#123;</span><br><span class="line">    result *=i</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="for-in-和for-of"><a href="#for-in-和for-of" class="headerlink" title="for..in 和for..of"></a><code>for..in</code> 和<code>for..of</code></h4><ul>
-<li>遍历对象：<ul>
-<li><code>for...in</code> 用于遍历对象的可枚举属性。</li>
-<li><code>for...of</code> 用于遍历可迭代对象的值。</li>
-</ul>
-</li>
-<li>返回值：<ul>
-<li><code>for...in</code> 返回属性名（键）。</li>
-<li><code>for...of</code> 返回属性值。</li>
-</ul>
-</li>
-<li>适用范围：<ul>
-<li><code>for...in</code> 可以遍历普通对象，也可以遍历数组。</li>
-<li><code>for...of</code> 只能遍历可迭代对象，不能直接遍历普通对象。</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> nums = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> nums)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//0,1,2,3,4</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> nums = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> nums)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//1,2,3,4,5</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="every-和-some"><a href="#every-和-some" class="headerlink" title="every 和 some"></a><code>every</code> 和 <code>some</code></h4><p><code>every</code> 方法用于测试数组中的<strong>每一个元素</strong>是否都通过了由提供的回调函数所实现的测试。如果数组中的所有元素都通过了测试，<code>every</code> 返回 <code>true</code>，否则返回 <code>false</code>。</p>
-<p><code>some</code> 方法用于测试数组中是否有<strong>至少一个元素</strong>通过了由提供的回调函数所实现的测试。如果至少有一个元素通过测试，<code>some</code> 返回 <code>true</code>，否则返回 <code>false</code>。</p>
-<ul>
-<li><code>every</code>例子</li>
-</ul>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line"><span class="keyword">const</span> evennumbers = [<span class="number">2</span>,<span class="number">6</span>,<span class="number">8</span>,<span class="number">10</span>]</span><br><span class="line"><span class="comment">//判断数组中是不是所有都是偶数</span></span><br><span class="line"><span class="keyword">const</span> hasEven = numbers.<span class="title function_">every</span>(<span class="function"><span class="params">num</span> =&gt;</span> num % <span class="number">2</span> === <span class="number">0</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(hasEven);</span><br><span class="line"><span class="comment">// 输出: false</span></span><br><span class="line"><span class="keyword">const</span> hasEven2 = evennumbers.<span class="title function_">every</span>(<span class="function"><span class="params">num</span> =&gt;</span> num % <span class="number">2</span> === <span class="number">0</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(hasEven2);</span><br><span class="line"><span class="comment">//输出：True</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>some</code>例子</li>
-</ul>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line"><span class="comment">//判断是否存在偶数</span></span><br><span class="line"><span class="keyword">const</span> hasEven = numbers.<span class="title function_">some</span>(<span class="function"><span class="params">num</span> =&gt;</span> num % <span class="number">2</span> === <span class="number">0</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(hasEven); </span><br><span class="line"><span class="comment">// 输出: true</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="while和do-while循环"><a href="#while和do-while循环" class="headerlink" title="while和do..while循环"></a><code>while</code>和<code>do..while</code>循环</h4><p>while语法：</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span>(condition)</span><br><span class="line">&#123;</span><br><span class="line">   <span class="title function_">statement</span>(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>do..while语法</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">do</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="title function_">statement</span>(s);</span><br><span class="line">&#125;<span class="keyword">while</span>( condition );</span><br></pre></td></tr></table></figure>
-
-<p>斐波那契数列的实现：</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//while循环学习</span></span><br><span class="line"><span class="comment">//斐波那契数列</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fibonacci</span>(<span class="params"><span class="attr">n</span>: <span class="built_in">number</span></span>): <span class="built_in">number</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="attr">a</span>:<span class="built_in">number</span> = <span class="number">1</span></span><br><span class="line">  <span class="keyword">let</span> <span class="attr">b</span>:<span class="built_in">number</span> = <span class="number">1</span></span><br><span class="line">  <span class="keyword">while</span> (n &gt; <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> temp = a + b;</span><br><span class="line">    a = b;</span><br><span class="line">    b = temp;</span><br><span class="line">    n--;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> <span class="attr">result</span>:<span class="built_in">number</span> = <span class="title function_">fibonacci</span>(<span class="number">5</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(result)</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><code>break</code>的使用：</p>
-<ul>
-<li>出现在循环中，会立刻结束循环，继续流程的下一句</li>
-<li>出现在<code>switch</code>中，结束一个<code>case</code></li>
-</ul>
-</blockquote>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">  <span class="keyword">if</span> (i === <span class="number">5</span>) &#123;</span><br><span class="line">    <span class="keyword">break</span>; <span class="comment">// 当 i 等于 5 时，退出循环</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(i); <span class="comment">// 输出 0 到 4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<blockquote>
-<p><code>continue</code> 的使用</p>
-<p>它是跳出当前循环，进入下一次循环循环</p>
-</blockquote>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">  <span class="keyword">if</span> (i === <span class="number">5</span>) &#123;</span><br><span class="line">    <span class="keyword">continue</span>; <span class="comment">// 当 i 等于 5 时，跳过本次循环，直接进入下一次循环</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(i); <span class="comment">// 输出 0 到 9，除了 5</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>语法格式</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">function_name</span>(<span class="params"><span class="attr">firstvalue</span>: <span class="built_in">number</span>, secondvalue?: <span class="built_in">number</span></span>) &#123;</span><br><span class="line">    <span class="comment">// 执行代码</span></span><br><span class="line">    <span class="keyword">return</span> value  <span class="comment">//返回</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<ul>
-<li><code>return</code>语句，返回值之后，函数就停止执行，基本与其他语言一样</li>
-<li>在 TypeScript 函数里，如果我们定义了参数，则我们必须传入这些参数，除非将这些参数设置为可选，可选参数使用问号标识 ,如参数二所示</li>
-</ul>
-</blockquote>
-<p>一个小例子：</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">greet</span>(<span class="params"><span class="attr">person</span>: <span class="built_in">string</span></span>): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">`Hello, <span class="subst">$&#123;person&#125;</span>!`</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">userName</span>: <span class="built_in">string</span> = <span class="string">&quot;bx&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">greet</span>(userName));</span><br><span class="line"></span><br><span class="line"><span class="comment">//Hello,bx!</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="反引号"><a href="#反引号" class="headerlink" title="反引号"></a>反引号</h4><p>上述例子中使用了 &#96;&#96;  ,用于创建<strong>模板字符串</strong>,感觉有点像python中的f{}</p>
-<p>这里利用cluade帮我整理了一下用法：</p>
-<p><strong>插值表达式</strong><br>模板字符串可以通过 <code>$&#123;&#125;</code> 的形式来嵌入表达式或变量。这让我们可以轻松地将变量或表达式的值嵌入到字符串中。</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="string">&quot;Alice&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> age = <span class="number">25</span>;</span><br><span class="line"><span class="keyword">let</span> greeting = <span class="string">`Hello, my name is <span class="subst">$&#123;name&#125;</span> and I am <span class="subst">$&#123;age&#125;</span> years old.`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(greeting);</span><br><span class="line"><span class="comment">// 输出: Hello, my name is Alice and I am 25 years old.</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>多行字符串</strong><br>模板字符串可以直接跨多行书写，无需像传统字符串那样使用换行符 <code>\n</code>。</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> message = <span class="string">`This is a long message</span></span><br><span class="line"><span class="string">that spans multiple lines</span></span><br><span class="line"><span class="string">without using escape characters.`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(message);</span><br></pre></td></tr></table></figure>
-
-<p><strong>函数和表达式嵌入</strong><br>你还可以在 <code>$&#123;&#125;</code> 中插入任意的 JavaScript 表达式，甚至是函数调用。</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">add</span>(<span class="params"><span class="attr">a</span>: <span class="built_in">number</span>, <span class="attr">b</span>: <span class="built_in">number</span></span>): <span class="built_in">number</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> result = <span class="string">`The sum of 5 and 3 is <span class="subst">$&#123;add(<span class="number">5</span>, <span class="number">3</span>)&#125;</span>.`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(result);</span><br><span class="line"><span class="comment">// 输出: The sum of 5 and 3 is 8.</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>嵌套模板字符串</strong><br>模板字符串可以包含其他模板字符串。</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> nested = <span class="string">`This is a nested template: <span class="subst">$&#123;<span class="string">`Hello, <span class="subst">$&#123;name&#125;</span>`</span>&#125;</span>`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(nested);</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="默认参数"><a href="#默认参数" class="headerlink" title="默认参数"></a>默认参数</h4><p>我感觉有点类似于类中的构造函数，格式如下：</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">function_name</span>(<span class="params">param1[:<span class="keyword">type</span>],param2[:<span class="keyword">type</span>] = default_value</span>) &#123; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>例子如下：（含有默认参数）</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">greet</span>(<span class="params"><span class="attr">person</span>: <span class="built_in">string</span> = <span class="string">&quot;bbbx&quot;</span></span>): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">`Hello, <span class="subst">$&#123;person&#125;</span>!`</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">greet</span>());</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> res = <span class="keyword">new</span> <span class="title class_">Function</span> ([arg1[, arg2[, ...argN]],] functionBody)</span><br></pre></td></tr></table></figure>
-
-<p>教程中的例子</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myFunction = <span class="keyword">new</span> <span class="title class_">Function</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;return a * b&quot;</span>); </span><br><span class="line"><span class="keyword">var</span> x = <span class="title function_">myFunction</span>(<span class="number">4</span>, <span class="number">3</span>); </span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 12</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>但是查了一些资料发现：这种构造函数</p>
-<p><strong>性能问题</strong>：每次调用 <code>Function</code> 构造函数时，都会创建一个新的函数对象。这意味着每次调用都会进行函数定义和编译，这比直接调用预定义的函数要慢。</p>
-<p>同时还存在一些<strong>安全问题</strong></p>
-</blockquote>
-<h4 id="lambda-函数"><a href="#lambda-函数" class="headerlink" title="lambda 函数"></a>lambda 函数</h4><p>之前在Python中学习过，</p>
-<blockquote>
-<p>这样的定义的优点：</p>
-<ol>
-<li><strong>更简洁的语法</strong>：箭头函数允许你以更少的代码来编写函数。</li>
-<li><strong>隐式返回</strong>：如果函数体只包含一个表达式，则不需要 <code>return</code> 关键字，该表达式会自动返回</li>
-</ol>
-</blockquote>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title function_">greet</span> = (<span class="params"><span class="attr">name</span>: <span class="built_in">string</span></span>) =&gt; <span class="string">`Hello, <span class="subst">$&#123;name&#125;</span>`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">greet</span>(<span class="string">&quot;bx33661&quot;</span>)); </span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="title function_">add</span> = (<span class="params"><span class="attr">a</span>: <span class="built_in">number</span>, <span class="attr">b</span>: <span class="built_in">number</span></span>) =&gt; a + b;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="number">3</span>, <span class="number">9</span>)); </span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="title function_">sayHello</span> = (<span class="params"></span>) =&gt; <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello, bx33661!&quot;</span>);</span><br><span class="line"><span class="title function_">sayHello</span>(); </span><br></pre></td></tr></table></figure>
-
-<p>几种写法，有参数和没有参数的，如果需要更复杂的话需要 { }</p>
-<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title function_">multiply</span> = (<span class="params"><span class="attr">a</span>: <span class="built_in">number</span>, <span class="attr">b</span>: <span class="built_in">number</span></span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> result = a * b;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">multiply</span>(<span class="number">9</span>, <span class="number">3</span>))</span><br></pre></td></tr></table></figure>
-
-]]></content>
-  </entry>
-  <entry>
     <title>TypeScript学习Task1</title>
     <url>/41ecbb95.html</url>
     <content><![CDATA[<meta name="referrer" content="no-referrer">
@@ -542,6 +378,216 @@
 ]]></content>
   </entry>
   <entry>
+    <title>TypeScript学习Task2</title>
+    <url>/d8e5ea2f.html</url>
+    <content><![CDATA[<meta name="referrer" content="no-referrer">
+
+<h2 id="Task-two"><a href="#Task-two" class="headerlink" title="Task two"></a>Task two</h2><p>[TOC]</p>
+<blockquote>
+<p>DataWhale课程学习：<a href="https://github.com/datawhalechina/wow-fullstack/tree/main/tutorial/TypeScript">https://github.com/datawhalechina/wow-fullstack/tree/main/tutorial/TypeScript</a></p>
+<p>内容：Task2</p>
+<p>学习者：BX33661</p>
+</blockquote>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/TS.png" alt="Working With TypeScript: A Practical Guide for Developers"></p>
+<h3 id="Ts中注释"><a href="#Ts中注释" class="headerlink" title="Ts中注释"></a>Ts中注释</h3><ul>
+<li><code>//</code></li>
+<li><code>/* */</code></li>
+<li><code>/** * */</code>文档注释</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//注释学习</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Let‘ go’</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 计算两个数字的和</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> a 第一个数字</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> b 第二个数字</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@returns</span> 两个数字的和</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">add</span>(<span class="params"><span class="attr">a</span>: <span class="built_in">number</span>, <span class="attr">b</span>: <span class="built_in">number</span></span>): <span class="built_in">number</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="条件语句"><a href="#条件语句" class="headerlink" title="条件语句"></a>条件语句</h3><ul>
+<li><code>if</code></li>
+<li><code>if else</code></li>
+<li><code>if else if else</code></li>
+<li><code>switch case</code></li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="attr">num1</span>:<span class="built_in">number</span> = <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//if-else if-else语句</span></span><br><span class="line"><span class="keyword">if</span>(num1&lt;<span class="number">10</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;small number&quot;</span>)</span><br><span class="line">&#125;<span class="keyword">else</span> <span class="keyword">if</span>(num1&gt;=<span class="number">10</span>&amp;&amp;num1&lt;=<span class="number">100</span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;medium number&quot;</span>)</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;large number&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//switch-case 语句</span></span><br><span class="line"><span class="keyword">switch</span> (num1) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;数字的值为1&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;数字的值为2&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;数字的值为3&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="attr">default</span>:</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Not found&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><h4 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h4><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> ( init; condition; increment )&#123;</span><br><span class="line">    <span class="title function_">statement</span>(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>小例子，阶乘实现</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="attr">num</span>:<span class="built_in">number</span> = <span class="number">5</span></span><br><span class="line"><span class="keyword">let</span> <span class="attr">result</span>:<span class="built_in">number</span> = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">1</span>;i&lt;=num;i++)&#123;</span><br><span class="line">    result *=i</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="for-in-和for-of"><a href="#for-in-和for-of" class="headerlink" title="for..in 和for..of"></a><code>for..in</code> 和<code>for..of</code></h4><ul>
+<li>遍历对象：<ul>
+<li><code>for...in</code> 用于遍历对象的可枚举属性。</li>
+<li><code>for...of</code> 用于遍历可迭代对象的值。</li>
+</ul>
+</li>
+<li>返回值：<ul>
+<li><code>for...in</code> 返回属性名（键）。</li>
+<li><code>for...of</code> 返回属性值。</li>
+</ul>
+</li>
+<li>适用范围：<ul>
+<li><code>for...in</code> 可以遍历普通对象，也可以遍历数组。</li>
+<li><code>for...of</code> 只能遍历可迭代对象，不能直接遍历普通对象。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> nums = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">in</span> nums)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//0,1,2,3,4</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> nums = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> nums)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//1,2,3,4,5</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="every-和-some"><a href="#every-和-some" class="headerlink" title="every 和 some"></a><code>every</code> 和 <code>some</code></h4><p><code>every</code> 方法用于测试数组中的<strong>每一个元素</strong>是否都通过了由提供的回调函数所实现的测试。如果数组中的所有元素都通过了测试，<code>every</code> 返回 <code>true</code>，否则返回 <code>false</code>。</p>
+<p><code>some</code> 方法用于测试数组中是否有<strong>至少一个元素</strong>通过了由提供的回调函数所实现的测试。如果至少有一个元素通过测试，<code>some</code> 返回 <code>true</code>，否则返回 <code>false</code>。</p>
+<ul>
+<li><code>every</code>例子</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line"><span class="keyword">const</span> evennumbers = [<span class="number">2</span>,<span class="number">6</span>,<span class="number">8</span>,<span class="number">10</span>]</span><br><span class="line"><span class="comment">//判断数组中是不是所有都是偶数</span></span><br><span class="line"><span class="keyword">const</span> hasEven = numbers.<span class="title function_">every</span>(<span class="function"><span class="params">num</span> =&gt;</span> num % <span class="number">2</span> === <span class="number">0</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(hasEven);</span><br><span class="line"><span class="comment">// 输出: false</span></span><br><span class="line"><span class="keyword">const</span> hasEven2 = evennumbers.<span class="title function_">every</span>(<span class="function"><span class="params">num</span> =&gt;</span> num % <span class="number">2</span> === <span class="number">0</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(hasEven2);</span><br><span class="line"><span class="comment">//输出：True</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>some</code>例子</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line"><span class="comment">//判断是否存在偶数</span></span><br><span class="line"><span class="keyword">const</span> hasEven = numbers.<span class="title function_">some</span>(<span class="function"><span class="params">num</span> =&gt;</span> num % <span class="number">2</span> === <span class="number">0</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(hasEven); </span><br><span class="line"><span class="comment">// 输出: true</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="while和do-while循环"><a href="#while和do-while循环" class="headerlink" title="while和do..while循环"></a><code>while</code>和<code>do..while</code>循环</h4><p>while语法：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span>(condition)</span><br><span class="line">&#123;</span><br><span class="line">   <span class="title function_">statement</span>(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>do..while语法</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">do</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="title function_">statement</span>(s);</span><br><span class="line">&#125;<span class="keyword">while</span>( condition );</span><br></pre></td></tr></table></figure>
+
+<p>斐波那契数列的实现：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//while循环学习</span></span><br><span class="line"><span class="comment">//斐波那契数列</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fibonacci</span>(<span class="params"><span class="attr">n</span>: <span class="built_in">number</span></span>): <span class="built_in">number</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> <span class="attr">a</span>:<span class="built_in">number</span> = <span class="number">1</span></span><br><span class="line">  <span class="keyword">let</span> <span class="attr">b</span>:<span class="built_in">number</span> = <span class="number">1</span></span><br><span class="line">  <span class="keyword">while</span> (n &gt; <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> temp = a + b;</span><br><span class="line">    a = b;</span><br><span class="line">    b = temp;</span><br><span class="line">    n--;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> <span class="attr">result</span>:<span class="built_in">number</span> = <span class="title function_">fibonacci</span>(<span class="number">5</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(result)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>break</code>的使用：</p>
+<ul>
+<li>出现在循环中，会立刻结束循环，继续流程的下一句</li>
+<li>出现在<code>switch</code>中，结束一个<code>case</code></li>
+</ul>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">  <span class="keyword">if</span> (i === <span class="number">5</span>) &#123;</span><br><span class="line">    <span class="keyword">break</span>; <span class="comment">// 当 i 等于 5 时，退出循环</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(i); <span class="comment">// 输出 0 到 4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p><code>continue</code> 的使用</p>
+<p>它是跳出当前循环，进入下一次循环循环</p>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">  <span class="keyword">if</span> (i === <span class="number">5</span>) &#123;</span><br><span class="line">    <span class="keyword">continue</span>; <span class="comment">// 当 i 等于 5 时，跳过本次循环，直接进入下一次循环</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(i); <span class="comment">// 输出 0 到 9，除了 5</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>语法格式</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">function_name</span>(<span class="params"><span class="attr">firstvalue</span>: <span class="built_in">number</span>, secondvalue?: <span class="built_in">number</span></span>) &#123;</span><br><span class="line">    <span class="comment">// 执行代码</span></span><br><span class="line">    <span class="keyword">return</span> value  <span class="comment">//返回</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ul>
+<li><code>return</code>语句，返回值之后，函数就停止执行，基本与其他语言一样</li>
+<li>在 TypeScript 函数里，如果我们定义了参数，则我们必须传入这些参数，除非将这些参数设置为可选，可选参数使用问号标识 ,如参数二所示</li>
+</ul>
+</blockquote>
+<p>一个小例子：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">greet</span>(<span class="params"><span class="attr">person</span>: <span class="built_in">string</span></span>): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">`Hello, <span class="subst">$&#123;person&#125;</span>!`</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">userName</span>: <span class="built_in">string</span> = <span class="string">&quot;bx&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">greet</span>(userName));</span><br><span class="line"></span><br><span class="line"><span class="comment">//Hello,bx!</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="反引号"><a href="#反引号" class="headerlink" title="反引号"></a>反引号</h4><p>上述例子中使用了 &#96;&#96;  ,用于创建<strong>模板字符串</strong>,感觉有点像python中的f{}</p>
+<p>这里利用cluade帮我整理了一下用法：</p>
+<p><strong>插值表达式</strong><br>模板字符串可以通过 <code>$&#123;&#125;</code> 的形式来嵌入表达式或变量。这让我们可以轻松地将变量或表达式的值嵌入到字符串中。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="string">&quot;Alice&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> age = <span class="number">25</span>;</span><br><span class="line"><span class="keyword">let</span> greeting = <span class="string">`Hello, my name is <span class="subst">$&#123;name&#125;</span> and I am <span class="subst">$&#123;age&#125;</span> years old.`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(greeting);</span><br><span class="line"><span class="comment">// 输出: Hello, my name is Alice and I am 25 years old.</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>多行字符串</strong><br>模板字符串可以直接跨多行书写，无需像传统字符串那样使用换行符 <code>\n</code>。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> message = <span class="string">`This is a long message</span></span><br><span class="line"><span class="string">that spans multiple lines</span></span><br><span class="line"><span class="string">without using escape characters.`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(message);</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数和表达式嵌入</strong><br>你还可以在 <code>$&#123;&#125;</code> 中插入任意的 JavaScript 表达式，甚至是函数调用。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">add</span>(<span class="params"><span class="attr">a</span>: <span class="built_in">number</span>, <span class="attr">b</span>: <span class="built_in">number</span></span>): <span class="built_in">number</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> result = <span class="string">`The sum of 5 and 3 is <span class="subst">$&#123;add(<span class="number">5</span>, <span class="number">3</span>)&#125;</span>.`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(result);</span><br><span class="line"><span class="comment">// 输出: The sum of 5 and 3 is 8.</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>嵌套模板字符串</strong><br>模板字符串可以包含其他模板字符串。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> nested = <span class="string">`This is a nested template: <span class="subst">$&#123;<span class="string">`Hello, <span class="subst">$&#123;name&#125;</span>`</span>&#125;</span>`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(nested);</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="默认参数"><a href="#默认参数" class="headerlink" title="默认参数"></a>默认参数</h4><p>我感觉有点类似于类中的构造函数，格式如下：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">function_name</span>(<span class="params">param1[:<span class="keyword">type</span>],param2[:<span class="keyword">type</span>] = default_value</span>) &#123; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例子如下：（含有默认参数）</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">greet</span>(<span class="params"><span class="attr">person</span>: <span class="built_in">string</span> = <span class="string">&quot;bbbx&quot;</span></span>): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">`Hello, <span class="subst">$&#123;person&#125;</span>!`</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">greet</span>());</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> res = <span class="keyword">new</span> <span class="title class_">Function</span> ([arg1[, arg2[, ...argN]],] functionBody)</span><br></pre></td></tr></table></figure>
+
+<p>教程中的例子</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myFunction = <span class="keyword">new</span> <span class="title class_">Function</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;return a * b&quot;</span>); </span><br><span class="line"><span class="keyword">var</span> x = <span class="title function_">myFunction</span>(<span class="number">4</span>, <span class="number">3</span>); </span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 12</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>但是查了一些资料发现：这种构造函数</p>
+<p><strong>性能问题</strong>：每次调用 <code>Function</code> 构造函数时，都会创建一个新的函数对象。这意味着每次调用都会进行函数定义和编译，这比直接调用预定义的函数要慢。</p>
+<p>同时还存在一些<strong>安全问题</strong></p>
+</blockquote>
+<h4 id="lambda-函数"><a href="#lambda-函数" class="headerlink" title="lambda 函数"></a>lambda 函数</h4><p>之前在Python中学习过，</p>
+<blockquote>
+<p>这样的定义的优点：</p>
+<ol>
+<li><strong>更简洁的语法</strong>：箭头函数允许你以更少的代码来编写函数。</li>
+<li><strong>隐式返回</strong>：如果函数体只包含一个表达式，则不需要 <code>return</code> 关键字，该表达式会自动返回</li>
+</ol>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title function_">greet</span> = (<span class="params"><span class="attr">name</span>: <span class="built_in">string</span></span>) =&gt; <span class="string">`Hello, <span class="subst">$&#123;name&#125;</span>`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">greet</span>(<span class="string">&quot;bx33661&quot;</span>)); </span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="title function_">add</span> = (<span class="params"><span class="attr">a</span>: <span class="built_in">number</span>, <span class="attr">b</span>: <span class="built_in">number</span></span>) =&gt; a + b;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">add</span>(<span class="number">3</span>, <span class="number">9</span>)); </span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="title function_">sayHello</span> = (<span class="params"></span>) =&gt; <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello, bx33661!&quot;</span>);</span><br><span class="line"><span class="title function_">sayHello</span>(); </span><br></pre></td></tr></table></figure>
+
+<p>几种写法，有参数和没有参数的，如果需要更复杂的话需要 { }</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title function_">multiply</span> = (<span class="params"><span class="attr">a</span>: <span class="built_in">number</span>, <span class="attr">b</span>: <span class="built_in">number</span></span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> result = a * b;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">multiply</span>(<span class="number">9</span>, <span class="number">3</span>))</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title>.git文件夹解析</title>
+    <url>/13bf7486.html</url>
+    <content><![CDATA[<meta name="referrer" content="no-referrer">
+
+<h1 id="git文件夹解析"><a href="#git文件夹解析" class="headerlink" title=".git文件夹解析"></a>.git文件夹解析</h1><hr>
+<p><img src="https://7.isyangs.cn/59/66cc07b96ce90-59.png" alt="image-20240820101803995"></p>
+<p><code>.git</code>文件夹是Git版本控制系统的核心组成部分，它位于每个Git仓库的根目录下。这个文件夹包含了所有的元数据和历史记录，是管理项目版本和历史变更的关键。以下是<code>.git</code>文件夹的主要组成部分和它们的作用：</p>
+<ol>
+<li><p><strong>config</strong>：这个文件包含了项目的配置设置，如远程仓库的URL、用户信息、分支的默认行为等。</p>
+</li>
+<li><p><strong>objects</strong>：这是Git存储所有数据的地方，包括文件内容、提交历史、标签等。这个目录下有多个子目录，它们存储了压缩后的对象数据。</p>
+<ul>
+<li><code>info</code>目录：存储一些辅助信息和索引文件，用于加快对象访问速度</li>
+<li><code>pack</code>目录：存储了使用 Git 的打包机制（packing）压缩的对象文件。Git 会定期将一些对象打成一个单独的文件，并使用压缩算法来减小存储空间和提高性能。</li>
+<li><code>哈希</code>目录：除了上述两个子目录外，objects 目录下还包含一系列以两个字符为前缀的子目录，用于存储具体的对象文件。Git 使用 SHA-1 哈希算法对每个对象 进行唯一标识，每个对象的文件名是由哈希值组成的。</li>
+</ul>
+</li>
+<li><p><strong>refs</strong>：这个目录包含了指向提交的指针，通常以分支和标签的形式存在。</p>
+<ul>
+<li><code>heads</code>：<strong>存储分支引用</strong>，每个分支都对应一个文件，文件名与分支名称相同,这些文件中的内容是指向分支最新提交的指针。</li>
+<li><code>tags</code>：<strong>存储标签引用</strong>，每个标签都对应一个文件，文件名与标签名称相同。这些文件中的内容是指向标签的对象的指针。</li>
+<li><code>remotes</code>：<strong>存储远程引用</strong>，每个远程仓库都对应一个子目录，目录名与远程仓库名称相同。在每个远程仓库目录下，可以存储与该远程仓库相关的引用，如远程分支引用。</li>
+</ul>
+</li>
+<li><p><strong>HEAD</strong>：这个文件指向当前分支的引用。它通常指向<code>refs/heads</code>下的一个文件。</p>
+</li>
+<li><p><strong>index</strong>：这个文件（也称为暂存区或缓存区）是一个介于工作目录和Git仓库之间的中间状态，它记录了即将进行下一次提交的文件快照。</p>
+</li>
+<li><p><strong>COMMIT_EDITMSG:</strong>  <code>COMMIT_EDITMSG</code> 是一个文本文件，用于存储最近一次 Git 提交时的提交消息。</p>
+</li>
+<li><p>**description:  **<code>description</code> 是一个纯文本文件，用于提供关于 Git 仓库的简要描述信息。</p>
+</li>
+</ol>
+<h3 id="以下是-git文件夹中一些重要的子目录和文件："><a href="#以下是-git文件夹中一些重要的子目录和文件：" class="headerlink" title="以下是.git文件夹中一些重要的子目录和文件："></a>以下是<code>.git</code>文件夹中一些重要的子目录和文件：</h3><ul>
+<li><strong>hooks</strong>：这个目录包含了脚本，可以在Git执行某些操作（如提交或合并）时触发这些脚本。</li>
+<li><strong>info</strong>：这个目录包含了一些全局性排除文件，如<code>.gitignore</code>。</li>
+<li><strong>logs</strong>：这个目录包含了各种日志文件，记录了分支的更新、引用的变更等历史。</li>
+<li><strong>objects&#x2F;pack</strong>：这个目录包含了打包的对象文件，Git会定期将这些对象打包以节省空间。</li>
+<li><strong>refs&#x2F;remotes</strong>：这个目录包含了远程仓库分支的引用。<br><code>.git</code>文件夹的结构相对复杂，因为它必须高效地处理大量的数据。以下是一些Git操作时<code>.git</code>文件夹的变化示例：</li>
+<li>当你进行提交时，<code>.git/objects</code>目录下会创建新的对象，同时<code>.git/refs</code>目录下的引用可能会更新。</li>
+<li>当你切换分支时，<code>.git/HEAD</code>文件的内容会更新，以指向新的分支。</li>
+<li>当你执行<code>git add</code>命令时，文件的变化会被记录到<code>.git/index</code>文件中。<br>由于<code>.git</code>文件夹对于项目的版本控制至关重要，通常应该避免直接修改这个文件夹的内容。所有的Git操作都应该通过Git命令行工具来进行，以确保数据的一致性和完整性。如果你不小心修改了<code>.git</code>文件夹中的内容，可能会导致仓库损坏。</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
     <title>hexo博客搭建测试</title>
     <url>/3408d468.html</url>
     <content><![CDATA[<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">测试，测试</span><br></pre></td></tr></table></figure>
@@ -557,42 +603,6 @@
 <li></li>
 </ol>
 <h1 id="第一"><a href="#第一" class="headerlink" title="第一"></a>第一</h1><h2 id="第二"><a href="#第二" class="headerlink" title="第二"></a>第二</h2><h3 id="第三"><a href="#第三" class="headerlink" title="第三"></a>第三</h3><h4 id="第四"><a href="#第四" class="headerlink" title="第四"></a>第四</h4><p><img src="https://7.isyangs.cn/59/66cc072b47556-59.jpg" alt="dsdsd"></p>
-]]></content>
-  </entry>
-  <entry>
-    <title>本地部署LLM</title>
-    <url>/74ee6b2b.html</url>
-    <content><![CDATA[<meta name="referrer" content="no-referrer">
-
-<p><em>最近开源的llama模型非常火，BX同学在这里向大家演示一下，如何本地部署。<br>本文章谨代表BX个人思考</em><br><img src="https://gitee.com/bx33661/image/raw/master/path/d5579fdc214175ec5def64be541fe90c.png" alt="dsd"></p>
-<p>Meta公司发布的新一代大语言模型，</p>
-<blockquote>
-<p>本期介绍如何在本地，在自己电脑上利用CPU&#x2F;GPU部署运行，</p>
-</blockquote>
-<hr>
-<h2 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：<img src="https://gitee.com/bx33661/image/raw/master/path/e72b8308f37ee3ae6948e5df180e3c0f.png"></h2><h2 id="第一步"><a href="#第一步" class="headerlink" title="第一步:"></a>第一步:</h2><p>用Ollama<br><img src="https://gitee.com/bx33661/image/raw/master/path/507714cc2df9d58a9960bab72c077888.png"><br>下载ollama：<br><a href="https://ollama.com/">https://ollama.com/</a></p>
-<h2 id="第二步："><a href="#第二步：" class="headerlink" title="第二步："></a>第二步：</h2><p>下载Docker desk：<a href="https://www.docker.com/get-started/">https://www.docker.com/get-started/</a><br><img src="https://img-blog.csdnimg.cn/img_convert/cb051fcc3754963e21c8233ad6c8b7e1.png#id=aKG8s&originHeight=1347&originWidth=2560&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title="><br>根据提示操作 按部就班 的下载</p>
-<p>检查：<br><img src="https://gitee.com/bx33661/image/raw/master/path/cfbb8bac824eba12412c69929510f43f.png"></p>
-<h2 id="第三步："><a href="#第三步：" class="headerlink" title="第三步："></a>第三步：</h2><p>下载 <strong>open-webui</strong>框架</p>
-<ul>
-<li>GitHub：<a href="https://github.com/open-webui/open-webui">https://github.com/open-webui/open-webui</a></li>
-<li>在cmd&#x2F;powershell中</li>
-</ul>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">docker run <span class="literal">-d</span> <span class="literal">-p</span> <span class="number">3000</span>:<span class="number">8080</span> <span class="literal">--add-host</span>=host.docker.internal:host<span class="literal">-gateway</span> <span class="literal">-v</span> <span class="built_in">open-webui</span>:/app/backend/<span class="keyword">data</span> <span class="literal">--name</span> <span class="built_in">open-webui</span> <span class="literal">--restart</span> always ghcr.io/<span class="built_in">open-webui</span>/<span class="built_in">open-webui</span>:main</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><img src="https://img-blog.csdnimg.cn/img_convert/541f12623767836644ea9d0303617318.png#id=jvT8q&originHeight=745&originWidth=1730&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title="></li>
-</ul>
-<p>这样就安装完成了</p>
-<h2 id="第四步："><a href="#第四步：" class="headerlink" title="第四步："></a>第四步：</h2><p><img src="https://gitee.com/bx33661/image/raw/master/path/1c2566982a75864b582d127fef60ad05.png"><br>在docker中运行这个项目<br><img src="https://img-blog.csdnimg.cn/img_convert/adcb260d9f4454b2040d65a5ca7f6ce7.png#id=PRYgy&originHeight=1080&originWidth=1905&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title="><br>然后进入：</p>
-<blockquote>
-<p><a href="http://localhost:3000/">http://localhost:3000/</a></p>
-</blockquote>
-<h2 id="第五步："><a href="#第五步：" class="headerlink" title="第五步："></a>第五步：</h2><p>注册登录后进入界面<br><img src="https://gitee.com/bx33661/image/raw/master/path/35b546eae9fa0e368099fc434027d5ef.png"><br>然后进入设置去下载模型<br><img src="https://gitee.com/bx33661/image/raw/master/path/c3dd10ec93b534faf88af7a08ffb9aa4.png"><br>进入到模型选择界面<br><img src="https://gitee.com/bx33661/image/raw/master/path/fcdca4ef130fa5f756e32c2697874553.png"><br>有一个70B和8B和两种情况，根据自己的情况去下载<br><img src="https://gitee.com/bx33661/image/raw/master/path/c3677263a2f41e9bbcd592fa31bccbf4.png"><br><img src="https://gitee.com/bx33661/image/raw/master/path/b665a73a538bfc367130b87e182e18b3.png"><br>把下载指令填入下载框，等待下载就行了</p>
-<h2 id="最后一步："><a href="#最后一步：" class="headerlink" title="最后一步："></a>最后一步：</h2><p><img src="https://gitee.com/bx33661/image/raw/master/path/adeff994110e45786c6b1d4c69ecc8c1.png"><br>选择模型就可以开始对话了</p>
-<p><img src="https://gitee.com/bx33661/image/raw/master/path/5d9e15b7a153a9df8db1ad23bdd01482.png"><br>效果还是很不错！</p>
-<hr>
-<p>感谢大家观看，让我们一起进步</p>
 ]]></content>
   </entry>
   <entry>
@@ -730,49 +740,39 @@
 ]]></content>
   </entry>
   <entry>
-    <title>.git文件夹解析</title>
-    <url>/13bf7486.html</url>
+    <title>本地部署LLM</title>
+    <url>/74ee6b2b.html</url>
     <content><![CDATA[<meta name="referrer" content="no-referrer">
 
-<h1 id="git文件夹解析"><a href="#git文件夹解析" class="headerlink" title=".git文件夹解析"></a>.git文件夹解析</h1><hr>
-<p><img src="https://7.isyangs.cn/59/66cc07b96ce90-59.png" alt="image-20240820101803995"></p>
-<p><code>.git</code>文件夹是Git版本控制系统的核心组成部分，它位于每个Git仓库的根目录下。这个文件夹包含了所有的元数据和历史记录，是管理项目版本和历史变更的关键。以下是<code>.git</code>文件夹的主要组成部分和它们的作用：</p>
-<ol>
-<li><p><strong>config</strong>：这个文件包含了项目的配置设置，如远程仓库的URL、用户信息、分支的默认行为等。</p>
-</li>
-<li><p><strong>objects</strong>：这是Git存储所有数据的地方，包括文件内容、提交历史、标签等。这个目录下有多个子目录，它们存储了压缩后的对象数据。</p>
+<p><em>最近开源的llama模型非常火，BX同学在这里向大家演示一下，如何本地部署。<br>本文章谨代表BX个人思考</em><br><img src="https://gitee.com/bx33661/image/raw/master/path/d5579fdc214175ec5def64be541fe90c.png" alt="dsd"></p>
+<p>Meta公司发布的新一代大语言模型，</p>
+<blockquote>
+<p>本期介绍如何在本地，在自己电脑上利用CPU&#x2F;GPU部署运行，</p>
+</blockquote>
+<hr>
+<h2 id="介绍："><a href="#介绍：" class="headerlink" title="介绍："></a>介绍：<img src="https://gitee.com/bx33661/image/raw/master/path/e72b8308f37ee3ae6948e5df180e3c0f.png"></h2><h2 id="第一步"><a href="#第一步" class="headerlink" title="第一步:"></a>第一步:</h2><p>用Ollama<br><img src="https://gitee.com/bx33661/image/raw/master/path/507714cc2df9d58a9960bab72c077888.png"><br>下载ollama：<br><a href="https://ollama.com/">https://ollama.com/</a></p>
+<h2 id="第二步："><a href="#第二步：" class="headerlink" title="第二步："></a>第二步：</h2><p>下载Docker desk：<a href="https://www.docker.com/get-started/">https://www.docker.com/get-started/</a><br><img src="https://img-blog.csdnimg.cn/img_convert/cb051fcc3754963e21c8233ad6c8b7e1.png#id=aKG8s&originHeight=1347&originWidth=2560&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title="><br>根据提示操作 按部就班 的下载</p>
+<p>检查：<br><img src="https://gitee.com/bx33661/image/raw/master/path/cfbb8bac824eba12412c69929510f43f.png"></p>
+<h2 id="第三步："><a href="#第三步：" class="headerlink" title="第三步："></a>第三步：</h2><p>下载 <strong>open-webui</strong>框架</p>
 <ul>
-<li><code>info</code>目录：存储一些辅助信息和索引文件，用于加快对象访问速度</li>
-<li><code>pack</code>目录：存储了使用 Git 的打包机制（packing）压缩的对象文件。Git 会定期将一些对象打成一个单独的文件，并使用压缩算法来减小存储空间和提高性能。</li>
-<li><code>哈希</code>目录：除了上述两个子目录外，objects 目录下还包含一系列以两个字符为前缀的子目录，用于存储具体的对象文件。Git 使用 SHA-1 哈希算法对每个对象 进行唯一标识，每个对象的文件名是由哈希值组成的。</li>
+<li>GitHub：<a href="https://github.com/open-webui/open-webui">https://github.com/open-webui/open-webui</a></li>
+<li>在cmd&#x2F;powershell中</li>
 </ul>
-</li>
-<li><p><strong>refs</strong>：这个目录包含了指向提交的指针，通常以分支和标签的形式存在。</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">docker run <span class="literal">-d</span> <span class="literal">-p</span> <span class="number">3000</span>:<span class="number">8080</span> <span class="literal">--add-host</span>=host.docker.internal:host<span class="literal">-gateway</span> <span class="literal">-v</span> <span class="built_in">open-webui</span>:/app/backend/<span class="keyword">data</span> <span class="literal">--name</span> <span class="built_in">open-webui</span> <span class="literal">--restart</span> always ghcr.io/<span class="built_in">open-webui</span>/<span class="built_in">open-webui</span>:main</span><br></pre></td></tr></table></figure>
+
 <ul>
-<li><code>heads</code>：<strong>存储分支引用</strong>，每个分支都对应一个文件，文件名与分支名称相同,这些文件中的内容是指向分支最新提交的指针。</li>
-<li><code>tags</code>：<strong>存储标签引用</strong>，每个标签都对应一个文件，文件名与标签名称相同。这些文件中的内容是指向标签的对象的指针。</li>
-<li><code>remotes</code>：<strong>存储远程引用</strong>，每个远程仓库都对应一个子目录，目录名与远程仓库名称相同。在每个远程仓库目录下，可以存储与该远程仓库相关的引用，如远程分支引用。</li>
+<li><img src="https://img-blog.csdnimg.cn/img_convert/541f12623767836644ea9d0303617318.png#id=jvT8q&originHeight=745&originWidth=1730&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title="></li>
 </ul>
-</li>
-<li><p><strong>HEAD</strong>：这个文件指向当前分支的引用。它通常指向<code>refs/heads</code>下的一个文件。</p>
-</li>
-<li><p><strong>index</strong>：这个文件（也称为暂存区或缓存区）是一个介于工作目录和Git仓库之间的中间状态，它记录了即将进行下一次提交的文件快照。</p>
-</li>
-<li><p><strong>COMMIT_EDITMSG:</strong>  <code>COMMIT_EDITMSG</code> 是一个文本文件，用于存储最近一次 Git 提交时的提交消息。</p>
-</li>
-<li><p>**description:  **<code>description</code> 是一个纯文本文件，用于提供关于 Git 仓库的简要描述信息。</p>
-</li>
-</ol>
-<h3 id="以下是-git文件夹中一些重要的子目录和文件："><a href="#以下是-git文件夹中一些重要的子目录和文件：" class="headerlink" title="以下是.git文件夹中一些重要的子目录和文件："></a>以下是<code>.git</code>文件夹中一些重要的子目录和文件：</h3><ul>
-<li><strong>hooks</strong>：这个目录包含了脚本，可以在Git执行某些操作（如提交或合并）时触发这些脚本。</li>
-<li><strong>info</strong>：这个目录包含了一些全局性排除文件，如<code>.gitignore</code>。</li>
-<li><strong>logs</strong>：这个目录包含了各种日志文件，记录了分支的更新、引用的变更等历史。</li>
-<li><strong>objects&#x2F;pack</strong>：这个目录包含了打包的对象文件，Git会定期将这些对象打包以节省空间。</li>
-<li><strong>refs&#x2F;remotes</strong>：这个目录包含了远程仓库分支的引用。<br><code>.git</code>文件夹的结构相对复杂，因为它必须高效地处理大量的数据。以下是一些Git操作时<code>.git</code>文件夹的变化示例：</li>
-<li>当你进行提交时，<code>.git/objects</code>目录下会创建新的对象，同时<code>.git/refs</code>目录下的引用可能会更新。</li>
-<li>当你切换分支时，<code>.git/HEAD</code>文件的内容会更新，以指向新的分支。</li>
-<li>当你执行<code>git add</code>命令时，文件的变化会被记录到<code>.git/index</code>文件中。<br>由于<code>.git</code>文件夹对于项目的版本控制至关重要，通常应该避免直接修改这个文件夹的内容。所有的Git操作都应该通过Git命令行工具来进行，以确保数据的一致性和完整性。如果你不小心修改了<code>.git</code>文件夹中的内容，可能会导致仓库损坏。</li>
-</ul>
+<p>这样就安装完成了</p>
+<h2 id="第四步："><a href="#第四步：" class="headerlink" title="第四步："></a>第四步：</h2><p><img src="https://gitee.com/bx33661/image/raw/master/path/1c2566982a75864b582d127fef60ad05.png"><br>在docker中运行这个项目<br><img src="https://img-blog.csdnimg.cn/img_convert/adcb260d9f4454b2040d65a5ca7f6ce7.png#id=PRYgy&originHeight=1080&originWidth=1905&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title="><br>然后进入：</p>
+<blockquote>
+<p><a href="http://localhost:3000/">http://localhost:3000/</a></p>
+</blockquote>
+<h2 id="第五步："><a href="#第五步：" class="headerlink" title="第五步："></a>第五步：</h2><p>注册登录后进入界面<br><img src="https://gitee.com/bx33661/image/raw/master/path/35b546eae9fa0e368099fc434027d5ef.png"><br>然后进入设置去下载模型<br><img src="https://gitee.com/bx33661/image/raw/master/path/c3dd10ec93b534faf88af7a08ffb9aa4.png"><br>进入到模型选择界面<br><img src="https://gitee.com/bx33661/image/raw/master/path/fcdca4ef130fa5f756e32c2697874553.png"><br>有一个70B和8B和两种情况，根据自己的情况去下载<br><img src="https://gitee.com/bx33661/image/raw/master/path/c3677263a2f41e9bbcd592fa31bccbf4.png"><br><img src="https://gitee.com/bx33661/image/raw/master/path/b665a73a538bfc367130b87e182e18b3.png"><br>把下载指令填入下载框，等待下载就行了</p>
+<h2 id="最后一步："><a href="#最后一步：" class="headerlink" title="最后一步："></a>最后一步：</h2><p><img src="https://gitee.com/bx33661/image/raw/master/path/adeff994110e45786c6b1d4c69ecc8c1.png"><br>选择模型就可以开始对话了</p>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/5d9e15b7a153a9df8db1ad23bdd01482.png"><br>效果还是很不错！</p>
+<hr>
+<p>感谢大家观看，让我们一起进步</p>
 ]]></content>
   </entry>
 </search>
