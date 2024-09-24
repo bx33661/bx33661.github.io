@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://www.bx33661.com/5b1da9ac.html</loc>
+    <loc>http://www.bx33661.com/1450d2fe.html</loc>
     
     <lastmod>2024-09-24</lastmod>
     
@@ -11,7 +11,61 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/1450d2fe.html</loc>
+    <loc>http://www.bx33661.com/41ecbb95.html</loc>
+    
+    <lastmod>2024-09-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/d8e5ea2f.html</loc>
+    
+    <lastmod>2024-09-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/afe2dab9.html</loc>
+    
+    <lastmod>2024-09-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/74ee6b2b.html</loc>
+    
+    <lastmod>2024-09-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/4a785101.html</loc>
+    
+    <lastmod>2024-09-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/f7eebb5b.html</loc>
+    
+    <lastmod>2024-09-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/5b1da9ac.html</loc>
     
     <lastmod>2024-09-24</lastmod>
     
@@ -74,24 +128,6 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/4a785101.html</loc>
-    
-    <lastmod>2024-09-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.bx33661.com/afe2dab9.html</loc>
-    
-    <lastmod>2024-09-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://www.bx33661.com/links/index-1.html</loc>
     
     <lastmod>2024-09-21</lastmod>
@@ -110,34 +146,7 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/74ee6b2b.html</loc>
-    
-    <lastmod>2024-09-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://www.bx33661.com/13bf7486.html</loc>
-    
-    <lastmod>2024-09-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.bx33661.com/d8e5ea2f.html</loc>
-    
-    <lastmod>2024-09-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.bx33661.com/41ecbb95.html</loc>
     
     <lastmod>2024-09-21</lastmod>
     
@@ -182,6 +191,20 @@
 
   
   <url>
+    <loc>http://www.bx33661.com/tags/TypeScript/</loc>
+    <lastmod>2024-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/%E5%B7%A5%E7%A8%8B/</loc>
+    <lastmod>2024-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://www.bx33661.com/tags/ctf/</loc>
     <lastmod>2024-09-24</lastmod>
     <changefreq>weekly</changefreq>
@@ -190,6 +213,41 @@
   
   <url>
     <loc>http://www.bx33661.com/tags/jwt/</loc>
+    <lastmod>2024-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/PHP/</loc>
+    <lastmod>2024-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2024-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/%E6%8E%92%E5%BA%8F/</loc>
+    <lastmod>2024-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/AI/</loc>
+    <lastmod>2024-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/LLM/</loc>
     <lastmod>2024-09-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
