@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.bx33661.com/5b1da9ac.html</loc>
+    
+    <lastmod>2024-09-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://www.bx33661.com/1450d2fe.html</loc>
     
     <lastmod>2024-09-24</lastmod>
@@ -21,15 +30,6 @@
   
   <url>
     <loc>http://www.bx33661.com/f1b66a56.html</loc>
-    
-    <lastmod>2024-09-22</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.bx33661.com/5b1da9ac.html</loc>
     
     <lastmod>2024-09-22</lastmod>
     
@@ -180,6 +180,20 @@
     <priority>1.0</priority>
   </url>
 
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/ctf/</loc>
+    <lastmod>2024-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/jwt/</loc>
+    <lastmod>2024-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
   
 
   
