@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-09-25T02:41:34.313Z</updated>
+  <updated>2024-09-25T02:41:51.672Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://www.bx33661.com/de766c1.html"/>
     <id>http://www.bx33661.com/de766c1.html</id>
     <published>2024-09-25T02:41:04.000Z</published>
-    <updated>2024-09-25T02:41:34.313Z</updated>
+    <updated>2024-09-25T02:41:51.672Z</updated>
     
     
       
@@ -46,7 +46,7 @@
     <link href="http://www.bx33661.com/b17e5b21.html"/>
     <id>http://www.bx33661.com/b17e5b21.html</id>
     <published>2024-09-25T02:39:17.000Z</published>
-    <updated>2024-09-25T02:40:09.768Z</updated>
+    <updated>2024-09-25T02:41:51.669Z</updated>
     
     
       
@@ -73,7 +73,7 @@
     <link href="http://www.bx33661.com/c82dbe21.html"/>
     <id>http://www.bx33661.com/c82dbe21.html</id>
     <published>2024-09-25T02:36:30.000Z</published>
-    <updated>2024-09-25T02:37:36.151Z</updated>
+    <updated>2024-09-25T02:41:51.668Z</updated>
     
     
       
@@ -90,35 +90,6 @@
     <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
     
     <category term="ctfhub" scheme="http://www.bx33661.com/tags/ctfhub/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CTFSHOW-PHP特性</title>
-    <link href="http://www.bx33661.com/8403ab25.html"/>
-    <id>http://www.bx33661.com/8403ab25.html</id>
-    <published>2024-09-25T02:23:15.000Z</published>
-    <updated>2024-09-25T02:29:24.296Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h2 id=&quot;ctfshow-PHP特性&quot;&gt;&lt;a href=&quot;#ctfshow-PHP特性&quot; class=&quot;headerlink&quot; title=&quot;ctfshow-</summary>
-        
-      
-    
-    
-    
-    <category term="CTFSHOW" scheme="http://www.bx33661.com/categories/CTFSHOW/"/>
-    
-    
-    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
-    
-    <category term="ctfshow" scheme="http://www.bx33661.com/tags/ctfshow/"/>
     
   </entry>
   
@@ -567,6 +538,35 @@
     <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
     
     <category term="md5" scheme="http://www.bx33661.com/tags/md5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>TypeScript学习Task2</title>
+    <link href="http://www.bx33661.com/d8e5ea2f.html"/>
+    <id>http://www.bx33661.com/d8e5ea2f.html</id>
+    <published>2024-09-18T12:40:19.000Z</published>
+    <updated>2024-09-25T02:05:53.065Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h2 id=&quot;Task-two&quot;&gt;&lt;a href=&quot;#Task-two&quot; class=&quot;headerlink&quot; title=&quot;Task two&quot;&gt;&lt;/a&gt;Task</summary>
+        
+      
+    
+    
+    
+    <category term="TypeScript学习" scheme="http://www.bx33661.com/categories/TypeScript%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="TypeScript" scheme="http://www.bx33661.com/tags/TypeScript/"/>
+    
+    <category term="工程" scheme="http://www.bx33661.com/tags/%E5%B7%A5%E7%A8%8B/"/>
     
   </entry>
   
