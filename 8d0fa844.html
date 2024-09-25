@@ -1,0 +1,301 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>llm-universe-Task6 对案例学习和总结 | BX同学</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/img/pwa/favicon.ico"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.10"><!-- inject head--><meta name="baidu-site-verification" content="codeva-itLzF8Efuq"><link rel="canonical" href="http://www.bx33661.com/8d0fa844.html"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css"><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="Task 6 对案例学习总结 本次内容如下： 对两个精选案例进行学习 对之前的内容进行总结 对之前所做的东西进行优化 对案例学习1.个人知识库助手具体项目界面如下： 这里我采用wsl本地复现一下 项目地址：https:&amp;#x2F;&amp;#x2F;github.com&amp;#x2F;logan-zou&amp;#x2F;Chat_with"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="BX同学"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/img/pwa/favicon.ico"><link rel="apple-touch-icon" href="/img/pwa/favicon.ico" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.10' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2024-08-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "Early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: [],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: ture
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: {"mode":{"dark":"深色模式","light":"浅色模式"},"img_error":"此图片无法复制与下载","translate":{"translateDelay":0,"defaultEncoding":2}},
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: false,
+    ai_text: false
+}</script><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="BX同学" type="application/atom+xml">
+</head><body id="body"><!-- universe--><canvas id="universe"></canvas><!-- background img--><!-- loading--><!-- console--><div id="console"><div class="close-btn" onclick="sco.hideConsole()"><i class="solitude fa-solid fa-xmark"></i></div><div class="console-card-group"><div class="console-card-group-right"><div class="console-card tags" onclick="sco.hideConsole()"><div class="card-content"><div class="author-content-item-tips">标签</div><div class="author-content-item-title">寻找感兴趣的领域</div></div><div class="card-tag-cloud"><a href="/tags/ctf/">ctf<sup>8</sup></a><a href="/tags/ctfhub/">ctfhub<sup>2</sup></a><a href="/tags/git/">git<sup>2</sup></a><a href="/tags/md5/">md5<sup>1</sup></a><a href="/tags/http/">http<sup>2</sup></a><a href="/tags/ssti/">ssti<sup>1</sup></a><a href="/tags/TypeScript/">TypeScript<sup>4</sup></a><a href="/tags/%E5%B7%A5%E7%A8%8B/">工程<sup>4</sup></a><a href="/tags/jwt/">jwt<sup>1</sup></a><a href="/tags/hexo/">hexo<sup>1</sup></a><a href="/tags/llm/">llm<sup>6</sup></a><a href="/tags/ai/">ai<sup>6</sup></a><a href="/tags/PHP/">PHP<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/">算法<sup>1</sup></a><a href="/tags/%E6%8E%92%E5%BA%8F/">排序<sup>1</sup></a><a href="/tags/AI/">AI<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div><div class="console-card history" onclick="sco.hideConsole()"><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/09/"><span class="card-archive-list-date">2024/09</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">16</span><span class="card-archive-list-count-unit">篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/08/"><span class="card-archive-list-date">2024/08</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">6</span><span class="card-archive-list-count-unit">篇</span></div></a></li></ul></div></div></div><div class="button-group"><div class="console-btn-item"><span class="darkmode_switchbutton" onclick="sco.switchDarkMode()" title="昼夜切换"><i class="solitude fa-solid fa-circle-half-stroke"></i></span></div><div class="console-btn-item" id="consoleHideAside"><span class="asideSwitch" onclick="sco.switchHideAside()" title="边栏显示控制"><i class="solitude fa-solid fa-mattress-pillow"></i></span></div></div><div class="console-mask" onclick="sco.hideConsole()"></div></div><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">project</div><div class="back-menu-list"><a class="back-menu-item" href="/B" title="0"><span class="back-menu-item-text">0</span></a><a class="back-menu-item" href="/X" title="1"><span class="back-menu-item-text">1</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/%20%7C%7C%20fas%20fa-user-group"><span>友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/ctf/">ctf<sup>8</sup></a><a href="/tags/ctfhub/">ctfhub<sup>2</sup></a><a href="/tags/git/">git<sup>2</sup></a><a href="/tags/md5/">md5<sup>1</sup></a><a href="/tags/http/">http<sup>2</sup></a><a href="/tags/ssti/">ssti<sup>1</sup></a><a href="/tags/TypeScript/">TypeScript<sup>4</sup></a><a href="/tags/%E5%B7%A5%E7%A8%8B/">工程<sup>4</sup></a><a href="/tags/jwt/">jwt<sup>1</sup></a><a href="/tags/hexo/">hexo<sup>1</sup></a><a href="/tags/llm/">llm<sup>6</sup></a><a href="/tags/ai/">ai<sup>6</sup></a><a href="/tags/PHP/">PHP<sup>1</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/">算法<sup>1</sup></a><a href="/tags/%E6%8E%92%E5%BA%8F/">排序<sup>1</sup></a><a href="/tags/AI/">AI<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><div class="back-home-button" tabindex="-1"><i class="back-home-button-icon solitude fab fa-squarespace"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">project</div><div class="back-menu-list"><a class="back-menu-item" href="/B" title="0"><span class="back-menu-item-text">0</span></a><a class="back-menu-item" href="/X" title="1"><span class="back-menu-item-text">1</span></a></div></div></div></div><a id="site-name" href="/" title="返回博客主页"><span class="title">BX33661</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">llm-universe-Task6 对案例学习和总结</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/%20%7C%7C%20fas%20fa-user-group"><span>友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-console"><a class="console_switchbutton" onclick="sco.showConsole()" title="中控台" href="javascript:void(0);"><label><i class="left"></i><i class="center"></i><i class="right"></i></label></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="/img/default9.jpg" alt="llm-universe-Task6 对案例学习和总结"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/llm-universe/">llm-universe</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/llm/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>llm</span></a><a class="post-meta__tags" href="/tags/ai/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>ai</span></a></div></div></div></div><h1 class="post-title">llm-universe-Task6 对案例学习和总结</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-date" title="发布于 2024-09-25 10:16:36"><i class="post-meta-icon solitude fa-solid fa-calendar-days"></i><time datetime="2024-09-25T02:16:36.000Z">2024-09-25T02:16:36.000Z</time></span><span class="post-meta-date" title="最后更新于 2024-09-25 10:17:18"><i class="post-meta-icon solitude fa-solid fa-arrow-rotate-right"></i><time datetime="2024-09-25T02:17:18.464Z">2024-09-25T02:17:18.464Z</time></span><span class="post-meta-wordcount"><i class="post-meta-icon solitude fa-solid fa-file-word" title="文章字数"></i><span class="word-count">1.6k</span><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><meta name="referrer" content="no-referrer">
+
+<h1 id="Task-6-对案例学习总结"><a href="#Task-6-对案例学习总结" class="headerlink" title="Task 6 对案例学习总结"></a>Task 6 对案例学习总结</h1><p><img src="https://s2.loli.net/2024/06/17/qvIkBr5dmOaA3zo.png" alt="image-20240617105110385.png"></p>
+<hr>
+<blockquote>
+<p>本次内容如下：</p>
+<ul>
+<li>对两个精选案例进行学习</li>
+<li>对之前的内容进行总结</li>
+<li>对之前所做的东西进行优化</li>
+</ul>
+</blockquote>
+<h2 id="对案例学习"><a href="#对案例学习" class="headerlink" title="对案例学习"></a>对案例学习</h2><h3 id="1-个人知识库助手"><a href="#1-个人知识库助手" class="headerlink" title="1.个人知识库助手"></a>1.个人知识库助手</h3><p>具体项目界面如下：</p>
+<p><img src="https://datawhalechina.github.io/llm-universe/figures/C6-1-Start.png"></p>
+<blockquote>
+<p>这里我采用wsl本地复现一下</p>
+<p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/logan-zou/Chat_with_Datawhale_langchain">https://github.com/logan-zou/Chat_with_Datawhale_langchain</a></p>
+</blockquote>
+<ol>
+<li>来到对应项目git的目录下</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> Chat_with_Datawhale_langchain</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>激活环境</li>
+</ol>
+<p>由于之前学习已经适用conda配置过一会环境了，所以直接采用 <code>llm-universe</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">conda init</span><br><span class="line">conda activate llm-universe</span><br><span class="line"></span><br><span class="line"><span class="comment">#安装一下额外所需要的库</span></span><br><span class="line">pip install -r requirements.txt</span><br><span class="line"><span class="comment">#注意这里下载可能需要外网，这个自行处理，或者连接国内镜像</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> serve</span><br><span class="line">uvicorn api:app --reload</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>运行项目</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> llm-universe/project/serve</span><br><span class="line">python run_gradio.py -model_name=<span class="string">&#x27;chatglm_std&#x27;</span> -embedding_model=<span class="string">&#x27;m3e&#x27;</span> -db_path=<span class="string">&#x27;../../data_base/knowledge_db&#x27;</span> -persist_path=<span class="string">&#x27;../../data_base/vector_db&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="核心技术栈"><a href="#核心技术栈" class="headerlink" title="核心技术栈"></a>核心技术栈</h4><p><img src="https://s2.loli.net/2024/06/30/uQz4FU18ZpTJIfW.png" alt="image-20240630150903610"></p>
+<p>由图可知在服务层调用了<code>FastAPI</code> 和 <code>gradio</code></p>
+<p>作者提供了通过<code>demo</code>和<code>api</code>这两种方式来访问这个应用</p>
+<ul>
+<li><code>gradio</code>框架我们之前在Task 5 学习使用过</li>
+</ul>
+<p>官方网站：<a target="_blank" rel="noopener" href="https://www.gradio.app/">https://www.gradio.app/</a></p>
+<blockquote>
+<p>Gradio是一个开源的Python库,用于快速构建机器学习模型的用户界面和演示应用。以下是Gradio的主要特点和优势:</p>
+<ol>
+<li>易用性: Gradio设计直观,易于学习和使用。只需几行Python代码就可以创建交互式界面。</li>
+<li>专为机器学习设计: Gradio特别适用于机器学习项目,可以简单直观地测试、分享和展示模型。</li>
+<li>纯Python实现: 使用Gradio不需要前端开发经验,所有代码都用Python编写。</li>
+<li>自动生成UI: 根据指定的输入和输出类型,Gradio可以自动生成相应的用户界面元素。</li>
+</ol>
+</blockquote>
+<ul>
+<li><p><code>Fastapi</code>:</p>
+<p>官方网址： <a target="_blank" rel="noopener" href="https://fastapi.tiangolo.com/">https://fastapi.tiangolo.com/</a></p>
+</li>
+</ul>
+<blockquote>
+<p>FastAPI是一个现代、高性能的Python Web框架,用于构建API。以下是FastAPI的主要特点和优势:</p>
+<ol>
+<li>高性能: FastAPI的性能与NodeJS和Go语言相当,是最快的Python框架之一。</li>
+<li>易于使用: 设计直观,易于学习,可以减少开发时间和代码重复。</li>
+<li>基于Python类型提示: 利用Python 3.6+的标准类型提示进行数据验证、序列化和反序列化。</li>
+<li>自动文档生成: 基于代码自动生成交互式API文档(使用Swagger UI和ReDoc)。</li>
+<li>异步支持: 原生支持使用Python的async&#x2F;await语法进行异步编程。</li>
+<li>数据验证: 使用Pydantic进行强大的模式验证和序列化。</li>
+<li>基于标准: 完全兼容OpenAPI(前身为Swagger)和JSON Schema标准。</li>
+<li>依赖注入: 包含强大的依赖注入系统,用于处理共享逻辑(如数据库会话或认证)。</li>
+<li>安全特性: 内置支持认证和授权机制。</li>
+<li>生产就绪: 框架设计默认遵循最佳实践,可生成生产就绪的代码。</li>
+</ol>
+<p>FastAPI不仅限于构建API,还可用于其他Web框架用例,如使用Jinja2模板引擎提供传统网页,或构建基于WebSocket的应用。</p>
+</blockquote>
+<p>我之前并没接触过这个<code>Fastapi</code>阅读了一下文档，了解了一下</p>
+<p><img src="https://s2.loli.net/2024/06/30/6fenmHiVCrF5sSd.png" alt="image-20240630154722527"></p>
+<p><img src="https://s2.loli.net/2024/06/30/BuhR1F4svxZINtQ.png" alt="image-20240630153356566"></p>
+<p>这是一个很好的<strong>RAG</strong>项目，相当于是对DW-llm项目的优化和升级，让用户上传属于自己的知识，帮助构建一个属于自己的个人助手</p>
+<blockquote>
+<p>RAG(Retrieval-Augmented Generation)是一种优化大型语言模型(LLM)输出的技术,它通过引用模型训练数据之外的权威知识库来生成响应。以下是RAG的主要特点和优势:</p>
+<p>工作原理:</p>
+<ul>
+<li>RAG在LLM生成响应之前,先从外部数据源检索相关信息。</li>
+<li>它使用嵌入语言模型将外部数据转换为向量表示,存储在向量数据库中。</li>
+<li>用户查询被转换为向量,与数据库中的向量进行相关性匹配。</li>
+<li>检索到的相关信息与用户输入一起提供给LLM,以生成更准确的响应</li>
+</ul>
+</blockquote>
+<h4 id="具体代码学习"><a href="#具体代码学习" class="headerlink" title="具体代码学习"></a>具体代码学习</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">model_to_llm</span>(<span class="params">model:<span class="built_in">str</span>=<span class="literal">None</span>, temperature:<span class="built_in">float</span>=<span class="number">0.0</span>, appid:<span class="built_in">str</span>=<span class="literal">None</span>, api_key:<span class="built_in">str</span>=<span class="literal">None</span>,Spark_api_secret:<span class="built_in">str</span>=<span class="literal">None</span>,Wenxin_secret_key:<span class="built_in">str</span>=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        星火：model,temperature,appid,api_key,api_secret</span></span><br><span class="line"><span class="string">        百度问心：model,temperature,api_key,api_secret</span></span><br><span class="line"><span class="string">        智谱：model,temperature,api_key</span></span><br><span class="line"><span class="string">        OpenAI：model,temperature,api_key</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">if</span> model <span class="keyword">in</span> [<span class="string">&quot;gpt-3.5-turbo&quot;</span>, <span class="string">&quot;gpt-3.5-turbo-16k-0613&quot;</span>, <span class="string">&quot;gpt-3.5-turbo-0613&quot;</span>, <span class="string">&quot;gpt-4&quot;</span>, <span class="string">&quot;gpt-4-32k&quot;</span>]:</span><br><span class="line">            <span class="keyword">if</span> api_key == <span class="literal">None</span>:</span><br><span class="line">                api_key = parse_llm_api_key(<span class="string">&quot;openai&quot;</span>)</span><br><span class="line">            llm = ChatOpenAI(model_name = model, temperature = temperature , openai_api_key = api_key)</span><br><span class="line">        <span class="keyword">elif</span> model <span class="keyword">in</span> [<span class="string">&quot;ERNIE-Bot&quot;</span>, <span class="string">&quot;ERNIE-Bot-4&quot;</span>, <span class="string">&quot;ERNIE-Bot-turbo&quot;</span>]:</span><br><span class="line">            <span class="keyword">if</span> api_key == <span class="literal">None</span> <span class="keyword">or</span> Wenxin_secret_key == <span class="literal">None</span>:</span><br><span class="line">                api_key, Wenxin_secret_key = parse_llm_api_key(<span class="string">&quot;wenxin&quot;</span>)</span><br><span class="line">            llm = Wenxin_LLM(model=model, temperature = temperature, api_key=api_key, secret_key=Wenxin_secret_key)</span><br><span class="line">        <span class="keyword">elif</span> model <span class="keyword">in</span> [<span class="string">&quot;Spark-1.5&quot;</span>, <span class="string">&quot;Spark-2.0&quot;</span>]:</span><br><span class="line">            <span class="keyword">if</span> api_key == <span class="literal">None</span> <span class="keyword">or</span> appid == <span class="literal">None</span> <span class="keyword">and</span> Spark_api_secret == <span class="literal">None</span>:</span><br><span class="line">                api_key, appid, Spark_api_secret = parse_llm_api_key(<span class="string">&quot;spark&quot;</span>)</span><br><span class="line">            llm = Spark_LLM(model=model, temperature = temperature, appid=appid, api_secret=Spark_api_secret, api_key=api_key)</span><br><span class="line">        <span class="keyword">elif</span> model <span class="keyword">in</span> [<span class="string">&quot;chatglm_pro&quot;</span>, <span class="string">&quot;chatglm_std&quot;</span>, <span class="string">&quot;chatglm_lite&quot;</span>]:</span><br><span class="line">            <span class="keyword">if</span> api_key == <span class="literal">None</span>:</span><br><span class="line">                api_key = parse_llm_api_key(<span class="string">&quot;zhipuai&quot;</span>)</span><br><span class="line">            llm = ZhipuAILLM(model=model, zhipuai_api_key=api_key, temperature = temperature)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">f&quot;model<span class="subst">&#123;model&#125;</span> not support!!!&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> llm</span><br></pre></td></tr></table></figure>
+
+<p>&#x3D;&#x3D;该代码定义了一个名为 <code>model_to_llm</code> 的函数，用于根据指定的模型和相关参数初始化相应的聊天模型接口对象。该函数支持多个语言模型平台，包括 OpenAI、百度Wenxin）、星火（Spark）、和智谱（ZhipuAI）。函数根据传入的模型名称选择相应的平台，并通过相应的 API 密钥和其他必要参数进行初始化。：&#x3D;&#x3D;</p>
+<h3 id="2-人情世故大模型"><a href="#2-人情世故大模型" class="headerlink" title="2. 人情世故大模型"></a>2. 人情世故大模型</h3><p>这个案例十分有趣，是一非常具有特色的项目</p>
+<p><img src="https://s2.loli.net/2024/06/30/Fy8Lgvo7sDpXPYH.png" alt="image-20240630160325337"></p>
+<h4 id="对项目复现尝试一下"><a href="#对项目复现尝试一下" class="headerlink" title="对项目复现尝试一下"></a>对项目复现尝试一下</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/SocialAI-tianji/Tianji.git\</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">conda create -n TJ python=3.11</span><br><span class="line">conda activate TJ</span><br><span class="line">pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i3.mjj.rip/2024/06/30/65c89473056ca0738e6f2065857cfa8d.png" alt="65c89473056ca0738e6f2065857cfa8d.png"></p>
+<h3 id="分析和学习"><a href="#分析和学习" class="headerlink" title="分析和学习"></a>分析和学习</h3><p><img src="https://i3.mjj.rip/2024/06/30/e54e6fd4602319201067f50813bd4725.png" alt="e54e6fd4602319201067f50813bd4725.png"></p>
+<p><img src="https://s2.loli.net/2024/06/30/rXIpeAbmnitOj4g.png" alt="image-20240630173946968"></p>
+<ul>
+<li><p>通过内置 system prompt ，通过系统提示词让大模型进行输出</p>
+</li>
+<li><p>通过向量数据库，检索知识库的内容</p>
+</li>
+<li><p>Agent(这部分我还有待进一步地学习)<br><img src="https://i3.mjj.rip/2024/06/30/6afb06c985ecfc58444476f0e8436c5c.png" alt="6afb06c985ecfc58444476f0e8436c5c.png"></p>
+<h3 id="MetaGPT"><a href="#MetaGPT" class="headerlink" title="MetaGPT"></a>MetaGPT</h3><p><img src="https://i3.mjj.rip/2024/06/30/361386471b368acf4a030bd38da94d6b.png" alt="361386471b368acf4a030bd38da94d6b.png"><br>MetaGPT是一个多智能体框架，旨在通过将不同的GPT模型分配到不同的角色中，形成一个协作的软件实体，以解决复杂任务3。它由中国团队开发，主要应用于软件开发等场景，利用标准作业程序（SOP）来协调基于大语言模型的多智能体系统，实现元编程技术5。MetaGPT的架构分为两层：基础组件层和协作层，其中基础组件层侧重于个体代理操作并促进系统范围内的信息交换，介绍了核心构建块，如环境、内存、角色、操作和工具</p>
+</li>
+</ul>
+<hr>
+<p>……</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="/img/pwa/favicon.ico"></a><div class="post-copyright__author_name">BX同学</div><div class="post-copyright__author_desc">bx33661 blog</div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="social-share"><a class="social-share-ico icon-qq" target="_blank" rel="noopener" href="https://connect.qq.com/widget/shareqq/index.html?url=http%3A%2F%2Fwww.bx33661.com%2F8d0fa844.html&amp;title=llm-universe-Task6%20%E5%AF%B9%E6%A1%88%E4%BE%8B%E5%AD%A6%E4%B9%A0%E5%92%8C%E6%80%BB%E7%BB%93&amp;desc=undefined&amp;summary=undefined&amp;site=llm-universe-Task6%20%E5%AF%B9%E6%A1%88%E4%BE%8B%E5%AD%A6%E4%B9%A0%E5%92%8C%E6%80%BB%E7%BB%93&amp;pics=%2Fimg%2Fdefault9.jpg" title="分享到QQ"><i class="solitude fab fa-qq"></i></a><a class="social-share-ico icon-weibo" target="_blank" rel="noopener" href="http://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.bx33661.com%2F8d0fa844.html&amp;title=llm-universe-Task6%20%E5%AF%B9%E6%A1%88%E4%BE%8B%E5%AD%A6%E4%B9%A0%E5%92%8C%E6%80%BB%E7%BB%93&amp;pic=%2Fimg%2Fdefault9.jpg" title="分享到微博"><i class="solitude fab fa-weibo"></i></a><a class="social-share-ico icon-twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url=http%3A%2F%2Fwww.bx33661.com%2F8d0fa844.html&amp;text=llm-universe-Task6%20%E5%AF%B9%E6%A1%88%E4%BE%8B%E5%AD%A6%E4%B9%A0%E5%92%8C%E6%80%BB%E7%BB%93" title="分享到Twitter"><i class="solitude fab fa-twitter"></i></a><div class="social-share-ico icon-link" onclick="utils.copy(&quot;http://www.bx33661.com/8d0fa844.html&quot;)" title="复制文章链接"><i class="solitude fas fa-link"></i></div><div class="social-share-ico icon-qrcode" title="使用手机扫码阅读这篇文章"><i class="solitude fas fa-qrcode"></i><div class="share-main"><div class="share-main-all"><div id="qrcode"></div><div class="reward-dec">使用手机扫码阅读这篇文章</div></div></div><script pjax>typeof QRCode === 'function' && new QRCode(document.getElementById("qrcode"), 'http://www.bx33661.com/8d0fa844.html');
+window.addEventListener('DOMContentLoaded', () => {
+    new QRCode(document.getElementById("qrcode"), 'http://www.bx33661.com/8d0fa844.html');
+});
+</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">BX同学</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/llm/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>llm<span class="tagsPageCount">6</span></span></a><a class="post-meta__tags" href="/tags/ai/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>ai<span class="tagsPageCount">6</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="next-post pull-full"><a href="/986dd242.html"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">llm-universe-Task5系统评估和优化</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="/img/11234.jpg"></div><div class="author-info__description_group"><div class="author-info__description">这是我的博客 / This is my Blog</div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">bx33661</div><div class="author-info__desc">bx33661 blog</div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/bx33661" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://space.bilibili.com/1329819902" title="E-mail"><i class="solitude  fab fa-bilibili"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Task-6-%E5%AF%B9%E6%A1%88%E4%BE%8B%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93"><span class="toc-text">Task 6 对案例学习总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E6%A1%88%E4%BE%8B%E5%AD%A6%E4%B9%A0"><span class="toc-text">对案例学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E5%BA%93%E5%8A%A9%E6%89%8B"><span class="toc-text">1.个人知识库助手</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E6%A0%88"><span class="toc-text">核心技术栈</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E4%BB%A3%E7%A0%81%E5%AD%A6%E4%B9%A0"><span class="toc-text">具体代码学习</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BA%BA%E6%83%85%E4%B8%96%E6%95%85%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="toc-text">2. 人情世故大模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E9%A1%B9%E7%9B%AE%E5%A4%8D%E7%8E%B0%E5%B0%9D%E8%AF%95%E4%B8%80%E4%B8%8B"><span class="toc-text">对项目复现尝试一下</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%92%8C%E5%AD%A6%E4%B9%A0"><span class="toc-text">分析和学习</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MetaGPT"><span class="toc-text">MetaGPT</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/8d0fa844.html" title="llm-universe-Task6 对案例学习和总结"><img alt="llm-universe-Task6 对案例学习和总结" src="/img/default9.jpg"></a><div class="content"><span class="title" href="/8d0fa844.html" title="llm-universe-Task6 对案例学习和总结">llm-universe-Task6 对案例学习和总结</span><span class="article-recent_post_categories" href="/8d0fa844.html">llm-universe</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/986dd242.html" title="llm-universe-Task5系统评估和优化"><img alt="llm-universe-Task5系统评估和优化" src="/img/default7.jpg"></a><div class="content"><span class="title" href="/986dd242.html" title="llm-universe-Task5系统评估和优化">llm-universe-Task5系统评估和优化</span><span class="article-recent_post_categories" href="/986dd242.html">llm-universe</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/e35ae80f.html" title="llm-universe-Task4 构建RAG应用"><img alt="llm-universe-Task4 构建RAG应用" src="/img/default4.jpg"></a><div class="content"><span class="title" href="/e35ae80f.html" title="llm-universe-Task4 构建RAG应用">llm-universe-Task4 构建RAG应用</span><span class="article-recent_post_categories" href="/e35ae80f.html">llm-universe</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/5780e8b7.html" title="llm-universe-Task3 搭建和使用向量知识库"><img alt="llm-universe-Task3 搭建和使用向量知识库" src="/img/default6.jpg"></a><div class="content"><span class="title" href="/5780e8b7.html" title="llm-universe-Task3 搭建和使用向量知识库">llm-universe-Task3 搭建和使用向量知识库</span><span class="article-recent_post_categories" href="/5780e8b7.html">llm-universe</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/c2bab8ad.html" title="llm-universe-Task2 主流大模型SDK接入和prompt"><img alt="llm-universe-Task2 主流大模型SDK接入和prompt" src="/img/default2.jpg"></a><div class="content"><span class="title" href="/c2bab8ad.html" title="llm-universe-Task2 主流大模型SDK接入和prompt">llm-universe-Task2 主流大模型SDK接入和prompt</span><span class="article-recent_post_categories" href="/c2bab8ad.html">llm-universe</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/bx33661" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:bx33661@gmail.com" title="Mail"><i class="solitude  fab fa-envelope"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2024 By&nbsp;<a class="footer-bar-link" href="/">bx33661</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Theme">Theme</a></div></div></div></footer></div><!-- right_menu--><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="solitude fa-solid fa-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="solitude fa-solid fa-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="solitude fa-solid fa-arrow-rotate-right"></i></div><div class="rightMenu-item" id="menu-top"><i class="solitude fa-solid fa-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="solitude fa-solid fa-clone"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="solitude fa-solid fa-clipboard"></i><span>粘贴文本</span></div><div class="rightMenu-item" id="menu-newwindow"><i class="solitude fa-regular fa-window-maximize"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="solitude fa-solid fa-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="solitude fa-solid fa-clone"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="solitude fa-solid fa-cloud-arrow-down"></i><span>下载此图片</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"></div><div class="rightMenu-group rightMenu-line rightMenuOther"><div class="rightMenu-item" id="menu-darkmode" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></div><div class="rightMenu-item" id="menu-translate"><i class="solitude fa-solid fa-language"></i><span>轉為繁體</span></div></div></div><div id="rightmenu-mask"></div><!-- inject body--><div><script src="/js/utils.js?v=2.0.10"></script><script src="/js/main.js?v=2.0.10"></script><script src="/js/third_party/waterfall.min.js?v=2.0.10"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><script src="/js/third_party/universe.min.js?v=2.0.10"></script><script>dark()
+</script><script src="/js/tw_cn.js?v=2.0.10"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script><script src="/js/covercolor/local.js?v=2.0.10"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><script src="/js/right_menu.js?v=2.0.10"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["8d0fa844.html","986dd242.html","e35ae80f.html","5780e8b7.html","c2bab8ad.html","17c0a43b.html","f7eebb5b.html","1450d2fe.html","84162d96.html","f1b66a56.html","afe2dab9.html","4a785101.html","ecc3773b.html","501b00f3.html","d8e5ea2f.html","41ecbb95.html","3598929d.html","d11d50dd.html","5b1da9ac.html","74ee6b2b.html","3408d468.html","13bf7486.html"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>
