@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-09-25T02:28:26.233Z</updated>
+  <updated>2024-09-25T02:41:34.313Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -17,11 +17,88 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Picgo+git平台打造个人图床</title>
+    <link href="http://www.bx33661.com/de766c1.html"/>
+    <id>http://www.bx33661.com/de766c1.html</id>
+    <published>2024-09-25T02:41:04.000Z</published>
+    <updated>2024-09-25T02:41:34.313Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h1 id=&quot;Picgo打造个人图床&quot;&gt;&lt;a href=&quot;#Picgo打造个人图床&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="软件" scheme="http://www.bx33661.com/tags/%E8%BD%AF%E4%BB%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>PHP中的超级全局变量</title>
+    <link href="http://www.bx33661.com/b17e5b21.html"/>
+    <id>http://www.bx33661.com/b17e5b21.html</id>
+    <published>2024-09-25T02:39:17.000Z</published>
+    <updated>2024-09-25T02:40:09.768Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h1 id=&quot;PHP中超级全局变量&quot;&gt;&lt;a href=&quot;#PHP中超级全局变量&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="php" scheme="http://www.bx33661.com/tags/php/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CTFHUB-HG、SVN..泄露</title>
+    <link href="http://www.bx33661.com/c82dbe21.html"/>
+    <id>http://www.bx33661.com/c82dbe21.html</id>
+    <published>2024-09-25T02:36:30.000Z</published>
+    <updated>2024-09-25T02:37:36.151Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;HG、SVN-泄露&quot;&gt;&lt;a href=&quot;#HG、SVN-泄露&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="ctfhub" scheme="http://www.bx33661.com/tags/ctfhub/"/>
+    
+  </entry>
+  
+  <entry>
     <title>CTFSHOW-PHP特性</title>
     <link href="http://www.bx33661.com/8403ab25.html"/>
     <id>http://www.bx33661.com/8403ab25.html</id>
     <published>2024-09-25T02:23:15.000Z</published>
-    <updated>2024-09-25T02:28:26.233Z</updated>
+    <updated>2024-09-25T02:29:24.296Z</updated>
     
     
       
@@ -50,7 +127,7 @@
     <link href="http://www.bx33661.com/8aa44e1d.html"/>
     <id>http://www.bx33661.com/8aa44e1d.html</id>
     <published>2024-09-25T02:22:16.000Z</published>
-    <updated>2024-09-25T02:28:56.328Z</updated>
+    <updated>2024-09-25T02:29:24.298Z</updated>
     
     
       
@@ -79,7 +156,7 @@
     <link href="http://www.bx33661.com/24280111.html"/>
     <id>http://www.bx33661.com/24280111.html</id>
     <published>2024-09-25T02:19:55.000Z</published>
-    <updated>2024-09-25T02:20:33.245Z</updated>
+    <updated>2024-09-25T02:29:24.300Z</updated>
     
     
       
@@ -93,9 +170,9 @@
     
     
     
-    <category term="Linux" scheme="http://www.bx33661.com/tags/Linux/"/>
-    
     <category term="软件" scheme="http://www.bx33661.com/tags/%E8%BD%AF%E4%BB%B6/"/>
+    
+    <category term="Linux" scheme="http://www.bx33661.com/tags/Linux/"/>
     
   </entry>
   
@@ -104,7 +181,7 @@
     <link href="http://www.bx33661.com/8d0fa844.html"/>
     <id>http://www.bx33661.com/8d0fa844.html</id>
     <published>2024-09-25T02:16:36.000Z</published>
-    <updated>2024-09-25T02:17:41.618Z</updated>
+    <updated>2024-09-25T02:41:31.603Z</updated>
     
     
       
@@ -133,7 +210,7 @@
     <link href="http://www.bx33661.com/986dd242.html"/>
     <id>http://www.bx33661.com/986dd242.html</id>
     <published>2024-09-25T02:15:33.000Z</published>
-    <updated>2024-09-25T02:17:41.614Z</updated>
+    <updated>2024-09-25T02:40:06.624Z</updated>
     
     
       
@@ -490,93 +567,6 @@
     <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
     
     <category term="md5" scheme="http://www.bx33661.com/tags/md5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>TypeScript学习Task2</title>
-    <link href="http://www.bx33661.com/d8e5ea2f.html"/>
-    <id>http://www.bx33661.com/d8e5ea2f.html</id>
-    <published>2024-09-18T12:40:19.000Z</published>
-    <updated>2024-09-25T02:05:53.065Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h2 id=&quot;Task-two&quot;&gt;&lt;a href=&quot;#Task-two&quot; class=&quot;headerlink&quot; title=&quot;Task two&quot;&gt;&lt;/a&gt;Task</summary>
-        
-      
-    
-    
-    
-    <category term="TypeScript学习" scheme="http://www.bx33661.com/categories/TypeScript%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="TypeScript" scheme="http://www.bx33661.com/tags/TypeScript/"/>
-    
-    <category term="工程" scheme="http://www.bx33661.com/tags/%E5%B7%A5%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>TypeScript学习Task1</title>
-    <link href="http://www.bx33661.com/41ecbb95.html"/>
-    <id>http://www.bx33661.com/41ecbb95.html</id>
-    <published>2024-09-16T09:14:48.000Z</published>
-    <updated>2024-09-25T02:24:55.910Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h2 id=&quot;Task-one&quot;&gt;&lt;a href=&quot;#Task-one&quot; class=&quot;headerlink&quot; title=&quot;Task one&quot;&gt;&lt;/a&gt;Task</summary>
-        
-      
-    
-    
-    
-    <category term="TypeScript学习" scheme="http://www.bx33661.com/categories/TypeScript%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="TypeScript" scheme="http://www.bx33661.com/tags/TypeScript/"/>
-    
-    <category term="工程" scheme="http://www.bx33661.com/tags/%E5%B7%A5%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>SSTI的学习与分析</title>
-    <link href="http://www.bx33661.com/3598929d.html"/>
-    <id>http://www.bx33661.com/3598929d.html</id>
-    <published>2024-08-30T13:48:54.000Z</published>
-    <updated>2024-09-25T02:06:35.267Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-## SSTI
-
-&lt;p&gt;[TOC]&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
-        
-      
-    
-    
-    
-    
-    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
-    
-    <category term="ssti" scheme="http://www.bx33661.com/tags/ssti/"/>
     
   </entry>
   
