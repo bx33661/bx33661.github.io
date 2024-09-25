@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-09-25T02:17:18.464Z</updated>
+  <updated>2024-09-25T02:28:26.233Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -17,11 +17,94 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>CTFSHOW-PHP特性</title>
+    <link href="http://www.bx33661.com/8403ab25.html"/>
+    <id>http://www.bx33661.com/8403ab25.html</id>
+    <published>2024-09-25T02:23:15.000Z</published>
+    <updated>2024-09-25T02:28:26.233Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h2 id=&quot;ctfshow-PHP特性&quot;&gt;&lt;a href=&quot;#ctfshow-PHP特性&quot; class=&quot;headerlink&quot; title=&quot;ctfshow-</summary>
+        
+      
+    
+    
+    
+    <category term="CTFSHOW" scheme="http://www.bx33661.com/categories/CTFSHOW/"/>
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="ctfshow" scheme="http://www.bx33661.com/tags/ctfshow/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CTFSHOW-信息搜集</title>
+    <link href="http://www.bx33661.com/8aa44e1d.html"/>
+    <id>http://www.bx33661.com/8aa44e1d.html</id>
+    <published>2024-09-25T02:22:16.000Z</published>
+    <updated>2024-09-25T02:28:56.328Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h1 id=&quot;CTFSHOW-WEB-信息搜集&quot;&gt;&lt;a href=&quot;#CTFSHOW-WEB-信息搜集&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="CTFSHOW" scheme="http://www.bx33661.com/categories/CTFSHOW/"/>
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="ctfshow" scheme="http://www.bx33661.com/tags/ctfshow/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>WSL2---移动出C盘</title>
+    <link href="http://www.bx33661.com/24280111.html"/>
+    <id>http://www.bx33661.com/24280111.html</id>
+    <published>2024-09-25T02:19:55.000Z</published>
+    <updated>2024-09-25T02:20:33.245Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;将wsl2从C盘移出去&quot;&gt;&lt;a href=&quot;#将wsl2从C盘移出去&quot; class=&quot;headerlink&quot; title=&quot;将wsl2从C盘移出去&quot;&gt;&lt;/a&gt;将wsl2从C盘移出去&lt;/h2&gt;&lt;p&gt;以kail为例子：&lt;br&gt;&lt;strong&gt;1. 查看已安装版本</summary>
+        
+      
+    
+    
+    
+    
+    <category term="Linux" scheme="http://www.bx33661.com/tags/Linux/"/>
+    
+    <category term="软件" scheme="http://www.bx33661.com/tags/%E8%BD%AF%E4%BB%B6/"/>
+    
+  </entry>
+  
+  <entry>
     <title>llm-universe-Task6 对案例学习和总结</title>
     <link href="http://www.bx33661.com/8d0fa844.html"/>
     <id>http://www.bx33661.com/8d0fa844.html</id>
     <published>2024-09-25T02:16:36.000Z</published>
-    <updated>2024-09-25T02:17:18.464Z</updated>
+    <updated>2024-09-25T02:17:41.618Z</updated>
     
     
       
@@ -50,7 +133,7 @@
     <link href="http://www.bx33661.com/986dd242.html"/>
     <id>http://www.bx33661.com/986dd242.html</id>
     <published>2024-09-25T02:15:33.000Z</published>
-    <updated>2024-09-25T02:16:17.007Z</updated>
+    <updated>2024-09-25T02:17:41.614Z</updated>
     
     
       
@@ -79,7 +162,7 @@
     <link href="http://www.bx33661.com/e35ae80f.html"/>
     <id>http://www.bx33661.com/e35ae80f.html</id>
     <published>2024-09-25T02:14:22.000Z</published>
-    <updated>2024-09-25T02:14:58.634Z</updated>
+    <updated>2024-09-25T02:17:41.611Z</updated>
     
     
       
@@ -108,7 +191,7 @@
     <link href="http://www.bx33661.com/5780e8b7.html"/>
     <id>http://www.bx33661.com/5780e8b7.html</id>
     <published>2024-09-25T02:13:00.000Z</published>
-    <updated>2024-09-25T02:17:06.243Z</updated>
+    <updated>2024-09-25T02:17:41.609Z</updated>
     
     
       
@@ -137,7 +220,7 @@
     <link href="http://www.bx33661.com/c2bab8ad.html"/>
     <id>http://www.bx33661.com/c2bab8ad.html</id>
     <published>2024-09-25T02:11:47.000Z</published>
-    <updated>2024-09-25T02:13:38.789Z</updated>
+    <updated>2024-09-25T02:17:41.607Z</updated>
     
     
       
@@ -166,7 +249,7 @@
     <link href="http://www.bx33661.com/17c0a43b.html"/>
     <id>http://www.bx33661.com/17c0a43b.html</id>
     <published>2024-09-25T02:09:46.000Z</published>
-    <updated>2024-09-25T02:11:16.639Z</updated>
+    <updated>2024-09-25T02:17:41.603Z</updated>
     
     
       
@@ -444,7 +527,7 @@
     <link href="http://www.bx33661.com/41ecbb95.html"/>
     <id>http://www.bx33661.com/41ecbb95.html</id>
     <published>2024-09-16T09:14:48.000Z</published>
-    <updated>2024-09-25T02:05:46.381Z</updated>
+    <updated>2024-09-25T02:24:55.910Z</updated>
     
     
       
@@ -494,87 +577,6 @@
     <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
     
     <category term="ssti" scheme="http://www.bx33661.com/tags/ssti/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ctfhub-SSRF学习</title>
-    <link href="http://www.bx33661.com/d11d50dd.html"/>
-    <id>http://www.bx33661.com/d11d50dd.html</id>
-    <published>2024-08-27T15:02:23.000Z</published>
-    <updated>2024-09-25T02:04:21.100Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h2 id=&quot;ssrf&quot;&gt;&lt;a href=&quot;#ssrf&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
-    
-    <category term="ctfhub" scheme="http://www.bx33661.com/tags/ctfhub/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ctfHUB-JWT学习</title>
-    <link href="http://www.bx33661.com/5b1da9ac.html"/>
-    <id>http://www.bx33661.com/5b1da9ac.html</id>
-    <published>2024-08-27T09:20:09.000Z</published>
-    <updated>2024-09-25T02:11:11.320Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h2 id=&quot;CTFHhub–JWT&quot;&gt;&lt;a href=&quot;#CTFHhub–JWT&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
-    
-    <category term="jwt" scheme="http://www.bx33661.com/tags/jwt/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>本地部署LLM</title>
-    <link href="http://www.bx33661.com/74ee6b2b.html"/>
-    <id>http://www.bx33661.com/74ee6b2b.html</id>
-    <published>2024-08-24T08:42:02.000Z</published>
-    <updated>2024-09-25T02:06:16.406Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;p&gt;&lt;em&gt;最近开源的llama模型非常火，BX同学在这里向大家演示一下，如何本地部署。&lt;br&gt;本文章谨代表BX个人思考&lt;/em&gt;&lt;br&gt;&lt;img</summary>
-        
-      
-    
-    
-    
-    
-    <category term="AI" scheme="http://www.bx33661.com/tags/AI/"/>
-    
-    <category term="LLM" scheme="http://www.bx33661.com/tags/LLM/"/>
     
   </entry>
   
