@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-09-25T02:41:51.672Z</updated>
+  <updated>2024-09-26T15:20:33.353Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>TypeScript学习5-封装，异步</title>
+    <link href="http://www.bx33661.com/c7b9abc7.html"/>
+    <id>http://www.bx33661.com/c7b9abc7.html</id>
+    <published>2024-09-26T15:19:09.000Z</published>
+    <updated>2024-09-26T15:20:33.353Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h1 id=&quot;TypeScript–-第五章&quot;&gt;&lt;a href=&quot;#TypeScript–-第五章&quot; class=&quot;headerlink&quot; title=&quot;TypeScript–</summary>
+        
+      
+    
+    
+    
+    <category term="TypeScript学习" scheme="http://www.bx33661.com/categories/TypeScript%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="TypeScript" scheme="http://www.bx33661.com/tags/TypeScript/"/>
+    
+    <category term="工程" scheme="http://www.bx33661.com/tags/%E5%B7%A5%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>Picgo+git平台打造个人图床</title>
@@ -538,35 +567,6 @@
     <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
     
     <category term="md5" scheme="http://www.bx33661.com/tags/md5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>TypeScript学习Task2</title>
-    <link href="http://www.bx33661.com/d8e5ea2f.html"/>
-    <id>http://www.bx33661.com/d8e5ea2f.html</id>
-    <published>2024-09-18T12:40:19.000Z</published>
-    <updated>2024-09-25T02:05:53.065Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h2 id=&quot;Task-two&quot;&gt;&lt;a href=&quot;#Task-two&quot; class=&quot;headerlink&quot; title=&quot;Task two&quot;&gt;&lt;/a&gt;Task</summary>
-        
-      
-    
-    
-    
-    <category term="TypeScript学习" scheme="http://www.bx33661.com/categories/TypeScript%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="TypeScript" scheme="http://www.bx33661.com/tags/TypeScript/"/>
-    
-    <category term="工程" scheme="http://www.bx33661.com/tags/%E5%B7%A5%E7%A8%8B/"/>
     
   </entry>
   
