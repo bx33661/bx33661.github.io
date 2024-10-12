@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-09-26T15:21:10.853Z</updated>
+  <updated>2024-10-12T02:56:25.878Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -15,6 +15,66 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CTFSHOW-文件包含</title>
+    <link href="http://www.bx33661.com/b014c08b.html"/>
+    <id>http://www.bx33661.com/b014c08b.html</id>
+    <published>2024-10-12T02:55:09.000Z</published>
+    <updated>2024-10-12T02:56:25.878Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h2 id=&quot;ctfshow-文件包含&quot;&gt;&lt;a href=&quot;#ctfshow-文件包含&quot; class=&quot;headerlink&quot; title=&quot;ctfshow-</summary>
+        
+      
+    
+    
+    
+    <category term="CTFSHOW" scheme="http://www.bx33661.com/categories/CTFSHOW/"/>
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="ctfshow" scheme="http://www.bx33661.com/tags/ctfshow/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CTFSHOW-菜狗杯</title>
+    <link href="http://www.bx33661.com/c7fb1d32.html"/>
+    <id>http://www.bx33661.com/c7fb1d32.html</id>
+    <published>2024-10-12T02:51:46.000Z</published>
+    <updated>2024-10-12T02:52:58.818Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h1 id=&quot;菜狗杯&quot;&gt;&lt;a href=&quot;#菜狗杯&quot; class=&quot;headerlink&quot; title=&quot;菜狗杯&quot;&gt;&lt;/a&gt;菜狗杯&lt;/h1&gt;&lt;p&gt;[TOC]&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3</summary>
+        
+      
+    
+    
+    
+    <category term="CTFSHOW" scheme="http://www.bx33661.com/categories/CTFSHOW/"/>
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="ctfshow" scheme="http://www.bx33661.com/tags/ctfshow/"/>
+    
+  </entry>
   
   <entry>
     <title>TypeScript学习5-封装，异步</title>
@@ -513,60 +573,6 @@
     <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
     
     <category term="PHP" scheme="http://www.bx33661.com/tags/PHP/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>PHP原生类的利用</title>
-    <link href="http://www.bx33661.com/ecc3773b.html"/>
-    <id>http://www.bx33661.com/ecc3773b.html</id>
-    <published>2024-09-21T04:37:39.000Z</published>
-    <updated>2024-09-24T14:26:08.833Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h1 id=&quot;PHP原生类的利用&quot;&gt;&lt;a href=&quot;#PHP原生类的利用&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
-    
-    <category term="http" scheme="http://www.bx33661.com/tags/http/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MD5长度扩展攻击</title>
-    <link href="http://www.bx33661.com/501b00f3.html"/>
-    <id>http://www.bx33661.com/501b00f3.html</id>
-    <published>2024-09-21T03:11:32.000Z</published>
-    <updated>2024-09-25T02:05:13.208Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h3 id=&quot;MD5长度扩展攻击&quot;&gt;&lt;a href=&quot;#MD5长度扩展攻击&quot; class=&quot;headerlink&quot; title=&quot;MD5长度扩展攻击&quot;&gt;&lt;/a&gt;MD5长度扩展攻击&lt;/h3&gt;&lt;hr&gt;
-&lt;blockquote&gt;
-&lt;p&gt;使用工具：&lt;a</summary>
-        
-      
-    
-    
-    
-    
-    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
-    
-    <category term="md5" scheme="http://www.bx33661.com/tags/md5/"/>
     
   </entry>
   
