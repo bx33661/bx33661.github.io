@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-10-12T02:57:19.263Z</updated>
+  <updated>2024-10-12T03:41:58.052Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -15,6 +15,46 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>BUUCTF上的几道题1️⃣</title>
+    <link href="http://www.bx33661.com/ccc3f9d1.html"/>
+    <id>http://www.bx33661.com/ccc3f9d1.html</id>
+    <published>2024-10-12T03:39:36.000Z</published>
+    <updated>2024-10-12T03:41:58.052Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h2 id=&quot;BUUCTF上的几道题1️⃣&quot;&gt;&lt;a href=&quot;#BUUCTF上的几道题1️⃣&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="buuctf" scheme="http://www.bx33661.com/tags/buuctf/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CTFHUB-JWT类型</title>
+    <link href="http://www.bx33661.com/3493e14f.html"/>
+    <id>http://www.bx33661.com/3493e14f.html</id>
+    <published>2024-10-12T03:09:01.000Z</published>
+    <updated>2024-10-12T03:09:01.530Z</updated>
+    
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>CTFSHOW-文件包含</title>
@@ -299,7 +339,7 @@
     <link href="http://www.bx33661.com/986dd242.html"/>
     <id>http://www.bx33661.com/986dd242.html</id>
     <published>2024-09-25T02:15:33.000Z</published>
-    <updated>2024-09-25T02:40:06.624Z</updated>
+    <updated>2024-10-12T03:41:49.428Z</updated>
     
     
       
@@ -520,61 +560,6 @@
     <category term="ctfhub" scheme="http://www.bx33661.com/tags/ctfhub/"/>
     
     <category term="git" scheme="http://www.bx33661.com/tags/git/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Post传参中的Content-Type</title>
-    <link href="http://www.bx33661.com/f1b66a56.html"/>
-    <id>http://www.bx33661.com/f1b66a56.html</id>
-    <published>2024-09-22T12:58:37.000Z</published>
-    <updated>2024-09-24T14:25:36.712Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h3 id=&quot;Content-Type&quot;&gt;&lt;a href=&quot;#Content-Type&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
-    
-    <category term="http" scheme="http://www.bx33661.com/tags/http/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>TypeScript学习Task3</title>
-    <link href="http://www.bx33661.com/afe2dab9.html"/>
-    <id>http://www.bx33661.com/afe2dab9.html</id>
-    <published>2024-09-21T15:16:14.000Z</published>
-    <updated>2024-09-25T02:05:58.519Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;Task-3&quot;&gt;&lt;a href=&quot;#Task-3&quot; class=&quot;headerlink&quot; title=&quot;Task 3&quot;&gt;&lt;/a&gt;Task 3&lt;/h1&gt;&lt;p&gt;[TOC]&lt;/p&gt;
-&lt;hr&gt;
-&lt;blockquote&gt;
-&lt;p&gt;DataWhale教程：&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="TypeScript学习" scheme="http://www.bx33661.com/categories/TypeScript%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="TypeScript" scheme="http://www.bx33661.com/tags/TypeScript/"/>
-    
-    <category term="工程" scheme="http://www.bx33661.com/tags/%E5%B7%A5%E7%A8%8B/"/>
     
   </entry>
   
