@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-10-12T03:42:26.578Z</updated>
+  <updated>2024-10-12T10:07:52.879Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>[watevrCTF-2019]Supercalc</title>
+    <link href="http://www.bx33661.com/5fc9fa0b.html"/>
+    <id>http://www.bx33661.com/5fc9fa0b.html</id>
+    <published>2024-10-12T10:06:22.000Z</published>
+    <updated>2024-10-12T10:07:52.879Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h3 id=&quot;watevrCTF-2019-Supercalc&quot;&gt;&lt;a href=&quot;#watevrCTF-2019-Supercalc&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="buuctf" scheme="http://www.bx33661.com/tags/buuctf/"/>
+    
+    <category term="session" scheme="http://www.bx33661.com/tags/session/"/>
+    
+  </entry>
   
   <entry>
     <title>BUUCTF上的几道题1️⃣</title>
@@ -531,35 +560,6 @@
     <category term="TypeScript" scheme="http://www.bx33661.com/tags/TypeScript/"/>
     
     <category term="工程" scheme="http://www.bx33661.com/tags/%E5%B7%A5%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CTFHUB-web-Git泄露</title>
-    <link href="http://www.bx33661.com/84162d96.html"/>
-    <id>http://www.bx33661.com/84162d96.html</id>
-    <published>2024-09-24T08:44:06.000Z</published>
-    <updated>2024-09-25T02:04:41.452Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h2 id=&quot;CTFHUB-web-git泄露&quot;&gt;&lt;a href=&quot;#CTFHUB-web-git泄露&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
-    
-    <category term="ctfhub" scheme="http://www.bx33661.com/tags/ctfhub/"/>
-    
-    <category term="git" scheme="http://www.bx33661.com/tags/git/"/>
     
   </entry>
   
