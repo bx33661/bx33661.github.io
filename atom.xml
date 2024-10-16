@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-10-12T10:07:52.879Z</updated>
+  <updated>2024-10-16T15:23:07.736Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -17,11 +17,38 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>MD5问题总结</title>
+    <link href="http://www.bx33661.com/ea2cd6a8.html"/>
+    <id>http://www.bx33661.com/ea2cd6a8.html</id>
+    <published>2024-10-16T15:21:58.000Z</published>
+    <updated>2024-10-16T15:23:07.736Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h1 id=&quot;MD5绕过总结&quot;&gt;&lt;a href=&quot;#MD5绕过总结&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="md5" scheme="http://www.bx33661.com/tags/md5/"/>
+    
+  </entry>
+  
+  <entry>
     <title>[watevrCTF-2019]Supercalc</title>
     <link href="http://www.bx33661.com/5fc9fa0b.html"/>
     <id>http://www.bx33661.com/5fc9fa0b.html</id>
     <published>2024-10-12T10:06:22.000Z</published>
-    <updated>2024-10-12T10:07:52.879Z</updated>
+    <updated>2024-10-12T10:08:18.670Z</updated>
     
     
       
@@ -530,36 +557,6 @@
     <category term="算法" scheme="http://www.bx33661.com/tags/%E7%AE%97%E6%B3%95/"/>
     
     <category term="排序" scheme="http://www.bx33661.com/tags/%E6%8E%92%E5%BA%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>TpyeScript4-面向对象</title>
-    <link href="http://www.bx33661.com/1450d2fe.html"/>
-    <id>http://www.bx33661.com/1450d2fe.html</id>
-    <published>2024-09-24T13:49:48.000Z</published>
-    <updated>2024-09-25T02:05:39.075Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h1 id=&quot;Task4&quot;&gt;&lt;a href=&quot;#Task4&quot; class=&quot;headerlink&quot; title=&quot;Task4&quot;&gt;&lt;/a&gt;Task4&lt;/h1&gt;&lt;hr&gt;
-&lt;img</summary>
-        
-      
-    
-    
-    
-    <category term="TypeScript学习" scheme="http://www.bx33661.com/categories/TypeScript%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="TypeScript" scheme="http://www.bx33661.com/tags/TypeScript/"/>
-    
-    <category term="工程" scheme="http://www.bx33661.com/tags/%E5%B7%A5%E7%A8%8B/"/>
     
   </entry>
   
