@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-10-16T15:23:07.736Z</updated>
+  <updated>2024-10-18T08:32:11.439Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -17,11 +17,76 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>python-sys库</title>
+    <link href="http://www.bx33661.com/b0822412.html"/>
+    <id>http://www.bx33661.com/b0822412.html</id>
+    <published>2024-10-18T08:32:11.000Z</published>
+    <updated>2024-10-18T08:32:11.439Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>python-OS库</title>
+    <link href="http://www.bx33661.com/708747a7.html"/>
+    <id>http://www.bx33661.com/708747a7.html</id>
+    <published>2024-10-18T08:31:52.000Z</published>
+    <updated>2024-10-18T08:33:03.917Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h2 id=&quot;OS库&quot;&gt;&lt;a href=&quot;#OS库&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Python之路" scheme="http://www.bx33661.com/categories/Python%E4%B9%8B%E8%B7%AF/"/>
+    
+    
+    <category term="python" scheme="http://www.bx33661.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>函数装饰器</title>
+    <link href="http://www.bx33661.com/53298f4a.html"/>
+    <id>http://www.bx33661.com/53298f4a.html</id>
+    <published>2024-10-18T08:18:50.000Z</published>
+    <updated>2024-10-18T08:20:02.261Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;函数装饰器&quot;&gt;&lt;a href=&quot;#函数装饰器&quot; class=&quot;headerlink&quot; title=&quot;函数装饰器&quot;&gt;&lt;/a&gt;函数装饰器&lt;/h3&gt;&lt;p&gt;&lt;em&gt;以下内容由jupyter</summary>
+        
+      
+    
+    
+    
+    <category term="Python之路" scheme="http://www.bx33661.com/categories/Python%E4%B9%8B%E8%B7%AF/"/>
+    
+    
+    <category term="python" scheme="http://www.bx33661.com/tags/python/"/>
+    
+  </entry>
+  
+  <entry>
     <title>MD5问题总结</title>
     <link href="http://www.bx33661.com/ea2cd6a8.html"/>
     <id>http://www.bx33661.com/ea2cd6a8.html</id>
     <published>2024-10-16T15:21:58.000Z</published>
-    <updated>2024-10-16T15:23:07.736Z</updated>
+    <updated>2024-10-16T15:23:37.239Z</updated>
     
     
       
@@ -474,89 +539,6 @@
     <category term="llm" scheme="http://www.bx33661.com/tags/llm/"/>
     
     <category term="ai" scheme="http://www.bx33661.com/tags/ai/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>llm-universe-Task2 主流大模型SDK接入和prompt</title>
-    <link href="http://www.bx33661.com/c2bab8ad.html"/>
-    <id>http://www.bx33661.com/c2bab8ad.html</id>
-    <published>2024-09-25T02:11:47.000Z</published>
-    <updated>2024-09-25T02:17:41.607Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h1 id=&quot;Task-2&quot;&gt;&lt;a href=&quot;#Task-2&quot; class=&quot;headerlink&quot; title=&quot;Task 2&quot;&gt;&lt;/a&gt;Task 2&lt;/h1&gt;&lt;p&gt;&lt;img</summary>
-        
-      
-    
-    
-    
-    <category term="llm-universe" scheme="http://www.bx33661.com/categories/llm-universe/"/>
-    
-    
-    <category term="llm" scheme="http://www.bx33661.com/tags/llm/"/>
-    
-    <category term="ai" scheme="http://www.bx33661.com/tags/ai/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>llm-universe-Task1 基本认识和阿里云服务器配置</title>
-    <link href="http://www.bx33661.com/17c0a43b.html"/>
-    <id>http://www.bx33661.com/17c0a43b.html</id>
-    <published>2024-09-25T02:09:46.000Z</published>
-    <updated>2024-09-25T02:17:41.603Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h1 id=&quot;llm-universe-Part-one&quot;&gt;&lt;a href=&quot;#llm-universe-Part-one&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="llm-universe" scheme="http://www.bx33661.com/categories/llm-universe/"/>
-    
-    
-    <category term="llm" scheme="http://www.bx33661.com/tags/llm/"/>
-    
-    <category term="ai" scheme="http://www.bx33661.com/tags/ai/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>归并排序和快速排序解析</title>
-    <link href="http://www.bx33661.com/f7eebb5b.html"/>
-    <id>http://www.bx33661.com/f7eebb5b.html</id>
-    <published>2024-09-24T14:18:17.000Z</published>
-    <updated>2024-09-24T14:21:52.735Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;归并排序和快速排序解析&quot;&gt;&lt;a href=&quot;#归并排序和快速排序解析&quot; class=&quot;headerlink&quot; title=&quot;归并排序和快速排序解析&quot;&gt;&lt;/a&gt;归并排序和快速排序解析&lt;/h1&gt;&lt;h2 id=&quot;归并排序解析&quot;&gt;&lt;a href=&quot;#归并排序解析&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="算法" scheme="http://www.bx33661.com/tags/%E7%AE%97%E6%B3%95/"/>
-    
-    <category term="排序" scheme="http://www.bx33661.com/tags/%E6%8E%92%E5%BA%8F/"/>
     
   </entry>
   
