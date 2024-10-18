@@ -2,16 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://www.bx33661.com/708747a7.html</loc>
-    
-    <lastmod>2024-10-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.bx33661.com/41ecbb95.html</loc>
+    <loc>http://www.bx33661.com/53298f4a.html</loc>
     
     <lastmod>2024-10-18</lastmod>
     
@@ -29,7 +20,16 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/53298f4a.html</loc>
+    <loc>http://www.bx33661.com/708747a7.html</loc>
+    
+    <lastmod>2024-10-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/41ecbb95.html</loc>
     
     <lastmod>2024-10-18</lastmod>
     
@@ -405,14 +405,14 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/tags/ctfhub/</loc>
+    <loc>http://www.bx33661.com/tags/buuctf/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/tags/buuctf/</loc>
+    <loc>http://www.bx33661.com/tags/ctfhub/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -447,14 +447,14 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/tags/http/</loc>
+    <loc>http://www.bx33661.com/tags/%E8%BD%AF%E4%BB%B6/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/tags/%E8%BD%AF%E4%BB%B6/</loc>
+    <loc>http://www.bx33661.com/tags/http/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -496,13 +496,6 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/tags/jwt/</loc>
-    <lastmod>2024-10-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://www.bx33661.com/tags/llm/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -511,6 +504,13 @@
   
   <url>
     <loc>http://www.bx33661.com/tags/ai/</loc>
+    <lastmod>2024-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/jwt/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
