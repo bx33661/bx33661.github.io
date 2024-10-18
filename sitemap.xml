@@ -461,13 +461,6 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/tags/ssti/</loc>
-    <lastmod>2024-10-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://www.bx33661.com/tags/TypeScript/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
@@ -482,7 +475,7 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/tags/Linux/</loc>
+    <loc>http://www.bx33661.com/tags/ssti/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -496,7 +489,7 @@
   </url>
   
   <url>
-    <loc>http://www.bx33661.com/tags/hexo/</loc>
+    <loc>http://www.bx33661.com/tags/Linux/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -517,7 +510,21 @@
   </url>
   
   <url>
+    <loc>http://www.bx33661.com/tags/hexo/</loc>
+    <lastmod>2024-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://www.bx33661.com/tags/python/</loc>
+    <lastmod>2024-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://www.bx33661.com/tags/session/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -539,13 +546,6 @@
   
   <url>
     <loc>http://www.bx33661.com/tags/%E6%8E%92%E5%BA%8F/</loc>
-    <lastmod>2024-10-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://www.bx33661.com/tags/session/</loc>
     <lastmod>2024-10-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
