@@ -1,0 +1,427 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>数论以及RSA模拟 | BX同学</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/img/pwa/favicon.ico"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.10"><!-- inject head--><meta name="baidu-site-verification" content="codeva-itLzF8Efuq"><link rel="canonical" href="http://www.bx33661.com/144a6b12.html"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css"><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="数论以及模拟RSA[TOC] 基本学习欧拉定理如果 ( n ) 是一个正整数，且 ( a ) 是一个与 ( n ) 互质的整数，那么：$$a^{\phi(n)} \equiv 1 \pmod{n}$$其中$$\phi(n)$$是欧拉函数，表示小于 n 的正整数中与 n 互质的数的个数 费马小定"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="BX同学"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/img/pwa/favicon.ico"><link rel="apple-touch-icon" href="/img/pwa/favicon.ico" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.10' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2024-08-20 00:00:00',
+    lazyload: {
+        enable: false,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。"}},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "Early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: [],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: ture
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: {"mode":{"dark":"深色模式","light":"浅色模式"},"img_error":"此图片无法复制与下载","translate":{"translateDelay":0,"defaultEncoding":2}},
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false
+}</script><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="BX同学" type="application/atom+xml">
+</head><body id="body"><!-- universe--><canvas id="universe"></canvas><!-- background img--><!-- loading--><!-- console--><div id="console"><div class="close-btn" onclick="sco.hideConsole()"><i class="solitude fa-solid fa-xmark"></i></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments" onclick="sco.hideConsole()"><div class="card-content"><div class="author-content-item-tips">互动</div><div class="author-content-item-title">最新评论</div></div><div class="console_recentcomments"><script pjax>(async () => {
+    document.querySelector('.console-card .console_recentcomments').textContent = `加载中...`
+    const emojiReg = /<img class="tk-owo-emotion" [^>]+>/g
+    let cache = utils.saveToLocal.get('twikoo-recent-comments-console')
+    if (cache) {
+        setHtml(document.querySelector('.console-card .console_recentcomments'), cache)
+        return
+    }
+    let ls = []
+
+    await fetch('https://bx33661-twikoo.hf.space', {
+        method: "POST",
+        body: JSON.stringify({
+            "event": "GET_RECENT_COMMENTS",
+            "includeReply": true,
+            "pageSize": 6
+        }),
+        headers: {'Content-Type': 'application/json'}
+    }).then(res => res.json()).then(async ({data}) => {
+        for (const i of data) {
+            if (i.avatar === undefined) i.avatar = '/avatar/d615d5793929e8c7d70eab5f00f7f5f1?d=mp'
+            let title = ''
+            if (i.url) {
+                await fetch(i.url).then(res => res.text()).then(html => {
+                    const parser = new DOMParser()
+                    const doc = parser.parseFromString(html, 'text/html')
+                    title = doc.querySelector('title').innerText
+                }).catch(() => {
+                    title = i.url
+                })
+            }
+            if (title.indexOf('|') > 0) {
+                title = title.split('|')[0]
+            }
+            ls.push({
+                avatar: i.avatar,
+                nick: i.nick,
+                title: title,
+                content: i.comment,
+                url: i.url + '#' + i.id,
+                time: i.created
+            })
+        }
+        setHtml(document.querySelector('.console-card .console_recentcomments'), ls)
+        utils.saveToLocal.set('twikoo-recent-comments-console', ls, 0.2)
+    });
+
+    function setHtml(el, data) {
+        el.innerHTML = data.map(i => `
+            <div class="comment-card" title="${i.title}" onclick="pjax.loadUrl('${i.url}')">
+                <div class="comment-info">
+                    <img src="${i.avatar}" class="nolazyload" alt="${i.nick}">
+                    <div>
+                        <span class="comment-user">${i.nick}</span>
+                    </div>
+                    <time class="comment-time" datetime="${new Date(i.time)}"></time>
+                </div>
+                <div class="comment-content">${formatContent(i.content)}</div>
+                <div class="comment-title">
+                <i class="solitude fa-solid fa-comment"></i>
+                ${i.title}</div>
+            </div>
+        `).join('')
+        if (typeof sco !== 'undefined') sco.changeTimeFormat(document.querySelectorAll('.comment-time'))
+        else {
+            document.addEventListener('pjax:complete', () => sco.changeTimeFormat(document.querySelectorAll('.comment-time')))
+            document.addEventListener('DOMContentLoaded', () => sco.changeTimeFormat(document.querySelectorAll('.comment-time')))
+        }
+    }
+
+    function formatContent(content) {
+        content = content.replace(emojiReg, '表情')
+        content = content.replace(/<\/*br>|[\s\uFEFF\xA0]+/g, '');
+        content = content.replace(/<img.*?>/g, '[图片]');
+        content = content.replace(/<a.*?>.*?<\/a>/g, '[链接]');
+        content = content.replace(/<pre.*?>.*?<\/pre>/g, '[代码]');
+        content = content.replace(/<.*?>/g, '');
+        return content
+    }
+})()</script></div></div></div><div class="console-card-group-right"><div class="console-card tags" onclick="sco.hideConsole()"><div class="card-content"><div class="author-content-item-tips">标签</div><div class="author-content-item-title">寻找感兴趣的领域</div></div><div class="card-tag-cloud"><a href="/tags/ctf/">ctf<sup>17</sup></a><a href="/tags/ctfhub/">ctfhub<sup>3</sup></a><a href="/tags/git/">git<sup>2</sup></a><a href="/tags/buuctf/">buuctf<sup>2</sup></a><a href="/tags/ctfshow/">ctfshow<sup>4</sup></a><a href="/tags/md5/">md5<sup>2</sup></a><a href="/tags/php/">php<sup>1</sup></a><a href="/tags/%E8%BD%AF%E4%BB%B6/">软件<sup>2</sup></a><a href="/tags/http/">http<sup>2</sup></a><a href="/tags/ssti/">ssti<sup>1</sup></a><a href="/tags/TypeScript/">TypeScript<sup>5</sup></a><a href="/tags/%E5%B7%A5%E7%A8%8B/">工程<sup>5</sup></a><a href="/tags/Linux/">Linux<sup>1</sup></a><a href="/tags/jwt/">jwt<sup>1</sup></a><a href="/tags/llm/">llm<sup>6</sup></a><a href="/tags/ai/">ai<sup>6</sup></a><a href="/tags/hexo/">hexo<sup>1</sup></a><a href="/tags/python/">python<sup>2</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/">算法<sup>1</sup></a><a href="/tags/%E6%8E%92%E5%BA%8F/">排序<sup>1</sup></a><a href="/tags/session/">session<sup>1</sup></a><a href="/tags/PHP/">PHP<sup>1</sup></a><a href="/tags/AI/">AI<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a><a href="/tags/RSA/">RSA<sup>1</sup></a><a href="/tags/%E6%95%B0%E5%AD%A6/">数学<sup>1</sup></a></div></div><div class="console-card history" onclick="sco.hideConsole()"><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/10/"><span class="card-archive-list-date">2024/10</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">10</span><span class="card-archive-list-count-unit">篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/09/"><span class="card-archive-list-date">2024/09</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">23</span><span class="card-archive-list-count-unit">篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/08/"><span class="card-archive-list-date">2024/08</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">6</span><span class="card-archive-list-count-unit">篇</span></div></a></li></ul></div></div></div><div class="button-group"><div class="console-btn-item"><span class="darkmode_switchbutton" onclick="sco.switchDarkMode()" title="昼夜切换"><i class="solitude fa-solid fa-circle-half-stroke"></i></span></div><div class="console-btn-item" id="consoleHideAside"><span class="asideSwitch" onclick="sco.switchHideAside()" title="边栏显示控制"><i class="solitude fa-solid fa-mattress-pillow"></i></span></div></div><div class="console-mask" onclick="sco.hideConsole()"></div></div><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">39</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">26</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">project</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" title="Solitude"><img class="nolazyload back-menu-item-icon" src="/img/pwa/favicon.ico" alt="Solitude"><span class="back-menu-item-text">Solitude</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/bx33661/Note" title="BX_Note"><img class="nolazyload back-menu-item-icon" src="/img/pwa/logo.png" alt="BX_Note"><span class="back-menu-item-text">BX_Note</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/%E6%96%87%E7%AB%A0/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/%E5%88%86%E7%B1%BB/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/%E6%A0%87%E7%AD%BE/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/ctf/">ctf<sup>17</sup></a><a href="/tags/ctfhub/">ctfhub<sup>3</sup></a><a href="/tags/git/">git<sup>2</sup></a><a href="/tags/buuctf/">buuctf<sup>2</sup></a><a href="/tags/ctfshow/">ctfshow<sup>4</sup></a><a href="/tags/md5/">md5<sup>2</sup></a><a href="/tags/php/">php<sup>1</sup></a><a href="/tags/%E8%BD%AF%E4%BB%B6/">软件<sup>2</sup></a><a href="/tags/http/">http<sup>2</sup></a><a href="/tags/ssti/">ssti<sup>1</sup></a><a href="/tags/TypeScript/">TypeScript<sup>5</sup></a><a href="/tags/%E5%B7%A5%E7%A8%8B/">工程<sup>5</sup></a><a href="/tags/Linux/">Linux<sup>1</sup></a><a href="/tags/jwt/">jwt<sup>1</sup></a><a href="/tags/llm/">llm<sup>6</sup></a><a href="/tags/ai/">ai<sup>6</sup></a><a href="/tags/hexo/">hexo<sup>1</sup></a><a href="/tags/python/">python<sup>2</sup></a><a href="/tags/%E7%AE%97%E6%B3%95/">算法<sup>1</sup></a><a href="/tags/%E6%8E%92%E5%BA%8F/">排序<sup>1</sup></a><a href="/tags/session/">session<sup>1</sup></a><a href="/tags/PHP/">PHP<sup>1</sup></a><a href="/tags/AI/">AI<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a><a href="/tags/RSA/">RSA<sup>1</sup></a><a href="/tags/%E6%95%B0%E5%AD%A6/">数学<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><div class="back-home-button" tabindex="-1"><i class="back-home-button-icon solitude fab fa-squarespace"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">project</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" title="Solitude"><img class="nolazyload back-menu-item-icon" src="/img/pwa/favicon.ico" alt="Solitude"><span class="back-menu-item-text">Solitude</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/bx33661/Note" title="BX_Note"><img class="nolazyload back-menu-item-icon" src="/img/pwa/logo.png" alt="BX_Note"><span class="back-menu-item-text">BX_Note</span></a></div></div></div></div><a id="site-name" href="/" title="返回博客主页"><span class="title">BX33661</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">数论以及RSA模拟</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/%E6%96%87%E7%AB%A0/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/%E5%88%86%E7%B1%BB/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/%E6%A0%87%E7%AD%BE/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机一篇文章" href="javascript:void(0);"><i class="solitude fa-solid fa-dice-d6"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="nav-console"><a class="console_switchbutton" onclick="sco.showConsole()" title="中控台" href="javascript:void(0);"><label><i class="left"></i><i class="center"></i><i class="right"></i></label></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="/img/default7.jpg" alt="数论以及RSA模拟"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/RSA/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>RSA</span></a><a class="post-meta__tags" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>数学</span></a></div></div></div></div><h1 class="post-title">数论以及RSA模拟</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-date" title="发布于 2024-10-19 11:53:29"><i class="post-meta-icon solitude fa-solid fa-calendar-days"></i><time datetime="2024-10-19T03:53:29.000Z">2024-10-19T03:53:29.000Z</time></span><span class="post-meta-date" title="最后更新于 2024-10-20 11:51:54"><i class="post-meta-icon solitude fa-solid fa-arrow-rotate-right"></i><time datetime="2024-10-20T03:51:54.523Z">2024-10-20T03:51:54.523Z</time></span><span class="post-meta-wordcount"><i class="post-meta-icon solitude fa-solid fa-file-word" title="文章字数"></i><span class="word-count">2.3k</span><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><meta name="referrer" content="no-referrer">
+
+<h1 id="数论以及模拟RSA"><a href="#数论以及模拟RSA" class="headerlink" title="数论以及模拟RSA"></a>数论以及模拟RSA</h1><p>[TOC]</p>
+<h2 id="基本学习"><a href="#基本学习" class="headerlink" title="基本学习"></a>基本学习</h2><h3 id="欧拉定理"><a href="#欧拉定理" class="headerlink" title="欧拉定理"></a>欧拉定理</h3><p>如果 ( n ) 是一个正整数，且 ( a ) 是一个与 ( n ) 互质的整数，那么：<br>$$<br>a^{\phi(n)} \equiv 1 \pmod{n}<br>$$<br>其中<br>$$<br>\phi(n)<br>$$<br>是欧拉函数，表示小于 n 的正整数中与  n 互质的数的个数</p>
+<h3 id="费马小定理"><a href="#费马小定理" class="headerlink" title="费马小定理"></a>费马小定理</h3><p>如果p是一个素数，且 a是一个整数，且a不被p整除（即a和p互质），那么：<br>$$<br>a^{p-1} \equiv 1 \pmod{p}<br>$$</p>
+<h3 id="快速幂算法"><a href="#快速幂算法" class="headerlink" title="快速幂算法"></a>快速幂算法</h3><p>速幂算法（也称为“二进制指数算法”或“平方乘法算法”）是一种高效计算<br>$$<br>a^{b} \pmod{m}<br>$$<br>的算法。该算法通过将指数 b 转换为二进制表示，并利用平方和乘法操作，将计算复杂度从线性降低到对数级别</p>
+<ul>
+<li><strong>将指数 b转为二进制</strong>：</li>
+</ul>
+<p>$$<br>b_k b_{k-1} \cdots b_1 b_0<br>$$</p>
+<ul>
+<li><strong>初始化结果</strong>：</li>
+</ul>
+<p>$$<br>\text{result} &#x3D; 1<br>$$</p>
+<p>$$<br>\text{result} &#x3D; (\text{result} \times \text{result}) \mod m<br>\text{result} &#x3D; (\text{result} \times a) \mod m<br>$$</p>
+<p>$$<br>b &#x3D; 1101_2<br>\text{result} &#x3D; (1 \times 3) \mod 11 &#x3D; 3<br>\text{base} &#x3D; (3 \times 3) \mod 11 &#x3D; 9<br>b &#x3D; 110_2<br>b &#x3D; 110_2<br>\text{base} &#x3D; (9 \times 9) \mod 11 &#x3D; 4<br>b &#x3D; 11_2<br>\text{result} &#x3D; (3 \times 4) \mod 11 &#x3D; 12 \mod 11 &#x3D; 1<br>\text{base} &#x3D; (4 \times 4) \mod 11 &#x3D; 16 \mod 11 &#x3D; 5<br>b &#x3D; 1_2<br>\text{result} &#x3D; (1 \times 5) \mod 11 &#x3D; 5<br>\text{base} &#x3D; (5 \times 5) \mod 11 &#x3D; 25 \mod 11 &#x3D; 3<br>b &#x3D; 0_2<br>$$</p>
+<h3 id="Wilson定理"><a href="#Wilson定理" class="headerlink" title="Wilson定理"></a>Wilson定理</h3><p>如果  是一个素数，那么：<br>$$<br>(p-1)! \equiv -1 \pmod{p}<br>$$<br>反过来，如果n 是一个大于 1 的正整数，并且：<br>$$<br>(n-1)! \equiv -1 \pmod{n}<br>$$</p>
+<p>那么n  一定是素数。</p>
+<h3 id="模逆元："><a href="#模逆元：" class="headerlink" title="模逆元："></a>模逆元：</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>对于给定的整数 ( a ) 和模数 ( m )，如果存在一个整数 ( b ) 满足以下条件：<br>$$<br>a \times b \equiv 1 \pmod{m} <br>$$<br>则称 ( b ) 是 ( a ) 模 ( m ) 的逆元，计为<br>$$<br>a^{-1}\equiv b\pmod{m}<br>$$<br> (b)是一个整数,使得(a)  乘以 (b) 再取模(m)  后的结果为 1。</p>
+<p><code>Python</code> 实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mod_inverse</span>(<span class="params">a, m</span>):</span><br><span class="line">    m0, x0, x1 = m, <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> m == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> a &gt; <span class="number">1</span>:</span><br><span class="line">        q = a // m</span><br><span class="line">        m, a = a % m, m</span><br><span class="line">        x0, x1 = x1 - q * x0, x0</span><br><span class="line">    <span class="keyword">if</span> x1 &lt; <span class="number">0</span>:</span><br><span class="line">        x1 += m0</span><br><span class="line">    <span class="keyword">return</span> x1</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p><strong>基本情况</strong>：<br>$$<br>\gcd(3, 11) &#x3D; 1<br>$$</p>
+</li>
+<li><p><strong>递归步骤</strong>：<br>$$<br>11 &#x3D; 3 \times 3 + 2 \quad \Rightarrow \quad \gcd(3, 2)<br>3 &#x3D; 2 \times 1 + 1 \quad \Rightarrow \quad \gcd(2, 1)<br>2 &#x3D; 1 \times 2 + 0 \quad \Rightarrow \quad \gcd(1, 0) &#x3D; 1<br>$$</p>
+</li>
+<li><p><strong>回溯</strong>：<br>$$<br>1 &#x3D; 3 - 2 \times 1<br>$$</p>
+<p>$$<br>2 &#x3D; 11 - 3 \times 3<br>$$</p>
+<p>代入上式：<br>$$<br>1 &#x3D; 3 - (11 - 3 \times 3) \times 1<br>$$</p>
+<p>$$<br>1 &#x3D; 3 - 11 + 3 \times 3<br>$$</p>
+<p>$$<br>1 &#x3D; 3 \times 4 - 11<br>$$</p>
+<p>因此，x &#x3D; 4  是 ( 3 ) 模 ( 11 ) 的逆元。</p>
+</li>
+<li><p><strong>验证</strong>：<br>$$<br>3 \times 4 &#x3D; 12 \equiv 1 \pmod{11}<br>$$</p>
+</li>
+</ol>
+<p>所以，( 3 ) 模 ( 11 ) 的逆元是 ( 4 )。</p>
+<h4 id="使用快速幂算法"><a href="#使用快速幂算法" class="headerlink" title="使用快速幂算法"></a>使用快速幂算法</h4><p>假设我们要计算 ( 3 ) 模 ( 11 ) 的逆元，且 ( 11 ) 是一个素数。</p>
+<ol>
+<li><p><strong>使用费马小定理</strong>：<br>$$<br>3^{11-2} \equiv 3^9 \pmod{11}<br>$$</p>
+</li>
+<li><p><strong>快速幂算法</strong>：<br>$$<br>3^9 &#x3D; 3 \times (3^4)^2<br>$$</p>
+</li>
+</ol>
+<p>$$<br>3^2 &#x3D; 9<br>$$</p>
+<p>$$<br>3^4 &#x3D; 9^2 &#x3D; 81 \equiv 4 \pmod{11}<br>$$</p>
+<p>$$<br>3^8 &#x3D; 4^2 &#x3D; 16 \equiv 5 \pmod{11}<br>$$</p>
+<p>$$<br>3^9 &#x3D; 3 \times 5 &#x3D; 15 \equiv 4 \pmod{11}<br>$$</p>
+<p>所以，( 3 ) 模 ( 11 ) 的逆元是 ( 4 )。</p>
+<h3 id="扩展欧几里得算法（贝祖等式）"><a href="#扩展欧几里得算法（贝祖等式）" class="headerlink" title="扩展欧几里得算法（贝祖等式）"></a>扩展欧几里得算法（贝祖等式）</h3><p>$$<br>ax + by &#x3D; \text{gcd}(a, b)<br>$$</p>
+<p><strong>算法流程：</strong></p>
+<ol>
+<li><p>基本情况：如果 ( b &#x3D; 0 )，则<br>$$<br>{gcd}(a, b) &#x3D; a，<br>$$<br>此时 x &#x3D; 1, y &#x3D; 0 ,因为<br>$$<br> a \times 1 + b \times 0 &#x3D; a<br>$$</p>
+</li>
+<li><p>递归步骤：如果b!&#x3D;0 ，递归地计算gcd(b,a%b)  以及相应的  x’和y’</p>
+</li>
+<li><p>更新x和y：根据递归返回的结果，更新  x 和  y 的值。具体来说，如果:<br>$$<br>ax’ + by’ &#x3D; \text{gcd}(a, b)<br>$$<br>则可以通过以下方式更新  x 和  y ：<br>$$<br>x &#x3D; y’,<br>y &#x3D; x’ - \left\lfloor \frac{a}{b} \right\rfloor \times y’<br>$$</p>
+<p>其中,[a&#x2F;b]表示  a 除以  b 的商（向下取整）。</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#python</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">extended_gcd</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="comment">#终止递归的条件</span></span><br><span class="line">    <span class="keyword">if</span> b == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> a, <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        gcd, x1, y1 = extended_gcd(b, a % b)</span><br><span class="line">        x = y1</span><br><span class="line">        y = x1 - (a // b) * y1</span><br><span class="line">        <span class="keyword">return</span> gcd, x, y</span><br><span class="line"></span><br><span class="line">sys.stdout.reconfigure(encoding=<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line"><span class="comment"># 示例</span></span><br><span class="line">a = <span class="number">35</span></span><br><span class="line">b = <span class="number">15</span></span><br><span class="line">gcd, x, y = extended_gcd(a, b)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;对于 a = <span class="subst">&#123;a&#125;</span> 和 b = <span class="subst">&#123;b&#125;</span>:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;最大公约数 gcd = <span class="subst">&#123;gcd&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;x = <span class="subst">&#123;x&#125;</span>, y = <span class="subst">&#123;y&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;验证: <span class="subst">&#123;a&#125;</span> * <span class="subst">&#123;x&#125;</span> + <span class="subst">&#123;b&#125;</span> * <span class="subst">&#123;y&#125;</span> = <span class="subst">&#123;gcd&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出结果如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">对于 a = <span class="number">35</span> 和 b = <span class="number">15</span>:</span><br><span class="line">最大公约数 gcd = <span class="number">5</span></span><br><span class="line">x = <span class="number">1</span>, y = -<span class="number">2</span></span><br><span class="line">验证: <span class="number">35</span> * <span class="number">1</span> + <span class="number">15</span> * -<span class="number">2</span> = <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<p>我们可以手工走一遍：</p>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/image-20241017101923620.png" alt="image-20241017101923620"></p>
+<p><img src="https://gitee.com/bx33661/image/raw/master/path/image-20241017101945677.png" alt="image-20241017101945677"></p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h3 id="使用方法："><a href="#使用方法：" class="headerlink" title="使用方法："></a>使用方法：</h3><ul>
+<li>运行代码后，会生成一个256位的RSA密钥对，并使用该密钥对对消息进行加密和解密。</li>
+<li>你可以调整 <code>key_size</code> 来增加或减少密钥的长度，从而影响安全性。</li>
+</ul>
+<h3 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h3><ul>
+<li>这个实现是一个简单的演示，不适合用于生产环境。实际应用中，RSA密钥长度通常为2048位或更高，并且需要处理更大的整数和更复杂的数学运算。</li>
+<li>在实际应用中，建议使用成熟的加密库（如<code>cryptography</code>）来处理RSA加密。</li>
+</ul>
+<p>运行结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Public Key: (2459061735167995563465226723142653612310725461667945402049490894306966926731, 2665407292140973978164142669121776922665974332724182091598737802804110690709)</span><br><span class="line">Private Key: (580140555277896844331256081646360671964456059651682932657357893332173884731, 2665407292140973978164142669121776922665974332724182091598737802804110690709)</span><br><span class="line">Encrypted Message: [1356958432366854625286857949848651283278738137746020091692418120871064638932, 2566817238945006870263995080398546562259537248112185122539650799857645495497, 94020645424703033028072100951405324830958086683584293644281034610245758627, 94020645424703033028072100951405324830958086683584293644281034610245758627, 1254999537848042891783949322892667564555404546071350168894758477931258073917, 1426135808129362040823613826171319239505160094798465024226262396284953604521, 1735094508227161135588622429284914867503543817303312380466189282102905999578, 2045279851726961009490112015282195629450008859390589847568963730503736277669, 1221782813198555949831227667767468799746921459936094448738075607033628322516, 408502188591225994531006270715965822323909574962389570310653988200770569721, 316417480868069060835295522079761899086620529124026657855926822606017637984]</span><br><span class="line">Decrypted Message: Hello, RSA!</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="RSA算法模拟"><a href="#RSA算法模拟" class="headerlink" title="RSA算法模拟"></a>RSA算法模拟</h2><h3 id="Python实现"><a href="#Python实现" class="headerlink" title="Python实现"></a>Python实现</h3><p>RSA（Rivest-Shamir-Adleman）是一种非对称加密算法，广泛用于加密和数字签名。下面是一个简单的Python实现，展示了RSA算法的基本原理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gcd</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="keyword">while</span> b != <span class="number">0</span>:</span><br><span class="line">        a, b = b, a % b</span><br><span class="line">    <span class="keyword">return</span> a</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mod_inverse</span>(<span class="params">a, m</span>):</span><br><span class="line">    m0, x0, x1 = m, <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> m == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> a &gt; <span class="number">1</span>:</span><br><span class="line">        q = a // m</span><br><span class="line">        m, a = a % m, m</span><br><span class="line">        x0, x1 = x1 - q * x0, x0</span><br><span class="line">    <span class="keyword">if</span> x1 &lt; <span class="number">0</span>:</span><br><span class="line">        x1 += m0</span><br><span class="line">    <span class="keyword">return</span> x1</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">is_prime</span>(<span class="params">n, k=<span class="number">5</span></span>):</span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Miller-Rabin primality test</span></span><br><span class="line">    r, d = <span class="number">0</span>, n - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> d % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">        d //= <span class="number">2</span></span><br><span class="line">        r += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(k):</span><br><span class="line">        a = random.randint(<span class="number">2</span>, n - <span class="number">2</span>)</span><br><span class="line">        x = <span class="built_in">pow</span>(a, d, n)</span><br><span class="line">        <span class="keyword">if</span> x == <span class="number">1</span> <span class="keyword">or</span> x == n - <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(r - <span class="number">1</span>):</span><br><span class="line">            x = <span class="built_in">pow</span>(x, <span class="number">2</span>, n)</span><br><span class="line">            <span class="keyword">if</span> x == n - <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_prime</span>(<span class="params">bits</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        p = random.getrandbits(bits)</span><br><span class="line">        <span class="keyword">if</span> is_prime(p):</span><br><span class="line">            <span class="keyword">return</span> p</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_keypair</span>(<span class="params">key_size</span>):</span><br><span class="line">    p = generate_prime(key_size // <span class="number">2</span>)</span><br><span class="line">    q = generate_prime(key_size // <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    n = p * q</span><br><span class="line">    phi = (p - <span class="number">1</span>) * (q - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Choose an integer e such that e and phi(n) are coprime</span></span><br><span class="line">    e = random.randrange(<span class="number">1</span>, phi)</span><br><span class="line">    <span class="keyword">while</span> gcd(e, phi) != <span class="number">1</span>:</span><br><span class="line">        e = random.randrange(<span class="number">1</span>, phi)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Compute the modular inverse of e</span></span><br><span class="line">    d = mod_inverse(e, phi)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ((e, n), (d, n))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encrypt</span>(<span class="params">public_key, plaintext</span>):</span><br><span class="line">    e, n = public_key</span><br><span class="line">    <span class="keyword">return</span> [<span class="built_in">pow</span>(<span class="built_in">ord</span>(char), e, n) <span class="keyword">for</span> char <span class="keyword">in</span> plaintext]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">private_key, ciphertext</span>):</span><br><span class="line">    d, n = private_key</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(<span class="built_in">chr</span>(<span class="built_in">pow</span>(char, d, n)) <span class="keyword">for</span> char <span class="keyword">in</span> ciphertext)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    key_size = <span class="number">256</span>  <span class="comment"># You can adjust the key size for security</span></span><br><span class="line">    public_key, private_key = generate_keypair(key_size)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Public Key: <span class="subst">&#123;public_key&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Private Key: <span class="subst">&#123;private_key&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    message = <span class="string">&quot;Hello, RSA!&quot;</span></span><br><span class="line">    encrypted_message = encrypt(public_key, message)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Encrypted Message: <span class="subst">&#123;encrypted_message&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    decrypted_message = decrypt(private_key, encrypted_message)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Decrypted Message: <span class="subst">&#123;decrypted_message&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>代码说明：</p>
+<ol>
+<li><strong>gcd(a, b)</strong>: 计算两个数的最大公约数。</li>
+<li><strong>mod_inverse(a, m)</strong>: 计算模逆元，即找到一个数 <code>x</code> 使得 <code>(a * x) % m = 1</code>。</li>
+<li><strong>is_prime(n)</strong>: 使用Miller-Rabin素性测试来判断一个数是否为素数。</li>
+<li><strong>generate_prime(bits)</strong>: 生成一个指定比特长度的素数。</li>
+<li><strong>generate_keypair(key_size)</strong>: 生成RSA密钥对，包括公钥和私钥。</li>
+<li><strong>encrypt(public_key, plaintext)</strong>: 使用公钥加密明文。</li>
+<li><strong>decrypt(private_key, ciphertext)</strong>: 使用私钥解密密文。</li>
+</ol>
+<h3 id="RSA原理"><a href="#RSA原理" class="headerlink" title="RSA原理"></a>RSA原理</h3><p>RSA（Rivest-Shamir-Adleman）是一种非对称加密算法，广泛用于加密和数字签名。它的安全性基于大整数分解的困难性。下面是RSA算法的详细原理：</p>
+<h3 id="1-密钥生成"><a href="#1-密钥生成" class="headerlink" title="1. 密钥生成"></a>1. 密钥生成</h3><p>RSA算法的第一步是生成公钥和私钥。具体步骤如下：</p>
+<h4 id="1-1-选择两个大素数-p-和-q"><a href="#1-1-选择两个大素数-p-和-q" class="headerlink" title="1.1 选择两个大素数 p 和 q"></a>1.1 选择两个大素数 <code>p</code> 和 <code>q</code></h4><p>选择两个大素数 <code>p</code> 和 <code>q</code>。这两个素数越大，RSA算法越安全，但计算开销也越大。</p>
+<h4 id="1-2-计算-n"><a href="#1-2-计算-n" class="headerlink" title="1.2 计算 n"></a>1.2 计算 <code>n</code></h4><p>计算 <code>n = p * q</code>。<code>n</code> 是公钥和私钥的模数。</p>
+<h4 id="1-3-计算欧拉函数-φ-n"><a href="#1-3-计算欧拉函数-φ-n" class="headerlink" title="1.3 计算欧拉函数 φ(n)"></a>1.3 计算欧拉函数 <code>φ(n)</code></h4><p>欧拉函数 <code>φ(n)</code> 表示小于 <code>n</code> 且与 <code>n</code> 互质的正整数的个数。对于两个素数 <code>p</code> 和 <code>q</code>，有：<br>[ φ(n) &#x3D; (p - 1) * (q - 1) ]</p>
+<h4 id="1-4-选择公钥-e"><a href="#1-4-选择公钥-e" class="headerlink" title="1.4 选择公钥 e"></a>1.4 选择公钥 <code>e</code></h4><p>选择一个整数 <code>e</code>，使得 <code>1 &lt; e &lt; φ(n)</code>，并且 <code>e</code> 与 <code>φ(n)</code> 互质（即 <code>gcd(e, φ(n)) = 1</code>）。通常选择 <code>e = 65537</code>，因为它是一个常用的素数，且计算效率较高。</p>
+<h4 id="1-5-计算私钥-d"><a href="#1-5-计算私钥-d" class="headerlink" title="1.5 计算私钥 d"></a>1.5 计算私钥 <code>d</code></h4><p>计算 <code>d</code>，使得 <code>d</code> 是 <code>e</code> 对 <code>φ(n)</code> 的模逆元，即：<br>[ d * e ≡ 1 \mod φ(n) ]<br>这意味着存在一个整数 <code>k</code>，使得：<br>[ d &#x3D; (1 + k * φ(n)) &#x2F; e ]</p>
+<h3 id="2-加密"><a href="#2-加密" class="headerlink" title="2. 加密"></a>2. 加密</h3><p>假设要加密的消息是 <code>m</code>，加密过程如下：</p>
+<h4 id="2-1-使用公钥-e-n-加密"><a href="#2-1-使用公钥-e-n-加密" class="headerlink" title="2.1 使用公钥 (e, n) 加密"></a>2.1 使用公钥 <code>(e, n)</code> 加密</h4><p>加密公式为：<br>[ c &#x3D; m^e \mod n ]<br>其中 <code>c</code> 是加密后的密文。</p>
+<h3 id="3-解密"><a href="#3-解密" class="headerlink" title="3. 解密"></a>3. 解密</h3><p>假设接收到的密文是 <code>c</code>，解密过程如下：</p>
+<h4 id="3-1-使用私钥-d-n-解密"><a href="#3-1-使用私钥-d-n-解密" class="headerlink" title="3.1 使用私钥 (d, n) 解密"></a>3.1 使用私钥 <code>(d, n)</code> 解密</h4><p>解密公式为：<br>[ m &#x3D; c^d \mod n ]<br>其中 <code>m</code> 是解密后的明文。</p>
+<h3 id="4-数学原理"><a href="#4-数学原理" class="headerlink" title="4. 数学原理"></a>4. 数学原理</h3><p>RSA算法的安全性基于大整数分解的困难性。具体来说，如果攻击者能够分解 <code>n</code> 得到 <code>p</code> 和 <code>q</code>，那么他就可以计算出 <code>φ(n)</code>，进而计算出私钥 <code>d</code>。然而，对于足够大的 <code>n</code>，分解 <code>n</code> 是非常困难的，因此RSA算法是安全的。</p>
+<h3 id="5-数字签名"><a href="#5-数字签名" class="headerlink" title="5. 数字签名"></a>5. 数字签名</h3><p>RSA算法还可以用于数字签名。具体步骤如下：</p>
+<h4 id="5-1-签名"><a href="#5-1-签名" class="headerlink" title="5.1 签名"></a>5.1 签名</h4><p>使用私钥 <code>(d, n)</code> 对消息 <code>m</code> 进行签名：<br>[ s &#x3D; m^d \mod n ]<br>其中 <code>s</code> 是签名。</p>
+<h4 id="5-2-验证签名"><a href="#5-2-验证签名" class="headerlink" title="5.2 验证签名"></a>5.2 验证签名</h4><p>使用公钥 <code>(e, n)</code> 对签名 <code>s</code> 进行验证：<br>[ m’ &#x3D; s^e \mod n ]<br>如果 <code>m&#39;</code> 等于原始消息 <code>m</code>，则签名有效。</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="/img/pwa/favicon.ico"></a><div class="post-copyright__author_name">BX同学</div><div class="post-copyright__author_desc">bx33661 blog</div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="social-share"><a class="social-share-ico icon-qq" target="_blank" rel="noopener" href="https://connect.qq.com/widget/shareqq/index.html?url=http%3A%2F%2Fwww.bx33661.com%2F144a6b12.html&amp;title=%E6%95%B0%E8%AE%BA%E4%BB%A5%E5%8F%8ARSA%E6%A8%A1%E6%8B%9F&amp;desc=undefined&amp;summary=undefined&amp;site=%E6%95%B0%E8%AE%BA%E4%BB%A5%E5%8F%8ARSA%E6%A8%A1%E6%8B%9F&amp;pics=%2Fimg%2Fdefault7.jpg" title="分享到QQ"><i class="solitude fab fa-qq"></i></a><a class="social-share-ico icon-weibo" target="_blank" rel="noopener" href="http://service.weibo.com/share/share.php?url=http%3A%2F%2Fwww.bx33661.com%2F144a6b12.html&amp;title=%E6%95%B0%E8%AE%BA%E4%BB%A5%E5%8F%8ARSA%E6%A8%A1%E6%8B%9F&amp;pic=%2Fimg%2Fdefault7.jpg" title="分享到微博"><i class="solitude fab fa-weibo"></i></a><a class="social-share-ico icon-twitter" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url=http%3A%2F%2Fwww.bx33661.com%2F144a6b12.html&amp;text=%E6%95%B0%E8%AE%BA%E4%BB%A5%E5%8F%8ARSA%E6%A8%A1%E6%8B%9F" title="分享到Twitter"><i class="solitude fab fa-twitter"></i></a><div class="social-share-ico icon-link" onclick="utils.copy(&quot;http://www.bx33661.com/144a6b12.html&quot;)" title="复制文章链接"><i class="solitude fas fa-link"></i></div><div class="social-share-ico icon-qrcode" title="使用手机扫码阅读这篇文章"><i class="solitude fas fa-qrcode"></i><div class="share-main"><div class="share-main-all"><div id="qrcode"></div><div class="reward-dec">使用手机扫码阅读这篇文章</div></div></div><script pjax>typeof QRCode === 'function' && new QRCode(document.getElementById("qrcode"), 'http://www.bx33661.com/144a6b12.html');
+window.addEventListener('DOMContentLoaded', () => {
+    new QRCode(document.getElementById("qrcode"), 'http://www.bx33661.com/144a6b12.html');
+});
+</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">BX同学</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/RSA/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>RSA<span class="tagsPageCount">1</span></span></a><a class="post-meta__tags" href="/tags/%E6%95%B0%E5%AD%A6/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>数学<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="next-post pull-full"><a href="/b0822412.html"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">python-sys库</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span></div></div><div class="comment-wrap"><div id="twikoo-wrap"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="/img/11234.jpg"></div><div class="author-info__description_group"><div class="author-info__description">这是我的博客 / This is my Blog</div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">bx33661</div><div class="author-info__desc">bx33661 blog</div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/bx33661" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://space.bilibili.com/456823546" title="E-mail"><i class="solitude  fab fa-bilibili"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://x.com/BX33666" title="X"><i class="solitude  fab fa-x-twitter"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E8%AE%BA%E4%BB%A5%E5%8F%8A%E6%A8%A1%E6%8B%9FRSA"><span class="toc-text">数论以及模拟RSA</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%AD%A6%E4%B9%A0"><span class="toc-text">基本学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AC%A7%E6%8B%89%E5%AE%9A%E7%90%86"><span class="toc-text">欧拉定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%B9%E9%A9%AC%E5%B0%8F%E5%AE%9A%E7%90%86"><span class="toc-text">费马小定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%B9%82%E7%AE%97%E6%B3%95"><span class="toc-text">快速幂算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wilson%E5%AE%9A%E7%90%86"><span class="toc-text">Wilson定理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E9%80%86%E5%85%83%EF%BC%9A"><span class="toc-text">模逆元：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%BF%AB%E9%80%9F%E5%B9%82%E7%AE%97%E6%B3%95"><span class="toc-text">使用快速幂算法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95%EF%BC%88%E8%B4%9D%E7%A5%96%E7%AD%89%E5%BC%8F%EF%BC%89"><span class="toc-text">扩展欧几里得算法（贝祖等式）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-text">使用方法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%EF%BC%9A"><span class="toc-text">注意：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RSA%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F"><span class="toc-text">RSA算法模拟</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Python%E5%AE%9E%E7%8E%B0"><span class="toc-text">Python实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RSA%E5%8E%9F%E7%90%86"><span class="toc-text">RSA原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AF%86%E9%92%A5%E7%94%9F%E6%88%90"><span class="toc-text">1. 密钥生成</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E9%80%89%E6%8B%A9%E4%B8%A4%E4%B8%AA%E5%A4%A7%E7%B4%A0%E6%95%B0-p-%E5%92%8C-q"><span class="toc-text">1.1 选择两个大素数 p 和 q</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E8%AE%A1%E7%AE%97-n"><span class="toc-text">1.2 计算 n</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E8%AE%A1%E7%AE%97%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0-%CF%86-n"><span class="toc-text">1.3 计算欧拉函数 φ(n)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-%E9%80%89%E6%8B%A9%E5%85%AC%E9%92%A5-e"><span class="toc-text">1.4 选择公钥 e</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-%E8%AE%A1%E7%AE%97%E7%A7%81%E9%92%A5-d"><span class="toc-text">1.5 计算私钥 d</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8A%A0%E5%AF%86"><span class="toc-text">2. 加密</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E4%BD%BF%E7%94%A8%E5%85%AC%E9%92%A5-e-n-%E5%8A%A0%E5%AF%86"><span class="toc-text">2.1 使用公钥 (e, n) 加密</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%A7%A3%E5%AF%86"><span class="toc-text">3. 解密</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E4%BD%BF%E7%94%A8%E7%A7%81%E9%92%A5-d-n-%E8%A7%A3%E5%AF%86"><span class="toc-text">3.1 使用私钥 (d, n) 解密</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%95%B0%E5%AD%A6%E5%8E%9F%E7%90%86"><span class="toc-text">4. 数学原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="toc-text">5. 数字签名</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-%E7%AD%BE%E5%90%8D"><span class="toc-text">5.1 签名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-%E9%AA%8C%E8%AF%81%E7%AD%BE%E5%90%8D"><span class="toc-text">5.2 验证签名</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/144a6b12.html" title="数论以及RSA模拟"><img alt="数论以及RSA模拟" src="/img/default7.jpg"></a><div class="content"><span class="title" href="/144a6b12.html" title="数论以及RSA模拟">数论以及RSA模拟</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/b0822412.html" title="python-sys库"><img alt="python-sys库" src="/img/default12.jpg"></a><div class="content"><span class="title" href="/b0822412.html" title="python-sys库">python-sys库</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/708747a7.html" title="python-OS库"><img alt="python-OS库" src="/img/default8.jpg"></a><div class="content"><span class="title" href="/708747a7.html" title="python-OS库">python-OS库</span><span class="article-recent_post_categories" href="/708747a7.html">Python之路</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/53298f4a.html" title="函数装饰器"><img alt="函数装饰器" src="/img/default6.jpg"></a><div class="content"><span class="title" href="/53298f4a.html" title="函数装饰器">函数装饰器</span><span class="article-recent_post_categories" href="/53298f4a.html">Python之路</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/ea2cd6a8.html" title="MD5问题总结"><img alt="MD5问题总结" src="/img/default12.jpg"></a><div class="content"><span class="title" href="/ea2cd6a8.html" title="MD5问题总结">MD5问题总结</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/bx33661" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:bx33661@gmail.com" title="Mail"><i class="solitude  fab fa-envelope"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2024 By&nbsp;<a class="footer-bar-link" href="/">bx33661</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Theme">Theme</a></div></div></div></footer></div><!-- right_menu--><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="solitude fa-solid fa-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="solitude fa-solid fa-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="solitude fa-solid fa-arrow-rotate-right"></i></div><div class="rightMenu-item" id="menu-top"><i class="solitude fa-solid fa-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="solitude fa-solid fa-clone"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="solitude fa-solid fa-clipboard"></i><span>粘贴文本</span></div><div class="rightMenu-item" id="menu-commenttext"><i class="solitude fa-solid fa-comment-medical"></i><span>引用到评论</span></div><div class="rightMenu-item" id="menu-newwindow"><i class="solitude fa-regular fa-window-maximize"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="solitude fa-solid fa-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="solitude fa-solid fa-clone"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="solitude fa-solid fa-cloud-arrow-down"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-search"><i class="solitude fa-solid fa-magnifying-glass"></i><span>站内搜索</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"></div><div class="rightMenu-group rightMenu-line rightMenuOther"><div class="rightMenu-item" id="menu-darkmode" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></div><div class="rightMenu-item" id="menu-translate"><i class="solitude fa-solid fa-language"></i><span>轉為繁體</span></div></div></div><div id="rightmenu-mask"></div><!-- inject body--><div><script src="/js/utils.js?v=2.0.10"></script><script src="/js/main.js?v=2.0.10"></script><script src="/js/third_party/waterfall.min.js?v=2.0.10"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><script src="/js/third_party/universe.min.js?v=2.0.10"></script><script>dark()
+</script><script src="/js/tw_cn.js?v=2.0.10"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script><script src="/js/covercolor/local.js?v=2.0.10"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><script src="/js/right_menu.js?v=2.0.10"></script><div class="js-pjax"><script>(() => {
+    const getCount = () => {
+        const ele = document.querySelectorAll('.twikoo-count')
+        if (!ele) return
+        twikoo.getCommentsCount({
+            envId: 'https://bx33661-twikoo.hf.space',
+            region: '',
+            urls: [window.location.pathname],
+            includeReply: false
+        }).then(res => {
+            ele.forEach(item => item.textContent = res[0].count)
+        }).catch(err => {
+            console.error(err)
+        })
+    }
+    const init = () => {
+        twikoo.init(Object.assign({
+            el: '#twikoo-wrap',
+            envId: 'https://bx33661-twikoo.hf.space',
+            region: '',
+            path: window.location.pathname,
+            onCommentLoaded: () => {
+                GLOBAL_CONFIG.lightbox && utils.lightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+            }
+        }, null))
+
+        
+        sco.owoBig({
+            body: '.OwO-body',
+            item: '.OwO-items li'
+        })
+
+        false && barrageTwikoo()
+    }
+
+    const loadTwikoo = () => {
+        if (typeof twikoo === 'object') setTimeout(init,0)
+        else utils.getScript('https://cdnjs.cloudflare.com/ajax/libs/twikoo/1.6.39/twikoo.all.min.js').then(init)
+    }
+
+    if ('Twikoo' === 'Twikoo' || false) {
+        if (false) utils.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+        else loadTwikoo()
+    } else {
+        window.loadTwoComment = loadTwikoo
+    }
+})()
+</script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fa-solid fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"><a class="tag-list" href="javascript:void(0);" onclick="pjax.loadUrl('/tags/bx/')">bx</a><a class="tag-list" href="javascript:void(0);" onclick="pjax.loadUrl('/tags/ctf/')">ctf</a><a class="tag-list" href="javascript:void(0);" onclick="pjax.loadUrl('/tags/python/')">python</a><a class="tag-list" href="javascript:void(0);" onclick="pjax.loadUrl('/tags/php/')">php</a></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=2.0.10"></script><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["144a6b12.html","b0822412.html","708747a7.html","53298f4a.html","ea2cd6a8.html","5fc9fa0b.html","ccc3f9d1.html","3493e14f.html","b014c08b.html","c7fb1d32.html","c7b9abc7.html","de766c1.html","b17e5b21.html","c82dbe21.html","8403ab25.html","8aa44e1d.html","24280111.html","8d0fa844.html","986dd242.html","e35ae80f.html","5780e8b7.html","c2bab8ad.html","17c0a43b.html","f7eebb5b.html","1450d2fe.html","84162d96.html","f1b66a56.html","afe2dab9.html","4a785101.html","ecc3773b.html","501b00f3.html","d8e5ea2f.html","41ecbb95.html","3598929d.html","d11d50dd.html","5b1da9ac.html","74ee6b2b.html","3408d468.html","13bf7486.html"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

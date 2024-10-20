@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-10-18T08:37:07.986Z</updated>
+  <updated>2024-10-20T03:51:54.523Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数论以及RSA模拟</title>
+    <link href="http://www.bx33661.com/144a6b12.html"/>
+    <id>http://www.bx33661.com/144a6b12.html</id>
+    <published>2024-10-19T03:53:29.000Z</published>
+    <updated>2024-10-20T03:51:54.523Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h1 id=&quot;数论以及模拟RSA&quot;&gt;&lt;a href=&quot;#数论以及模拟RSA&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="RSA" scheme="http://www.bx33661.com/tags/RSA/"/>
+    
+    <category term="数学" scheme="http://www.bx33661.com/tags/%E6%95%B0%E5%AD%A6/"/>
+    
+  </entry>
   
   <entry>
     <title>python-sys库</title>
@@ -499,35 +526,6 @@
     <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
 
 &lt;h1 id=&quot;llm-universe-Task4-构建RAG应用&quot;&gt;&lt;a href=&quot;#llm-universe-Task4-构建RAG应用&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="llm-universe" scheme="http://www.bx33661.com/categories/llm-universe/"/>
-    
-    
-    <category term="llm" scheme="http://www.bx33661.com/tags/llm/"/>
-    
-    <category term="ai" scheme="http://www.bx33661.com/tags/ai/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>llm-universe-Task3 搭建和使用向量知识库</title>
-    <link href="http://www.bx33661.com/5780e8b7.html"/>
-    <id>http://www.bx33661.com/5780e8b7.html</id>
-    <published>2024-09-25T02:13:00.000Z</published>
-    <updated>2024-09-25T02:17:41.609Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h1 id=&quot;llm-universe-Task3-搭建知识库&quot;&gt;&lt;a href=&quot;#llm-universe-Task3-搭建知识库&quot; class=&quot;headerlink&quot;</summary>
         
       
     
