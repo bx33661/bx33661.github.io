@@ -6,7 +6,7 @@
   <link href="http://www.bx33661.com/atom.xml" rel="self"/>
   
   <link href="http://www.bx33661.com/"/>
-  <updated>2024-10-20T03:52:20.572Z</updated>
+  <updated>2024-10-21T08:44:40.868Z</updated>
   <id>http://www.bx33661.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>BUUCTF做题记录2️⃣</title>
+    <link href="http://www.bx33661.com/9ff09492.html"/>
+    <id>http://www.bx33661.com/9ff09492.html</id>
+    <published>2024-10-21T08:42:12.000Z</published>
+    <updated>2024-10-21T08:44:40.868Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+
+&lt;h3 id=&quot;网鼎杯-2020-青龙组-AreUSerialz&quot;&gt;&lt;a href=&quot;#网鼎杯-2020-青龙组-AreUSerialz&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="ctf" scheme="http://www.bx33661.com/tags/ctf/"/>
+    
+    <category term="buuctf" scheme="http://www.bx33661.com/tags/buuctf/"/>
+    
+  </entry>
   
   <entry>
     <title>数论以及RSA模拟</title>
@@ -238,7 +265,7 @@
     <link href="http://www.bx33661.com/c7fb1d32.html"/>
     <id>http://www.bx33661.com/c7fb1d32.html</id>
     <published>2024-10-12T02:51:46.000Z</published>
-    <updated>2024-10-12T02:57:19.266Z</updated>
+    <updated>2024-10-21T08:44:29.070Z</updated>
     
     
       
@@ -497,35 +524,6 @@
     <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
 
 &lt;h1 id=&quot;Task-5-系统评估和优化&quot;&gt;&lt;a href=&quot;#Task-5-系统评估和优化&quot; class=&quot;headerlink&quot; title=&quot;Task 5</summary>
-        
-      
-    
-    
-    
-    <category term="llm-universe" scheme="http://www.bx33661.com/categories/llm-universe/"/>
-    
-    
-    <category term="llm" scheme="http://www.bx33661.com/tags/llm/"/>
-    
-    <category term="ai" scheme="http://www.bx33661.com/tags/ai/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>llm-universe-Task4 构建RAG应用</title>
-    <link href="http://www.bx33661.com/e35ae80f.html"/>
-    <id>http://www.bx33661.com/e35ae80f.html</id>
-    <published>2024-09-25T02:14:22.000Z</published>
-    <updated>2024-09-25T02:17:41.611Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-
-&lt;h1 id=&quot;llm-universe-Task4-构建RAG应用&quot;&gt;&lt;a href=&quot;#llm-universe-Task4-构建RAG应用&quot; class=&quot;headerlink&quot;</summary>
         
       
     
