@@ -8,7 +8,7 @@ import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import Layout from '@/layouts/Layout.astro'
-import { getAdjacentPosts, getAllPostSlugs, getPostBySlug } from '@/lib/data-utils'
+import { getAdjacentPosts, getAllPostSlugs } from '@/lib/data-utils'
 import { formatDate, readingTime } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { render } from 'astro:content'
@@ -22,7 +22,7 @@ export async function getStaticPaths() {
   }))
 }
 
-const { post, slug } = Astro.props
+const { post } = Astro.props
 const currentSlug = Astro.params.id // 这里获取的是slug
 const { Content, headings } = await render(post)
 const { next, prev } = await getAdjacentPosts(currentSlug)
