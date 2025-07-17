@@ -6,10 +6,18 @@ import Skills from '@/components/react/skills'
 import { buttonVariants } from '@/components/ui/button'
 import Logo from '@/components/ui/logo'
 import Layout from '@/layouts/Layout.astro'
-import { getRecentPosts } from '@/lib/data-utils'
+import { getRecentPosts, getAllPostSlugs } from '@/lib/data-utils'
 import { SITE } from '@/consts'
 
-const blog = await getRecentPosts(3)
+const recentPosts = await getRecentPosts(3)
+const allPostSlugs = await getAllPostSlugs()
+
+// 为最近的文章添加slug信息
+const blog = recentPosts.map(post => {
+  const postSlugData = allPostSlugs.find(({ post: p }) => p.id === post.id)
+  return { ...post, slug: postSlugData?.slug || post.data.slug || 'unknown' }
+})
+
 const currentUrl = Astro.url;
 ---
 
@@ -99,7 +107,7 @@ const currentUrl = Astro.url;
         {
           blog.map((post) => (
             <li>
-              <BlogCard entry={post} />
+              <BlogCard entry={post} slug={post.slug} />
             </li>
           ))
         }

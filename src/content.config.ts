@@ -12,6 +12,7 @@ const blog = defineCollection({
       tags: z.array(z.string()).optional(),
       authors: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
+      slug: z.string().optional(), // 随机URL字符串，如果不提供会自动生成
     }),
 })
 

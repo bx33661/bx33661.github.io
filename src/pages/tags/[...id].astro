@@ -3,21 +3,27 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import BlogCard from '@/components/react/blog-card'
 import Layout from '@/layouts/Layout.astro'
-import { getAllTags, getPostsByTag } from '@/lib/data-utils'
+import { getAllTags, getPostsByTag, getAllPostSlugs } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
 
 export async function getStaticPaths() {
   const tagMap = await getAllTags()
   const uniqueTags = Array.from(tagMap.keys())
+  const allPostSlugs = await getAllPostSlugs()
 
   return Promise.all(
     uniqueTags.map(async (tag) => {
       const posts = await getPostsByTag(tag)
+      // 为文章添加slug信息
+      const postsWithSlugs = posts.map(post => {
+        const postSlugData = allPostSlugs.find(({ post: p }) => p.id === post.id)
+        return { ...post, slug: postSlugData?.slug || post.data.slug || 'unknown' }
+      })
       return {
         params: { id: tag },
         props: {
           tag,
-          posts,
+          posts: postsWithSlugs,
         },
       }
     })
@@ -54,7 +60,7 @@ const currentUrl = Astro.url;
     {
       posts.map((post) => (
         <li>
-          <BlogCard entry={post} />
+          <BlogCard entry={post} slug={post.slug} />
         </li>
       ))
     }

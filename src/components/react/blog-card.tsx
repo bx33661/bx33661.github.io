@@ -2,11 +2,16 @@ import { Badge } from '@/components/ui/badge'
 import { Hash } from 'lucide-react'
 import type { CollectionEntry } from 'astro:content'
 
-const BlogCardJSX = ({ entry }: { entry: CollectionEntry<'blog'> }) => {
+interface BlogCardProps {
+  entry: CollectionEntry<'blog'>
+  slug: string // 添加slug参数
+}
+
+const BlogCardJSX = ({ entry, slug }: BlogCardProps) => {
   return (
     <div className="hover:bg-secondary/50 rounded-xl border p-4 transition-colors duration-300 ease-in-out">
       <a
-        href={`/${entry.collection}/${entry.id}`}
+        href={`/blog/${slug}`}
         className="flex flex-col gap-4 sm:flex-row"
       >
         <div className="grow">

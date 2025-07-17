@@ -1,7 +1,7 @@
 import satori from 'satori'
 import { html } from 'satori-html'
 import { Resvg } from '@resvg/resvg-js'
-import { getCollection } from 'astro:content'
+import { getAllPostSlugs } from '@/lib/data-utils'
 import type { APIContext } from 'astro'
 import fs from 'fs'
 import path from 'path'
@@ -178,10 +178,10 @@ export async function GET(context: APIContext) {
 }
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog')
-  return posts.map((post) => ({
+  const postSlugs = await getAllPostSlugs()
+  return postSlugs.map(({ slug, post }) => ({
     params: {
-      id: post.id,
+      id: slug, // 使用slug而不是post.id
     },
     props: {
       title: post.data.title,

@@ -4,7 +4,7 @@ import PageHead from '@/components/PageHead.astro'
 import Search from '@/components/react/search'
 import PaginationComponent from '@/components/ui/pagination'
 import Layout from '@/layouts/Layout.astro'
-import { getAllPosts } from '@/lib/data-utils'
+import { getAllPostSlugs } from '@/lib/data-utils'
 import type { PaginateFunction } from 'astro'
 import { Icon } from 'astro-icon/components'
 
@@ -13,12 +13,14 @@ export async function getStaticPaths({
 }: {
   paginate: PaginateFunction
 }) {
-  const allPosts = await getAllPosts()
-  return paginate(allPosts, { pageSize: 5 })
+  const allPostSlugs = await getAllPostSlugs()
+  const postsWithSlugs = allPostSlugs.map(({ slug, post }) => ({ ...post, slug }))
+  return paginate(postsWithSlugs, { pageSize: 5 })
 }
 
 const { page } = Astro.props
-const searchList = await getAllPosts()
+const allPostSlugs = await getAllPostSlugs()
+const searchList = allPostSlugs.map(({ slug, post }) => ({ ...post, slug }))
 const currentUrl = Astro.url;
 ---
 

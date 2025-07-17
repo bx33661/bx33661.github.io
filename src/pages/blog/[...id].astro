@@ -8,24 +8,24 @@ import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import Layout from '@/layouts/Layout.astro'
-import { getAdjacentPosts, getAllPosts } from '@/lib/data-utils'
+import { getAdjacentPosts, getAllPostSlugs, getPostBySlug } from '@/lib/data-utils'
 import { formatDate, readingTime } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { render } from 'astro:content'
 
 
 export async function getStaticPaths() {
-  const posts = await getAllPosts()
-  return posts.map((post) => ({
-    params: { id: post.id },
-    props: post,
+  const postSlugs = await getAllPostSlugs()
+  return postSlugs.map(({ slug, post }) => ({
+    params: { id: slug }, // 这里id参数实际上是slug
+    props: { post, slug },
   }))
 }
 
-const post = Astro.props
-const currentPostId = Astro.params.id
+const { post, slug } = Astro.props
+const currentSlug = Astro.params.id // 这里获取的是slug
 const { Content, headings } = await render(post)
-const { next, prev } = await getAdjacentPosts(currentPostId)
+const { next, prev } = await getAdjacentPosts(currentSlug)
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -131,7 +131,7 @@ const currentUrl = Astro.url;
 
       <div class="flex flex-wrap gap-2">
         <Link
-          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Share on Facebook"
@@ -142,7 +142,7 @@ const currentUrl = Astro.url;
           </Button>
         </Link>
         <Link
-          href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Share on Twitter"
@@ -153,7 +153,7 @@ const currentUrl = Astro.url;
           </Button>
         </Link>
         <Link
-          href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Share on LinkedIn"
@@ -164,7 +164,7 @@ const currentUrl = Astro.url;
           </Button>
         </Link>
         <Link
-          href={`https://www.reddit.com/submit?url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          href={`https://www.reddit.com/submit?url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Share on Reddit"
@@ -175,7 +175,7 @@ const currentUrl = Astro.url;
           </Button>
         </Link>
         <Link
-          href={`https://wa.me/?text=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          href={`https://wa.me/?text=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Share on WhatsApp"
@@ -186,7 +186,7 @@ const currentUrl = Astro.url;
           </Button>
         </Link>
         <Link
-          href={`https://t.me/share/url?url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          href={`https://t.me/share/url?url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Share on Telegram"
@@ -197,7 +197,7 @@ const currentUrl = Astro.url;
           </Button>
         </Link>
         <Link
-          href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Share on Pinterest"

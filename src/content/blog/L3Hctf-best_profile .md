@@ -10,6 +10,7 @@ tags:
 authors:
   - "bx33661"
 draft: false              # 设为 true 则为草稿
+slug: "k8x9w2m7"          # 随机URL字符串
 ---
 
 
