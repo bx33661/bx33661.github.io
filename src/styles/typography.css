@@ -1,0 +1,134 @@
+@reference './global.css';
+
+@layer components {
+  .prose {
+    @apply text-foreground text-base leading-relaxed;
+    @apply [&>*]:first:mt-0 [&>*]:last:mb-0 [&>section:first-child>*]:mt-0 [&>section:last-child>*]:mb-0;
+
+    p {
+      @apply text-foreground/80 my-6 leading-relaxed not-first:mt-6;
+    }
+
+    h1 {
+      @apply text-foreground mt-0 mb-8 scroll-m-20 text-4xl leading-tight font-bold;
+    }
+
+    h2 {
+      @apply text-foreground mt-10 mb-6 scroll-m-20 text-3xl leading-snug font-semibold;
+    }
+
+    h3 {
+      @apply text-foreground mt-8 mb-5 scroll-m-20 text-2xl leading-snug font-medium;
+    }
+
+    h4 {
+      @apply text-foreground mt-8 mb-4 scroll-m-20 text-xl leading-normal font-medium;
+    }
+
+    h5 {
+      @apply text-foreground mt-6 mb-4 scroll-m-20 text-lg leading-normal font-medium;
+    }
+
+    h6 {
+      @apply text-foreground mt-6 mb-4 scroll-m-20 text-base leading-normal font-medium;
+    }
+
+    a {
+      @apply text-primary decoration-primary hover:decoration-primary/80 font-medium break-words underline underline-offset-4 transition-colors duration-200 ease-in-out;
+    }
+
+    strong {
+      @apply text-foreground font-semibold;
+    }
+
+    ul {
+      @apply marker:text-primary/50 my-6 ml-8 list-disc [&>li]:mt-3;
+    }
+
+    ol {
+      @apply marker:text-primary/50 my-6 ml-8 list-decimal [&>li]:mt-3;
+      @apply [&[type='A']]:list-[upper-alpha] [&[type='I']]:list-[upper-roman] [&[type='a']]:list-[lower-alpha] [&[type='i']]:list-[lower-roman];
+    }
+
+    li {
+      @apply text-foreground/80 pl-3 leading-relaxed [&>p]:my-0;
+    }
+
+    ul ul,
+    ol ol,
+    ul ol,
+    ol ul {
+      @apply marker:text-primary/30 my-3 ml-8;
+    }
+
+    code {
+      @apply bg-muted/60 text-foreground relative rounded-md px-2 py-1 font-mono text-sm font-medium;
+      @apply [&>span[data-line='']>*]:text-(--shiki-light) dark:[&>span[data-line='']>*]:text-(--shiki-dark);
+    }
+
+    pre {
+      @apply bg-muted/60 text-foreground max-w-full overflow-x-auto rounded-lg p-4 font-mono text-sm;
+      @apply [&>span[data-line='']>*]:text-(--shiki-light) dark:[&>span[data-line='']>*]:text-(--shiki-dark);
+    }
+
+    .expressive-code {
+      @apply my-8 [&_.title]:font-semibold!;
+    }
+
+    blockquote {
+      @apply text-muted-foreground bg-muted/20 my-8 rounded-md border-l-4 pl-6 italic;
+      @apply py-4 text-sm leading-relaxed;
+      @apply [&>p]:my-0 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0;
+    }
+
+    hr {
+      @apply border-border my-10 border-t-2;
+    }
+
+    table {
+      @apply my-10 w-full border-collapse overflow-hidden rounded-lg text-sm shadow-sm;
+    }
+
+    thead {
+      @apply bg-muted/30 text-foreground font-semibold;
+    }
+
+    th {
+      @apply border px-6 py-3 text-left font-medium [&[align=center]]:text-center [&[align=right]]:text-right;
+    }
+
+    tbody tr {
+      @apply border-muted-foreground/20 even:bg-muted/50 odd:bg-muted/30 border-b;
+    }
+
+    td {
+      @apply border px-6 py-3 text-left [&[align=center]]:text-center [&[align=right]]:text-right;
+    }
+
+    img,
+    video {
+      @apply my-10 rounded-lg shadow-md;
+    }
+
+    figcaption {
+      @apply text-muted-foreground mt-4 text-sm italic;
+    }
+
+    kbd {
+      @apply text-foreground bg-muted border-border rounded-md border px-3 py-1 font-mono text-xs font-medium shadow-sm;
+      @apply [&>span[data-line='']>*]:text-(--shiki-light) dark:[&>span[data-line='']>*]:text-(--shiki-dark);
+    }
+
+    .katex-display {
+      @apply my-8 overflow-x-auto overflow-y-hidden py-3 tracking-normal;
+      @apply [&>span[data-line='']>*]:text-(--shiki-light) dark:[&>span[data-line='']>*]:text-(--shiki-dark);
+    }
+
+    .katex {
+      @apply text-foreground;
+    }
+    .katex * {
+      @apply text-foreground;
+    }
+  }
+}

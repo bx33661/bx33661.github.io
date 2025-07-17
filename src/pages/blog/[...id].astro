@@ -1,0 +1,273 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Link from '@/components/Link.astro'
+import PostHead from '@/components/PostHead.astro'
+import PostNavigation from '@/components/PostNavigation.astro'
+import TableOfContents from '@/components/TableOfContents.astro'
+import { badgeVariants } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import Layout from '@/layouts/Layout.astro'
+import { getAdjacentPosts, getAllPosts } from '@/lib/data-utils'
+import { formatDate, readingTime } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import { render } from 'astro:content'
+
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts()
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: post,
+  }))
+}
+
+const post = Astro.props
+const currentPostId = Astro.params.id
+const { Content, headings } = await render(post)
+const { next, prev } = await getAdjacentPosts(currentPostId)
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  datePublished: post.data.date,
+  dateModified: post.data.date,
+  author: {
+    '@type': 'Person',
+    name: post.data.authors ? post.data.authors[0] : 'Author',
+  },
+  image: new URL(`/image/${post.id}.png`, Astro.site).toString(),
+  keywords: post.data.tags ? post.data.tags.join(', ') : '',
+  description: post.data.description || '',
+}
+const currentUrl = Astro.url;
+---
+
+<Layout canonicalUrl={currentUrl} isWide={true}>
+  <PostHead slot="head" post={post} />
+  
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(structuredData)}
+  />
+  <section
+    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-lg)-2rem),100%)_minmax(0px,1fr)] gap-y-6"
+  >
+    <div class="col-start-2">
+      <Breadcrumbs
+        items={[
+          { href: '/blog', label: 'Blog', icon: 'lucide:archive' },
+          { label: post.data.title, icon: 'lucide:file-text' },
+        ]}
+      />
+    </div>
+    <section class="col-start-2 flex flex-col gap-y-6 text-start">
+      <div class="flex flex-col">
+        <h1
+          class="mb-2 text-3xl leading-tight font-medium text-pretty sm:text-5xl"
+        >
+          {post.data.title}
+        </h1>
+
+        <div class="flex flex-wrap justify-start gap-2">
+          {
+            post.data.tags && post.data.tags.length > 0 ? (
+              post.data.tags.map((tag) => (
+                <a
+                  href={`/tags/${tag}`}
+                  class={badgeVariants({ variant: 'secondary' })}
+                >
+                  <Icon name="lucide:hash" class="size-3" />
+                  {tag}
+                </a>
+              ))
+            ) : (
+              <span class="text-muted-foreground text-sm">
+                No tags available
+              </span>
+            )
+          }
+        </div>
+      </div>
+    </section>
+
+    <div
+      class="text-muted-foreground col-start-2 flex flex-wrap items-center justify-center gap-2 text-sm"
+    >
+      <div class="flex items-center gap-2">
+        <span>{formatDate(post.data.date)}</span>
+        <Separator orientation="vertical" className="h-4!" />
+        <span>{readingTime(post.body!)}</span>
+        <Separator orientation="vertical" className="h-4!" />
+        <span>By {(post.data.authors ?? []).join(' & ')}</span>
+      </div>
+    </div>
+
+    {headings.length > 0 && <TableOfContents headings={headings} />}
+
+    <article class="prose col-start-2 max-w-none">
+      <Content />
+    </article>
+
+    <aside
+      class="group col-start-2 rounded-xl border p-4 xl:sticky xl:top-26 xl:col-start-3 xl:mr-auto xl:ml-8 xl:h-[calc(100vh-5rem)] xl:max-w-fit xl:rounded-none xl:border-none xl:p-0"
+    >
+      <hr class="mb-8 hidden md:block" />
+      <div class="mb-2">
+        <h2
+          id="skills-title"
+          class="font-custom text-2xl font-bold text-neutral-900 dark:text-white"
+        >
+          Share this post
+        </h2>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+          If you found this post helpful, consider sharing it with your friends
+          or on social media. Your support helps me create more content like
+          this.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <Link
+          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Share on Facebook"
+          aria-label="Share on Facebook"
+        >
+          <Button variant="outline" size="icon">
+            <Icon name="line-md:facebook" class="size-4" />
+          </Button>
+        </Link>
+        <Link
+          href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Share on Twitter"
+          aria-label="Share on Twitter"
+        >
+          <Button variant="outline" size="icon">
+            <Icon name="line-md:twitter" class="size-4" />
+          </Button>
+        </Link>
+        <Link
+          href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Share on LinkedIn"
+          aria-label="Share on LinkedIn"
+        >
+          <Button variant="outline" size="icon">
+            <Icon name="line-md:linkedin" class="size-4" />
+          </Button>
+        </Link>
+        <Link
+          href={`https://www.reddit.com/submit?url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Share on Reddit"
+          aria-label="Share on Reddit"
+        >
+          <Button variant="outline" size="icon">
+            <Icon name="line-md:reddit-loop" class="size-4" />
+          </Button>
+        </Link>
+        <Link
+          href={`https://wa.me/?text=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Share on WhatsApp"
+          aria-label="Share on WhatsApp"
+        >
+          <Button variant="outline" size="icon">
+            <Icon name="mdi:whatsapp" class="size-4" />
+          </Button>
+        </Link>
+        <Link
+          href={`https://t.me/share/url?url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Share on Telegram"
+          aria-label="Share on Telegram"
+        >
+          <Button variant="outline" size="icon">
+            <Icon name="line-md:telegram" class="size-4" />
+          </Button>
+        </Link>
+        <Link
+          href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(Astro.site + 'blog/' + post.id)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Share on Pinterest"
+          aria-label="Share on Pinterest"
+        >
+          <Button variant="outline" size="icon">
+            <Icon name="mdi:pinterest" class="size-4" />
+          </Button>
+        </Link>
+      </div>
+
+      <hr class="my-8 hidden md:block" />
+      
+      <div class="mb-2 mt-4">
+        <h2
+          id="skills-title"
+          class="font-custom text-2xl font-bold text-neutral-900 dark:text-white"
+        >
+          Enjoyed this blog?
+        </h2>
+        <div class="text-sm text-neutral-500 dark:text-neutral-400 flex items-center flex-wrap">
+          Give it a star&nbsp;
+          <Icon name="line-md:star" class="size-4 text-yellow-500" />&nbsp;on&nbsp;
+          <Link href="https://github.com/cojocaru-david/portfolio" target="_blank" rel="noopener noreferrer" class="text-primary underline flex items-center flex-warp gap-2">
+            GitHub
+            <Icon name="line-md:github" class="size-4" />
+          </Link>
+          to support this project and help it grow. Your support means the world!
+        </div>
+        
+      </div>
+    </aside>
+
+    <PostNavigation prevPost={prev} nextPost={next} />
+  </section>
+
+  <Button
+    variant="outline"
+    size="icon"
+    className="group fixed right-8 bottom-8 z-50 hidden"
+    id="scroll-to-top"
+    title="Scroll to top"
+    aria-label="Scroll to top"
+  >
+    <Icon
+      name="lucide:arrow-up"
+      class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
+    />
+  </Button>
+
+  <script>
+    document.addEventListener('astro:page-load', () => {
+      const scrollToTopButton = document.getElementById('scroll-to-top')
+      const footer = document.querySelector('footer')
+
+      if (scrollToTopButton && footer) {
+        scrollToTopButton.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        })
+
+        window.addEventListener('scroll', () => {
+          const footerRect = footer.getBoundingClientRect()
+          const isFooterVisible = footerRect.top <= window.innerHeight
+
+          scrollToTopButton.classList.toggle(
+            'hidden',
+            window.scrollY <= 300 || isFooterVisible
+          )
+        })
+      }
+    })
+  </script>
+</Layout>

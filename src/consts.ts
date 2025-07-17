@@ -1,0 +1,129 @@
+import type { IconMap, SocialLink, Site } from '@/types'
+
+export const SITE: Site = {
+  title: 'BX',
+  description:
+    "我是一名来自中国的开发者，热衷于创建创新的Web应用程序。我在前端和后端开发方面都有经验，始终渴望学习新技术并提高自己的技能。我享受与团队合作，为有意义的项目做出贡献。",
+  href: 'https://www.bx33661.com',
+  author: 'BX',
+  locale: 'zh-CN',
+  location: 'China',
+}
+
+export const NAV_LINKS: SocialLink[] = [
+  {
+    href: '/',
+    label: '首页',
+  },
+  {
+    href: '/about',
+    label: '关于我',
+  },
+  {
+    href: '/projects',
+    label: '项目',
+  },
+  {
+    href: '/blog',
+    label: '博客',
+  },
+]
+
+export const SOCIAL_LINKS: SocialLink[] = [
+  {
+    href: 'https://github.com/bx33661',
+    label: 'GitHub',
+  },
+  {
+    href: 'mailto:bx@example.com',
+    label: 'Email',
+  },
+  {
+    href: 'https://weibo.com/bx33661',
+    label: 'Weibo',
+  },
+  {
+    href: 'https://space.bilibili.com/bx33661',
+    label: 'Bilibili',
+  },
+  {
+    href: '/rss.xml',
+    label: 'RSS',
+  },
+]
+
+export const ICON_MAP: IconMap = {
+  Website: 'lucide:globe',
+  GitHub: 'lucide:github',
+  Weibo: 'mdi:chat',
+  Bilibili: 'mdi:video-outline',
+  Email: 'lucide:mail',
+  RSS: 'lucide:rss',
+}
+
+export interface Category {
+  text: string
+  logo: string
+}
+
+export type Technologies = {
+  'Web Development': Category[]
+  'Development Tools': Category[]
+  'Hosting and Cloud Services': Category[]
+  'Operating Systems': Category[]
+  'Other Programming Languages and Technologies': Category[]
+  'Web Servers': Category[]
+  Databases: Category[]
+  'Other Software': Category[]
+}
+
+export const technologies: Technologies = {
+  'Web Development': [
+    { text: 'HTML', logo: 'mdi:language-html5' },
+    { text: 'JavaScript', logo: 'mdi:language-javascript' },
+    { text: 'TypeScript', logo: 'mdi:language-typescript' },
+    { text: 'CSS', logo: 'mdi:language-css3' },
+    { text: 'Vue.js', logo: 'mdi:vuejs' },
+    { text: 'React', logo: 'mdi:react' },
+    { text: 'Python', logo: 'mdi:language-python' },
+    { text: 'Astro', logo: 'mdi:rocket' },
+    { text: 'Tailwind CSS', logo: 'mdi:tailwind' },
+  ],
+  'Development Tools': [
+    { text: 'Visual Studio Code', logo: 'mdi:visual-studio-code' },
+    { text: 'Git', logo: 'mdi:git' },
+    { text: 'Docker', logo: 'mdi:docker' },
+    { text: 'Postman', logo: 'mdi:api' },
+  ],
+  'Hosting and Cloud Services': [
+    { text: 'Vercel', logo: 'mdi:triangle' },
+    { text: 'Aliyun', logo: 'mdi:cloud' },
+          { text: 'Cloudflare', logo: 'mdi:cloud-sync' },
+      { text: 'Netlify', logo: 'mdi:web' },
+  ],
+  'Operating Systems': [
+    { text: 'Windows', logo: 'mdi:windows' },
+    { text: 'Ubuntu', logo: 'mdi:ubuntu' },
+  ],
+  'Other Programming Languages and Technologies': [
+    { text: 'Node.js', logo: 'mdi:nodejs' },
+    { text: 'Java', logo: 'mdi:language-java' },
+    { text: 'C++', logo: 'mdi:language-cpp' },
+  ],
+  'Web Servers': [
+    { text: 'Apache', logo: 'mdi:server' },
+    { text: 'Nginx', logo: 'mdi:server-network' },
+  ],
+  Databases: [
+    { text: 'MySQL', logo: 'mdi:database' },
+    { text: 'MongoDB', logo: 'mdi:leaf' },
+    { text: 'Redis', logo: 'mdi:database-outline' },
+    { text: 'PostgreSQL', logo: 'mdi:elephant' },
+  ],
+  'Other Software': [
+    { text: 'Discord', logo: 'mdi:discord' },
+    { text: 'Spotify', logo: 'mdi:spotify' },
+    { text: 'Visual Studio', logo: 'mdi:visual-studio' },
+    { text: 'Brave', logo: 'mdi:web-box' },
+  ],
+}

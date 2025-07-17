@@ -1,0 +1,76 @@
+---
+import '@/styles/global.css'
+import '@/styles/typography.css'
+
+import Footer from '@/components/Footer.astro'
+import Head from '@/components/Head.astro'
+import Navbar from '@/components/react/navbar'
+import { SITE } from '@/consts'
+import { cn } from '@/lib/utils'
+import Posthog from '@/components/Posthog.astro'
+
+const {
+  isWide = false,
+  canonicalUrl = SITE.href
+} = Astro.props
+---
+
+<!doctype html>
+<html lang={SITE.locale}>
+  <Head>
+    <slot name="head" />
+    <script is:inline src="https://analytics.ahrefs.com/analytics.js" data-key="+FHMgRP7/Duxaq5D0gZtJw" async></script>
+    <link rel="sitemap" href="/sitemap.xml" />
+    <script is:inline data-astro-rerun>
+      (function() {
+        try {
+          const localStorageTheme = localStorage.getItem('theme');
+          const isDark = 
+            (localStorageTheme === 'dark') || 
+            (!localStorageTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          
+          document.documentElement.classList.toggle('dark', isDark);
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+          
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) {
+              document.documentElement.classList.toggle('dark', e.matches);
+              localStorage.setItem('theme', e.matches ? 'dark' : 'light');
+            }
+          });
+        } catch (error) {
+          console.warn('Theme setting failed:', error);
+        }
+      })();
+    </script>
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
+    <Posthog />
+  </Head>
+  <body>
+    <div class="flex h-fit min-h-screen w-full flex-col gap-y-4 sm:gap-y-6 font-sans">
+      <Navbar client:load />
+      <main class="flex grow flex-col bg-background mt-16 lg:mt-6" aria-label="Main content" role="main">
+        <div
+          class={cn(
+            'mx-auto flex grow flex-col gap-y-4 sm:gap-y-6 px-3 py-10 sm:py-16 md:py-20 lg:py-24 sm:px-6 lg:px-8',
+            !isWide && 'max-w-5xl'
+          )}
+        >
+          <slot />
+        </div>
+      </main>
+      <Footer />
+    </div>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-QVK59XQK72"
+    ></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-QVK59XQK72");
+    </script>
+  </body>
+</html>

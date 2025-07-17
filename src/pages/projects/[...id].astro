@@ -1,0 +1,129 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import TableOfContents from '@/components/TableOfContents.astro'
+import { badgeVariants } from '@/components/ui/badge'
+import Layout from '@/layouts/Layout.astro'
+import { getAllProjects } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
+import { Image } from 'astro:assets'
+import { render } from 'astro:content'
+import PageHead from '@/components/PageHead.astro'
+
+export async function getStaticPaths() {
+  const projects = await getAllProjects()
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: project,
+  }))
+}
+
+const project = Astro.props
+const { Content, headings } = await render(project)
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Projects',
+  headline: project.data.name,
+  datePublished: project.data.startDate || '',
+  dateModified: project.data.endDate || project.data.startDate || '',
+  author: {
+    '@type': 'Person',
+    name: 'Author',
+  },
+  image: new URL(`/image/${project.id}.png`, Astro.site).toString(),
+  keywords: project.data.tags ? project.data.tags.join(', ') : '',
+  description: project.data.description || '',
+}
+const currentUrl = Astro.url;
+---
+
+<Layout canonicalUrl={currentUrl} isWide={true}> 
+  <PageHead slot="head" title={project.data.name} />
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(structuredData)}
+  />
+  <section
+    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-lg)-2rem),100%)_minmax(0px,1fr)] gap-y-6 max-w-[calc(100vw-2rem)] "
+  >
+    <div class="col-start-2">
+      <Breadcrumbs
+        items={[
+          { href: '/projects', label: 'Projects', icon: 'lucide:folder' },
+          { label: project.data.name, icon: 'lucide:folder-open' },
+        ]}
+      />
+    </div>
+    <section class="col-start-2 flex flex-col gap-y-6 text-start">
+      <div class="flex flex-col">
+        <h1
+          class="mb-2 text-3xl leading-tight font-medium text-pretty sm:text-5xl"
+        >
+          {project.data.name}
+        </h1>
+
+        <div class="flex flex-wrap justify-start gap-2">
+          {
+            project.data.tags && project.data.tags.length > 0 ? (
+              project.data.tags.map((tag) => (
+                <a
+                  href={`/tags/${tag}`}
+                  class={badgeVariants({ variant: 'secondary' })}
+                >
+                  <Icon name="lucide:hash" class="size-3" />
+                  {tag}
+                </a>
+              ))
+            ) : (
+              <span class="text-muted-foreground text-sm">
+                No tags available
+              </span>
+            )
+          }
+        </div>
+      </div>
+    </section>
+
+    <Image
+      src={project.data.image}
+      alt={project.data.name}
+      class="col-start-2 mb-8 h-auto w-full rounded-3xl object-cover"
+      loading="lazy"
+      fetchpriority="low"      
+      width={1800}
+      height={1600}
+    />
+
+    {headings.length > 0 && <TableOfContents headings={headings} />}
+
+    <article class="prose col-start-2 max-w-none">
+      <Content />
+    </article>
+
+    <aside
+    class="group col-start-2 rounded-xl border p-4 xl:sticky xl:top-26 xl:col-start-3 xl:mr-auto xl:ml-8 xl:h-[calc(100vh-5rem)] xl:max-w-fit xl:rounded-none xl:border-none xl:p-0"
+  >
+    <div class="flex flex-col gap-4 rounded-xl border bg-card p-4 shadow-md transition-all duration-300 group-hover:shadow-lg xl:group-hover:shadow-none xl:group-hover:shadow-none">
+      <h2 class="text-lg font-semibold">Project Details</h2>
+      <div class="flex flex-col gap-2 text-sm text-muted-foreground">
+        <p>{project.data.description}</p>
+      </div>
+
+      <hr class="my-4 border-t" />
+
+      <div class="flex flex-col gap-2 text-sm text-muted-foreground">
+        <h3 class="text-base font-semibold">Project Links</h3>
+        <ul class="list-disc pl-4">
+          <li>
+            <a href={project.data.link} target="_blank" rel="noopener noreferrer">
+              {project.data.link}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  </section>
+</Layout>

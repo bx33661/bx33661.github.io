@@ -1,0 +1,124 @@
+---
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { cn } from '@/lib/utils'
+import type { MarkdownHeading } from 'astro'
+import { Icon } from 'astro-icon/components'
+
+type Props = {
+  headings: MarkdownHeading[]
+}
+
+const { headings } = Astro.props
+
+function getHeadingMargin(depth: number): string {
+  const margins: Record<number, string> = {
+    3: 'ml-4',
+    4: 'ml-8',
+    5: 'ml-12',
+    6: 'ml-16',
+  }
+  return margins[depth] || ''
+}
+
+function cleanupHeading(text: string): string {
+  text = text.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+  text = text.replace(/&amp;/g, '&').replace(/&quot;/g, '"')
+  text = text.replace(/&#39;/g, "'").replace(/&apos;/g, "'")
+  text = text.replace(/:/g, '')
+  text = text.replace(/,/g, '')
+  return text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ')
+}
+---
+
+<details
+  open
+  class="group col-start-2 rounded-xl border p-4 xl:sticky xl:top-26 xl:col-start-1 xl:mr-8 xl:ml-auto xl:h-[calc(100vh-5rem)] xl:max-w-fit xl:rounded-none xl:border-none xl:p-0"
+>
+  <summary
+    class="flex cursor-pointer items-center justify-between text-xl font-medium group-open:pb-4"
+  >
+    <div>
+      <hr class="mb-8 hidden md:block" />
+      <h2
+        id="skills-title"
+        class="font-custom flex items-center gap-x-2 text-2xl font-bold text-neutral-900 dark:text-white"
+      >
+        Table of Contents <Icon
+          name="lucide:chevron-down"
+          class="size-5 shrink-0 transition-transform group-open:rotate-180"
+        />
+      </h2>
+      <p class="text-sm text-neutral-500 dark:text-neutral-400">
+        This is a list of all the sections in this post. Click on any of them to
+        jump to that section.
+      </p>
+    </div>
+  </summary>
+
+  <ScrollArea
+    client:load
+    className="flex max-h-64 flex-col overflow-y-auto xl:max-h-[calc(100vh-8rem)]"
+    type="always"
+  >
+    <ul
+      class="flex list-none flex-col gap-y-2 px-4 xl:mr-8"
+      id="table-of-contents"
+    >
+      {
+        headings.map((heading) => (
+          <li
+            class={cn(
+              'text-foreground/60 text-sm xl:p-0',
+              getHeadingMargin(heading.depth)
+            )}
+          >
+            <a
+              href={`#${heading.slug}`}
+              class="marker:text-foreground/30 block list-disc px-3 py-2 underline decoration-transparent underline-offset-[3px] transition-colors duration-200 hover:decoration-inherit xl:list-none"
+              aria-label={`Scroll to ${heading.text}`}
+              title={`Scroll to ${heading.text}`}
+            >
+              {cleanupHeading(heading.text)}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </ScrollArea>
+</details>
+
+<script>
+  function setupToc() {
+    const header = document.querySelector('header')
+    const headerHeight = header ? header.offsetHeight : 0
+
+    const observer = new IntersectionObserver(
+      (sections) => {
+        sections.forEach((section) => {
+          const heading = section.target.querySelector('h2, h3, h4, h5, h6')
+          if (!heading) return
+
+          const id = heading.getAttribute('id')
+          const link = document.querySelector(
+            `#table-of-contents li a[href="#${id}"]`
+          )
+          if (!link) return
+
+          const addRemove = section.isIntersecting ? 'add' : 'remove'
+          link.classList[addRemove]('text-foreground')
+        })
+      },
+      {
+        rootMargin: `-${headerHeight}px 0px 0px 0px`,
+      }
+    )
+
+    const sections = document.querySelectorAll('.prose section')
+    sections.forEach((section) => {
+      observer.observe(section)
+    })
+  }
+
+  document.addEventListener('astro:page-load', setupToc)
+  document.addEventListener('astro:after-swap', setupToc)
+</script>

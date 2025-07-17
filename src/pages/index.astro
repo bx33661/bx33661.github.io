@@ -1,0 +1,120 @@
+---
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import BlogCard from '@/components/react/blog-card'
+import Skills from '@/components/react/skills'
+import { buttonVariants } from '@/components/ui/button'
+import Logo from '@/components/ui/logo'
+import Layout from '@/layouts/Layout.astro'
+import { getRecentPosts } from '@/lib/data-utils'
+import { SITE } from '@/consts'
+
+const blog = await getRecentPosts(3)
+const currentUrl = Astro.url;
+---
+
+<Layout canonicalUrl={currentUrl}>
+  <PageHead slot="head" title="BX/bpple -安全研究-中国" />
+  <section class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
+    <div
+      class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left"
+    >
+      <div class="relative overflow-hidden rounded-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
+        <Logo
+          className="h-auto w-40 object-cover sm:w-48 md:w-56 lg:w-64 "
+        />
+      </div>
+      <div class="mt-8 sm:mt-0 sm:max-w-xl">
+        <h1
+          class="font-custom text-foreground text-start text-4xl font-extrabold sm:text-5xl"
+        >
+          {SITE.title}
+        </h1>
+        <div class="mt-4 flex items-center gap-2" aria-label="location">
+          <span
+            class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1"
+          >
+            来自
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-foreground text-sm font-medium"> {SITE.location}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 60 40"
+              class="h-6 w-8 transition-transform duration-500 hover:rotate-12"
+              aria-hidden="true"
+              role="img"
+              focusable="false"
+              aria-labelledby="china-flag"
+            >
+              <title id="china-flag">中国国旗</title>
+              <rect width="60" height="40" fill="#de2910"/>
+              <polygon points="12,8 9.5,15.5 2,12 9.5,8.5" fill="#ffde00"/>
+              <polygon points="20,4 19,7 17,6 18.5,8 16.5,9 20,7" fill="#ffde00"/>
+              <polygon points="20,12 19,15 17,14 18.5,16 16.5,17 20,15" fill="#ffde00"/>
+              <polygon points="20,20 19,23 17,22 18.5,24 16.5,25 20,23" fill="#ffde00"/>
+              <polygon points="16,28 15,31 13,30 14.5,32 12.5,33 16,31" fill="#ffde00"/>
+            </svg>
+          </span>
+        </div>
+        <p class="text-md text-foreground mt-4 text-start font-sans" title="description" aria-label="description">
+          {SITE.description}
+        </p>
+      </div>
+    </div>
+
+    <section class="relative" aria-labelledby="skills-title">
+      <h2
+        id="skills-title"
+        class="font-custom text-foreground text-2xl font-bold"
+        title="skills"
+        aria-label="skills"
+        role="heading"
+      >
+        技能与技术栈
+      </h2>
+      <p class="text-muted-foreground text-sm" aria-label="skills description">
+        以下是我使用过的一些技术：
+      </p>
+      <div>
+        <Skills client:load />
+      </div>
+    </section>
+
+    <section class="flex flex-col gap-y-4" aria-labelledby="latest-posts-title" role="region">
+      <div class="relative" aria-labelledby="latest-posts-title">
+        <h2
+          id="latest-posts-title"
+          class="font-custom text-foreground text-2xl font-bold"
+          title="latest blog posts"
+          aria-label="latest blog posts"
+        >
+          最新博客文章
+        </h2>
+        <p class="text-muted-foreground text-sm" aria-label="blog description">
+          这里是我最新的一些博客文章，您可以在博客页面查看更多内容。
+        </p>
+      </div>
+      <ul class="flex flex-col gap-y-4">
+        {
+          blog.map((post) => (
+            <li>
+              <BlogCard entry={post} />
+            </li>
+          ))
+        }
+      </ul>
+      <div class="flex justify-center" aria-label="see all posts">
+        <Link
+          href="/blog"
+          class={buttonVariants({ variant: 'ghost' }) + ' group'}
+        >
+          查看所有文章 <span
+            class="ml-1.5 transition-transform group-hover:translate-x-1"
+            >&rarr;</span
+          >
+        </Link>
+      </div>
+    </section>
+  </section>
+</Layout>

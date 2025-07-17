@@ -1,0 +1,144 @@
+---
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import Skills from '@/components/react/skills'
+import { buttonVariants } from '@/components/ui/button'
+import Logo from '@/components/ui/logo'
+import Layout from '@/layouts/Layout.astro'
+import { SITE, SOCIAL_LINKS } from '@/consts'
+import { Icon } from 'astro-icon/components'
+
+const currentUrl = Astro.url;
+---
+
+<Layout canonicalUrl={currentUrl}>
+  <PageHead slot="head" title="关于我 - BX/bpple" />
+  <div class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
+    <!-- 个人介绍部分 -->
+    <section class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
+      <div class="relative overflow-hidden rounded-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
+        <Logo className="h-auto w-40 object-cover sm:w-48 md:w-56 lg:w-64" />
+      </div>
+      <div class="mt-8 sm:mt-0 sm:max-w-2xl">
+        <h1 class="font-custom text-foreground text-start text-4xl font-extrabold sm:text-5xl">
+          关于我
+        </h1>
+        <div class="mt-4 flex items-center gap-2" aria-label="location">
+          <span class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1">
+            来自
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-foreground text-sm font-medium">{SITE.location}</span>
+            <!-- 中国国旗 SVG -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 60 40"
+              class="h-6 w-8 transition-transform duration-500 hover:rotate-12"
+              aria-hidden="true"
+              role="img"
+              focusable="false"
+              aria-labelledby="china-flag"
+            >
+              <title id="china-flag">中国国旗</title>
+              <rect width="60" height="40" fill="#de2910"/>
+              <polygon points="12,8 9.5,15.5 2,12 9.5,8.5" fill="#ffde00"/>
+              <polygon points="20,4 19,7 17,6 18.5,8 16.5,9 20,7" fill="#ffde00"/>
+              <polygon points="20,12 19,15 17,14 18.5,16 16.5,17 20,15" fill="#ffde00"/>
+              <polygon points="20,20 19,23 17,22 18.5,24 16.5,25 20,23" fill="#ffde00"/>
+              <polygon points="16,28 15,31 13,30 14.5,32 12.5,33 16,31" fill="#ffde00"/>
+            </svg>
+          </span>
+        </div>
+        <p class="text-md text-foreground mt-4 text-start font-sans">
+          {SITE.description}
+        </p>
+      </div>
+    </section>
+
+    <!-- 详细个人信息 -->
+    <section class="space-y-6">
+      <h2 class="font-custom text-foreground text-3xl font-bold">我的故事</h2>
+      <div class="prose prose-lg max-w-none text-foreground">
+        <p class="text-lg leading-relaxed">
+          你好！我是 <strong>BX</strong>，目前是一名在校大学生。我对技术充满热情，主要学习信息安全，在进修WEB安全等方面的安全研究，希望我们一起见证星辰大海。
+        </p>
+        <p class="text-lg leading-relaxed">
+          我喜欢研究各个方面的。
+        </p>
+        <p class="text-lg leading-relaxed">
+          除了编程，我还热衷于开源项目贡献、技术写作和知识分享。我相信通过分享知识可以让整个开发者社区变得更好。
+        </p>
+      </div>
+    </section>
+
+    <!-- 技能展示 -->
+    <section class="space-y-6">
+      <h2 class="font-custom text-foreground text-3xl font-bold">技能与技术栈</h2>
+      <p class="text-muted-foreground text-lg">
+        以下是我掌握和使用的技术栈，我会持续学习和更新自己的技能。
+      </p>
+      <div>
+        <Skills client:load />
+      </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section class="space-y-6">
+      <h2 class="font-custom text-foreground text-3xl font-bold">联系我</h2>
+      <p class="text-muted-foreground text-lg">
+        如果您想与我讨论技术话题、合作项目或者只是聊天，欢迎通过以下方式联系我：
+      </p>
+      <div class="flex flex-wrap gap-4">
+        {
+          SOCIAL_LINKS.slice(0, -1).map((link) => (
+            <Link
+              href={link.href}
+              class={buttonVariants({ variant: 'outline' }) + ' flex items-center gap-2'}
+              aria-label={`联系我通过 ${link.label}`}
+            >
+                             <Icon name="lucide:external-link" class="size-4" />
+              {link.label}
+            </Link>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 兴趣爱好 -->
+    <section class="space-y-6">
+      <h2 class="font-custom text-foreground text-3xl font-bold">兴趣爱好</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <h3 class="text-xl font-semibold text-foreground">💻 技术相关</h3>
+          <ul class="space-y-2 text-muted-foreground">
+            <li>• 开源项目贡献</li>
+            <li>• 新技术框架学习</li>
+            <li>• 算法与数据结构研究</li>
+            <li>• 技术博客写作</li>
+          </ul>
+        </div>
+        <div class="space-y-3">
+          <h3 class="text-xl font-semibold text-foreground">🎯 生活爱好</h3>
+          <ul class="space-y-2 text-muted-foreground">
+            <li>• 阅读技术书籍</li>
+            <li>• 关注科技新闻</li>
+            <li>• 参与技术社区交流</li>
+            <li>• 探索新的开发工具</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 返回首页 -->
+    <div class="flex justify-center pt-8">
+      <Link
+        href="/"
+        class={buttonVariants({ variant: 'default' }) + ' group'}
+      >
+        <Icon name="lucide:home" class="mr-2 size-4" />
+        返回首页
+        <span class="ml-2 transition-transform group-hover:translate-x-1">&rarr;</span>
+      </Link>
+    </div>
+  </div>
+</Layout> 
