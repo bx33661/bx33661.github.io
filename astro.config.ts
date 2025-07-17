@@ -21,8 +21,14 @@ import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+  // 如果使用自定义域名，保持 'https://www.bpple.com'
+  // 如果使用 GitHub Pages 默认域名，改为 'https://bx33661.github.io'
   site: 'https://www.bpple.com',
+  
+  // 如果仓库名是 portfolio（不是 username.github.io），需要设置 base
+  // 如果使用自定义域名或仓库名是 username.github.io，保持 '/'
   base: '/',
+  
   output: 'static',
 
   integrations: [
