@@ -30,6 +30,13 @@ const Navbar = () => {
     }
   }, [])
   
+  // 键盘导航支持
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape' && mobileMenuOpen) {
+      setMobileMenuOpen(false)
+    }
+  }
+  
   useEffect(() => {
     const handleResize = debounce(() => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches
@@ -100,154 +107,110 @@ const Navbar = () => {
   }
 
   return (
-    <>
-      <motion.header
-        aria-label="Navigation"
+    <header
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300',
+        isScrolled
+          ? 'bg-background/80 backdrop-blur-md border-b border-border/60'
+          : 'bg-transparent'
+      )}
+      role="banner"
+      onKeyDown={handleKeyDown}
+    >
+      <nav
+        className="mx-auto flex max-w-5xl items-center justify-between p-4"
         role="navigation"
-        layout={!isMobile}
-        initial={sizeVariants[0]}
-        animate={isMobile ? sizeVariants[0] : sizeVariants[scrollLevel]}
-        className={cn(
-          'fixed left-1/2 z-30 -translate-x-1/2 transform backdrop-blur-lg',
-          'bg-background/80 border-0',
-          'rounded-none shadow-none transition-all duration-300 ease-in-out',
-          'border border-transparent w-full',
-          isScrolled && !isMobile && 'rounded-full',
-          isScrolled && !isMobile && 'backdrop-blur-md',
-          isScrolled && !isMobile && 'border-foreground/10',
-          isScrolled && !isMobile && 'border',
-          isScrolled && !isMobile && 'bg-background/80',
-          isScrolled && !isMobile && 'max-w-[calc(100vw-5rem)]',
-          !isMobile && 'top-2 lg:top-4 xl:top-6',
-          isMobile && 'top-0',
-          isMobile && 'rounded-none',
-          isMobile && 'border-0',
-          isMobile && 'shadow-none',
-          isMobile && 'border-0'
-        )}
+        aria-label="主导航"
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 p-4">
+        <div className="flex items-center">
           <Link
             href="/"
-            className="font-custom flex shrink-0 items-center gap-2 text-xl font-bold"
-            aria-label="Home"
-            title="Home"
-            navigation="true"
+            className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg"
+            aria-label={`${SITE.title} - 首页`}
           >
-            <Logo className="h-8 w-8" />
-            <span className={
-              'transition-opacity duration-200 ease-in-out text-foreground/90 dark:text-white'}>
+            <div className="h-8 w-8">
+              <Logo />
+            </div>
+            <span className="font-custom text-xl font-bold text-foreground">
               {SITE.title}
             </span>
           </Link>
-
-          <div className="flex items-center gap-2 md:gap-4">
-            <nav className="hidden items-center gap-6 md:flex" aria-label="Main navigation" role="navigation">
-              {NAV_LINKS.map((item) => {
-                const isActive = activePath.startsWith(item.href) && item.href !== "/";
-                return (
-                  <motion.div
-                    key={item.href}
-                    whileHover={{ scale: 1.05 }}
-                    className="relative"
-                  >
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "text-sm font-medium capitalize transition-colors duration-200",
-                        "relative py-1 px-1",
-                        "after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300",
-                        "hover:after:w-full hover:text-foreground",
-                        isActive 
-                          ? "text-foreground after:w-full after:bg-primary" 
-                          : "text-foreground/70"
-                      )}
-                      onClick={() => setActivePath(item.href)}
-                    >
-                      {item.label}
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </nav>
-
-            <ThemeToggle />
-            
-            {isMobile && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-                className={
-                  "ml-1 h-9 w-9 rounded-full p-0 transition-colors duration-200 ease-in-out"
-                }
-              >
-                {mobileMenuOpen ? (
-                  <X className="h-5 w-5" />
-                ) : (
-                  <Menu className="h-5 w-5" />
-                )}
-              </Button>
-            )}
-          </div>
         </div>
-      </motion.header>
-      
+
+        {/* 桌面导航 */}
+        <div className="hidden md:flex items-center space-x-1">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                'px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary',
+                activePath === link.href || activePath.startsWith(link.href + '/')
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+              )}
+              aria-current={activePath === link.href ? 'page' : undefined}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Separator orientation="vertical" className="h-6 mx-2" />
+          <ThemeToggle />
+        </div>
+
+        {/* 移动端菜单按钮 */}
+        <div className="md:hidden flex items-center space-x-2">
+          <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
+            aria-label={mobileMenuOpen ? '关闭菜单' : '打开菜单'}
+            className="focus:ring-2 focus:ring-primary"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </Button>
+        </div>
+      </nav>
+
+      {/* 移动端菜单 */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            key="mobile-menu"
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={menuVariants}
-            className="fixed inset-0 z-20 flex flex-col items-center justify-start bg-background border-0 shadow-none"
+            id="mobile-menu"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden bg-background/95 backdrop-blur-md border-t border-border/60"
+            role="menu"
+            aria-label="移动端导航菜单"
           >
-            <div className="flex flex-col items-center justify-start h-full pt-24 w-full p-6">
-              <nav className="flex flex-col items-center justify-start gap-1 w-full">
-                {NAV_LINKS.map((item, i) => (
-                  <motion.div
-                    key={item.href}
-                    custom={i}
-                    className="w-full text-start"
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="dark:text-white text-lg font-bold font-custom capitalize dark:hover:text-white/80 transition-colors inline-block py-2 relative group"
-                    >
-                      {item.label}
-                      <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-neutral-900 dark:bg-white group-hover:w-full transition-all duration-300 ease-in-out"></span>
-                    </Link>
-                  </motion.div>
-                ))}
-              </nav>
-              
-              <motion.div
-                custom={NAV_LINKS.length + 1}
-                className="mt-auto flex flex-col items-center gap-6"
-              >
-                <div className="flex flex-wrap items-center justify-center gap-x-2 text-center">
-                  <span className="text-muted-foreground text-sm" aria-label="copyright">
-                    2020 - {new Date().getFullYear()} &copy; All rights reserved.
-                  </span>
-                  <Separator orientation="vertical" className="hidden h-4! sm:block" />
-                  <p className="text-muted-foreground text-sm" aria-label="open-source description">
-                    <Link
-                      href="https://github.com/bx33661/portfolio"
-                      class="text-foreground"
-                      external
-                      underline>Open-source</Link
-                    > under MIT license
-                  </p>
-                </div>
-              </motion.div>
+            <div className="px-4 py-2 space-y-1">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    'block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary',
+                    activePath === link.href || activePath.startsWith(link.href + '/')
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-current={activePath === link.href ? 'page' : undefined}
+                  role="menuitem"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </header>
   )
 }
 

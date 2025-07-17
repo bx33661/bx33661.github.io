@@ -17,6 +17,7 @@ const options = {
 function Search({ searchList, initialPosts }) {
   const [query, setQuery] = useState('')
   const [filteredPosts, setFilteredPosts] = useState(initialPosts)
+  const [isSearching, setIsSearching] = useState(false)
 
   const processedSearchList = useMemo(
     () =>
@@ -39,70 +40,70 @@ function Search({ searchList, initialPosts }) {
 
   const handleOnSearch = useCallback(
     debounce((searchQuery) => {
-      if (searchQuery.length > 2) {
-        const results = fuse
-          .search(searchQuery.toLowerCase())
-          .map((result) => result.item)
-        setFilteredPosts(results)
-      } else {
+      setIsSearching(true)
+      try {
+        if (searchQuery.length > 2) {
+          const results = fuse
+            .search(searchQuery.toLowerCase())
+            .map((result) => result.item)
+          setFilteredPosts(results)
+        } else {
+          setFilteredPosts(initialPosts)
+        }
+      } catch (error) {
+        // 优雅处理搜索错误
         setFilteredPosts(initialPosts)
+      } finally {
+        setIsSearching(false)
       }
-    }, 100),
+    }, 300),
     [fuse, initialPosts],
   )
 
   const handleInputChange = (event) => {
     const searchQuery = event.target.value
     setQuery(searchQuery)
+    
+    if (searchQuery.length > 2) {
+      setIsSearching(true)
+    }
+    
     handleOnSearch(searchQuery)
   }
 
   return (
-    <div>
-      <div>
-        <label
-          htmlFor="search"
-          className="text-foreground mb-2 block text-sm font-medium dark:text-white"
-        >
-          Search
-        </label>
+    <div className="w-full">
+      <div className="relative">
         <Input
-          type="text"
+          className="w-full pr-10"
+          placeholder="搜索文章标题、描述或标签..."
+          type="search"
           value={query}
           onChange={handleInputChange}
-          name="search"
-          id="search"
-          autoComplete="off"
-          autoCorrect="off"
-          placeholder="Search posts"
-          className="w-full outline-none focus:ring-0 dark:bg-neutral-900 dark:text-white"
+          aria-label="搜索博客文章"
         />
+        {isSearching && (
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+          </div>
+        )}
       </div>
-
-      <hr className="my-6 border-neutral-200 dark:border-neutral-700" />
-      <div className={cn('flex items-center justify-between', 'mb-4', !query && 'hidden')}>
-        <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
-          {filteredPosts.length} posts found
-        </h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          Search results for: <strong>{query}</strong>
-        </p>
-      </div>
-
+      
       <div className="mt-6">
-        <ul className="flex flex-col gap-4">
-          {filteredPosts.slice(0, 50).map((post, index) => (
-            <li key={post.id || post.slug || index}>
-              <BlogCardJSX entry={post} slug={post.slug || post.data.slug} />
-            </li>
-          ))}
-        </ul>
-
-        {filteredPosts.length === 0 && (
-          <div className="mt-12 text-center">
-            <p className="text-neutral-600 dark:text-neutral-400">
-              No posts found matching your search criteria.
+        {filteredPosts.length === 0 && query.length > 2 ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">
+              没有找到匹配 "{query}" 的文章
             </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              尝试使用不同的关键词或标签
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {filteredPosts.map((post) => (
+              <BlogCardJSX key={post.id} entry={post} slug={post.slug} />
+            ))}
           </div>
         )}
       </div>

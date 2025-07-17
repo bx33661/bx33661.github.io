@@ -16,6 +16,16 @@ import Favicons from './Favicons.astro'
   <meta name="google" content="notranslate" />
   <meta name="revisit-after" content="1 days" />
 
+  <!-- 性能优化：关键资源预加载 -->
+  <link rel="preload" href="/fonts/GeistVF.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/GeistMonoVF.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/ClashDisplay-Semibold.woff2" as="font" type="font/woff2" crossorigin />
+  
+  <!-- DNS预连接：外部资源 -->
+  <link rel="preconnect" href="https://analytics.ahrefs.com" />
+  <link rel="preconnect" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -34,6 +44,12 @@ import Favicons from './Favicons.astro'
     content="#121212"
     media="(prefers-color-scheme: light)"
   />
+
+  <!-- 安全性增强 -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
 
   <link rel="sitemap" href="/sitemap-index.xml" />
   <link rel="manifest" href="/site.webmanifest" />

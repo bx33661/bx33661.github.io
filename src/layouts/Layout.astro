@@ -19,7 +19,19 @@ const {
 <html lang={SITE.locale}>
   <Head>
     <slot name="head" />
-    <script is:inline src="https://analytics.ahrefs.com/analytics.js" data-key="+FHMgRP7/Duxaq5D0gZtJw" async></script>
+    <!-- 优化分析脚本加载：延迟加载，减少对性能的影响 -->
+    <script is:inline>
+      // 延迟加载 Ahrefs 分析脚本
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          const script = document.createElement('script');
+          script.src = 'https://analytics.ahrefs.com/analytics.js';
+          script.setAttribute('data-key', '+FHMgRP7/Duxaq5D0gZtJw');
+          script.async = true;
+          document.head.appendChild(script);
+        }, 2000);
+      });
+    </script>
     <link rel="sitemap" href="/sitemap.xml" />
     <script is:inline data-astro-rerun>
       (function() {
@@ -39,7 +51,7 @@ const {
             }
           });
         } catch (error) {
-          console.warn('Theme setting failed:', error);
+          // 静默处理主题设置错误
         }
       })();
     </script>
@@ -62,15 +74,24 @@ const {
       </main>
       <Footer />
     </div>
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-QVK59XQK72"
-    ></script>
+    <!-- 优化 Google Analytics 加载 -->
     <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-QVK59XQK72");
+      // 延迟加载 Google Analytics
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          const script = document.createElement('script');
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=G-QVK59XQK72';
+          script.async = true;
+          document.head.appendChild(script);
+          
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag("js", new Date());
+          gtag("config", "G-QVK59XQK72");
+        }, 1000);
+      });
     </script>
   </body>
 </html>

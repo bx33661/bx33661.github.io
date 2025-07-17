@@ -2,7 +2,7 @@
 name: 'Api-finder'
 description: ''
 tags: ['python', 'api', 'finder', 'program']
-image: '../../../public/static/modern-portfolio.png'
+image: '../../../public/static/finder.png'
 link: 'https://github.com/jujubooom/Api-Finder'
 startDate: '2025-07-01'
 ---

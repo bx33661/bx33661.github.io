@@ -30,21 +30,13 @@ slug: "k8x9w2m7"  # 8位随机字符串
 - 自动去重：确保不与现有slug冲突
 - 示例：`k8x9w2m7`, `p3n5x8z2`, `m9w4k7q1`
 
-## 🛠️ 生成随机Slug
+### 生成随机Slug
 
-你可以使用Node.js生成随机slug：
+```typescript
+import { generateRandomSlug } from '@/lib/utils'
 
-```javascript
-function generateRandomSlug(length = 8) {
-  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length))
-  }
-  return result
-}
-
-console.log(generateRandomSlug()) // 输出：例如 "k8x9w2m7"
+// 生成一个8位随机字符串
+const slug = generateRandomSlug() // 输出：例如 "k8x9w2m7"
 ```
 
 ## 📁 文件结构

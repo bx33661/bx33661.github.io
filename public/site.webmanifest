@@ -1,6 +1,7 @@
 {
-  "name": "Cojocaru David",
-  "short_name": "CD",
+  "name": "BX - 安全研究与技术分享",
+  "short_name": "BX",
+  "description": "BX的个人网站，专注安全研究、技术分享和项目展示",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -13,9 +14,32 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  "start_url": "/",
+  "theme_color": "#121212",
+  "background_color": "#121212",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "zh-CN",
+  "categories": ["technology", "education", "productivity"],
+  "screenshots": [
+    {
+      "src": "/ogImage.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
 }

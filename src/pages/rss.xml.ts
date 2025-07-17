@@ -19,7 +19,8 @@ export async function GET(context: APIContext) {
       })),
     })
   } catch (error) {
-    console.error('Error generating RSS feed:', error)
-    return new Response('Error generating RSS feed', { status: 500 })
+    // 静默处理错误，避免在生产环境中暴露敏感信息
+    // 可选：发送到错误监控服务
+    return new Response('Internal Server Error', { status: 500 })
   }
 }

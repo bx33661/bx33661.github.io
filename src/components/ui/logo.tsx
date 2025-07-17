@@ -9,9 +9,11 @@ function Logo({ className }: { className?: string }) {
         "w-full h-auto object-cover rounded-lg transition-all duration-300 hover:scale-105",
         className
       )}
-      loading="lazy"
+      loading="eager"
+      fetchPriority="high"
       width={350}
       height={266}
+      decoding="async"
     />
   )
 }
