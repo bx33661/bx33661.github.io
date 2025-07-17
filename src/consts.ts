@@ -3,7 +3,7 @@ import type { IconMap, SocialLink, Site } from '@/types'
 export const SITE: Site = {
   title: 'BX',
   description:
-    "我是一名来自中国的开发者，热衷于创建创新的Web应用程序。我在前端和后端开发方面都有经验，始终渴望学习新技术并提高自己的技能。我享受与团队合作，为有意义的项目做出贡献。",
+    "我是一名来自中国的开发者，专注于安全研究和项目学习。我享受与团队合作，为有意义的项目做出贡献。",
   href: 'https://www.bx33661.com',
   author: 'BX',
   locale: 'zh-CN',
@@ -35,7 +35,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'GitHub',
   },
   {
-    href: 'mailto:bx@example.com',
+    href: 'bx33661@gmail.com',
     label: 'Email',
   },
   {
