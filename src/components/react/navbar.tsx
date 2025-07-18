@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { NAV_LINKS } from '@/consts'
 import { cn } from '@/lib/utils'
@@ -81,25 +82,41 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {isOpen && (
-        <div 
-          id="mobile-menu"
-          className="md:hidden border-t bg-background/95 backdrop-blur"
-        >
-          <nav className="container px-4 py-4 space-y-3">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="block px-3 py-2 text-base font-medium text-foreground/80 hover:text-foreground transition-colors rounded-md hover:bg-accent"
-                onClick={() => setIsOpen(false)}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            id="mobile-menu"
+            className="md:hidden border-t bg-background/95 backdrop-blur"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+          >
+            <motion.nav 
+              className="container px-4 py-4 space-y-3"
+              initial={{ y: -10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -10, opacity: 0 }}
+              transition={{ duration: 0.2, delay: 0.1 }}
+            >
+              {NAV_LINKS.map((link, index) => (
+                <motion.a
+                  key={link.href}
+                  href={link.href}
+                  className="block px-3 py-2 text-base font-medium text-foreground/80 hover:text-foreground transition-colors rounded-md hover:bg-accent"
+                  onClick={() => setIsOpen(false)}
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: -20, opacity: 0 }}
+                  transition={{ duration: 0.2, delay: 0.1 + index * 0.05 }}
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+            </motion.nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }
