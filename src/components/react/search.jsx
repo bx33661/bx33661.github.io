@@ -3,7 +3,6 @@ import { useState, useMemo, useCallback } from 'react'
 import { Input } from '@/components/ui/input'
 import BlogCardJSX from './blog-card'
 import debounce from 'lodash.debounce'
-import { cn } from '@/lib/utils'
 
 const options = {
   keys: ['data.title', 'data.description', 'data.tags'],

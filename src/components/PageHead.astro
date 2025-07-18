@@ -1,21 +1,24 @@
 ---
 import { SITE } from '@/consts'
-import { getAllPosts } from '@/lib/data-utils'
-interface Props {
+
+export interface Props {
   title?: string
   description?: string
   image?: string
-  type?: 'website' | 'article'
+  article?: boolean
+  publishedTime?: string
+  modifiedTime?: string
+  tags?: string[]
+  canonicalURL?: string
 }
 
 const { 
   title = SITE.title, 
   description = SITE.description,
   image = new URL('/ogImage.png', Astro.site).toString(),
-  type = 'website'
+  article = false
 } = Astro.props
 
-const posts = await getAllPosts()
 const canonicalUrl = Astro.url.toString()
 ---
 
@@ -30,18 +33,20 @@ const canonicalUrl = Astro.url.toString()
 <meta name="language" content="zh-CN" />
 <meta name="revisit-after" content="7 days" />
 
-<!-- Open Graph 增强 -->
+<!-- 增强的Open Graph标签 -->
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={image} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={title} />
-<meta property="og:type" content={type} />
+<meta property="og:type" content={article ? 'article' : 'website'} />
 <meta property="og:locale" content={SITE.locale} />
 <meta property="og:locale:alternate" content="en_US" />
 <meta property="og:site_name" content={SITE.title} />
 <meta property="og:url" content={canonicalUrl} />
 
-<!-- Twitter Cards 增强 -->
+<!-- Twitter Cards -->
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={image} />
@@ -52,7 +57,8 @@ const canonicalUrl = Astro.url.toString()
 <meta name="twitter:domain" content={SITE.href} />
 
 <!-- 结构化数据增强 -->
-<script type="application/ld+json" is:inline set:html={JSON.stringify({
+<script type="application/ld+json" is:inline>
+{
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -99,10 +105,34 @@ const canonicalUrl = Astro.url.toString()
       },
       "primaryImageOfPage": {
         "@type": "ImageObject",
-        "url": image
-      },
-      "datePublished": new Date().toISOString(),
-      "dateModified": new Date().toISOString()
+        "url": image,
+        "width": 1200,
+        "height": 630
+      }
     }
   ]
-})} />
+}
+</script>
+
+<!-- 安全头部 -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="X-Frame-Options" content="DENY" />
+<meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+
+<!-- DNS 预取 -->
+<link rel="dns-prefetch" href="//fonts.googleapis.com" />
+<link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+
+<!-- 字体预加载 -->
+<link rel="preload" href="/fonts/GeistVF.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/GeistMonoVF.woff2" as="font" type="font/woff2" crossorigin />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- RSS Feed -->
+<link rel="alternate" type="application/rss+xml" title={`${SITE.title} RSS Feed`} href={`${SITE.href}/rss.xml`} />
+
+<!-- Sitemap -->
+<link rel="sitemap" type="application/xml" href={`${SITE.href}/sitemap.xml`} />
