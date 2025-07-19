@@ -12,16 +12,24 @@ import SocialIcons from './SocialIcons.astro'
     <SocialIcons links={SOCIAL_LINKS} />
     <div class="flex flex-wrap items-center justify-center gap-x-2 text-center">
       <span class="text-muted-foreground text-sm" aria-label="copyright">
-        2020 - {new Date().getFullYear()} &copy; All rights reserved.
+        2020 - {new Date().getFullYear()} &copy; BX All rights reserved.
       </span>
       <Separator orientation="vertical" className="hidden h-4! sm:block" />
       <p class="text-muted-foreground text-sm" aria-label="open-source description">
         <Link
-          href="https://github.com/cojocaru-david/portfolio"
+          href="https://github.com/bx33661/bx33661.github.io"
           class="text-foreground"
           external
           underline>Open-source</Link
         > under MIT license
+      </p>
+      <Separator orientation="vertical" className="hidden h-4! sm:block" />
+      <p class="text-muted-foreground text-sm" aria-label="filing information">
+        <Link
+          href="https://beian.miit.gov.cn/"
+          class="text-foreground"
+          external
+          underline>琼ICP备2024046051号-1</Link>
       </p>
     </div>
   </div>
