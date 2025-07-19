@@ -101,6 +101,48 @@ const currentUrl = Astro.url;
       ))}
     </div>
 
+    <section class="mt-12">
+      <div class="flex items-center gap-2 mb-6">
+        <Icon name="lucide:users" class="h-5 w-5 text-primary" />
+        <h2 class="text-2xl font-bold">组织和朋友</h2>
+      </div>
+      <p class="text-muted-foreground mb-8">以下是一些相关的组织和朋友链接：</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="group p-4 rounded-lg border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-md">
+          <a href="https://www.hnusec.com" class="block" target="_blank" rel="noopener noreferrer">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                <Icon name="lucide:external-link" class="h-4 w-4 text-primary" />
+              </div>
+              <h3 class="font-semibold text-foreground group-hover:text-primary transition-colors">HnuSec战队</h3>
+            </div>
+            <p class="text-sm text-muted-foreground">HnuSec战队, 海南大学网络安全战队</p>
+          </a>
+          <a href="https://example.com" class="block" target="_blank" rel="noopener noreferrer">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                <Icon name="lucide:external-link" class="h-4 w-4 text-primary" />
+              </div>
+              <h3 class="font-semibold text-foreground group-hover:text-primary transition-colors">示例组织</h3>
+            </div>
+            <p class="text-sm text-muted-foreground">组织描述</p>
+          </a>
+        </div>
+        <div class="group p-4 rounded-lg border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-md">
+          <a href="http://www.bx333661.com" class="block" target="_blank" rel="noopener noreferrer">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                <Icon name="lucide:external-link" class="h-4 w-4 text-primary" />
+              </div>
+              <h3 class="font-semibold text-foreground group-hover:text-primary transition-colors">朋友链接1</h3>
+            </div>
+            <p class="text-sm text-muted-foreground">Bpple</p>
+          </a>
+        </div>
+        <!-- 添加更多链接 -->
+      </div>
+    </section>
+
     <div class="mt-16 mb-16">
       <PaginationComponent
         currentPage={page.currentPage}
