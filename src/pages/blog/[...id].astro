@@ -8,7 +8,7 @@ import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import Layout from '@/layouts/Layout.astro'
-import { getAdjacentPosts, getAllPostSlugs } from '@/lib/data-utils'
+import { getAdjacentPosts, getAllPostSlugs, getRelatedPosts } from '@/lib/data-utils'
 import { formatDate, readingTime } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { render } from 'astro:content'
@@ -26,6 +26,7 @@ const { post } = Astro.props
 const currentSlug = Astro.params.id // 这里获取的是slug
 const { Content, headings } = await render(post)
 const { next, prev } = await getAdjacentPosts(currentSlug)
+const relatedPosts = await getRelatedPosts(post, 3)
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -53,7 +54,7 @@ const currentUrl = Astro.url;
     set:html={JSON.stringify(structuredData)}
   />
   <section
-    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-lg)-2rem),100%)_minmax(0px,1fr)] gap-y-6"
+    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-lg)-2rem),100%)_minmax(0px,1fr)] gap-y-6 xl:grid-cols-[300px_minmax(0,800px)_300px] xl:gap-x-16"
   >
     <div class="col-start-2">
       <Breadcrumbs
@@ -107,12 +108,12 @@ const currentUrl = Astro.url;
 
     {headings.length > 0 && <TableOfContents headings={headings} />}
 
-    <article class="prose col-start-2 max-w-none">
+    <article class="prose col-start-2 max-w-none xl:max-w-[800px] xl:mx-auto">
       <Content />
     </article>
 
     <aside
-      class="group col-start-2 rounded-xl border p-4 xl:sticky xl:top-26 xl:col-start-3 xl:mr-auto xl:ml-8 xl:h-[calc(100vh-5rem)] xl:max-w-fit xl:rounded-none xl:border-none xl:p-0"
+      class="group col-start-2 rounded-xl border p-4 xl:sticky xl:top-26 xl:col-start-3 xl:h-[calc(100vh-5rem)] xl:min-w-[300px] xl:max-w-[300px] xl:rounded-none xl:border-none xl:p-0"
     >
       <hr class="mb-8 hidden md:block" />
       <div class="mb-2">
@@ -122,7 +123,7 @@ const currentUrl = Astro.url;
         >
           Share this post
         </h2>
-        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 break-words">
           If you found this post helpful, consider sharing it with your friends
           or on social media. Your support helps me create more content like
           this.
@@ -211,6 +212,107 @@ const currentUrl = Astro.url;
 
       <hr class="my-8 hidden md:block" />
       
+      <!-- 文章统计信息 -->
+      <div class="mb-6">
+        <h2 class="font-custom text-xl font-bold text-neutral-900 dark:text-white mb-3">
+          <Icon name="lucide:bar-chart-3" class="size-5 inline mr-2" />
+          文章统计
+        </h2>
+        <div class="space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
+          <div class="flex justify-between">
+            <span>发布时间:</span>
+            <span>{formatDate(post.data.date)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>阅读时间:</span>
+            <span>{readingTime(post.body!)}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>字数统计:</span>
+            <span>{post.body?.length || 0} 字</span>
+          </div>
+          <div class="flex justify-between">
+            <span>标签数量:</span>
+            <span>{post.data.tags?.length || 0} 个</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-8 hidden md:block" />
+      
+      <!-- 作者信息 -->
+      <div class="mb-6">
+        <h2 class="font-custom text-xl font-bold text-neutral-900 dark:text-white mb-3">
+          <Icon name="lucide:user" class="size-5 inline mr-2" />
+          About the author
+        </h2>
+        <div class="flex items-center space-x-3 mb-3">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+            {(post.data.authors?.[0] || 'A').charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <div class="font-medium text-neutral-900 dark:text-white">
+              {post.data.authors?.[0] || 'Anonymous'}
+            </div>
+            <div class="text-sm text-neutral-500 dark:text-neutral-400">
+              在校学生 & 学习者
+            </div>
+          </div>
+        </div>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+          专注于网络安全、WEB技术和开发实践。分享实用的技术经验和安全知识。
+        </p>
+        <div class="flex space-x-2">
+          <Link href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer" class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+            <Icon name="line-md:github" class="size-5" />
+          </Link>
+          <Link href="https://twitter.com/bx33666" target="_blank" rel="noopener noreferrer" class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+            <Icon name="line-md:twitter" class="size-5" />
+          </Link>
+          <Link href="mailto:bx33661@gmail.com" class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+            <Icon name="lucide:mail" class="size-5" />
+          </Link>
+        </div>
+      </div>
+
+      <hr class="my-8 hidden md:block" />
+      
+      <!-- 相关文章 -->
+      {relatedPosts && relatedPosts.length > 0 && (
+        <div class="mb-6">
+          <h2 class="font-custom text-xl font-bold text-neutral-900 dark:text-white mb-3">
+            <Icon name="lucide:book-open" class="size-5 inline mr-2" />
+            Related Posts
+          </h2>
+          <div class="space-y-3">
+            {relatedPosts.slice(0, 3).map((relatedPost) => (
+              <Link
+                href={`/blog/${relatedPost.id}`}
+                class="block p-3 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors group"
+              >
+                <div class="font-medium text-neutral-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                  {relatedPost.data.title}
+                </div>
+                <div class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+                  {formatDate(relatedPost.data.date)}
+                </div>
+                {relatedPost.data.tags && relatedPost.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1 mt-2">
+                    {relatedPost.data.tags.slice(0, 2).map((tag) => (
+                      <span class="text-xs px-2 py-1 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <hr class="my-8 hidden md:block" />
+      
       <div class="mb-2 mt-4">
         <h2
           id="skills-title"
@@ -218,10 +320,10 @@ const currentUrl = Astro.url;
         >
           Enjoyed this blog?
         </h2>
-        <div class="text-sm text-neutral-500 dark:text-neutral-400 flex items-center flex-wrap">
+        <div class="text-sm text-neutral-500 dark:text-neutral-400 flex items-center flex-wrap break-words">
           Give it a star&nbsp;
           <Icon name="line-md:star" class="size-4 text-yellow-500" />&nbsp;on&nbsp;
-          <Link href="https://github.com/cojocaru-david/portfolio" target="_blank" rel="noopener noreferrer" class="text-primary underline flex items-center flex-warp gap-2">
+          <Link href="https://github.com/bx33661/bx33661.github.io" target="_blank" rel="noopener noreferrer" class="text-primary underline flex items-center flex-wrap gap-2">
             GitHub
             <Icon name="line-md:github" class="size-4" />
           </Link>
@@ -233,6 +335,15 @@ const currentUrl = Astro.url;
 
     <PostNavigation prevPost={prev} nextPost={next} />
   </section>
+
+  <!-- 阅读进度条 -->
+  <div class="fixed top-0 left-0 w-full h-1 bg-neutral-200 dark:bg-neutral-800 z-50">
+    <div 
+      id="reading-progress" 
+      class="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300"
+      style="width: 0%"
+    ></div>
+  </div>
 
   <Button
     variant="outline"
@@ -252,7 +363,31 @@ const currentUrl = Astro.url;
     document.addEventListener('astro:page-load', () => {
       const scrollToTopButton = document.getElementById('scroll-to-top')
       const footer = document.querySelector('footer')
+      const readingProgress = document.getElementById('reading-progress')
+      const article = document.querySelector('article')
 
+      // 阅读进度条功能
+      if (readingProgress && article) {
+        window.addEventListener('scroll', () => {
+          const articleRect = article.getBoundingClientRect()
+          const articleHeight = article.offsetHeight
+          const windowHeight = window.innerHeight
+          const scrollTop = window.scrollY
+          
+          // 计算阅读进度
+          const progress = Math.min(
+            Math.max(
+              (scrollTop + windowHeight - articleRect.top) / (articleHeight + windowHeight) * 100,
+              0
+            ),
+            100
+          )
+          
+          readingProgress.style.width = `${progress}%`
+        })
+      }
+
+      // 回到顶部按钮功能
       if (scrollToTopButton && footer) {
         scrollToTopButton.addEventListener('click', () => {
           window.scrollTo({ top: 0, behavior: 'smooth' })

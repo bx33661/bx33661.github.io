@@ -35,16 +35,8 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'GitHub',
   },
   {
-    href: 'bx33661@gmail.com',
+    href: 'mailto:bx33661@gmail.com',
     label: 'Email',
-  },
-  {
-    href: 'https://weibo.com/bx33661',
-    label: 'Weibo',
-  },
-  {
-    href: 'https://space.bilibili.com/bx33661',
-    label: 'Bilibili',
   },
   {
     href: '/rss.xml',

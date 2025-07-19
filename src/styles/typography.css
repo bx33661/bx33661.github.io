@@ -33,7 +33,8 @@
       @apply text-foreground mt-6 mb-4 scroll-m-20 text-base leading-normal font-medium;
     }
 
-    a {
+    /* 内部链接样式 */
+    a:not([href^="http"]) {
       @apply text-primary decoration-primary hover:decoration-primary/80 font-medium break-words underline underline-offset-4 transition-colors duration-200 ease-in-out;
     }
 

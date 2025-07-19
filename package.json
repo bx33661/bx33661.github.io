@@ -80,7 +80,8 @@
     "satori": "^0.15.2",
     "satori-html": "^0.3.2",
     "tailwind-merge": "^3.3.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.9",

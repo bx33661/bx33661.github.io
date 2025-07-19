@@ -194,3 +194,31 @@ export async function getProjectsFeaturedTags(maxCount: number): Promise<string[
 
   return Array.from(tags).slice(0, maxCount)
 }
+
+/**
+ * 获取相关文章（基于标签匹配）
+ * @param currentPost 当前文章
+ * @param count 返回文章数量
+ * @returns 相关文章数组
+ */
+export async function getRelatedPosts(
+  currentPost: CollectionEntry<'blog'>,
+  count: number = 3
+): Promise<CollectionEntry<'blog'>[]> {
+  const allPosts = await getAllPosts()
+  const currentTags = currentPost.data.tags || []
+  
+  // 计算每篇文章与当前文章的相似度
+  const postsWithScore = allPosts
+    .filter(post => post.id !== currentPost.id) // 排除当前文章
+    .map(post => {
+      const postTags = post.data.tags || []
+      const commonTags = currentTags.filter(tag => postTags.includes(tag))
+      const score = commonTags.length
+      return { post, score }
+    })
+    .filter(item => item.score > 0) // 只保留有共同标签的文章
+    .sort((a, b) => b.score - a.score) // 按相似度排序
+  
+  return postsWithScore.slice(0, count).map(item => item.post)
+}
