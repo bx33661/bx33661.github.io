@@ -8,7 +8,7 @@ tags:
   - "bx"
   - "data"
 authors:
-  - "bx33661"
+  - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "k8x9w2m8"          # 随机URL字符串
 ---

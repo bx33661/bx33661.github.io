@@ -8,7 +8,7 @@ tags:
   - "Flask"
   - "Nginx"
 authors:
-  - "bx33661"
+  - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "k8x9w2m7"          # 随机URL字符串
 ---
@@ -65,7 +65,7 @@ location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$ {
 import requests
 
 def main():
-    username = "bx33661.jpg"
+    username = "bx.jpg"
     base_url = "http://61.147.171.103:64936"
     password = "123456"
     

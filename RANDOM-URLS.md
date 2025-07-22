@@ -15,7 +15,7 @@ title: "我的新文章"
 description: "文章描述"
 date: 2024-01-15
 tags: ["技术", "前端"]
-authors: ["bx33661"]
+authors: ["bx"]
 draft: false
 slug: "k8x9w2m7"  # 8位随机字符串
 ---
