@@ -16,25 +16,37 @@ const {
   title = SITE.title, 
   description = SITE.description,
   image = new URL('/ogImage.png', Astro.site).toString(),
-  article = false
+  article = false,
+  tags = [],
+  publishedTime,
+  modifiedTime
 } = Astro.props
 
 const canonicalUrl = Astro.url.toString()
+const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
 ---
 
-<title>{`${SITE.title} - ${title}`}</title>
+<title>{fullTitle}</title>
 <meta name="description" content={description} />
 
 <!-- 增强的SEO标签 -->
-<meta name="keywords" content="bx, 安全研究, 技术分享, 网络安全, 编程, 博客" />
+<meta name="keywords" content={tags.length > 0 ? tags.join(', ') : "bx, 安全研究, 技术分享, 网络安全, 编程, 博客, CTF, Web安全, 应急响应"} />
 <meta name="author" content={SITE.author} />
 <meta name="creator" content={SITE.author} />
 <meta name="publisher" content={SITE.title} />
 <meta name="language" content="zh-CN" />
 <meta name="revisit-after" content="7 days" />
+<meta name="distribution" content="global" />
+<meta name="rating" content="general" />
+<meta name="copyright" content={`© ${new Date().getFullYear()} ${SITE.author}`} />
+
+<!-- 百度SEO优化 -->
+<meta name="baidu-site-verification" content="codeva-verify" />
+<meta name="360-site-verification" content="verify-code-here" />
+<meta name="sogou_site_verification" content="verify-code-here" />
 
 <!-- 增强的Open Graph标签 -->
-<meta property="og:title" content={title} />
+<meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={image} />
 <meta property="og:image:width" content="1200" />
@@ -45,18 +57,21 @@ const canonicalUrl = Astro.url.toString()
 <meta property="og:locale:alternate" content="en_US" />
 <meta property="og:site_name" content={SITE.title} />
 <meta property="og:url" content={canonicalUrl} />
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+{tags.map(tag => <meta property="article:tag" content={tag} />)}
 
 <!-- Twitter Cards -->
-<meta name="twitter:title" content={title} />
+<meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={image} />
 <meta name="twitter:image:alt" content={title} />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:creator" content={SITE.author} />
+<meta name="twitter:creator" content={`@${SITE.author}`} />
 <meta name="twitter:site" content={SITE.href} />
 <meta name="twitter:domain" content={SITE.href} />
 
-<!-- 结构化数据增强 -->
+<!-- 增强结构化数据 -->
 <script type="application/ld+json" is:inline>
 {
   "@context": "https://schema.org",
@@ -77,6 +92,11 @@ const canonicalUrl = Astro.url.toString()
           "urlTemplate": `${SITE.href}/blog?search={search_term_string}`
         },
         "query-input": "required name=search_term_string"
+      },
+      "inLanguage": "zh-CN",
+      "copyrightYear": new Date().getFullYear(),
+      "copyrightHolder": {
+        "@id": `${SITE.href}#person`
       }
     },
     {
@@ -84,8 +104,20 @@ const canonicalUrl = Astro.url.toString()
       "@id": `${SITE.href}#person`,
       "name": SITE.author,
       "url": SITE.href,
-      "sameAs": [],
+      "sameAs": [
+        "https://github.com/bx33661",
+        "mailto:bx33661@gmail.com"
+      ],
       "jobTitle": "安全研究员",
+      "description": "专注于网络安全研究、CTF竞赛和技术分享的安全研究员",
+      "knowsAbout": [
+        "网络安全",
+        "Web安全",
+        "CTF",
+        "应急响应",
+        "安全分析",
+        "Python编程"
+      ],
       "worksFor": {
         "@type": "Organization",
         "name": SITE.title
@@ -108,31 +140,30 @@ const canonicalUrl = Astro.url.toString()
         "url": image,
         "width": 1200,
         "height": 630
+      },
+      "datePublished": publishedTime || new Date().toISOString(),
+      "dateModified": modifiedTime || new Date().toISOString(),
+      "author": {
+        "@id": `${SITE.href}#person`
+      },
+      "publisher": {
+        "@id": `${SITE.href}#person`
+      },
+      "inLanguage": "zh-CN",
+      "potentialAction": {
+        "@type": "ReadAction",
+        "target": canonicalUrl
       }
     }
   ]
 }
 </script>
 
-<!-- 安全头部 -->
-<meta http-equiv="X-Content-Type-Options" content="nosniff" />
-<meta http-equiv="X-Frame-Options" content="DENY" />
-<meta http-equiv="X-XSS-Protection" content="1; mode=block" />
-<meta name="referrer" content="strict-origin-when-cross-origin" />
-
-<!-- DNS 预取 -->
-<link rel="dns-prefetch" href="//fonts.googleapis.com" />
-<link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
-
-<!-- 字体预加载 -->
-<link rel="preload" href="/fonts/GeistVF.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" href="/fonts/GeistMonoVF.woff2" as="font" type="font/woff2" crossorigin />
-
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalUrl} />
 
-<!-- RSS Feed -->
-<link rel="alternate" type="application/rss+xml" title={`${SITE.title} RSS Feed`} href={`${SITE.href}/rss.xml`} />
-
-<!-- Sitemap -->
-<link rel="sitemap" type="application/xml" href={`${SITE.href}/sitemap.xml`} />
+<!-- 预连接重要资源 -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://www.google-analytics.com" />
+<link rel="dns-prefetch" href="https://www.baidu.com" />
+<link rel="dns-prefetch" href="https://so.com" />

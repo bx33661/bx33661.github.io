@@ -1,0 +1,10 @@
+Contact: mailto:bx33661@gmail.com
+Expires: 2025-12-31T23:59:59.000Z
+Preferred-Languages: zh-CN, en
+Canonical: https://www.bx33661.com/.well-known/security.txt
+Policy: https://www.bx33661.com/security-policy
+Acknowledgments: https://www.bx33661.com/security-acknowledgments
+
+# 安全研究联系方式
+# 如果您发现了安全漏洞，请通过以上邮箱联系我们
+# 我们承诺在收到报告后24小时内回复 
