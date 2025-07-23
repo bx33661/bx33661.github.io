@@ -1,8 +1,28 @@
-**<font style="color:rgb(27, 27, 27);">XPath</font>**<font style="color:rgb(27, 27, 27);"> 是一种可以访问 XML 文件中的节和内容的查询语言。</font>
+---
+title: "Xpath注入学习和分析"
+description: "Xpath注入学习和分析"
+date: 2025-07-23
+tags:
+  - "Xpath"
+  - "Security"
+  - "bx"
+  - "xml"
+authors:
+  - "bx"
+draft: false              # 设为 true 则为草稿
+slug: "bx33661xpath"          # 随机URL字符串
+---
+
+<meta name="referrer" content="no-referrer">
+
+# Xpath注入学习和分析
+
+**XPath** 是一种可以访问 XML 文件中的节和内容的查询语言。
 
 
 
-## <font style="color:rgb(27, 27, 27);">快速获取 Xpath</font>
+## 快速获取 Xpath
+
 + 就是手动获取
 
 现代浏览器都支持这个 Xpath 路径复制
@@ -71,12 +91,12 @@ $x("//*[@id='16858669']/div/h2/a")[0]?.style.border = "3px solid red"
 ## Xpath 语法
 常用的语法
 
-+ `<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">/</font>`<font style="color:rgb(31, 35, 40);"> </font><font style="color:rgb(31, 35, 40);">- 选择直接子节点</font>
-+ `<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">//</font>`<font style="color:rgb(31, 35, 40);"> </font><font style="color:rgb(31, 35, 40);">- 选择任意位置的后代节点</font>
-+ `<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">@</font>`<font style="color:rgb(31, 35, 40);"> </font><font style="color:rgb(31, 35, 40);">- 选择属性</font>
-+ `<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">[]</font>`<font style="color:rgb(31, 35, 40);"> - 谓语，用于筛选条件</font>
++ 选择直接子节点
++ `//` 选择任意位置的后代节点
++ `@` 选择属性
++ `[]` - 谓语，用于筛选条件
 
-<font style="color:rgb(31, 35, 40);">常用函数</font>
+常用函数    
 
 ```javascript
 # 字符串函数
@@ -403,9 +423,8 @@ def safe_xpath_query(username, password):
 
 最后一种防御就是
 
-<font style="color:rgb(0, 0, 0);">XML </font>**<font style="color:rgb(0, 0, 0);">当作树</font>**<font style="color:rgb(0, 0, 0);"> → 直接取属性 → </font>**<font style="color:rgb(0, 0, 0);">不走字符串</font>**<font style="color:rgb(0, 0, 0);"> → 天生安全。</font>
+XML 当作树 → 直接取属性 → 不走字符串 → 天生安全。
 
-### 
 ### 使用ORM框架
 对于XML数据，
 
