@@ -16,24 +16,35 @@ import Favicons from './Favicons.astro'
   <meta name="google" content="notranslate" />
   <meta name="revisit-after" content="1 days" />
 
-  <!-- 性能优化：关键资源预加载 -->
-  <link rel="preload" href="/fonts/GeistVF.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/GeistMonoVF.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/ClashDisplay-Semibold.woff2" as="font" type="font/woff2" crossorigin />
+  <!-- Core Web Vitals 优化 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+  <link rel="preconnect" href="https://analytics.ahrefs.com" crossorigin />
   
-  <!-- DNS预连接：外部资源 -->
-  <link rel="preconnect" href="https://analytics.ahrefs.com" />
-  <link rel="preconnect" href="https://www.googletagmanager.com" />
-  <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+  <!-- 关键资源预加载 - 按优先级排序 -->
+  <link rel="preload" href="/fonts/GeistVF.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/ClashDisplay-Semibold.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/GeistMonoVF.woff2" as="font" type="font/woff2" crossorigin />
+  
+  <!-- 关键CSS预加载 -->
+  <link rel="preload" href="/src/styles/global.css" as="style" />
+  
+  <!-- DNS 预解析 - 减少连接延迟 -->
+  <link rel="dns-prefetch" href="//res.cloudinary.com" />
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+  <link rel="dns-prefetch" href="//www.googletagmanager.com" />
 
+  <!-- PWA支持 -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="BX" />
   <meta
     name="format-detection"
     content="telephone=no,date=no,address=no,email=no,url=no"
   />
 
+  <!-- 主题颜色配置 -->
   <meta
     name="theme-color"
     content="#121212"
@@ -41,17 +52,23 @@ import Favicons from './Favicons.astro'
   />
   <meta
     name="theme-color"
-    content="#121212"
+    content="#ffffff"
     media="(prefers-color-scheme: light)"
   />
+  <meta name="msapplication-TileColor" content="#121212" />
 
   <!-- 安全性增强 -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="X-Frame-Options" content="DENY" />
   <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta 
+    http-equiv="Content-Security-Policy" 
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com;" 
+  />
 
-  <link rel="sitemap" href="/sitemap.xml" />
+  <!-- 关键文件链接 -->
+  <link rel="sitemap" href="/sitemap-index.xml" />
   <link rel="manifest" href="/site.webmanifest" />
   <link
     rel="alternate"
@@ -59,6 +76,40 @@ import Favicons from './Favicons.astro'
     title={SITE.title}
     href={new URL('rss.xml', Astro.site)}
   />
+
+  <!-- 性能优化脚本 -->
+  <script is:inline>
+    // 预加载重要页面
+    const criticalPages = ['/blog', '/projects', '/about'];
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        criticalPages.forEach(page => {
+          const link = document.createElement('link');
+          link.rel = 'prefetch';
+          link.href = page;
+          document.head.appendChild(link);
+        });
+      });
+    }
+
+    // LCP 优化 - 预加载首屏图片
+    const preloadHeroImage = () => {
+      const heroImg = document.querySelector('[data-hero-image]');
+      if (heroImg && heroImg.dataset.src) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = heroImg.dataset.src;
+        link.as = 'image';
+        document.head.appendChild(link);
+      }
+    };
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', preloadHeroImage);
+    } else {
+      preloadHeroImage();
+    }
+  </script>
 
   <Favicons />
 

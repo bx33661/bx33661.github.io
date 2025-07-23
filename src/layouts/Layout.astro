@@ -73,6 +73,22 @@ const {
       </main>
       <Footer />
     </div>
+    <!-- PWA Service Worker 注册 -->
+    <script is:inline>
+      // 注册 Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('SW注册成功: ', registration.scope);
+            })
+            .catch(function(error) {
+              console.log('SW注册失败: ', error);
+            });
+        });
+      }
+    </script>
+
     <!-- 优化 Google Analytics 加载 -->
     <script is:inline>
       // 延迟加载 Google Analytics
