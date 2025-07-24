@@ -1,0 +1,144 @@
+---
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+import { Icon } from 'astro-icon/components'
+
+// 这里可以配置相册图片，将来可以移到配置文件或从数据库获取
+const galleryImages = [
+  {
+    src: '/gallery/sample1.jpg',
+    alt: '生活照片1',
+    title: '美好的一天',
+    description: '记录生活中的美好瞬间',
+    date: '2024-01-15'
+  },
+  {
+    src: '/gallery/sample2.jpg', 
+    alt: '生活照片2',
+    title: '旅行回忆',
+    description: '旅途中的风景',
+    date: '2024-01-10'
+  },
+  {
+    src: '/gallery/sample3.jpg',
+    alt: '生活照片3', 
+    title: '日常时光',
+    description: '平凡中的温暖',
+    date: '2024-01-05'
+  }
+  // 可以继续添加更多图片
+]
+
+const currentUrl = Astro.url;
+---
+
+<Layout canonicalUrl={currentUrl}>
+  <PageHead slot="head" title="生活相册 - BX/bpple" />
+  
+  <div class="flex flex-col gap-y-8 px-4 py-8 sm:px-8 lg:px-16">
+    <!-- 页面标题 -->
+    <section class="text-center">
+      <h1 class="font-custom text-foreground text-4xl font-extrabold sm:text-5xl mb-4">
+        生活相册
+      </h1>
+      <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+        记录生活中的美好瞬间，分享日常的点点滴滴
+      </p>
+      <div class="mt-6 flex items-center justify-center gap-2">
+        <span class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1">
+          共 {galleryImages.length} 张照片
+        </span>
+      </div>
+    </section>
+
+    <!-- 相册网格 -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {galleryImages.map((image, index) => (
+        <div class="group relative overflow-hidden rounded-xl bg-secondary/20 hover:shadow-lg transition-all duration-300 ease-in-out hover:scale-[1.02]">
+          <!-- 图片容器 -->
+          <div class="aspect-square relative overflow-hidden">
+                         <img 
+               src={image.src}
+               alt={image.alt}
+               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+               loading={index < 6 ? 'eager' : 'lazy'}
+               onerror="this.src='/placeholder-image.jpg'"
+             />
+            <!-- 悬浮遮罩 -->
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <Icon name="lucide:zoom-in" class="w-8 h-8 text-white" />
+            </div>
+          </div>
+          
+          <!-- 图片信息 -->
+          <div class="p-4 space-y-2">
+            <h3 class="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">
+              {image.title}
+            </h3>
+            <p class="text-muted-foreground text-sm leading-relaxed">
+              {image.description}
+            </p>
+            <div class="flex items-center gap-2 text-muted-foreground text-xs">
+              <Icon name="lucide:calendar" class="w-3 h-3" />
+              <time datetime={image.date}>
+                {new Date(image.date).toLocaleDateString('zh-CN', {
+                  year: 'numeric',
+                  month: 'long', 
+                  day: 'numeric'
+                })}
+              </time>
+            </div>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <!-- 空状态提示 -->
+    {galleryImages.length === 0 && (
+      <section class="text-center py-16">
+        <Icon name="lucide:image" class="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+        <h3 class="text-xl font-semibold text-foreground mb-2">暂无照片</h3>
+        <p class="text-muted-foreground">
+          还没有上传任何照片，敬请期待！
+        </p>
+      </section>
+    )}
+
+    <!-- 加载更多按钮 (可选) -->
+    <section class="text-center pt-8">
+      <button 
+        class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled
+      >
+        <Icon name="lucide:plus" class="w-4 h-4" />
+        加载更多
+      </button>
+    </section>
+
+    <!-- 返回首页链接 -->
+    <section class="text-center pt-4">
+      <Link 
+        href="/"
+        class="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+      >
+        <Icon name="lucide:arrow-left" class="w-4 h-4" />
+        返回首页
+      </Link>
+    </section>
+  </div>
+
+  <!-- 图片查看模态框 (可选扩展功能) -->
+  <script>
+    // 可以在这里添加图片点击放大功能
+    document.addEventListener('DOMContentLoaded', function() {
+      const images = document.querySelectorAll('.group img');
+      images.forEach(img => {
+                 img.addEventListener('click', function(this: HTMLImageElement) {
+           // 这里可以实现图片放大查看功能
+           console.log('点击了图片:', this.alt);
+         });
+      });
+    });
+  </script>
+</Layout> 

@@ -1,0 +1,120 @@
+---
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import { Badge } from '@/components/ui/badge'
+import Layout from '@/layouts/Layout.astro'
+import { getAllPosts, getAllPostSlugs } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
+import { formatDate } from '@/lib/utils'
+
+const allPosts = await getAllPosts()
+const allPostSlugs = await getAllPostSlugs()
+
+// 为文章添加slug信息
+const postsWithSlug = allPosts.map(post => {
+  const postSlugData = allPostSlugs.find(({ post: p }) => p.id === post.id)
+  return { ...post, slug: postSlugData?.slug || post.data.slug || 'unknown' }
+})
+
+// 按年份分组文章
+const postsByYear = postsWithSlug.reduce((acc, post) => {
+  const year = post.data.date.getFullYear()
+  if (!acc[year]) {
+    acc[year] = []
+  }
+  acc[year].push(post)
+  return acc
+}, {} as Record<number, typeof postsWithSlug>)
+
+// 按年份降序排列
+const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a)
+
+const currentUrl = Astro.url;
+---
+
+<Layout canonicalUrl={currentUrl}>
+  <PageHead slot="head" title="文章归档 - BX/bpple" />
+  
+  <div class="flex flex-col gap-y-8 px-4 py-8 sm:px-8 lg:px-16">
+    <!-- 页面标题 -->
+    <section class="text-center">
+      <h1 class="font-custom text-foreground text-4xl font-extrabold sm:text-5xl mb-4">
+        文章归档
+      </h1>
+      <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+        我发布的所有文章，按年份归档整理
+      </p>
+      <div class="mt-6 flex items-center justify-center gap-2">
+        <span class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1">
+          共 {allPosts.length} 篇文章
+        </span>
+      </div>
+    </section>
+
+    <!-- 文章列表 -->
+    <section class="space-y-12">
+      {years.map(year => (
+        <div class="space-y-6">
+          <!-- 年份标题 -->
+          <div class="flex items-center gap-4">
+            <h2 class="text-3xl font-bold text-foreground">{year}</h2>
+            <div class="flex-1 h-px bg-border"></div>
+            <span class="text-muted-foreground text-sm bg-secondary px-3 py-1 rounded-full">
+              {postsByYear[year].length} 篇
+            </span>
+          </div>
+
+          <!-- 该年份的文章 -->
+          <div class="space-y-4">
+            {postsByYear[year].map(post => (
+              <article class="group hover:bg-secondary/50 rounded-xl border p-6 transition-all duration-300 ease-in-out hover:shadow-md">
+                <a href={`/blog/${post.slug}`} class="block">
+                  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="grow space-y-2">
+                      <h3 class="text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-200">
+                        {post.data.title}
+                      </h3>
+                      <p class="text-muted-foreground text-sm leading-relaxed">
+                        {post.data.description}
+                      </p>
+                      
+                      {post.data.tags && (
+                        <div class="flex flex-wrap gap-2">
+                          {post.data.tags.map((tag, index) => (
+                            <Badge variant="secondary" className="text-xs">
+                              <Icon name="lucide:hash" class="w-3 h-3 mr-1" />
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div class="flex items-center gap-3 text-muted-foreground text-sm shrink-0">
+                      <Icon name="lucide:calendar" class="w-4 h-4" />
+                      <time datetime={post.data.date.toISOString()}>
+                        {formatDate(post.data.date)}
+                      </time>
+                      <Icon name="lucide:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+                    </div>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <!-- 返回首页链接 -->
+    <section class="text-center pt-8">
+      <Link 
+        href="/"
+        class="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+      >
+        <Icon name="lucide:arrow-left" class="w-4 h-4" />
+        返回首页
+      </Link>
+    </section>
+  </div>
+</Layout> 
