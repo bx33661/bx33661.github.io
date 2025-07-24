@@ -44,6 +44,14 @@ export const NAV_LINKS: SocialLink[] = [
     href: '/blog',
     label: '博客',
   },
+  {
+    href: '/archive',
+    label: '归档',
+  },
+  {
+    href: '/gallery',
+    label: '相册',
+  },
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [
