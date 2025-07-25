@@ -4,7 +4,7 @@ function BuyMeCoffee({ classname }: { classname?: string }) {
   return (
     <>
       <a
-        href='https://ko-fi.com/cojoo'
+        href='http://www.bx33661.com/support'
         target='_blank'
         className={cn(
           'border relative group w-36 mx-auto cursor-pointer h-32 grid place-content-center p-10 py-14 bg-primary  rounded-md  overflow-hidden',
