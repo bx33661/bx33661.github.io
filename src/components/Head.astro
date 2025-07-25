@@ -26,13 +26,15 @@ import Favicons from './Favicons.astro'
 
   <!-- Core Web Vitals 优化 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
   <link rel="preconnect" href="https://analytics.ahrefs.com" crossorigin />
   
-  <!-- 关键资源预加载 - 按优先级排序 -->
-  <link rel="preload" href="/fonts/GeistVF.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/ClashDisplay-Semibold.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/GeistMonoVF.woff2" as="font" type="font/woff2" crossorigin />
+  <!-- Google Fonts: Inter字体 + 中文字体支持 -->
+  <link 
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" 
+    rel="stylesheet" 
+  />
   
   <!-- 关键CSS预加载 -->
   <link rel="preload" href="/src/styles/global.css" as="style" />

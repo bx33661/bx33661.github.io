@@ -3,35 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@font-face {
-  font-family: 'Geist';
-  src: url('/fonts/GeistVF.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/GeistMonoVF.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'ClashDisplay-Semibold';
-  src:
-    url('/fonts/ClashDisplay-Semibold.woff2') format('woff2'),
-    url('/fonts/ClashDisplay-Semibold.woff') format('woff'),
-    url('/fonts/ClashDisplay-Semibold.ttf') format('truetype');
-  font-weight: 400;
-  font-display: swap;
-  font-style: normal;
-}
+/* 字体配置：方案1 - 经典现代风格 */
+/* 使用Google Fonts: Inter + JetBrains Mono + Playfair Display */
 
 .font-custom {
-  font-family: 'ClashDisplay-Semibold';
+  font-family: var(--font-sans);
+  font-weight: 600;
 }
 
 :root {
@@ -70,11 +47,11 @@
   --radius: 0.5rem;
 
   --font-sans:
-    Geist, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 
+    'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif, 
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   --font-mono:
-    Geist Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
+    'Lucida Console', 'Consolas', 'Courier New', 'SF Mono', Monaco, 'Menlo', monospace;
   
   --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);
   --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);

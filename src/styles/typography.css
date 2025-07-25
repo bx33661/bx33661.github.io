@@ -132,4 +132,20 @@
       @apply text-foreground;
     }
   }
+
+  /* Inter字体样式优化 */
+  .font-inter {
+    font-family: var(--font-sans);
+  }
+
+  /* 标题样式优化 - 使用Inter */
+  .heading-modern {
+    @apply font-sans font-semibold tracking-tight;
+  }
+
+  /* 代码样式优化 - 使用Lucida Console */
+  .font-code {
+    font-family: var(--font-mono);
+    font-feature-settings: "liga" 0; /* 禁用连字，保持传统等宽效果 */
+  }
 }
