@@ -9,6 +9,8 @@ tags:
   - "vite"
 authors:
   - "bx"
+draft: false             
+slug: "bxvite" 
 ---
 <meta name="referrer" content="no-referrer">
 
