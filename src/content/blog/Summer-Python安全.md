@@ -1,6 +1,23 @@
 
 
 
+---
+title: "Python安全 - CTF新手培训"
+description: "Python安全学习课程，涵盖SSTI、反序列化、沙箱逃逸等安全知识"
+date: 2025-01-20
+tags:
+  - "Python"
+  - "安全"
+  - "CTF"
+  - "SSTI"
+  - "培训"
+authors:
+  - "bx"
+draft: false
+slug: "summer-python-security"
+---
+<meta name="referrer" content="no-referrer">
+
 # Python安全 - CTF新手培训
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753185347054-1afc5ddf-452f-426a-80af-251f43ffea3f.png)
 
