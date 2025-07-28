@@ -1,18 +1,5 @@
----
-title: "Python新人学习-安全分析"
-description: "Python新人学习-安全分析-Summer"
-date: 2025-07-20
-tags:
-  - "Python"
-  - "ctf"
-  - "安全分析"
-  - "HnuSec"
-authors:
-  - "bx"
-draft: false              # 设为 true 则为草稿
-slug: "z8x9w23"          # 随机URL字符串
----
-<meta name="referrer" content="no-referrer">
+
+
 
 # Python安全 - CTF新手培训
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753185347054-1afc5ddf-452f-426a-80af-251f43ffea3f.png)
