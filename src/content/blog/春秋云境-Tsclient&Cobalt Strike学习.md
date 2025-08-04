@@ -14,6 +14,7 @@ slug: "tsclient"          # 随机URL字符串
 ---
 <meta name="referrer" content="no-referrer">
 # 春秋云境-Tsclient&Cobalt Strike学习
+
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754279889160-4de3ffce-f8d7-4f01-9ae5-3be8e7038f1d.png)
 
 Tsclient是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有3个flag，分布于不同的靶机。
