@@ -1,9 +1,9 @@
 import type { IconMap, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
-  title: 'BX',
+  title: 'BX❤️',
   description:
-    "我是一名来自中国的开发者，专注于安全研究和项目学习。我享受与团队合作，为有意义的项目做出贡献。",
+    "我是BX \n 欢迎各位来到我的博客 \n 我会分享一些所见所学和所得 \n 欢迎来到我的博客，和我一起学习、成长、分享\n 一起见证星辰大海！！！🙂",
   href: 'https://www.bx33661.com',
   author: 'BX',
   locale: 'zh-CN',
