@@ -1,9 +1,13 @@
 import type { IconMap, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
-  title: 'BX❤️',
+  title: 'BX',
   description:
-    "我是BX \n 欢迎各位来到我的博客 \n 我会分享一些所见所学和所得 \n 欢迎来到我的博客，和我一起学习、成长、分享\n 一起见证星辰大海！！！🙂",
+    `我是BX
+欢迎各位来到我的博客
+我会分享一些所见所学和所得
+欢迎来到我的博客，和我一起学习、成长、分享
+一起见证星辰大海！！！🙂`,
   href: 'https://www.bx33661.com',
   author: 'BX',
   locale: 'zh-CN',
@@ -52,6 +56,10 @@ export const NAV_LINKS: SocialLink[] = [
     href: '/gallery',
     label: '相册',
   },
+  {
+    href: '/friends',
+    label: '友链',
+  },
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [
@@ -67,6 +75,60 @@ export const SOCIAL_LINKS: SocialLink[] = [
     href: '/rss.xml',
     label: 'RSS',
   },
+]
+
+// 友链数据
+export interface FriendLink {
+  name: string
+  url: string
+  description: string
+  avatar?: string
+  tags?: string[]
+}
+
+export const FRIEND_LINKS: FriendLink[] = [
+  {
+    name: 'GitHub',
+    url: 'https://github.com',
+    description: '全球最大的代码托管平台',
+    avatar: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
+    tags: ['开发', '开源']
+  },
+  {
+    name: 'MDN Web Docs',
+    url: 'https://developer.mozilla.org',
+    description: 'Web开发者的权威文档',
+    avatar: 'https://developer.mozilla.org/favicon-48x48.cbbd161b5b0b.png',
+    tags: ['文档', 'Web开发']
+  },
+  {
+    name: 'Stack Overflow',
+    url: 'https://stackoverflow.com',
+    description: '程序员问答社区',
+    avatar: 'https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png',
+    tags: ['问答', '社区']
+  },
+  {
+    name: 'Vue.js',
+    url: 'https://vuejs.org',
+    description: '渐进式JavaScript框架',
+    avatar: 'https://vuejs.org/logo.svg',
+    tags: ['框架', 'JavaScript']
+  },
+  {
+    name: 'React',
+    url: 'https://react.dev',
+    description: '用于构建用户界面的JavaScript库',
+    avatar: 'https://react.dev/favicon.ico',
+    tags: ['框架', 'JavaScript']
+  },
+  {
+    name: 'Tailwind CSS',
+    url: 'https://tailwindcss.com',
+    description: '实用优先的CSS框架',
+    avatar: 'https://tailwindcss.com/favicons/favicon-32x32.png',
+    tags: ['CSS', '框架']
+  }
 ]
 
 export const ICON_MAP: IconMap = {
