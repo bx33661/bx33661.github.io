@@ -88,49 +88,55 @@ export interface FriendLink {
 
 export const FRIEND_LINKS: FriendLink[] = [
   {
-    name: 'GitHub',
-    url: 'https://github.com',
-    description: '全球最大的代码托管平台',
-    avatar: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
-    tags: ['开发', '开源']
+    name: "Bx",
+    url: "http://www.bx33661.com",
+    description: "见证星辰大海",
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1811753380&s=640",
+    tags: ["安全"]
   },
   {
-    name: 'MDN Web Docs',
-    url: 'https://developer.mozilla.org',
-    description: 'Web开发者的权威文档',
-    avatar: 'https://developer.mozilla.org/favicon-48x48.cbbd161b5b0b.png',
-    tags: ['文档', 'Web开发']
+    name: "iam0range",
+    url: "https://iam0range.github.io/",
+    description: "Stay confident",
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=3081999683&s=640",
+    tags: ["安全"]
   },
   {
-    name: 'Stack Overflow',
-    url: 'https://stackoverflow.com',
-    description: '程序员问答社区',
-    avatar: 'https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png',
-    tags: ['问答', '社区']
+    name: "Ewoji",
+    url: "https://ewoji.cn/",
+    description: "下雨天留客天留我不留",
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=1060089371&spec=640&img_type=jpg",
+    tags: ["安全"]
   },
   {
-    name: 'Vue.js',
-    url: 'https://vuejs.org',
-    description: '渐进式JavaScript框架',
-    avatar: 'https://vuejs.org/logo.svg',
-    tags: ['框架', 'JavaScript']
+    name: "Unjoke",
+    url: "https://unjoke.cn/",
+    description: "等雨也等你",
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=2801238549&spec=640&img_type=jpg",
+    tags: ["安全"]
   },
   {
-    name: 'React',
-    url: 'https://react.dev',
-    description: '用于构建用户界面的JavaScript库',
-    avatar: 'https://react.dev/favicon.ico',
-    tags: ['框架', 'JavaScript']
+    name: "Berial",
+    url: "https://berial.cn",
+    description: "Stay hungry and cross classes",
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1409080135&s=640",
+    tags: ["安全"]
   },
   {
-    name: 'Tailwind CSS',
-    url: 'https://tailwindcss.com',
-    description: '实用优先的CSS框架',
-    avatar: 'https://tailwindcss.com/favicons/favicon-32x32.png',
-    tags: ['CSS', '框架']
+    name: "orxiain.",
+    url: "https://orxiain.life",
+    description: "",
+    avatar: "https://xxx",
+    tags: ["安全"]
+  },
+  {
+    name: "Natro92",
+    url: "https://natro92.fun",
+    description: "Carpe diem.",
+    avatar: "https://berial123.oss-cn-beijing.aliyuncs.com/img/860dd94f08a30cf4a8b7fd9685aed42.webp",
+    tags: ["安全"]
   }
-]
-
+];
 export const ICON_MAP: IconMap = {
   Website: 'lucide:globe',
   GitHub: 'lucide:github',
