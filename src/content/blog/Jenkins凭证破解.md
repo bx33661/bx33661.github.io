@@ -1,7 +1,7 @@
 ---
 title: "Jenkins凭证破解&敏感信息获取"
 description: "Jenkins 是一个开源的**自动化服务器（Automation Server）**，主要用于**持续集成和持续交付（CI/CD）**。"
-date: 2025-07-29
+date: 2025-08-10
 tags:
   - "jenkins"
   - "凭证破解"
