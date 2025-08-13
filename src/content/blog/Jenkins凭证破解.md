@@ -148,8 +148,8 @@ Passphrase: 留空 (因为这个假密钥没有密码)。
 
 解密脚本采用
 
-> 这里我改了一个脚本
->
+ 这里我改了一个脚本
+https://github.com/bx33661/JenkinsCredsDecoder
 
 解密 ssh 密钥
 
