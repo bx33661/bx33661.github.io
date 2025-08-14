@@ -10,7 +10,7 @@ tags:
 authors:
   - "hnusec"
 draft: false             
-slug: "bx1go"          
+slug: "OpenHarmonyCTF"          
 ---
 
 <meta name="referrer" content="no-referrer">
