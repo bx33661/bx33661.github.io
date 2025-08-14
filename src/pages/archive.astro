@@ -141,7 +141,7 @@ const currentUrl = Astro.url;
                       
                       {post.data.tags && (
                         <div class="flex flex-wrap gap-1 mt-2 ml-8">
-                          {post.data.tags.slice(0, 3).map((tag, tagIndex) => (
+                          {post.data.tags.slice(0, 3).map((tag) => (
                             <Badge variant="secondary" className="text-xs px-2 py-0.5 h-auto bg-gradient-to-r from-secondary/30 to-secondary/20 border-secondary/40">
                               <Icon name="lucide:hash" class="w-2.5 h-2.5 mr-0.5" />
                               {tag}
@@ -201,4 +201,4 @@ const currentUrl = Astro.url;
       </div>
     </section>
   </div>
-</Layout> 
+</Layout>

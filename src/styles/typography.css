@@ -2,35 +2,35 @@
 
 @layer components {
   .prose {
-    @apply text-foreground text-base leading-relaxed;
+    @apply text-foreground text-base sm:text-lg leading-relaxed;
     @apply [&>*]:first:mt-0 [&>*]:last:mb-0 [&>section:first-child>*]:mt-0 [&>section:last-child>*]:mb-0;
 
     p {
-      @apply text-foreground/80 my-6 leading-relaxed not-first:mt-6;
+      @apply text-foreground/80 my-4 sm:my-6 leading-relaxed sm:leading-loose not-first:mt-4 sm:not-first:mt-6;
     }
 
     h1 {
-      @apply text-foreground mt-0 mb-8 scroll-m-20 text-4xl leading-tight font-bold;
+      @apply text-foreground mt-0 mb-6 sm:mb-8 scroll-m-20 text-2xl sm:text-4xl leading-tight font-bold;
     }
 
     h2 {
-      @apply text-foreground mt-10 mb-6 scroll-m-20 text-3xl leading-snug font-semibold;
+      @apply text-foreground mt-8 sm:mt-10 mb-4 sm:mb-6 scroll-m-20 text-xl sm:text-3xl leading-snug font-semibold;
     }
 
     h3 {
-      @apply text-foreground mt-8 mb-5 scroll-m-20 text-2xl leading-snug font-medium;
+      @apply text-foreground mt-6 sm:mt-8 mb-3 sm:mb-5 scroll-m-20 text-lg sm:text-2xl leading-snug font-medium;
     }
 
     h4 {
-      @apply text-foreground mt-8 mb-4 scroll-m-20 text-xl leading-normal font-medium;
+      @apply text-foreground mt-6 sm:mt-8 mb-3 sm:mb-4 scroll-m-20 text-base sm:text-xl leading-normal font-medium;
     }
 
     h5 {
-      @apply text-foreground mt-6 mb-4 scroll-m-20 text-lg leading-normal font-medium;
+      @apply text-foreground mt-4 sm:mt-6 mb-3 sm:mb-4 scroll-m-20 text-base sm:text-lg leading-normal font-medium;
     }
 
     h6 {
-      @apply text-foreground mt-6 mb-4 scroll-m-20 text-base leading-normal font-medium;
+      @apply text-foreground mt-4 sm:mt-6 mb-3 sm:mb-4 scroll-m-20 text-sm sm:text-base leading-normal font-medium;
     }
 
     /* 内部链接样式 */
@@ -63,13 +63,23 @@
     }
 
     code {
-      @apply bg-muted/60 text-foreground relative rounded-md px-2 py-1 font-mono text-sm font-medium;
+      @apply bg-muted/60 text-foreground relative rounded-md px-2 py-1 font-mono text-sm font-medium break-words whitespace-pre-wrap;
       @apply [&>span[data-line='']>*]:text-(--shiki-light) dark:[&>span[data-line='']>*]:text-(--shiki-dark);
     }
 
     pre {
-      @apply bg-muted/60 text-foreground max-w-full overflow-x-auto rounded-lg p-4 font-mono text-sm;
+      @apply bg-muted/60 text-foreground max-w-full overflow-x-auto rounded-lg p-3 sm:p-4 font-mono text-xs sm:text-sm;
       @apply [&>span[data-line='']>*]:text-(--shiki-light) dark:[&>span[data-line='']>*]:text-(--shiki-dark);
+    }
+
+    /* 表格在移动端横向滚动与尺寸优化 */
+    .table-wrapper { @apply w-full overflow-x-auto; }
+    table { @apply min-w-[640px] sm:min-w-0; }
+
+    /* 图片与视频在小屏幕的间距与阴影优化 */
+    img,
+    video {
+      @apply my-6 sm:my-10 rounded-lg shadow-md;
     }
 
     .expressive-code {

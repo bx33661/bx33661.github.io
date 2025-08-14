@@ -54,7 +54,7 @@ const currentUrl = Astro.url;
     set:html={JSON.stringify(structuredData)}
   />
   <section
-    class="grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-lg)-2rem),100%)_minmax(0px,1fr)] gap-y-6 xl:grid-cols-[300px_minmax(0,800px)_300px] xl:gap-x-16"
+    class="px-4 sm:px-6 grid grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-lg)-2rem),100%)_minmax(0px,1fr)] gap-y-6 xl:grid-cols-[300px_minmax(0,800px)_300px] xl:gap-x-16"
   >
     <div class="col-start-2">
       <Breadcrumbs
@@ -64,10 +64,10 @@ const currentUrl = Astro.url;
         ]}
       />
     </div>
-    <section class="col-start-2 flex flex-col gap-y-6 text-start">
+    <section class="col-start-2 flex flex-col gap-y-4 sm:gap-y-6 text-start">
       <div class="flex flex-col">
         <h1
-          class="mb-2 text-3xl leading-tight font-medium text-pretty sm:text-5xl"
+          class="mb-1 sm:mb-2 text-2xl sm:text-5xl leading-tight font-medium text-pretty"
         >
           {post.data.title}
         </h1>
@@ -95,7 +95,7 @@ const currentUrl = Astro.url;
     </section>
 
     <div
-      class="text-muted-foreground col-start-2 flex flex-wrap items-center justify-center gap-2 text-sm"
+      class="text-muted-foreground col-start-2 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm"
     >
       <div class="flex items-center gap-2">
         <span>{formatDate(post.data.date)}</span>
@@ -108,7 +108,7 @@ const currentUrl = Astro.url;
 
     {headings.length > 0 && <TableOfContents headings={headings} />}
 
-    <article class="prose col-start-2 max-w-none xl:max-w-[800px] xl:mx-auto">
+    <article class="prose col-start-2 max-w-none sm:max-w-[95ch] xl:max-w-[800px] xl:mx-auto">
       <Content />
     </article>
 

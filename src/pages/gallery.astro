@@ -99,7 +99,6 @@ const currentUrl = Astro.url;
                alt={image.alt}
                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                loading={index < 6 ? 'eager' : 'lazy'}
-               onerror="this.src='/placeholder-image.jpg'"
              />
             <!-- 悬浮遮罩 -->
             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -177,4 +176,4 @@ const currentUrl = Astro.url;
       });
     });
   </script>
-</Layout> 
+</Layout>

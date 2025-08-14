@@ -15,14 +15,14 @@
   @apply bg-gradient-to-br from-blue-400 to-blue-600;
 }
 
-/* 装饰性几何图形 */
-.prose a[href^="http"]::before::after {
+/* 装饰性几何图形 - 使用独立的伪元素 */
+.prose a[href^="http"]::after {
   content: '';
-  @apply absolute bottom-0 right-0 w-3 h-3 bg-blue-300 dark:bg-blue-600 rounded-tl-md;
+  @apply absolute top-2 left-2 w-3 h-3 bg-blue-300 dark:bg-blue-600 rounded-tl-md pointer-events-none;
 }
 
 /* 右侧箭头图标 */
 .prose a[href^="http"][target="_blank"]::after {
   content: '↗';
   @apply absolute top-2 right-2 text-gray-400 hover:text-blue-500 transition-colors duration-200 text-sm;
-} 
+}
