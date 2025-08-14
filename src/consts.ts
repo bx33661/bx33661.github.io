@@ -86,6 +86,32 @@ export interface FriendLink {
   tags?: string[]
 }
 
+// 组织链接数据
+export interface OrganizationLink {
+  name: string
+  url: string
+  description: string
+  avatar?: string
+  tags?: string[]
+}
+
+export const ORGANIZATION_LINKS: OrganizationLink[] = [
+  {
+    name: "HnuSec",
+    url: "https://www.hnusec.com/",
+    description: "海南大学网络空间安全校队",
+    avatar: "https://www.hnusec.com/favicon.ico",
+    tags: ["网络安全", "CTF","海南大学"]
+  },
+  {
+    name: "XMCVE",
+    url: "https://www.xmcve.com/",
+    description: "星盟安全团队",
+    avatar: "https://www.xmcve.com/favicon.ico",
+    tags: ["安全研究", "联合战队"]
+  }
+];
+
 export const FRIEND_LINKS: FriendLink[] = [
   {
     name: "Bx",

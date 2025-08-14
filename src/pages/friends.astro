@@ -5,6 +5,7 @@ import { buttonVariants } from '@/components/ui/button'
 import Layout from '@/layouts/Layout.astro'
 import { FRIEND_LINKS } from '@/consts'
 import { Icon } from 'astro-icon/components'
+import { ORGANIZATION_LINKS } from '@/consts'
 
 const currentUrl = Astro.url;
 ---
@@ -104,6 +105,63 @@ const currentUrl = Astro.url;
                 href={friend.url}
                 class="absolute inset-0"
                 aria-label={`访问 ${friend.name}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+              <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Icon name="lucide:external-link" class="size-4 text-muted-foreground" />
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 组织分块 -->
+    <section class="space-y-6">
+      <h2 class="font-custom text-foreground text-3xl font-bold">组织</h2>
+      <p class="text-muted-foreground">我参与或关注的安全团队与组织：</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          ORGANIZATION_LINKS.map((org) => (
+            <div class="group relative overflow-hidden rounded-lg border bg-card p-6 transition-all duration-300 hover:shadow-lg hover:scale-105">
+              <div class="flex items-start gap-4">
+                <div class="relative overflow-hidden rounded-lg shrink-0">
+                  {org.avatar ? (
+                    <img 
+                      src={org.avatar} 
+                      alt={`${org.name} logo`}
+                      class="h-12 w-12 object-cover transition-transform duration-300 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="h-12 w-12 bg-primary/20 rounded-lg flex items-center justify-center">
+                      <Icon name="lucide:shield" class="size-6 text-primary" />
+                    </div>
+                  )}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">
+                    {org.name}
+                  </h3>
+                  <p class="text-muted-foreground text-sm mt-1 line-clamp-2">
+                    {org.description}
+                  </p>
+                  {org.tags && (
+                    <div class="flex flex-wrap gap-1 mt-3">
+                      {org.tags.map((tag) => (
+                        <span class="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <Link
+                href={org.url}
+                class="absolute inset-0"
+                aria-label={`访问 ${org.name}`}
                 target="_blank"
                 rel="noopener noreferrer"
               />
