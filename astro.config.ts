@@ -17,6 +17,8 @@ import rehypeDocument from 'rehype-document'
 
 import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
+import { pluginFrames } from '@expressive-code/plugin-frames'
+import { pluginTextMarkers } from '@expressive-code/plugin-text-markers'
 
 import tailwindcss from '@tailwindcss/vite'
 
@@ -34,16 +36,29 @@ export default defineConfig({
   integrations: [
     expressiveCode({
       themes: ['catppuccin-latte', 'ayu-dark'],
-      plugins: [pluginCollapsibleSections(), pluginLineNumbers()],
+      plugins: [pluginCollapsibleSections(), pluginLineNumbers(), pluginFrames(), pluginTextMarkers()],
       useDarkModeMediaQuery: true,
+      // 配置复制按钮和其他实用功能
+      frames: {
+        showCopyToClipboardButton: true, // 启用复制按钮
+        extractFileNameFromCode: true, // 自动提取文件名作为标题
+        removeCommentsWhenCopyingTerminalFrames: true, // 复制终端代码时移除注释行
+      },
       defaultProps: {
         wrap: true,
         collapseStyle: 'collapsible-auto',
+        preserveIndent: true, // 保持缩进
         overridesByLang: {
           'ansi,bat,bash,batch,cmd,console,powershell,ps,ps1,psd1,psm1,sh,shell,shellscript,shellsession,text,zsh':
             {
               showLineNumbers: true,
             },
+        },
+      },
+      styleOverrides: {
+        // 自定义复制按钮和框架样式
+        frames: {
+          shadowColor: 'rgba(0, 0, 0, 0.15)', // 柔和阴影
         },
       },
     }),
