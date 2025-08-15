@@ -84,6 +84,74 @@
 
     .expressive-code {
       @apply my-8 [&_.title]:font-semibold!;
+      
+      /* 移动端优化 */
+      @apply mx-0 rounded-lg overflow-hidden;
+      
+      /* 代码框架样式 */
+      .frame {
+        @apply rounded-lg border border-border/50;
+      }
+      
+      /* 代码内容区域 */
+      .code {
+        @apply overflow-x-auto;
+        /* 移动端滚动优化 */
+        scrollbar-width: thin;
+        scrollbar-color: hsl(var(--muted-foreground)) transparent;
+        
+        /* Webkit浏览器滚动条样式 */
+        &::-webkit-scrollbar {
+          height: 8px;
+        }
+        
+        &::-webkit-scrollbar-track {
+          @apply bg-transparent;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+          @apply bg-muted-foreground/30 rounded-full;
+        }
+        
+        &::-webkit-scrollbar-thumb:hover {
+          @apply bg-muted-foreground/50;
+        }
+      }
+      
+      /* 复制按钮优化 */
+      .copy {
+        @apply transition-all duration-200;
+        /* 移动端触摸优化 */
+        min-height: 44px;
+        min-width: 44px;
+        
+        /* 确保按钮在移动端可见 */
+        @apply opacity-100 sm:opacity-0 sm:group-hover:opacity-100;
+      }
+      
+      /* 标题栏优化 */
+      .header {
+        @apply px-4 py-2 text-sm font-medium;
+        @apply border-b border-border/50;
+      }
+      
+      /* 行号优化 */
+      .line-numbers {
+        @apply select-none text-muted-foreground/60;
+        /* 移动端行号间距调整 */
+        @apply text-xs sm:text-sm;
+      }
+      
+      /* 代码行优化 */
+      .line {
+        @apply px-4 py-1;
+        /* 移动端代码字体大小 */
+        @apply text-xs sm:text-sm;
+        
+        /* 确保代码不会换行 */
+        white-space: pre;
+        word-break: keep-all;
+      }
     }
 
     blockquote {
@@ -157,5 +225,25 @@
   .font-code {
     font-family: var(--font-mono);
     font-feature-settings: "liga" 0; /* 禁用连字，保持传统等宽效果 */
+  }
+
+  /* 移动端优化 */
+  @media (max-width: 768px) {
+    .prose {
+      font-size: 0.983rem;
+      line-height: 1.8;
+      padding-left: 0; /* container handles padding */
+      padding-right: 0; /* container handles padding */
+      margin-left: 0;
+      margin-right: 0;
+    }
+  
+    .prose h1 { font-size: 1.75rem; margin: 0.7rem 0; }
+    .prose h2 { font-size: 1.35rem; margin: 0.6rem 0; }
+    .prose h3 { font-size: 1.2rem; margin: 0.55rem 0; }
+    .prose p { margin: 0.5rem 0; }
+    .prose ul, .prose ol { margin: 0.5rem 0 0.5rem 1.2rem; }
+    .prose pre { margin: 0.6rem 0; }
+    .prose img { margin: 0.75rem 0; border-radius: 0.75rem; }
   }
 }
