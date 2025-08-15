@@ -106,7 +106,7 @@ const currentUrl = Astro.url;
       </div>
     </div>
 
-    {headings.length > 0 && <div class="hidden xl:block"><TableOfContents headings={headings} /></div>}
+    {headings.length > 0 && <div class="hidden xl:block xl:col-start-1"><TableOfContents headings={headings} /></div>}
 
     <article class="prose px-3 sm:px-0 sm:col-start-2 max-w-none sm:max-w-[95ch] xl:max-w-[800px] xl:mx-auto">
       <Content />
