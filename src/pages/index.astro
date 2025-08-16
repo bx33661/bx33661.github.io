@@ -23,24 +23,24 @@ const currentUrl = Astro.url;
 
 <Layout canonicalUrl={currentUrl}>
   <PageHead slot="head" title="BX/bpple -安全研究-中国" />
-  <section class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
+  <section class="flex flex-col gap-y-8 px-4 py-6 sm:gap-y-12 sm:px-8 sm:py-8 lg:px-16">
     <div
-      class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left"
+      class="flex flex-col items-center text-center gap-6 sm:flex-row sm:items-start sm:gap-8 sm:text-left"
     >
-      <div class="relative overflow-hidden rounded-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
+      <div class="relative overflow-hidden rounded-xl shadow-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
         <Logo
-          className="h-auto w-40 object-cover sm:w-48 md:w-56 lg:w-64 "
+          className="h-auto w-32 object-cover transition-transform duration-300 hover:scale-105 sm:w-48 md:w-56 lg:w-64"
         />
       </div>
-      <div class="mt-8 sm:mt-0 sm:max-w-xl">
+      <div class="mt-4 sm:mt-0 sm:max-w-xl">
         <h1
-          class="font-custom text-foreground text-start text-4xl font-extrabold sm:text-5xl"
+          class="font-custom text-foreground text-center text-3xl font-extrabold sm:text-start sm:text-5xl"
         >
           {SITE.title}
         </h1>
-        <div class="mt-4 flex items-center gap-2" aria-label="location">
+        <div class="mt-4 flex items-center justify-center gap-2 sm:justify-start" aria-label="location">
           <span
-            class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1"
+            class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1 touch-target"
           >
             来自
           </span>
@@ -49,7 +49,7 @@ const currentUrl = Astro.url;
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 60 40"
-              class="h-6 w-8 transition-transform duration-500 hover:rotate-12"
+              class="h-5 w-7 transition-transform duration-500 hover:rotate-12 sm:h-6 sm:w-8"
               aria-hidden="true"
               role="img"
               focusable="false"
@@ -65,7 +65,7 @@ const currentUrl = Astro.url;
             </svg>
           </span>
         </div>
-        <p class="text-md text-foreground mt-4 text-start font-sans whitespace-pre-line" title="description" aria-label="description">
+        <p class="text-sm text-foreground mt-4 text-center font-sans whitespace-pre-line leading-relaxed sm:text-base sm:text-start" title="description" aria-label="description">
           {SITE.description}
         </p>
       </div>

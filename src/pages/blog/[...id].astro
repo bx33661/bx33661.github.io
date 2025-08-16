@@ -54,9 +54,9 @@ const currentUrl = Astro.url;
     set:html={JSON.stringify(structuredData)}
   />
   <section
-    class="px-0 sm:px-6 grid grid-cols-1 gap-y-3 sm:gap-y-6 sm:grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-lg)-2rem),100%)_minmax(0px,1fr)] xl:grid-cols-[300px_minmax(0,800px)_300px] xl:gap-x-16"
+    class="px-0 sm:px-6 grid grid-cols-1 gap-y-3 sm:gap-y-6 sm:grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-lg)-2rem),100%)_minmax(0px,1fr)] xl:grid-cols-[300px_minmax(0,800px)_300px] xl:gap-x-16 blog-layout-mobile"
   >
-    <div class="px-3 sm:px-0 sm:col-start-2">
+    <div class="px-4 sm:px-0 sm:col-start-2">
       <Breadcrumbs
         items={[
           { href: '/blog', label: 'Blog', icon: 'lucide:archive' },
@@ -64,7 +64,7 @@ const currentUrl = Astro.url;
         ]}
       />
     </div>
-    <section class="px-3 sm:px-0 sm:col-start-2 flex flex-col gap-y-3 sm:gap-y-6 text-start">
+    <section class="px-4 sm:px-0 sm:col-start-2 flex flex-col gap-y-3 sm:gap-y-6 text-start">
       <div class="flex flex-col">
         <h1
           class="mb-1 sm:mb-2 text-2xl sm:text-5xl leading-tight font-medium text-pretty"
@@ -95,7 +95,7 @@ const currentUrl = Astro.url;
     </section>
 
     <div
-      class="text-muted-foreground px-3 sm:px-0 sm:col-start-2 flex flex-wrap items-center justify-start gap-2 text-xs sm:text-sm"
+      class="text-muted-foreground px-4 sm:px-0 sm:col-start-2 flex flex-wrap items-center justify-start gap-2 text-xs sm:text-sm"
     >
       <div class="flex items-center gap-2">
         <span>{formatDate(post.data.date)}</span>
@@ -108,7 +108,7 @@ const currentUrl = Astro.url;
 
     {headings.length > 0 && <div class="hidden xl:block xl:col-start-1"><TableOfContents headings={headings} /></div>}
 
-    <article class="prose px-3 sm:px-0 sm:col-start-2 max-w-none sm:max-w-[95ch] xl:max-w-[800px] xl:mx-auto">
+    <article class="prose px-4 md:px-6 lg:px-0 sm:col-start-2 max-w-none sm:max-w-[95ch] xl:max-w-[800px] xl:mx-auto w-full">
       <Content />
     </article>
 

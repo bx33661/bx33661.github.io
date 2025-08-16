@@ -1,0 +1,100 @@
+{
+  "name": "BX的博客 - 安全研究与技术分享",
+  "short_name": "BX博客",
+  "description": "专注于安全研究和技术分享的个人博客",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "categories": ["education", "technology", "security"],
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "移动端首页截图"
+    },
+    {
+      "src": "/static/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "桌面端首页截图"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "博客文章",
+      "short_name": "博客",
+      "description": "查看最新的博客文章",
+      "url": "/blog",
+      "icons": [
+        {
+          "src": "/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "项目展示",
+      "short_name": "项目",
+      "description": "查看我的项目作品",
+      "url": "/projects",
+      "icons": [
+        {
+          "src": "/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "关于我",
+      "short_name": "关于",
+      "description": "了解更多关于我的信息",
+      "url": "/about",
+      "icons": [
+        {
+          "src": "/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}

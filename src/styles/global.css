@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 @import './card-links.css';
+@import './mobile.css';
+@import './responsive.css';
+@import './mobile-enhancements.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -280,7 +283,6 @@
   }
 }
 
-/* 组织与朋友卡片增强样式 */
 .friend-link-card {
   position: relative;
   overflow: hidden;
@@ -367,4 +369,73 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* 移动端博客文章全屏优化 */
+@media (max-width: 768px) {
+  /* 博客文章页面整体布局 */
+  .blog-layout-mobile {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  /* 文章内容区域全屏 */
+  .prose {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    width: 100% !important;
+  }
+  
+  /* 文章标题移动端优化 */
+  .prose h1 {
+    font-size: 1.75rem !important;
+    line-height: 2.25rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* 文章段落移动端优化 */
+  .prose p {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  /* 代码块移动端优化 */
+  .prose pre {
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    border-radius: 0 !important;
+    padding: 1rem !important;
+    overflow-x: auto !important;
+  }
+  
+  /* 图片移动端优化 */
+  .prose img {
+    width: 100% !important;
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    border-radius: 0 !important;
+  }
+  
+  /* 引用块移动端优化 */
+  .prose blockquote {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 1rem !important;
+    border-left-width: 4px !important;
+  }
+  
+  /* 列表移动端优化 */
+  .prose ul, .prose ol {
+    padding-left: 1.5rem !important;
+  }
+  
+  /* 表格移动端优化 */
+  .prose table {
+    font-size: 0.875rem !important;
+    overflow-x: auto !important;
+    display: block !important;
+    white-space: nowrap !important;
+  }
 }

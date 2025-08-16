@@ -139,15 +139,15 @@ const Skills: React.FC = () => {
   }, [])
 
   return (
-    <div className="z-30 mt-12 flex w-full flex-col max-w-[calc(100vw-5rem)] mx-auto lg:max-w-full">
-      <div className="space-y-3">
+    <div className="z-30 mt-8 flex w-full flex-col max-w-[calc(100vw-2rem)] mx-auto sm:mt-12 sm:max-w-[calc(100vw-5rem)] lg:max-w-full">
+      <div className="space-y-2 sm:space-y-3">
         {categoryGroups.map((group, groupIndex) => (
           <InfiniteScroll
             key={groupIndex}
             duration={50000}
             direction={groupIndex % 2 === 0 ? 'normal' : 'reverse'}
             showFade={true}
-            className="flex flex-row justify-center"
+            className="flex flex-row justify-center tech-scroll-container"
           >
             {group.flatMap((category) =>
               technologies[category as keyof Technologies].map(
@@ -158,13 +158,13 @@ const Skills: React.FC = () => {
                   return (
                     <div
                       key={`${category}-${techIndex}`}
-                      className="tech-badge repo-card border-border bg-card/80 backdrop-blur-sm text-muted-foreground mr-4 flex items-center gap-3 rounded-xl border p-3 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-md hover:bg-card group"
+                      className="tech-badge repo-card border-border bg-card/80 backdrop-blur-sm text-muted-foreground mr-3 flex items-center gap-2 rounded-lg border p-2.5 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-md hover:bg-card group mobile-animation sm:mr-4 sm:gap-3 sm:rounded-xl sm:p-3"
                       data-tech-name={`${category}-${techIndex}`}
                     >
-                      <span className="bg-muted/50 flex h-10 w-10 items-center justify-center rounded-lg p-2 text-lg shadow-inner group-hover:bg-muted/70 transition-all duration-300">
+                      <span className="bg-muted/50 flex h-8 w-8 items-center justify-center rounded-md p-1.5 text-base shadow-inner group-hover:bg-muted/70 transition-all duration-300 sm:h-10 sm:w-10 sm:rounded-lg sm:p-2 sm:text-lg">
                         <IconComponent className={`tech-icon transition-all duration-300 group-hover:scale-110 ${colorClass}`} />
                       </span>
-                      <span className="text-foreground font-medium text-sm whitespace-nowrap">
+                      <span className="text-foreground font-medium text-xs whitespace-nowrap sm:text-sm">
                         {tech.text}
                       </span>
                     </div>

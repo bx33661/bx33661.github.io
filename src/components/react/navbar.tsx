@@ -74,10 +74,10 @@ const Navbar = () => {
 
   const sizeVariants: Record<number, { width: string }> = {
     0: { width: '100%' },
-    1: { width: '95%' },
-    2: { width: '85%' },
-    3: { width: '75%' },
-    4: { width: '60%' },
+    1: { width: '98%' },
+    2: { width: '90%' },
+    3: { width: '80%' },
+    4: { width: '70%' },
   }
 
   return (
@@ -94,7 +94,7 @@ const Navbar = () => {
         }}
         className={cn(
           'fixed left-1/2 z-30 -translate-x-1/2 transform backdrop-blur-lg',
-          'bg-background/80 border-0',
+          'bg-background/90 border-0',
           'rounded-none shadow-none transition-all duration-400 ease-in-out',
           'border border-transparent w-full',
           isScrolled && !isMobile && 'rounded-full',

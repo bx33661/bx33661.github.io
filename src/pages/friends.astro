@@ -12,104 +12,109 @@ const currentUrl = Astro.url;
 
 <Layout canonicalUrl={currentUrl}>
   <PageHead slot="head" title="友情链接 - BX/bpple" />
-  <div class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
+  <div class="flex flex-col gap-y-8 px-4 py-6 sm:gap-y-12 sm:px-8 sm:py-8 lg:px-16">
     <!-- 页面标题 -->
-    <section class="text-center">
-      <h1 class="font-custom text-foreground text-4xl font-extrabold sm:text-5xl">
+    <section class="text-center mobile-spacing">
+      <h1 class="font-custom text-foreground text-2xl font-extrabold sm:text-4xl lg:text-5xl">
         友情链接
       </h1>
-      <p class="text-muted-foreground text-lg mt-4 max-w-2xl mx-auto">
+      <p class="text-muted-foreground text-base mt-4 max-w-2xl mx-auto leading-relaxed sm:text-lg">
         这里收录了一些优秀的网站和博客，它们在我的学习和工作中给了我很大的帮助。
         如果您也有优质的网站想要交换友链，欢迎联系我！
       </p>
     </section>
 
     <!-- 友链申请说明 -->
-    <section class="space-y-6">
-      <h2 class="font-custom text-foreground text-3xl font-bold">申请友链</h2>
-      <div class="bg-muted/50 rounded-lg p-6 space-y-4">
-        <p class="text-foreground text-lg">
+    <section class="space-y-4 sm:space-y-6">
+      <h2 class="font-custom text-foreground text-xl font-bold sm:text-3xl">申请友链</h2>
+      <div class="bg-muted/50 rounded-lg p-4 space-y-3 sm:p-6 sm:space-y-4 mobile-card">
+        <p class="text-foreground text-base sm:text-lg">
           欢迎与我交换友链！请确保您的网站符合以下要求：
         </p>
-        <ul class="space-y-2 text-muted-foreground">
-          <li class="flex items-center gap-2">
-            <Icon name="lucide:check" class="size-4 text-green-500" />
-            网站内容积极向上，无违法违规内容
+        <ul class="space-y-2 text-muted-foreground text-sm sm:text-base">
+          <li class="flex items-start gap-2">
+            <Icon name="lucide:check" class="size-4 text-green-500 mt-0.5 shrink-0" />
+            <span>网站内容积极向上，无违法违规内容</span>
           </li>
-          <li class="flex items-center gap-2">
-            <Icon name="lucide:check" class="size-4 text-green-500" />
-            网站能够正常访问，加载速度合理
+          <li class="flex items-start gap-2">
+            <Icon name="lucide:check" class="size-4 text-green-500 mt-0.5 shrink-0" />
+            <span>网站能够正常访问，加载速度合理</span>
           </li>
-          <li class="flex items-center gap-2">
-            <Icon name="lucide:check" class="size-4 text-green-500" />
-            优先考虑技术类、学习类博客
+          <li class="flex items-start gap-2">
+            <Icon name="lucide:check" class="size-4 text-green-500 mt-0.5 shrink-0" />
+            <span>优先考虑技术类、学习类博客</span>
           </li>
-          <li class="flex items-center gap-2">
-            <Icon name="lucide:check" class="size-4 text-green-500" />
-            网站有一定的原创内容
+          <li class="flex items-start gap-2">
+            <Icon name="lucide:check" class="size-4 text-green-500 mt-0.5 shrink-0" />
+            <span>网站有一定的原创内容</span>
           </li>
         </ul>
-        <div class="mt-4 p-4 bg-primary/10 rounded-lg">
-          <p class="text-foreground font-medium">我的网站信息：</p>
-          <div class="mt-2 space-y-1 text-sm text-muted-foreground">
+        <div class="mt-4 p-3 bg-primary/10 rounded-lg sm:p-4">
+          <p class="text-foreground font-medium text-sm sm:text-base">我的网站信息：</p>
+          <div class="mt-2 space-y-1 text-xs text-muted-foreground sm:text-sm">
             <p><strong>网站名称：</strong> BX的博客</p>
             <p><strong>网站地址：</strong> https://www.bx33661.com</p>
             <p><strong>网站描述：</strong> 专注于安全研究和技术分享的个人博客</p>
-            <p><strong>头像链接：</strong> https://www.bx33661.com/bx.jpg</p>
+            <p class="break-all"><strong>头像链接：</strong> https://www.bx33661.com/bx.jpg</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- 友链列表 -->
-    <section class="space-y-6">
-      <h2 class="font-custom text-foreground text-3xl font-bold">友链列表</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section class="space-y-4 sm:space-y-6">
+      <h2 class="font-custom text-foreground text-xl font-bold sm:text-3xl">友链列表</h2>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {
           FRIEND_LINKS.map((friend) => (
-            <div class="group relative overflow-hidden rounded-lg border bg-card p-6 transition-all duration-300 hover:shadow-lg hover:scale-105">
-              <div class="flex items-start gap-4">
-                <div class="relative overflow-hidden rounded-lg shrink-0">
+            <div class="group relative overflow-hidden rounded-lg border bg-card p-4 transition-all duration-300 hover:shadow-lg touch-feedback friend-link-card sm:p-6 sm:hover:scale-105">
+              <div class="flex items-start gap-3 sm:gap-4">
+                <div class="relative overflow-hidden rounded-lg shrink-0 friend-icon-glow">
                   {friend.avatar ? (
                     <img 
                       src={friend.avatar} 
                       alt={`${friend.name} logo`}
-                      class="h-12 w-12 object-cover transition-transform duration-300 group-hover:scale-110"
+                      class="h-10 w-10 object-cover transition-transform duration-300 group-hover:scale-110 sm:h-12 sm:w-12"
                       loading="lazy"
                     />
                   ) : (
-                    <div class="h-12 w-12 bg-primary/20 rounded-lg flex items-center justify-center">
-                      <Icon name="lucide:globe" class="size-6 text-primary" />
+                    <div class="h-10 w-10 bg-primary/20 rounded-lg flex items-center justify-center sm:h-12 sm:w-12">
+                      <Icon name="lucide:globe" class="size-5 text-primary sm:size-6" />
                     </div>
                   )}
                 </div>
                 <div class="flex-1 min-w-0">
-                  <h3 class="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">
+                  <h3 class="font-semibold text-foreground text-base group-hover:text-primary transition-colors sm:text-lg">
                     {friend.name}
                   </h3>
-                  <p class="text-muted-foreground text-sm mt-1 line-clamp-2">
+                  <p class="text-muted-foreground text-xs mt-1 line-clamp-2 leading-relaxed sm:text-sm">
                     {friend.description}
                   </p>
                   {friend.tags && (
-                    <div class="flex flex-wrap gap-1 mt-3">
-                      {friend.tags.map((tag) => (
-                        <span class="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                    <div class="flex flex-wrap gap-1 mt-2 sm:mt-3">
+                      {friend.tags.slice(0, 2).map((tag) => (
+                        <span class="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full">
                           {tag}
                         </span>
                       ))}
+                      {friend.tags.length > 2 && (
+                        <span class="bg-muted text-muted-foreground text-xs px-2 py-0.5 rounded-full">
+                          +{friend.tags.length - 2}
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>
               </div>
               <Link
                 href={friend.url}
-                class="absolute inset-0"
+                class="absolute inset-0 touch-target"
                 aria-label={`访问 ${friend.name}`}
                 target="_blank"
                 rel="noopener noreferrer"
               />
-              <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Icon name="lucide:external-link" class="size-4 text-muted-foreground" />
+              <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity sm:top-4 sm:right-4">
+                <Icon name="lucide:external-link" class="size-3 text-muted-foreground sm:size-4" />
               </div>
             </div>
           ))
