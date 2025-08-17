@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { technologies, type Technologies, type Category } from '../../consts'
+import { technologies } from '../../config/technologies'
+import type { Technologies, Category } from '../../types'
 import { InfiniteScroll } from '../ui/infinite-scroll'
 import { type IconType } from 'react-icons'
 import { FaQuestionCircle, FaJava, FaWindows } from 'react-icons/fa'

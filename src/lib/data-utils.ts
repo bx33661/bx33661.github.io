@@ -1,11 +1,14 @@
 import { getCollection, type CollectionEntry } from 'astro:content'
 import { generateUniqueSlug } from './utils'
+import { withCache } from './cache-utils'
 
 export async function getAllPosts(): Promise<CollectionEntry<'blog'>[]> {
-  const posts = await getCollection('blog')
-  return posts
-    .filter((post) => !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  return withCache('all-posts', async () => {
+    const posts = await getCollection('blog')
+    return posts
+      .filter((post) => !post.data.draft)
+      .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  })
 }
 
 /**
@@ -136,7 +139,7 @@ export async function getSortedTags(): Promise<
 > {
   const tagCounts = await getAllTags()
 
-  return [...tagCounts.entries()]
+  return Array.from(tagCounts.entries())
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => {
       const countDiff = b.count - a.count
