@@ -209,11 +209,53 @@
   }
 
   pre {
-    @apply bg-muted/60 overflow-x-auto rounded-md p-4;
+    @apply bg-muted/60 overflow-x-auto rounded-md p-4 relative;
   }
-
+  
   code {
     @apply font-mono text-sm;
+  }
+  
+  /* Enhanced code block styles */
+  .enhanced-code-block {
+    @apply relative border border-border/50 bg-card/50 backdrop-blur-sm;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .enhanced-code-block:hover {
+    @apply border-border/80;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Code block copy button enhancement */
+  .enhanced-code-block .copy {
+    @apply transition-all duration-200 hover:scale-105;
+  }
+  
+  /* Line numbers styling */
+  .enhanced-code-block .line-numbers {
+    @apply text-muted-foreground/60 select-none;
+  }
+  
+  /* Syntax highlighting improvements */
+  .enhanced-code-block .token.comment {
+    @apply text-muted-foreground/70 italic;
+  }
+  
+  .enhanced-code-block .token.string {
+    @apply text-green-600 dark:text-green-400;
+  }
+  
+  .enhanced-code-block .token.keyword {
+    @apply text-blue-600 dark:text-blue-400 font-medium;
+  }
+  
+  .enhanced-code-block .token.function {
+    @apply text-purple-600 dark:text-purple-400;
+  }
+  
+  .enhanced-code-block .token.number {
+    @apply text-orange-600 dark:text-orange-400;
   }
 
   blockquote {
@@ -280,6 +322,40 @@
   
   .tech-badge span:last-child {
     font-size: 0.75rem !important;
+  }
+  
+  /* 移动端代码块优化 */
+  .prose pre,
+  .enhanced-code-block {
+    @apply mx-[-1rem] rounded-none text-xs;
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+  
+  .enhanced-code-block .copy {
+    @apply scale-90;
+  }
+  
+  .enhanced-code-block .line-numbers {
+    @apply text-xs;
+  }
+  
+  /* 移动端图片优化 */
+  .prose img {
+    @apply mx-[-1rem] rounded-none;
+  }
+  
+  /* 图片缩放组件移动端优化 */
+  .image-zoom-container {
+    @apply mx-[-1rem];
+  }
+  
+  .image-zoom-modal {
+    @apply p-2;
+  }
+  
+  .image-zoom-modal img {
+    @apply max-h-[80vh] w-auto;
   }
 }
 

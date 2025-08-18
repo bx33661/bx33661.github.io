@@ -35,7 +35,7 @@ export default defineConfig({
 
   integrations: [
     expressiveCode({
-      themes: ['catppuccin-latte', 'ayu-dark'],
+      themes: ['github-light', 'github-dark'],
       plugins: [pluginCollapsibleSections(), pluginLineNumbers(), pluginFrames(), pluginTextMarkers()],
       useDarkModeMediaQuery: true,
       // 配置复制按钮和其他实用功能
@@ -45,9 +45,10 @@ export default defineConfig({
         removeCommentsWhenCopyingTerminalFrames: true, // 复制终端代码时移除注释行
       },
       defaultProps: {
-        wrap: true,
+        wrap: false,
         collapseStyle: 'collapsible-auto',
         preserveIndent: true, // 保持缩进
+        showLineNumbers: true,
         overridesByLang: {
           'ansi,bat,bash,batch,cmd,console,powershell,ps,ps1,psd1,psm1,sh,shell,shellscript,shellsession,text,zsh':
             {
@@ -56,10 +57,15 @@ export default defineConfig({
         },
       },
       styleOverrides: {
+        borderRadius: '0.5rem',
+        borderWidth: '1px',
         // 自定义复制按钮和框架样式
         frames: {
-          shadowColor: 'rgba(0, 0, 0, 0.15)', // 柔和阴影
+          shadowColor: 'rgba(0, 0, 0, 0.04)', // 柔和阴影
         },
+        uiLineHeight: '1.4',
+        codeFontSize: '0.875rem',
+        codeLineHeight: '1.5',
       },
     }),
     mdx(),

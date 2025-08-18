@@ -1,28 +1,140 @@
-/* 卡片链接样式 - 使用 Tailwind CSS 类 */
+/* 优化的URL链接卡片样式 */
 .prose a[href^="http"] {
-  @apply block w-full p-4 rounded-lg border border-blue-200 bg-white hover:border-blue-300 hover:shadow-md transition-all duration-300 ease-in-out my-4;
-  @apply dark:border-blue-800 dark:bg-gray-900 dark:hover:border-blue-700;
-  @apply no-underline;
-  @apply relative;
-  @apply flex items-start gap-4;
-  @apply text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200;
+  @apply block w-full p-5 rounded-xl border border-gray-200/60 bg-white/80 backdrop-blur-sm;
+  @apply hover:border-blue-300/80 hover:shadow-lg hover:shadow-blue-100/50 hover:-translate-y-0.5;
+  @apply dark:border-gray-700/60 dark:bg-gray-900/80 dark:hover:border-blue-600/60 dark:hover:shadow-blue-900/20;
+  @apply no-underline relative overflow-hidden;
+  @apply flex items-center gap-4;
+  @apply text-base font-semibold text-gray-800 dark:text-gray-200;
+  @apply hover:text-blue-600 dark:hover:text-blue-400;
+  @apply transition-all duration-300 ease-out;
+  @apply my-3;
+  
+  /* 添加微妙的渐变背景 */
+  background-image: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.03) 100%);
 }
 
-/* 左侧图标区域 */
+.prose a[href^="http"]:hover {
+  background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.08) 100%);
+}
+
+.dark .prose a[href^="http"] {
+  background-image: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
+}
+
+.dark .prose a[href^="http"]:hover {
+  background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.12) 100%);
+}
+
+/* 左侧网站图标区域 */
 .prose a[href^="http"]::before {
-  content: '';
-  @apply flex-shrink-0 w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative overflow-hidden;
-  @apply bg-gradient-to-br from-blue-400 to-blue-600;
+  content: '🌐';
+  @apply flex-shrink-0 w-12 h-12 rounded-xl;
+  @apply bg-gradient-to-br from-blue-500 to-indigo-600;
+  @apply dark:from-blue-600 dark:to-indigo-700;
+  @apply flex items-center justify-center;
+  @apply text-white text-lg font-bold;
+  @apply shadow-md shadow-blue-200/50 dark:shadow-blue-900/30;
+  @apply transition-all duration-300;
+  @apply border border-blue-300/30 dark:border-blue-600/30;
 }
 
-/* 装饰性几何图形 - 使用独立的伪元素 */
+.prose a[href^="http"]:hover::before {
+  @apply scale-105 shadow-lg shadow-blue-300/60 dark:shadow-blue-800/40;
+  @apply rotate-3;
+}
+
+/* 链接内容区域 */
+.prose a[href^="http"] {
+  position: relative;
+}
+
 .prose a[href^="http"]::after {
-  content: '';
-  @apply absolute top-2 left-2 w-3 h-3 bg-blue-300 dark:bg-blue-600 rounded-tl-md pointer-events-none;
+  content: attr(href);
+  @apply block text-xs text-gray-500 dark:text-gray-400 font-normal mt-1;
+  @apply truncate max-w-full;
+  @apply opacity-70;
 }
 
-/* 右侧箭头图标 */
+/* 外部链接指示器 */
+.prose a[href^="http"][target="_blank"] {
+  position: relative;
+}
+
 .prose a[href^="http"][target="_blank"]::after {
-  content: '↗';
-  @apply absolute top-2 right-2 text-gray-400 hover:text-blue-500 transition-colors duration-200 text-sm;
+  content: attr(href) ' ↗';
+  @apply block text-xs text-gray-500 dark:text-gray-400 font-normal mt-1;
+  @apply truncate max-w-full;
+  @apply opacity-70;
+}
+
+/* 悬停时的外部链接指示器动画 */
+.prose a[href^="http"][target="_blank"]:hover::after {
+  @apply text-blue-500 dark:text-blue-400 opacity-100;
+}
+
+/* 添加微妙的边框光效 */
+.prose a[href^="http"]:hover {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2), 0 8px 25px -5px rgba(59, 130, 246, 0.1);
+}
+
+.dark .prose a[href^="http"]:hover {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3), 0 8px 25px -5px rgba(59, 130, 246, 0.2);
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .prose a[href^="http"] {
+    @apply p-4 mx-[-1rem] rounded-lg;
+    @apply text-sm;
+  }
+  
+  .prose a[href^="http"]::before {
+    @apply w-10 h-10 text-base;
+  }
+  
+  .prose a[href^="http"]::after {
+    @apply text-xs;
+  }
+  
+  .prose a[href^="http"]:hover {
+    @apply translate-y-0;
+  }
+}
+
+/* 增强的URL卡片组件样式 */
+.enhanced-url-card {
+  @apply block w-full p-4 rounded-xl border border-gray-200/60 bg-white/80 backdrop-blur-sm;
+  @apply hover:border-blue-300/80 hover:shadow-lg hover:shadow-blue-100/50 hover:-translate-y-1;
+  @apply dark:border-gray-700/60 dark:bg-gray-900/80 dark:hover:border-blue-600/60 dark:hover:shadow-blue-900/20;
+  @apply no-underline relative overflow-hidden;
+  @apply transition-all duration-300 ease-out;
+  @apply my-3;
+  
+  background-image: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.03) 100%);
+}
+
+.enhanced-url-card:hover {
+  background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.08) 100%);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2), 0 8px 25px -5px rgba(59, 130, 246, 0.1);
+}
+
+.dark .enhanced-url-card {
+  background-image: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
+}
+
+.dark .enhanced-url-card:hover {
+  background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.12) 100%);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3), 0 8px 25px -5px rgba(59, 130, 246, 0.2);
+}
+
+/* 移动端增强URL卡片优化 */
+@media (max-width: 768px) {
+  .enhanced-url-card {
+    @apply p-3 mx-[-1rem] rounded-lg;
+  }
+  
+  .enhanced-url-card:hover {
+    @apply translate-y-0;
+  }
 }
