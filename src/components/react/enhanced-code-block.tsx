@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CodeCopyButton } from './code-copy-button'
 import { cn } from '@/lib/utils'
 

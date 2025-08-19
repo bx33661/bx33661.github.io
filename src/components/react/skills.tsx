@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { technologies } from '../../config/technologies'
 import type { Technologies, Category } from '../../types'
 import { InfiniteScroll } from '../ui/infinite-scroll'

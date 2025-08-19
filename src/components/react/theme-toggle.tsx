@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { SunIcon, MoonIcon } from 'lucide-react'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 export const prerender = true
 export const dynamic = 'force-dynamic'
 

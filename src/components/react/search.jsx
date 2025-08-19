@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import BlogCardJSX from './blog-card'

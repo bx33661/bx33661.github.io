@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import Fuse from 'fuse.js'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -301,4 +301,4 @@ const AdvancedSearch = ({
   )
 }
 
-export default AdvancedSearch 
+export default AdvancedSearch

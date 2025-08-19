@@ -18,16 +18,17 @@ export class AccessibilityUtils {
       
       if (focusableElements.length === 0) return
       
-      const firstElement = focusableElements[0]
-      const lastElement = focusableElements[focusableElements.length - 1]
+      const firstElement = focusableElements[0] as HTMLElement
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
       
-      modal.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab') {
-          if (e.shiftKey && document.activeElement === firstElement) {
-            e.preventDefault()
+      modal.addEventListener('keydown', (e: Event) => {
+        const keyboardEvent = e as KeyboardEvent
+        if (keyboardEvent.key === 'Tab') {
+          if (keyboardEvent.shiftKey && document.activeElement === firstElement) {
+            keyboardEvent.preventDefault()
             lastElement.focus()
-          } else if (!e.shiftKey && document.activeElement === lastElement) {
-            e.preventDefault()
+          } else if (!keyboardEvent.shiftKey && document.activeElement === lastElement) {
+            keyboardEvent.preventDefault()
             firstElement.focus()
           }
         }
@@ -48,18 +49,20 @@ export class AccessibilityUtils {
   static enhanceKeyboardNavigation() {
     // 为没有 href 的按钮添加键盘支持
     document.querySelectorAll('[role="button"]:not(button):not(a)').forEach(element => {
-      element.tabIndex = 0
-      element.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          element.click()
+      const htmlElement = element as HTMLElement
+      htmlElement.tabIndex = 0
+      htmlElement.addEventListener('keydown', (e: Event) => {
+        const keyboardEvent = e as KeyboardEvent
+        if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
+          keyboardEvent.preventDefault()
+          htmlElement.click()
         }
       })
     })
   }
 
   // 动态内容通告
-  static announceToScreenReader(message, priority = 'polite') {
+  static announceToScreenReader(message: string, priority: 'polite' | 'assertive' = 'polite') {
     const announcer = document.getElementById('screen-reader-announcer') || 
       this.createScreenReaderAnnouncer()
     
@@ -90,7 +93,10 @@ export class AccessibilityUtils {
       const styles = getComputedStyle(element)
       const bgColor = styles.backgroundColor
       const textColor = styles.color
-      // 这里可以添加对比度计算逻辑
+      
+      // TODO: 实现对比度计算逻辑
+      // 这里可以使用 bgColor 和 textColor 来计算对比度
+      console.debug('Color contrast check:', { bgColor, textColor })
     })
   }
 
@@ -98,15 +104,19 @@ export class AccessibilityUtils {
   static respectMotionPreferences() {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
     
-    const handleMotionPreference = (mq) => {
-      if (mq.matches) {
+    const handleMotionPreference = (event: MediaQueryListEvent) => {
+      if (event.matches) {
         document.documentElement.classList.add('reduce-motion')
       } else {
         document.documentElement.classList.remove('reduce-motion')
       }
     }
     
-    handleMotionPreference(prefersReducedMotion)
+    // 初始设置
+    if (prefersReducedMotion.matches) {
+      document.documentElement.classList.add('reduce-motion')
+    }
+    
     prefersReducedMotion.addEventListener('change', handleMotionPreference)
   }
 

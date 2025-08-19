@@ -1,8 +1,8 @@
+import React, { useState, memo } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Hash, Calendar, Clock, Eye } from 'lucide-react'
 import type { CollectionEntry } from 'astro:content'
 import { motion } from 'framer-motion'
-import { useState, memo } from 'react'
 import { cn } from '@/lib/utils'
 
 interface BlogCardProps {
@@ -66,7 +66,7 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
               <Clock className="w-3 h-3" />
               <span>{estimatedReadTime} 分钟读完</span>
             </div>
-            {entry.data.featured && (
+            {(entry.data as any).featured && (
               <Badge variant="default" className="text-xs px-2 py-0.5">
                 精选
               </Badge>
@@ -151,7 +151,7 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
       </article>
 
       {/* 特色文章标记 */}
-      {entry.data.featured && (
+      {(entry.data as any).featured && (
         <div className="absolute top-3 right-3">
           <motion.div
             initial={{ scale: 0 }}

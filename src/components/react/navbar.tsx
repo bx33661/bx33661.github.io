@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from './link'
 import ThemeToggle from './theme-toggle'
@@ -84,7 +84,7 @@ const Navbar = () => {
     2: { width: '90%' },
     3: { width: '80%' },
     4: { width: '70%' },
-  }), [])
+  } as Record<number, { width: string }>), [])
 
   return (
     <>
