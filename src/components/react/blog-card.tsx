@@ -44,15 +44,16 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
         "hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20",
         "bg-card/50 backdrop-blur-sm",
         "dark:bg-gradient-to-br dark:from-card dark:to-background/50",
-        "dark:border-border/30 dark:hover:border-primary/40",
-        "dark:hover:shadow-2xl dark:hover:shadow-primary/10"
+        "dark:border-border/30 dark:hover:border-primary/50",
+        "dark:hover:shadow-2xl dark:hover:shadow-primary/20",
+        "dark:hover:animate-pulse"
       )}
     >
       {/* 背景渐变效果 */}
       <div className={cn(
         "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300",
         "bg-gradient-to-br from-primary/5 to-transparent",
-        "dark:from-primary/10 dark:to-primary/5"
+        "dark:from-primary/20 dark:via-primary/10 dark:to-accent/10"
       )} />
       
       <article className="relative p-4 sm:p-6">
@@ -86,13 +87,14 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
               "font-semibold leading-tight transition-colors duration-200",
               "group-hover:text-primary",
               "text-base sm:text-lg lg:text-xl",
-              "dark:text-foreground dark:group-hover:text-primary"
+              "dark:text-foreground dark:group-hover:text-primary",
+              "dark:group-hover:drop-shadow-[0_0_8px_rgba(100,255,100,0.5)]"
             )}>
               {entry.data.title}
             </h3>
             
             {/* 文章描述 */}
-            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed line-clamp-2 dark:text-muted-foreground/90">
+            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed line-clamp-2 dark:text-muted-foreground/90 dark:group-hover:text-accent-foreground/80">
               {entry.data.description}
             </p>
           </div>
