@@ -15,37 +15,37 @@
 }
 
 :root {
-  --background: oklch(0.98 0 0);
-  --foreground: oklch(0.24 0 0);
-  --card: oklch(0.99 0 0);
-  --card-foreground: oklch(0.24 0 0);
-  --popover: oklch(0.99 0 0);
-  --popover-foreground: oklch(0.24 0 0);
-  --primary: oklch(0.43 0.04 42.00);
-  --primary-foreground: oklch(1.00 0 0);
-  --secondary: oklch(0.92 0.07 76.67);
-  --secondary-foreground: oklch(0.35 0.07 41.41);
-  --muted: oklch(0.95 0 0);
-  --muted-foreground: oklch(0.50 0 0);
-  --accent: oklch(0.93 0 0);
-  --accent-foreground: oklch(0.24 0 0);
-  --destructive: oklch(0.63 0.19 33.26);
-  --border: oklch(0.88 0 0);
-  --input: oklch(0.88 0 0);
-  --ring: oklch(0.43 0.04 42.00);
-  --chart-1: oklch(0.43 0.04 42.00);
-  --chart-2: oklch(0.92 0.07 76.67);
-  --chart-3: oklch(0.93 0 0);
-  --chart-4: oklch(0.94 0.05 75.02);
-  --chart-5: oklch(0.43 0.04 42.00);
-  --sidebar: oklch(0.99 0 0);
-  --sidebar-foreground: oklch(0.26 0 0);
-  --sidebar-primary: oklch(0.33 0 0);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.98 0 0);
-  --sidebar-accent-foreground: oklch(0.33 0 0);
-  --sidebar-border: oklch(0.94 0 0);
-  --sidebar-ring: oklch(0.77 0 0);
+  --background: oklch(0.98 0.01 106);
+  --foreground: oklch(0.15 0.02 106);
+  --card: oklch(0.99 0.005 106);
+  --card-foreground: oklch(0.20 0.02 106);
+  --popover: oklch(0.99 0.005 106);
+  --popover-foreground: oklch(0.15 0.02 106);
+  --primary: oklch(0.47 0.15 264);
+  --primary-foreground: oklch(0.98 0.01 106);
+  --secondary: oklch(0.94 0.02 250);
+  --secondary-foreground: oklch(0.25 0.03 250);
+  --muted: oklch(0.96 0.01 106);
+  --muted-foreground: oklch(0.48 0.01 106);
+  --accent: oklch(0.95 0.01 250);
+  --accent-foreground: oklch(0.25 0.03 250);
+  --destructive: oklch(0.65 0.20 30);
+  --border: oklch(0.90 0.01 106);
+  --input: oklch(0.90 0.01 106);
+  --ring: oklch(0.47 0.15 264);
+  --chart-1: oklch(0.47 0.15 264);
+  --chart-2: oklch(0.94 0.02 250);
+  --chart-3: oklch(0.95 0.01 250);
+  --chart-4: oklch(0.92 0.02 180);
+  --chart-5: oklch(0.85 0.08 30);
+  --sidebar: oklch(0.99 0.005 106);
+  --sidebar-foreground: oklch(0.20 0.02 106);
+  --sidebar-primary: oklch(0.25 0.03 106);
+  --sidebar-primary-foreground: oklch(0.98 0.01 106);
+  --sidebar-accent: oklch(0.97 0.01 106);
+  --sidebar-accent-foreground: oklch(0.25 0.03 106);
+  --sidebar-border: oklch(0.92 0.01 106);
+  --sidebar-ring: oklch(0.75 0.02 106);
 
   --radius: 0.5rem;
 
@@ -68,46 +68,46 @@
 }
 
 .dark {
-  --background: oklch(0.18 0 0);
-  --foreground: oklch(0.95 0 0);
-  --card: oklch(0.21 0 0);
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.21 0 0);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.92 0.05 67.14);
-  --primary-foreground: oklch(0.20 0.02 201.14);
-  --secondary: oklch(0.32 0.02 67.00);
-  --secondary-foreground: oklch(0.92 0.05 67.14);
-  --muted: oklch(0.25 0 0);
-  --muted-foreground: oklch(0.77 0 0);
-  --accent: oklch(0.29 0 0);
-  --accent-foreground: oklch(0.95 0 0);
-  --destructive: oklch(0.63 0.19 33.26);
-  --border: oklch(0.24 0.01 88.77);
-  --input: oklch(0.40 0 0);
-  --ring: oklch(0.92 0.05 67.14);
-  --chart-1: oklch(0.92 0.05 67.14);
-  --chart-2: oklch(0.32 0.02 67.00);
-  --chart-3: oklch(0.29 0 0);
-  --chart-4: oklch(0.35 0.02 67.11);
-  --chart-5: oklch(0.92 0.05 67.14);
-  --sidebar: oklch(0.21 0.01 285.56);
-  --sidebar-foreground: oklch(0.97 0 0);
-  --sidebar-primary: oklch(0.49 0.22 264.43);
-  --sidebar-primary-foreground: oklch(1.00 0 0);
-  --sidebar-accent: oklch(0.27 0.01 285.81);
-  --sidebar-accent-foreground: oklch(0.97 0 0);
-  --sidebar-border: oklch(0.27 0.01 285.81);
-  --sidebar-ring: oklch(0.87 0.01 286.27);
+  --background: oklch(0.11 0.01 264);
+  --foreground: oklch(0.93 0.01 106);
+  --card: oklch(0.13 0.01 264);
+  --card-foreground: oklch(0.91 0.01 106);
+  --popover: oklch(0.13 0.01 264);
+  --popover-foreground: oklch(0.93 0.01 106);
+  --primary: oklch(0.70 0.18 264);
+  --primary-foreground: oklch(0.11 0.01 264);
+  --secondary: oklch(0.22 0.02 264);
+  --secondary-foreground: oklch(0.85 0.02 264);
+  --muted: oklch(0.18 0.01 264);
+  --muted-foreground: oklch(0.65 0.01 264);
+  --accent: oklch(0.20 0.02 264);
+  --accent-foreground: oklch(0.88 0.02 264);
+  --destructive: oklch(0.68 0.22 30);
+  --border: oklch(0.25 0.02 264);
+  --input: oklch(0.22 0.02 264);
+  --ring: oklch(0.70 0.18 264);
+  --chart-1: oklch(0.70 0.18 264);
+  --chart-2: oklch(0.22 0.02 264);
+  --chart-3: oklch(0.20 0.02 264);
+  --chart-4: oklch(0.25 0.03 180);
+  --chart-5: oklch(0.75 0.15 30);
+  --sidebar: oklch(0.12 0.01 264);
+  --sidebar-foreground: oklch(0.92 0.01 106);
+  --sidebar-primary: oklch(0.70 0.18 264);
+  --sidebar-primary-foreground: oklch(0.11 0.01 264);
+  --sidebar-accent: oklch(0.16 0.01 264);
+  --sidebar-accent-foreground: oklch(0.88 0.02 264);
+  --sidebar-border: oklch(0.20 0.02 264);
+  --sidebar-ring: oklch(0.60 0.05 264);
   
-  --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);
-  --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);
-  --shadow-sm: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 1px 2px -1px oklch(0.00 0 0 / 0.10);
-  --shadow: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 1px 2px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-md: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 2px 4px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-lg: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 4px 6px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 8px 10px -1px oklch(0.00 0 0 / 0.10);
-  --shadow-2xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.25);
+  --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.15);
+  --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.15);
+  --shadow-sm: 0 1px 3px 0px oklch(0.00 0 0 / 0.20), 0 1px 2px -1px oklch(0.00 0 0 / 0.20);
+  --shadow: 0 1px 3px 0px oklch(0.00 0 0 / 0.20), 0 1px 2px -1px oklch(0.00 0 0 / 0.20);
+  --shadow-md: 0 1px 3px 0px oklch(0.00 0 0 / 0.20), 0 2px 4px -1px oklch(0.00 0 0 / 0.20);
+  --shadow-lg: 0 1px 3px 0px oklch(0.00 0 0 / 0.25), 0 4px 6px -1px oklch(0.00 0 0 / 0.25);
+  --shadow-xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.30), 0 8px 10px -1px oklch(0.00 0 0 / 0.30);
+  --shadow-2xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.40);
 }
 
 @theme inline {
@@ -237,26 +237,204 @@
     @apply text-muted-foreground/60 select-none;
   }
   
-  /* Syntax highlighting improvements */
-  .enhanced-code-block .token.comment {
-    @apply text-muted-foreground/70 italic;
-  }
-  
-  .enhanced-code-block .token.string {
-    @apply text-green-600 dark:text-green-400;
-  }
-  
-  .enhanced-code-block .token.keyword {
-    @apply text-blue-600 dark:text-blue-400 font-medium;
-  }
-  
-  .enhanced-code-block .token.function {
-    @apply text-purple-600 dark:text-purple-400;
-  }
-  
-  .enhanced-code-block .token.number {
-    @apply text-orange-600 dark:text-orange-400;
-  }
+/* 暗色模式下代码语法高亮增强 */
+.dark .enhanced-code-block .token.comment {
+  @apply text-muted-foreground/80 italic;
+}
+
+.dark .enhanced-code-block .token.string {
+  @apply text-green-400 font-medium;
+}
+
+.dark .enhanced-code-block .token.keyword {
+  @apply text-blue-300 font-semibold;
+}
+
+.dark .enhanced-code-block .token.function {
+  @apply text-purple-300 font-medium;
+}
+
+.dark .enhanced-code-block .token.number {
+  @apply text-orange-300;
+}
+
+.dark .enhanced-code-block .token.operator {
+  @apply text-cyan-300;
+}
+
+.dark .enhanced-code-block .token.variable {
+  @apply text-yellow-300;
+}
+
+/* 暗色模式下的链接增强 */
+.dark a {
+  @apply text-primary hover:text-primary/80 transition-colors duration-200;
+}
+
+.dark a:hover {
+  text-shadow: 0 0 8px oklch(0.70 0.18 264 / 0.4);
+}
+
+/* 暗色模式下的表格增强 */
+.dark table {
+  @apply border-border/30 bg-card/30;
+}
+
+.dark th {
+  @apply bg-muted/20 border-border/30 text-foreground font-semibold;
+}
+
+.dark td {
+  @apply border-border/20 text-foreground/90;
+}
+
+/* 暗色模式下的引用块增强 */
+.dark blockquote {
+  @apply border-l-primary/60 bg-card/20 text-foreground/90 pl-6 py-2;
+  box-shadow: inset 4px 0 0 oklch(0.70 0.18 264);
+}
+
+/* 暗色模式下的表单元素增强 */
+.dark input,
+.dark textarea,
+.dark select {
+  @apply bg-background/50 border-border/50 text-foreground;
+  backdrop-filter: blur(8px);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  @apply text-muted-foreground/60;
+}
+
+/* 暗色模式下的按钮增强 */
+.dark .btn-primary {
+  @apply bg-primary text-primary-foreground shadow-lg;
+  box-shadow: 0 4px 14px oklch(0.70 0.18 264 / 0.3);
+}
+
+.dark .btn-primary:hover {
+  box-shadow: 0 6px 20px oklch(0.70 0.18 264 / 0.4);
+}
+
+/* 暗色模式下的导航栏增强 */
+.dark nav {
+  backdrop-filter: blur(20px);
+  background: oklch(0.11 0.01 264 / 0.8);
+  border-bottom: 1px solid oklch(0.25 0.02 264 / 0.3);
+}
+
+/* 暗色模式下的搜索框增强 */
+.dark .search-input {
+  @apply bg-background/60 border-border/40 text-foreground;
+  backdrop-filter: blur(12px);
+}
+
+.dark .search-input:focus {
+  @apply border-primary/60;
+  box-shadow: 0 0 0 2px oklch(0.70 0.18 264 / 0.3);
+}
+
+/* 暗色模式切换时的平滑过渡 */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* 暗色模式下的页面加载动画增强 */
+.dark .loading-spinner {
+  border-color: oklch(0.25 0.02 264);
+  border-top-color: oklch(0.70 0.18 264);
+  box-shadow: 0 0 20px oklch(0.70 0.18 264 / 0.3);
+}
+
+/* 暗色模式下的工具提示增强 */
+.dark .tooltip {
+  @apply bg-background/90 border-border/50 text-foreground shadow-2xl;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px oklch(0.00 0 0 / 0.4);
+}
+
+/* 暗色模式下的模态框增强 */
+.dark .modal {
+  @apply bg-background/95 border-border/30;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 25px 50px oklch(0.00 0 0 / 0.5);
+}
+
+.dark .modal-backdrop {
+  background: oklch(0.00 0 0 / 0.7);
+  backdrop-filter: blur(4px);
+}
+
+/* 暗色模式下的悬浮动作按钮增强 */
+.dark .floating-action-button {
+  background: linear-gradient(135deg, oklch(0.70 0.18 264) 0%, oklch(0.60 0.15 280) 100%);
+  box-shadow: 
+    0 8px 32px oklch(0.70 0.18 264 / 0.3),
+    0 0 0 1px oklch(0.70 0.18 264 / 0.2);
+}
+
+.dark .floating-action-button:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 12px 40px oklch(0.70 0.18 264 / 0.4),
+    0 0 0 1px oklch(0.70 0.18 264 / 0.3);
+}
+
+/* 暗色模式下的进度条增强 */
+.dark .progress-bar {
+  background: oklch(0.20 0.02 264);
+  box-shadow: inset 0 1px 3px oklch(0.00 0 0 / 0.3);
+}
+
+.dark .progress-bar-fill {
+  background: linear-gradient(90deg, oklch(0.70 0.18 264) 0%, oklch(0.75 0.20 250) 100%);
+  box-shadow: 0 0 20px oklch(0.70 0.18 264 / 0.5);
+}
+
+/* 暗色模式下的标签增强 */
+.dark .tag,
+.dark .badge {
+  @apply bg-secondary/60 text-secondary-foreground border-border/30;
+  backdrop-filter: blur(8px);
+}
+
+.dark .tag:hover,
+.dark .badge:hover {
+  @apply bg-primary/20 text-primary border-primary/30;
+  box-shadow: 0 0 16px oklch(0.70 0.18 264 / 0.2);
+}
+
+/* 暗色模式下的分隔线增强 */
+.dark hr {
+  border-color: oklch(0.25 0.02 264);
+  box-shadow: 0 1px 3px oklch(0.00 0 0 / 0.1);
+}
+
+/* 暗色模式下的通知/警告增强 */
+.dark .alert {
+  @apply bg-card/60 border-border/40 text-foreground;
+  backdrop-filter: blur(12px);
+}
+
+.dark .alert-success {
+  @apply border-green-400/30 bg-green-400/10;
+  box-shadow: 0 0 20px oklch(0.70 0.15 150 / 0.1);
+}
+
+.dark .alert-warning {
+  @apply border-yellow-400/30 bg-yellow-400/10;
+  box-shadow: 0 0 20px oklch(0.80 0.15 80 / 0.1);
+}
+
+.dark .alert-error {
+  @apply border-red-400/30 bg-red-400/10;
+  box-shadow: 0 0 20px oklch(0.65 0.20 30 / 0.1);
+}
 
   blockquote {
     @apply text-muted-foreground border-l-2 pl-4 italic;
@@ -392,6 +570,87 @@
     rgba(255, 255, 255, 0.05),
     transparent
   );
+}
+
+/* 暗色模式增强效果 */
+.dark {
+  /* 增强背景层次 */
+  background-image: 
+    radial-gradient(circle at 25% 25%, oklch(0.15 0.05 264) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, oklch(0.13 0.03 280) 0%, transparent 50%);
+}
+
+/* 暗色模式下的元素发光效果 */
+.dark .group:hover {
+  filter: drop-shadow(0 0 20px oklch(0.70 0.18 264 / 0.3));
+}
+
+/* 暗色模式下的按钮发光效果 */
+.dark button:hover,
+.dark [role="button"]:hover {
+  box-shadow: 
+    0 0 0 1px oklch(0.70 0.18 264 / 0.5),
+    0 0 20px oklch(0.70 0.18 264 / 0.3),
+    0 4px 12px oklch(0.00 0 0 / 0.3);
+}
+
+/* 暗色模式下的输入框增强 */
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  box-shadow: 
+    0 0 0 2px oklch(0.70 0.18 264 / 0.8),
+    0 0 20px oklch(0.70 0.18 264 / 0.2);
+}
+
+/* 暗色模式下的卡片增强 */
+.dark .bg-card {
+  background: 
+    linear-gradient(135deg, oklch(0.13 0.01 264) 0%, oklch(0.11 0.01 280) 100%);
+  border: 1px solid oklch(0.25 0.03 264 / 0.5);
+}
+
+.dark .bg-card:hover {
+  background: 
+    linear-gradient(135deg, oklch(0.15 0.02 264) 0%, oklch(0.13 0.02 280) 100%);
+  border: 1px solid oklch(0.70 0.18 264 / 0.3);
+  box-shadow: 0 8px 32px oklch(0.00 0 0 / 0.4);
+}
+
+/* 暗色模式下的代码块增强 */
+.dark pre {
+  background: 
+    linear-gradient(135deg, oklch(0.09 0.01 264) 0%, oklch(0.08 0.01 280) 100%);
+  border: 1px solid oklch(0.20 0.02 264 / 0.5);
+  box-shadow: inset 0 1px 3px oklch(0.00 0 0 / 0.3);
+}
+
+/* 暗色模式下的滚动条美化 */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: oklch(0.15 0.01 264);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.30 0.03 264);
+  border-radius: 4px;
+  border: 1px solid oklch(0.20 0.02 264);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.40 0.05 264);
+}
+
+/* 暗色模式下的选中文本效果 */
+.dark ::selection {
+  background: oklch(0.70 0.18 264 / 0.3);
+  color: oklch(0.95 0.01 106);
+  text-shadow: 0 0 8px oklch(0.70 0.18 264 / 0.5);
 }
 
 /* 卡片阴影增强 */

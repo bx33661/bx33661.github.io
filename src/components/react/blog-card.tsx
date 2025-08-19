@@ -42,11 +42,18 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
       className={cn(
         "group relative overflow-hidden rounded-xl border transition-all duration-300 ease-out",
         "hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20",
-        "bg-card/50 backdrop-blur-sm"
+        "bg-card/50 backdrop-blur-sm",
+        "dark:bg-gradient-to-br dark:from-card dark:to-background/50",
+        "dark:border-border/30 dark:hover:border-primary/40",
+        "dark:hover:shadow-2xl dark:hover:shadow-primary/10"
       )}
     >
       {/* 背景渐变效果 */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className={cn(
+        "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+        "bg-gradient-to-br from-primary/5 to-transparent",
+        "dark:from-primary/10 dark:to-primary/5"
+      )} />
       
       <article className="relative p-4 sm:p-6">
         <a
@@ -78,13 +85,14 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
             <h3 className={cn(
               "font-semibold leading-tight transition-colors duration-200",
               "group-hover:text-primary",
-              "text-base sm:text-lg lg:text-xl"
+              "text-base sm:text-lg lg:text-xl",
+              "dark:text-foreground dark:group-hover:text-primary"
             )}>
               {entry.data.title}
             </h3>
             
             {/* 文章描述 */}
-            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed line-clamp-2">
+            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed line-clamp-2 dark:text-muted-foreground/90">
               {entry.data.description}
             </p>
           </div>
@@ -142,7 +150,10 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
 
           {/* 悬停时的动画效果 */}
           <motion.div
-            className="absolute bottom-0 left-0 h-0.5 bg-primary"
+            className={cn(
+              "absolute bottom-0 left-0 h-0.5",
+              "bg-primary dark:bg-primary dark:shadow-lg dark:shadow-primary/50"
+            )}
             initial={{ width: 0 }}
             animate={{ width: isHovered ? '100%' : '0%' }}
             transition={{ duration: 0.3 }}

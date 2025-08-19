@@ -9,14 +9,14 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Icon } from 'astro-icon/components'
 
-export interface BreadcrumbItem {
+export interface BreadcrumbItemData {
   href?: string
   label: string
   icon?: string
 }
 
 interface Props {
-  items: BreadcrumbItem[]
+  items: BreadcrumbItemData[]
 }
 
 const { items } = Astro.props
