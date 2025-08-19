@@ -27,13 +27,13 @@ const cspPolicy = [
 ---
 
 {Object.entries(securityHeaders).map(([name, value]) => (
-  <meta key={name} httpEquiv={name} content={value} />
+  <meta http-equiv={name} content={value} />
 ))}
 
 <!-- Content Security Policy -->
-<meta httpEquiv="Content-Security-Policy" content={cspPolicy} />
+<meta http-equiv="Content-Security-Policy" content={cspPolicy} />
 
 <!-- 安全相关的其他元数据 -->
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="format-detection" content="telephone=no" />

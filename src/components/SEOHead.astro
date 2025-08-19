@@ -33,7 +33,7 @@ const pageDescription = description || SITE.description
 const imageURL = image ? new URL(image, Astro.site) : new URL('/ogImage.png', Astro.site)
 
 // 结构化数据
-const schemaData = {
+const schemaData: any = {
   '@context': 'https://schema.org',
   '@graph': [
     {
