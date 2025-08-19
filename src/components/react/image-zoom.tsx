@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import { X, ZoomIn, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -10,57 +10,85 @@ interface ImageZoomProps {
   className?: string
   priority?: boolean
   sizes?: string
+  loading?: 'lazy' | 'eager'
 }
 
-export function ImageZoom({
+export const ImageZoom = memo(function ImageZoom({
   src,
   alt,
   width,
   height,
   className,
   priority = false,
-  sizes
+  sizes,
+  loading = 'lazy'
 }: ImageZoomProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null)
 
-  // 处理键盘事件
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsOpen(false)
-      }
+  // 优化的键盘事件处理
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false)
     }
+  }, [])
 
+  useEffect(() => {
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'unset'
     }
-  }, [isOpen])
+  }, [isOpen, handleKeyDown])
 
-  const handleLoad = () => {
+  // 图片预加载
+  useEffect(() => {
+    if (priority && src) {
+      const img = new Image()
+      img.src = src
+      img.onload = () => setIsLoading(false)
+      img.onerror = () => {
+        setIsLoading(false)
+        setError(true)
+      }
+      setImageRef(img)
+    }
+  }, [src, priority])
+
+  const handleLoad = useCallback(() => {
     setIsLoading(false)
-  }
+  }, [])
 
-  const handleError = () => {
+  const handleError = useCallback(() => {
     setIsLoading(false)
     setError(true)
-  }
+  }, [])
 
-  const handleDownload = () => {
+  const handleDownload = useCallback(() => {
     const link = document.createElement('a')
     link.href = src
     link.download = alt || 'image'
+    link.style.display = 'none'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }
+  }, [src, alt])
+
+  const openModal = useCallback(() => {
+    setIsOpen(true)
+  }, [])
+
+  const closeModal = useCallback(() => {
+    setIsOpen(false)
+  }, [])
 
   return (
     <>
@@ -69,9 +97,19 @@ export function ImageZoom({
         className={cn(
           'group relative cursor-zoom-in overflow-hidden rounded-lg',
           'transition-all duration-300 hover:shadow-lg',
+          'focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2',
           className
         )}
-        onClick={() => setIsOpen(true)}
+        onClick={openModal}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            openModal()
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label={`查看大图: ${alt}`}
       >
         {isLoading && (
           <div 
@@ -85,7 +123,7 @@ export function ImageZoom({
           alt={alt}
           width={width}
           height={height}
-          loading={priority ? "eager" : "lazy"}
+          loading={priority ? "eager" : loading}
           fetchPriority={priority ? "high" : "low"}
           decoding="async"
           sizes={sizes}
@@ -114,14 +152,17 @@ export function ImageZoom({
       {isOpen && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
-          onClick={() => setIsOpen(false)}
+          onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="image-modal-title"
         >
           {/* 关闭按钮 */}
           <button
-            className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors duration-200"
+            className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white"
             onClick={(e) => {
               e.stopPropagation()
-              setIsOpen(false)
+              closeModal()
             }}
             aria-label="关闭"
           >
@@ -130,7 +171,7 @@ export function ImageZoom({
 
           {/* 下载按钮 */}
           <button
-            className="absolute top-4 right-16 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors duration-200"
+            className="absolute top-4 right-16 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white"
             onClick={(e) => {
               e.stopPropagation()
               handleDownload()
@@ -148,6 +189,7 @@ export function ImageZoom({
             <img
               src={src}
               alt={alt}
+              id="image-modal-title"
               className="w-full h-full object-contain"
               style={{ maxWidth: '90vw', maxHeight: '90vh' }}
             />
@@ -163,6 +205,6 @@ export function ImageZoom({
       )}
     </>
   )
-}
+})
 
 export default ImageZoom

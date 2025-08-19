@@ -32,6 +32,18 @@ export default defineConfig({
   base: '/',
   
   output: 'static',
+  
+  // Content Layer API 在 Astro 5 中已经稳定，不再需要实验性标志
+  
+  // 图片优化配置
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      config: {
+        limitInputPixels: 268402689, // 增加支持的图片像素限制
+      },
+    },
+  },
 
   integrations: [
     expressiveCode({
@@ -92,7 +104,40 @@ export default defineConfig({
         "@radix-ui/react-separator",
         "@radix-ui/react-slot"
       ]
-    },    
+    },
+    build: {
+      // 代码分割优化
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // 将大型第三方库分离成单独的 chunk
+            'vendor-react': ['react', 'react-dom'],
+            'vendor-ui': ['@radix-ui/react-icons', '@radix-ui/react-avatar', '@radix-ui/react-dropdown-menu'],
+            'vendor-animation': ['framer-motion'],
+            'vendor-utils': ['clsx', 'tailwind-merge', 'lodash.debounce'],
+            'vendor-search': ['fuse.js'],
+            'vendor-icons': ['lucide-react'],
+          }
+        }
+      },
+      // 压缩优化
+      cssMinify: true,
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true, // 生产环境移除 console
+          drop_debugger: true,
+        }
+      },
+      // 资源大小警告阈值
+      chunkSizeWarningLimit: 1000,
+    },
+    // 开发服务器优化
+    server: {
+      fs: {
+        allow: ['..']
+      }
+    }
   },
 
   server: {

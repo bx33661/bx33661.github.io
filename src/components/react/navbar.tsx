@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from './link'
 import ThemeToggle from './theme-toggle'
@@ -30,36 +30,42 @@ const Navbar = () => {
     }
   }, [])
   
-  useEffect(() => {
-    const handleResize = debounce(() => {
+  const handleResize = useCallback(
+    debounce(() => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches
       setIsMobile(isMobileView)
       if (!isMobileView && mobileMenuOpen) {
         setMobileMenuOpen(false)
       }
-    }, 100)
+    }, 100),
+    [mobileMenuOpen]
+  )
 
+  useEffect(() => {
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => {
       window.removeEventListener('resize', handleResize)
     }
-  }, [mobileMenuOpen])
+  }, [handleResize])
 
-  useEffect(() => {
-    const handleScroll = debounce(() => {
+  const handleScroll = useCallback(
+    debounce(() => {
       const scrollY = window.scrollY
       setScrollLevel(
         scrollY > 400 ? 4 : scrollY > 250 ? 3 : scrollY > 100 ? 2 : scrollY > 20 ? 1 : 0
       )
       setIsScrolled(scrollY > 20)
-    }, 30)
+    }, 30),
+    []
+  )
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll)
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
+  }, [handleScroll])
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -72,13 +78,13 @@ const Navbar = () => {
     }
   }, [mobileMenuOpen])
 
-  const sizeVariants: Record<number, { width: string }> = {
+  const sizeVariants = useMemo(() => ({
     0: { width: '100%' },
     1: { width: '98%' },
     2: { width: '90%' },
     3: { width: '80%' },
     4: { width: '70%' },
-  }
+  }), [])
 
   return (
     <>
@@ -219,7 +225,7 @@ const Navbar = () => {
                   <Separator orientation="vertical" className="hidden h-4! sm:block" />
                   <p className="text-muted-foreground text-sm" aria-label="open-source description">
                     <Link
-                      href="https://github.com/cojocaru-david/portfolio"
+                      href="https://github.com/bx33661/bx33661.github.io"
                       class="text-foreground"
                       external
                       underline>Open-source</Link
