@@ -4,10 +4,6 @@ import { cn } from '@/lib/utils'
 import type { MarkdownHeading } from 'astro'
 import { Icon } from 'astro-icon/components'
 
-type Props = {
-  headings: MarkdownHeading[]
-}
-
 const { headings } = Astro.props
 
 function getHeadingMargin(depth: number): string {
@@ -65,7 +61,7 @@ function cleanupHeading(text: string): string {
       id="table-of-contents"
     >
       {
-        headings.map((heading) => (
+        headings.map((heading: MarkdownHeading) => (
           <li
             class={cn(
               'text-foreground/60 text-sm xl:p-0',

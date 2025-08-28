@@ -4,21 +4,31 @@
   .prose {
     @apply text-foreground text-base sm:text-lg leading-relaxed;
     @apply [&>*]:first:mt-0 [&>*]:last:mb-0 [&>section:first-child>*]:mt-0 [&>section:last-child>*]:mb-0;
+    /* 暗夜模式下的基础优化 */
+    @apply dark:text-foreground/95 dark:leading-relaxed;
 
     p {
       @apply text-foreground my-4 sm:my-6 leading-relaxed sm:leading-loose not-first:mt-4 sm:not-first:mt-6;
+      /* 暗夜模式段落优化 */
+      @apply dark:text-foreground/90 dark:leading-relaxed dark:tracking-wide;
     }
 
     h1 {
       @apply text-foreground mt-0 mb-6 sm:mb-8 scroll-m-20 text-2xl sm:text-4xl leading-tight font-bold;
+      /* 暗夜模式标题优化 */
+      @apply dark:text-foreground dark:font-bold dark:tracking-tight;
     }
 
     h2 {
       @apply text-foreground mt-8 sm:mt-10 mb-4 sm:mb-6 scroll-m-20 text-xl sm:text-3xl leading-snug font-semibold;
+      /* 暗夜模式标题优化 */
+      @apply dark:text-foreground dark:font-semibold dark:tracking-tight;
     }
 
     h3 {
       @apply text-foreground mt-6 sm:mt-8 mb-3 sm:mb-5 scroll-m-20 text-lg sm:text-2xl leading-snug font-medium;
+      /* 暗夜模式标题优化 */
+      @apply dark:text-foreground dark:font-semibold dark:tracking-tight;
     }
 
     h4 {
@@ -36,10 +46,14 @@
     /* 内部链接样式 */
     a:not([href^="http"]) {
       @apply text-primary decoration-primary hover:decoration-primary/80 font-medium break-words underline underline-offset-4 transition-colors duration-200 ease-in-out;
+      /* 暗夜模式链接优化 */
+      @apply dark:text-primary dark:decoration-primary/80 dark:hover:text-primary/90 dark:hover:decoration-primary;
     }
 
     strong {
       @apply text-foreground font-semibold;
+      /* 暗夜模式强调文字优化 */
+      @apply dark:text-foreground dark:font-bold;
     }
 
     ul {
@@ -53,6 +67,8 @@
 
     li {
       @apply text-foreground pl-3 leading-relaxed [&>p]:my-0;
+      /* 暗夜模式列表项优化 */
+      @apply dark:text-foreground/90 dark:leading-relaxed;
     }
 
     ul ul,
@@ -64,10 +80,14 @@
 
     code {
       @apply bg-muted text-foreground relative rounded-md px-2 py-1 font-mono text-sm font-medium break-words whitespace-pre-wrap;
+      /* 暗夜模式代码优化 */
+      @apply dark:bg-muted/80 dark:text-foreground dark:border dark:border-border/50;
     }
 
     pre {
       @apply bg-muted text-foreground max-w-full overflow-x-auto rounded-lg p-3 sm:p-4 font-mono text-xs sm:text-sm;
+      /* 暗夜模式代码块优化 */
+      @apply dark:bg-muted/60 dark:text-foreground dark:border dark:border-border/50 dark:shadow-lg;
     }
 
     /* 表格在移动端横向滚动与尺寸优化 */
@@ -156,6 +176,8 @@
       @apply text-muted-foreground bg-muted/30 my-8 rounded-md border-l-4 border-l-primary pl-6 italic;
       @apply py-4 text-sm leading-relaxed;
       @apply [&>p]:my-0 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0;
+      /* 暗夜模式引用块优化 */
+      @apply dark:text-foreground/80 dark:bg-muted/20 dark:border-l-primary/60 dark:shadow-sm;
     }
 
     hr {
@@ -164,22 +186,32 @@
 
     table {
       @apply my-10 w-full border-collapse overflow-hidden rounded-lg text-sm shadow-sm text-foreground;
+      /* 暗夜模式表格优化 */
+      @apply dark:bg-muted/20 dark:border dark:border-border/50 dark:shadow-lg;
     }
 
     thead {
       @apply bg-muted/30 text-foreground font-semibold;
+      /* 暗夜模式表头优化 */
+      @apply dark:bg-muted/40 dark:text-foreground dark:font-semibold;
     }
 
     th {
       @apply border border-border text-foreground px-6 py-3 text-left font-medium [&[align=center]]:text-center [&[align=right]]:text-right;
+      /* 暗夜模式表头单元格优化 */
+      @apply dark:border-border/50 dark:text-foreground dark:font-semibold;
     }
 
     tbody tr {
       @apply border-border even:bg-muted/50 odd:bg-muted/30 border-b;
+      /* 暗夜模式表格行优化 */
+      @apply dark:border-border/30 dark:even:bg-muted/30 dark:odd:bg-muted/20;
     }
 
     td {
       @apply border border-border text-foreground px-6 py-3 text-left [&[align=center]]:text-center [&[align=right]]:text-right;
+      /* 暗夜模式表格单元格优化 */
+      @apply dark:border-border/30 dark:text-foreground/90;
     }
 
     img,
@@ -209,7 +241,7 @@
     }
   }
 
-  /* Inter字体样式优化 */
+  
   .font-inter {
     font-family: var(--font-sans);
   }

@@ -254,42 +254,42 @@ www-data:/tmp) $ cat 1.txt
     参考链接:https://github.com/vulhub/vulhub/tree/master/thinkphp/5.0.23-rce
 ```
 
-<font style="color:rgb(31, 35, 40);">172.22.1.2 (DC01)域控制器</font>
+172.22.1.2 (DC01)域控制器
 
-+ **<font style="color:rgb(31, 35, 40);">系统</font>**<font style="color:rgb(31, 35, 40);">: Windows Server 2016 Datacenter 14393</font>
-+ **<font style="color:rgb(31, 35, 40);">主机名</font>**<font style="color:rgb(31, 35, 40);">: DC01.xiaorang.lab</font>
-+ **<font style="color:rgb(31, 35, 40);">开放端口</font>**<font style="color:rgb(31, 35, 40);">:</font>
-    - <font style="color:rgb(31, 35, 40);">88 (Kerberos)</font>
-    - <font style="color:rgb(31, 35, 40);">135 (RPC)</font>
-    - <font style="color:rgb(31, 35, 40);">139 (NetBIOS)</font>
-    - <font style="color:rgb(31, 35, 40);">389 (LDAP)</font>
-    - <font style="color:rgb(31, 35, 40);">445 (SMB)</font>
++ **系统**: Windows Server 2016 Datacenter 14393
++ **主机名**: DC01.xiaorang.lab
++ **开放端口**:
+- 88 (Kerberos)
+- 135 (RPC)
+- 139 (NetBIOS)
+- 389 (LDAP)
+- 445 (SMB)
 
-<font style="color:rgb(31, 35, 40);">172.22.1.18 (XIAORANG-OA01)</font>
+172.22.1.18 (XIAORANG-OA01)
 
-+ **<font style="color:rgb(31, 35, 40);">角色</font>**<font style="color:rgb(31, 35, 40);">: OA办公系统服务器</font>
-+ **<font style="color:rgb(31, 35, 40);">系统</font>**<font style="color:rgb(31, 35, 40);">: Windows Server 2012 R2 Datacenter 9600</font>
-+ **<font style="color:rgb(31, 35, 40);">主机名</font>**<font style="color:rgb(31, 35, 40);">: XIAORANG-OA01.xiaorang.lab</font>
-+ **<font style="color:rgb(31, 35, 40);">开放端口</font>**<font style="color:rgb(31, 35, 40);">:</font>
-    - <font style="color:rgb(31, 35, 40);">80 (HTTP)</font>
-    - <font style="color:rgb(31, 35, 40);">135 (RPC)</font>
-    - <font style="color:rgb(31, 35, 40);">139 (NetBIOS)</font>
-    - <font style="color:rgb(31, 35, 40);">445 (SMB)</font>
-    - <font style="color:rgb(31, 35, 40);">3306 (MySQL)</font>
-+ **<font style="color:rgb(31, 35, 40);">Web服务</font>**<font style="color:rgb(31, 35, 40);">: 信呼协同办公系统</font>
++ **角色**: OA办公系统服务器
++ **系统**: Windows Server 2012 R2 Datacenter 9600
++ **主机名**: XIAORANG-OA01.xiaorang.lab
++ **开放端口**:
+- 80 (HTTP)
+- 135 (RPC)
+- 139 (NetBIOS)
+- 445 (SMB)
+- 3306 (MySQL)
++ **Web服务**: 信呼协同办公系统
 
-<font style="color:rgb(31, 35, 40);">172.22.1.21 (XIAORANG-WIN7)</font>
+172.22.1.21 (XIAORANG-WIN7)
 
-+ **<font style="color:rgb(31, 35, 40);">系统</font>**<font style="color:rgb(31, 35, 40);">: Windows Server 2008 R2 Enterprise 7601 SP1</font>
-+ **<font style="color:rgb(31, 35, 40);">主机名</font>**<font style="color:rgb(31, 35, 40);">: XIAORANG-WIN7.xiaorang.lab</font>
-+ **<font style="color:rgb(31, 35, 40);">开放端口</font>**<font style="color:rgb(31, 35, 40);">:</font>
-    - <font style="color:rgb(31, 35, 40);">135 (RPC)</font>
-    - <font style="color:rgb(31, 35, 40);">139 (NetBIOS)</font>
-    - <font style="color:rgb(31, 35, 40);">445 (SMB)</font>
++ **系统**: Windows Server 2008 R2 Enterprise 7601 SP1
++ **主机名**: XIAORANG-WIN7.xiaorang.lab
++ **开放端口**:
+- 135 (RPC)
+- 139 (NetBIOS)
+- 445 (SMB)
 
-<font style="color:rgb(31, 35, 40);"></font>
 
-<font style="color:rgb(31, 35, 40);">同时发现永恒之蓝漏洞</font>**<font style="color:rgb(31, 35, 40);">MS17-010 (永恒之蓝)</font>**<font style="color:rgb(31, 35, 40);"> - 172.22.1.21</font>
+
+同时发现永恒之蓝漏洞**MS17-010 (永恒之蓝)** - 172.22.1.21
 
 
 

@@ -1,125 +1,127 @@
-'use client'
-
-import React, { useRef, useEffect, useState } from 'react'
-import { motion, useAnimationControls } from 'framer-motion'
+import React, { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 interface InfiniteScrollProps {
-  className?: string
-  duration?: number
-  direction?: 'normal' | 'reverse'
-  containerColor?: string
-  showFade?: boolean
   children: React.ReactNode
+  className?: string
+  speed?: number
+  direction?: 'left' | 'right'
   pauseOnHover?: boolean
 }
 
-export function InfiniteScroll({
-  className,
-  duration = 15000,
-  direction = 'normal',
-  containerColor = '#ffffff',
-  showFade = true,
+export const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
   children,
-  pauseOnHover = true,
-}: InfiniteScrollProps) {
-  const [contentWidth, setContentWidth] = useState<number>(0)
+  className,
+  speed = 50,
+  direction = 'left',
+  pauseOnHover = false,
+}) => {
   const [isPaused, setIsPaused] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const scrollerRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const controls = useAnimationControls()
-  const elapsedTimeRef = useRef(0)
-  const lastTimeRef = useRef(0)
 
   useEffect(() => {
-    const content = contentRef.current
-    if (!content) return
+    if (!scrollerRef.current) return
 
-    const updateWidth = () => {
-      const width = content.offsetWidth
-      setContentWidth(width)
+    const scroller = scrollerRef.current
+    const scrollerInner = scroller.querySelector('.scroller-inner')
+    
+    if (!scrollerInner) return
+
+    // 使用requestAnimationFrame确保DOM完全渲染
+    const setupClones = () => {
+      requestAnimationFrame(() => {
+        const scrollerContent = Array.from(scrollerInner.children).filter(
+          (child) => !child.hasAttribute('data-cloned')
+        )
+
+        // 清除之前的克隆元素
+        const existingClones = scrollerInner.querySelectorAll('[data-cloned="true"]')
+        existingClones.forEach(clone => clone.remove())
+
+        // 确保有实际内容才进行克隆
+        if (scrollerContent.length > 0) {
+          // 检查内容是否真的有可见元素
+          const hasVisibleContent = scrollerContent.some(child => {
+            const element = child as HTMLElement
+            return element.offsetWidth > 0 && element.offsetHeight > 0
+          })
+
+          if (hasVisibleContent) {
+            // 计算需要的克隆数量以确保无缝滚动
+            const containerWidth = scroller.offsetWidth || window.innerWidth
+            const contentWidth = scrollerContent.reduce((total, item) => {
+              return total + (item as HTMLElement).offsetWidth + 16 // 16px for gap
+            }, 0)
+            
+            // 确保至少有4倍屏幕宽度的内容，避免任何空窗期
+            const minRequiredWidth = containerWidth * 4
+            const cloneCount = Math.max(4, Math.ceil(minRequiredWidth / contentWidth))
+            
+            for (let i = 0; i < cloneCount; i++) {
+              scrollerContent.forEach((item) => {
+                const duplicatedItem = item.cloneNode(true) as HTMLElement
+                duplicatedItem.setAttribute('data-cloned', 'true')
+                duplicatedItem.setAttribute('data-clone-set', i.toString())
+                scrollerInner.appendChild(duplicatedItem)
+              })
+            }
+          }
+        }
+      })
     }
 
-    updateWidth()
-    window.addEventListener('resize', updateWidth)
-    return () => window.removeEventListener('resize', updateWidth)
+    // 延迟执行以确保children完全渲染
+    const timer = setTimeout(setupClones, 100)
+
+    return () => clearTimeout(timer)
   }, [children])
 
-  useEffect(() => {
-    if (!contentWidth) return
-
-    const startX = direction === 'normal' ? 0 : -contentWidth
-    const endX = direction === 'normal' ? -contentWidth : 0
-
-    if (!isPaused) {
-      const remainingDuration = duration - elapsedTimeRef.current
-      const progress = elapsedTimeRef.current / duration
-      const currentX =
-        direction === 'normal'
-          ? startX + (endX - startX) * progress
-          : endX + (startX - endX) * (1 - progress)
-
-      controls.set({ x: currentX })
-      controls.start({
-        x: endX,
-        transition: {
-          duration: remainingDuration / 1000,
-          ease: 'linear',
-          repeat: Infinity,
-          repeatType: 'loop',
-          repeatDelay: 0,
-        },
-      })
-
-      lastTimeRef.current = Date.now()
-    }
-  }, [controls, direction, duration, contentWidth, isPaused])
-
   const handleMouseEnter = () => {
-    if (!pauseOnHover) return
-
-    const currentTime = Date.now()
-    const deltaTime = currentTime - lastTimeRef.current
-    elapsedTimeRef.current = (elapsedTimeRef.current + deltaTime) % duration
-
-    setIsPaused(true)
-    controls.stop()
+    if (pauseOnHover) {
+      setIsHovered(true)
+      setIsPaused(true)
+    }
   }
 
   const handleMouseLeave = () => {
-    if (!pauseOnHover) return
-    lastTimeRef.current = Date.now()
-    setIsPaused(false)
+    if (pauseOnHover) {
+      setIsHovered(false)
+      setIsPaused(false)
+    }
   }
 
   return (
     <div
+      ref={scrollerRef}
       className={cn(
-        'relative flex shrink-0 flex-col gap-4 overflow-hidden py-3 sm:py-2 sm:gap-2',
-        className,
+        'scroller relative z-20 overflow-hidden',
+        // 改进的渐变遮罩效果
+        '[mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)]',
+        // 添加微妙的阴影效果
+        'before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-8 before:bg-gradient-to-r before:from-background before:to-transparent before:pointer-events-none',
+        'after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-8 after:bg-gradient-to-l after:from-background after:to-transparent after:pointer-events-none',
+        className
       )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="flex">
-        <motion.div
-          ref={scrollerRef}
-          className="flex shrink-0"
-          animate={controls}
-        >
-          <div ref={contentRef} className="flex shrink-0">
-            {children}
-          </div>
-          <div className="flex shrink-0">{children}</div>
-          <div className="flex shrink-0">{children}</div>
-        </motion.div>
+      <div
+        className={cn(
+          'scroller-inner flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap',
+          direction === 'left' ? 'animate-scroll-smooth' : 'animate-scroll-reverse-smooth',
+          isPaused && 'animation-paused',
+          isHovered && 'hover-glow'
+        )}
+        style={{
+          animationDuration: `${speed}s`,
+          animationTimingFunction: 'linear',
+        }}
+      >
+        {children}
       </div>
-      {showFade && (
-        <div
-          className="from-background to-background pointer-events-none absolute inset-0 bg-linear-to-r via-transparent sm:bg-gradient-to-r"
-          style={{ '--container-color': containerColor } as React.CSSProperties}
-        />
-      )}
     </div>
   )
 }
+
+export default InfiniteScroll

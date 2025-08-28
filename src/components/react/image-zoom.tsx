@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import { X, ZoomIn, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -26,8 +26,6 @@ export const ImageZoom = memo(function ImageZoom({
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
-  const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null)
-
   // 优化的键盘事件处理
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -59,7 +57,6 @@ export const ImageZoom = memo(function ImageZoom({
         setIsLoading(false)
         setError(true)
       }
-      setImageRef(img)
     }
   }, [src, priority])
 

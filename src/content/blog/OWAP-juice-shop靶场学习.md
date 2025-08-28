@@ -18,7 +18,26 @@ slug: "juice-shop"          # 随机URL字符串
 ## 介绍
 OWASP Juice Shop 是一个用于学习和测试 Web 应用程序安全的开源项目。它提供了一个真实的 Web 应用环境，模拟了一个在线商店的场景，包含了多个安全漏洞和攻击面。
 
-## 安装
+OWASP Juice Shop是一个故意设计成不安全的Web应用程序，用于安全培训、意识提升和安全工具测试。它包含了 OWASP Top 10 中的所有漏洞类别以及许多其他安全缺陷。
+
+这是一个现代的单页应用程序（SPA），使用流行的技术栈构建：
+- 前端：Angular
+- 后端：Node.js + Express
+- 数据库：SQLite
+
+Juice Shop 包含超过 100 个编码挑战，涵盖：
+- 注入攻击
+- 身份验证绕过
+- 授权缺陷
+- XSS（跨站脚本）
+- CSRF（跨站请求伪造）
+- 敏感数据暴露
+- XML 外部实体（XXE）
+- 不安全的反序列化
+- 使用已知漏洞的组件
+- 不充分的日志记录和监控
+
+## 环境搭建
 介绍页面
 
 [OWASP Juice Shop | OWASP Foundation](https://owasp.org/www-project-juice-shop/)
@@ -27,17 +46,44 @@ github 官方地址
 
 [juice-shop](https://github.com/juice-shop/juice-shop#from-sources)
 
-docker 部署
+首先需要安装 Docker，然后运行：
 
-1. <font style="color:rgb(31, 35, 40);">Run</font><font style="color:rgb(31, 35, 40);"> </font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">docker pull bkimminich/juice-shop</font>`
-2. <font style="color:rgb(31, 35, 40);">Run</font><font style="color:rgb(31, 35, 40);"> </font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">docker run --rm -p 127.0.0.1:3000:3000 bkimminich/juice-shop</font>`
-3. <font style="color:rgb(31, 35, 40);">Browse to </font>[<font style="color:rgb(9, 105, 218);">http://localhost:3000</font>](http://localhost:3000/)<font style="color:rgb(31, 35, 40);"> (on macOS and Windows browse to </font>[<font style="color:rgb(9, 105, 218);">http://192.168.99.100:3000</font>](http://192.168.99.100:3000/)<font style="color:rgb(31, 35, 40);"> if you are using docker-machine instead of the native docker installation)</font>
+### Docker部署
+
+1. Run `docker pull bkimminich/juice-shop`
+2. Run `docker run --rm -p 127.0.0.1:3000:3000 bkimminich/juice-shop`
+3. Browse to [http://localhost:3000](http://localhost:3000/) (on macOS and Windows browse to [http://192.168.99.100:3000](http://192.168.99.100:3000/) if you are using docker-machine instead of the native docker installation)
+
+### Node.js部署
+
+或者使用 Node.js 直接运行：
+
+访问 http://localhost:3000 即可开始使用。
+
+在应用程序中，点击右上角的 "Score Board" 可以查看所有挑战。挑战按难度分为：
+- ⭐ 简单
+- ⭐⭐ 中等
+- ⭐⭐⭐ 困难
+- ⭐⭐⭐⭐ 专家
+- ⭐⭐⭐⭐⭐ 大师
 
 
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755055555371-f200e4d5-be75-49c6-95b2-ea6c138012cf.png)
 
 
+
+## 漏洞分类与学习
+
+### 注入攻击
+
+#### SQL注入
+
+在登录页面尝试SQL注入：
+
+#### NoSQL注入
+
+针对MongoDB的注入攻击：
 
 ## 一星问题
 ### 第一关找积分板
@@ -131,7 +177,7 @@ http://127.0.0.1:3000/ftp/legal.md
 
 
 
-### **<font style="color:rgba(0, 0, 0, 0.85);">Privacy Policy</font>**
+### **Privacy Policy**
 
 
 
@@ -169,7 +215,7 @@ http://127.0.0.1:3000/ftp/legal.md
 
 
 ### Web3 Sandbox
-> 查找意外部署的代码沙盒，用于即时编写智能合<font style="color:rgb(255, 255, 255);">约。</font>
+> 查找意外部署的代码沙盒，用于即时编写智能合约。
 >
 
 还是简单的信息收集问题
@@ -202,9 +248,9 @@ http://127.0.0.1:3000/metrics
 
 
 
-### <font style="color:rgb(255, 255, 255);">  
+###   
 </font>Bully Chatbot
-> Receive a coupon code from the support ch<font style="color:rgb(255, 255, 255);">atbot</font>
+> Receive a coupon code from the support chatbot
 >
 
 并非真正的智能，只是对应回复，尝试给出关键词
@@ -223,7 +269,7 @@ Oooookay, if you promise to stop nagging me here's a 10% coupon code for you: k#
 
 
 
-### <font style="color:rgb(255, 255, 255);">  
+###   
 </font>Privacy Policy
 > Read our privacy policy.
 >

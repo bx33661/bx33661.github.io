@@ -50,13 +50,13 @@ slug: "bx33661xpath"          # 随机URL字符串
 $x(xpathExpression, [contextNode])
 ```
 
-<font style="color:rgb(27, 27, 27);">比如我们获取到一段 Xpath 表达式</font>
+比如我们获取到一段 Xpath 表达式
 
 ```javascript
 //*[@id='16858669']/div/h2/a
 ```
 
-<font style="color:rgb(27, 27, 27);">在控制台可以利用</font>`<font style="color:rgb(27, 27, 27);">$x</font>`<font style="color:rgb(27, 27, 27);">函数</font>
+在控制台可以利用`$x`函数
 
 ```javascript
 // 验证XPath是否能找到元素
@@ -76,9 +76,9 @@ $x("//*[@id='16858669']/div/h2/a")[0]?.scrollIntoView()
 $x("//*[@id='16858669']/div/h2/a")[0]?.style.border = "3px solid red"
 ```
 
-<font style="color:rgb(27, 27, 27);">效果如下</font>
+效果如下
 
-<font style="color:rgb(27, 27, 27);">直接返回这个元素的所有信息</font>
+直接返回这个元素的所有信息
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753235203115-73b8814f-8d90-44fb-8727-5fae0950d9f6.png)
 

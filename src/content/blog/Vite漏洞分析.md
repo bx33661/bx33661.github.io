@@ -17,25 +17,25 @@ slug: "bxvite"
 # Vite漏洞分析
 主要是 TGCTF 里面出来了三道题，这个漏洞还是非常新的
 
-+ <font style="color:rgb(0,0,0);">CVE-2025-30208</font>
++ CVE-2025-30208
 
-`<font style="color:rgb(31, 35, 40);">@fs</font>`<font style="color:rgb(31, 35, 40);"> 拒绝访问 Vite 服务允许列表之外的文件。将 </font>`<font style="color:rgb(31, 35, 40);">?raw??</font>`<font style="color:rgb(31, 35, 40);"> 或 </font>`<font style="color:rgb(31, 35, 40);">?import&raw??</font>`<font style="color:rgb(31, 35, 40);"> 添加到 URL 中可以绕过此限制，如果存在则返回文件内容。这种绕过存在是因为在多个地方删除了尾随分隔符（如 </font>`<font style="color:rgb(31, 35, 40);">?</font>`<font style="color:rgb(31, 35, 40);"> ），但未在查询字符串正则表达式中考虑。</font>
+`@fs` 拒绝访问 Vite 服务允许列表之外的文件。将 `?raw??` 或 `?import&raw??` 添加到 URL 中可以绕过此限制，如果存在则返回文件内容。这种绕过存在是因为在多个地方删除了尾随分隔符（如 `?` ），但未在查询字符串正则表达式中考虑。
 
 [https://github.com/vitejs/vite/security/advisories/GHSA-x574-m823-4x7w](https://github.com/vitejs/vite/security/advisories/GHSA-x574-m823-4x7w)
 
-+ <font style="color:rgb(0,0,0);">CVE-2025-31486</font>
++ CVE-2025-31486
 
-<font style="color:rgb(31, 35, 40);">这个是，只有明确将 Vite 开发服务器暴露到网络上的应用程序（使用 --host 或 server.host 配置选项）才会受到影响</font>
+这个是，只有明确将 Vite 开发服务器暴露到网络上的应用程序（使用 --host 或 server.host 配置选项）才会受到影响
 
 [`server.fs.deny` 通过 `.svg` 或相对路径绕过](https://github.com/vitejs/vite/security/advisories/GHSA-xcj6-pq6g-qj4x)
 
-+ <font style="color:rgb(0,0,0);">CVE-2025-32395</font>
++ CVE-2025-32395
 
 [`server.fs.deny` bypassed with an invalid `request-target`](https://github.com/vitejs/vite/security/advisories/GHSA-356w-63v5-8wf4)
 
-<font style="color:rgb(0,0,0);"></font>
 
-## <font style="color:rgb(0,0,0);">调试 Vue</font>
+
+## 调试 Vue
 学习到了一个 vue devtools
 
 官网如下：

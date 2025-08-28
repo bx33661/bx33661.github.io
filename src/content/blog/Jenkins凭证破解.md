@@ -109,11 +109,11 @@ Passphrase: 留空 (因为这个假密钥没有密码)。
 
 1. `$JENKINS_HOME/secrets/master.key`
 2. `$JENKINS_HOME/secrets/hudson.util.Secret`
-3. `$JENKINS_HOME/<font style="color:rgb(0, 0, 0);background-color:rgb(244, 244, 246);">credentials.xml</font>`里面的凭证内容
+3. `$JENKINS_HOME/credentials.xml`里面的凭证内容
 
 
 
-具体测试凭证文件`<font style="color:rgb(0, 0, 0);background-color:rgb(244, 244, 246);">credentials.xml</font>`内容如下
+具体测试凭证文件`credentials.xml`内容如下
 
 ```xml
 <?xml version='1.1' encoding='UTF-8'?>

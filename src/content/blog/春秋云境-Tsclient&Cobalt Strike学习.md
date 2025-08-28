@@ -313,7 +313,7 @@ REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution 
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754291006508-a4e3b3d0-41ed-465c-98bb-1b54d2718f79.png)
 
-> **给 **`**<font style="background-color:rgba(129, 139, 152, 0.12);">magnify.exe</font>**`**设置了一个“调试器”,当用户或系统启动 magnify.exe 时，并不会真正启动放大镜程序，而是启动了 C:\windows\system32\cmd.exe**
+> **给 **`**magnify.exe**`**设置了一个"调试器",当用户或系统启动 magnify.exe 时，并不会真正启动放大镜程序，而是启动了 C:\windows\system32\cmd.exe**
 >
 
 放大镜提权
@@ -354,7 +354,7 @@ logonpasswords
 shell net user /domain
 ```
 
-就是发现`<font style="color:rgb(82, 95, 127);">win2016$</font>`<font style="color:rgb(82, 95, 127);">在域管组里面</font>
+就是发现`win2016$`在域管组里面
 
 找到对应的 HASH 值
 
@@ -372,7 +372,7 @@ shell C:\\Users\\Aldrich\\Desktop\\mimikatz.exe "privilege::debug" "lsadump::dcs
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754293502665-c25a9097-22d7-4399-bf10-9a84580c55cf.png)
 
-最后使用**<font style="color:rgb(31, 35, 40);">Pass-the-Hash</font>**
+最后使用**Pass-the-Hash**
 
 ```python
 ┌──(root㉿kali)-[/mnt/…/shared/impacket-0.12.0/impacket-0.12.0/examples]
@@ -443,28 +443,28 @@ sudo apt install openjdk-11-jdk
 
 
 #### Payload 种类和选择 
-1. **<font style="color:rgb(31, 35, 40);">HTML Application</font>**
-    - <font style="color:rgb(31, 35, 40);">生成一个 .hta 格式的恶意 HTML 应用程序，适合用于钓鱼邮件、Web social engineering 等场景，在目标浏览器中执行后触发 payload。</font>
-2. **<font style="color:rgb(31, 35, 40);">MS Office Macro</font>**
-    - <font style="color:rgb(31, 35, 40);">生成一个可嵌入 Word、Excel 等 Office 文件的宏（VBA 脚本），适合钓鱼邮件附件。目标打开文档并启用宏后，执行 payload。</font>
-3. **<font style="color:rgb(31, 35, 40);">Stager Payload Generator</font>**
-    - <font style="color:rgb(31, 35, 40);">生成“小体积的第一阶段加载器”，主要用于下载和加载真正的 beacon（即二阶段 payload）。适合需要先绕过杀软、再拉下主 beacon 的场景。</font>
-    - <font style="color:rgb(31, 35, 40);">通常体积小、隐蔽性好，但依赖网络二次下载。</font>
-4. **<font style="color:rgb(31, 35, 40);">Stageless Payload Generator</font>**
-    - <font style="color:rgb(31, 35, 40);">生成“一步到位的主载荷”，不会分阶段，所有代码都打包在一个文件中，适合不受网络限制、对体积要求不高的场景。</font>
-    - <font style="color:rgb(31, 35, 40);">更稳定，但体积较大，检测率有时更高。</font>
-5. **<font style="color:rgb(31, 35, 40);">Windows Stager Payload</font>**
-    - <font style="color:rgb(31, 35, 40);">专门为 Windows 平台生成“分阶段”payload（即先下 stager，再加载 beacon）。</font>
-    - <font style="color:rgb(31, 35, 40);">适合在 Windows 靶机上先执行一小段代码，随后自动回连主 beacon。</font>
-6. **<font style="color:rgb(31, 35, 40);">Windows Stageless Payload</font>**
-    - <font style="color:rgb(31, 35, 40);">专门为 Windows 平台生成“一步到位”的 payload，所有内容打包进一个文件。</font>
-    - <font style="color:rgb(31, 35, 40);">适合直接部署到 Windows 靶机，执行后直接上线。</font>
-7. **<font style="color:rgb(31, 35, 40);">Windows Stageless Generate All Payloads</font>**
-    - <font style="color:rgb(31, 35, 40);">一次性为 Windows 平台生成所有主流格式的“一步到位”payload，比如 exe、dll、ps1、bin 等。</font>
+1. **HTML Application**
+    - 生成一个 .hta 格式的恶意 HTML 应用程序，适合用于钓鱼邮件、Web social engineering 等场景，在目标浏览器中执行后触发 payload。
+2. **MS Office Macro**
+    - 生成一个可嵌入 Word、Excel 等 Office 文件的宏（VBA 脚本），适合钓鱼邮件附件。目标打开文档并启用宏后，执行 payload。
+3. **Stager Payload Generator**
+    - 生成"小体积的第一阶段加载器"，主要用于下载和加载真正的 beacon（即二阶段 payload）。适合需要先绕过杀软、再拉下主 beacon 的场景。
+    - 通常体积小、隐蔽性好，但依赖网络二次下载。
+4. **Stageless Payload Generator**
+    - 生成"一步到位的主载荷"，不会分阶段，所有代码都打包在一个文件中，适合不受网络限制、对体积要求不高的场景。
+    - 更稳定，但体积较大，检测率有时更高。
+5. **Windows Stager Payload**
+    - 专门为 Windows 平台生成"分阶段"payload（即先下 stager，再加载 beacon）。
+    - 适合在 Windows 靶机上先执行一小段代码，随后自动回连主 beacon。
+6. **Windows Stageless Payload**
+    - 专门为 Windows 平台生成"一步到位"的 payload，所有内容打包进一个文件。
+    - 适合直接部署到 Windows 靶机，执行后直接上线。
+7. **Windows Stageless Generate All Payloads**
+    - 一次性为 Windows 平台生成所有主流格式的"一步到位"payload，比如 exe、dll、ps1、bin 等。
 
-<font style="color:rgb(31, 35, 40);"></font>
 
-#### <font style="color:rgb(31, 35, 40);">Beacon 内置命令</font>
+
+#### Beacon 内置命令
 ```python
 argue			命令行参数欺骗
 blockdlls			禁止子进程加载非微软签名的dll
@@ -560,9 +560,9 @@ upload			上传文件
 !			运行历史命令
 ```
 
-<font style="color:rgb(31, 35, 40);"></font>
 
-### <font style="color:rgb(31, 35, 40);">smbpasswd.py 存档</font>
+
+### smbpasswd.py 存档
 [https://lira.epac.to/DOCS/python3-impacket/examples/smbpasswd.py](https://lira.epac.to/DOCS/python3-impacket/examples/smbpasswd.py)
 
 ```python

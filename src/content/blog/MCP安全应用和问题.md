@@ -15,7 +15,7 @@ slug: "mcp-security"          # 随机URL字符串
 
 # MCP安全应用和问题
 ## MCP 相关安全项目
-+ <font style="color:rgb(31, 35, 40);">MCP 安全检查清单：AI 工具生态系统安全指南</font>
++ MCP 安全检查清单：AI 工具生态系统安全指南
 
 [MCP-Security-Checklist/README_CN.md at main · slowmist/MCP-Security-Checklist](https://github.com/slowmist/MCP-Security-Checklist/blob/main/README_CN.md)
 

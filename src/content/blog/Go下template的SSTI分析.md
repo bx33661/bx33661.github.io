@@ -21,7 +21,7 @@ slug: "bx1go"
 Go 标准库中提供的 `html/template` 和 `text/template` 两种模板引擎
 
 ### 具体语法
-<font style="background-color:rgb(255,245,235);">这里主要是记录一下</font><font style="background-color:rgb(255,245,235);">📝</font>
+这里主要是记录一下📝
 
 支持模板语法，比如：
 

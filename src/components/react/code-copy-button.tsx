@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -23,7 +23,15 @@ export function CodeCopyButton({ code, className }: CodeCopyButtonProps) {
       document.body.appendChild(textArea)
       textArea.select()
       try {
-        document.execCommand('copy')
+        navigator.clipboard.writeText(code).catch(() => {
+          // 降级到 execCommand
+          const textArea = document.createElement('textarea')
+          textArea.value = code
+          document.body.appendChild(textArea)
+          textArea.select()
+          document.execCommand('copy')
+          document.body.removeChild(textArea)
+        })
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
       } catch (fallbackErr) {

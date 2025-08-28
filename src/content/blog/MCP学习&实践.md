@@ -42,22 +42,21 @@ MCP 可应用于：
 > 内容来自官方文档[https://modelcontextprotocol.io/docs/](https://modelcontextprotocol.io/docs/learn/architecture)
 >
 
-<font style="color:rgb(62, 62, 62);">MCP 架构中的关键参与者是：</font>
+MCP 架构中的关键参与者是：
 
-+ **<font style="color:rgb(23, 23, 23);">MCP Host</font>**<font style="color:rgb(62, 62, 62);">: The AI application that coordinates and manages one or multiple MCP clients</font><font style="color:rgb(62, 62, 62);">  
-</font><font style="color:rgb(62, 62, 62);">MCP 主机：协调和管理一个或多个 MCP 客户端的 AI 应用程序</font>
-+ **<font style="color:rgb(23, 23, 23);">MCP Client</font>**<font style="color:rgb(62, 62, 62);">: A component that maintains a connection to an MCP server and obtains context from an MCP server for the MCP host to use</font><font style="color:rgb(62, 62, 62);">  
-</font><font style="color:rgb(62, 62, 62);">MCP 客户端：保持与 MCP 服务器连接并从 MCP 服务器获取上下文供 MCP 主机使用的组件</font>
-+ **<font style="color:rgb(23, 23, 23);">MCP Server</font>**<font style="color:rgb(62, 62, 62);">: A program that provides context to MCP clients  
-</font><font style="color:rgb(62, 62, 62);">MCP 服务器：为 MCP 客户端提供上下文的程序</font>
++ **MCP Host**: The AI application that coordinates and manages one or multiple MCP clients  
+MCP 主机：协调和管理一个或多个 MCP 客户端的 AI 应用程序
++ **MCP Client**: A component that maintains a connection to an MCP server and obtains context from an MCP server for the MCP host to use  
+MCP 客户端：保持与 MCP 服务器连接并从 MCP 服务器获取上下文供 MCP 主机使用的组件
++ **MCP Server**: A program that provides context to MCP clients  
+MCP 服务器：为 MCP 客户端提供上下文的程序
 
-<font style="color:rgb(62, 62, 62);"></font>
 
-### <font style="color:rgb(62, 62, 62);">消息格式</font>
+### 消息格式
 MCP 本质是一个用 JSON-RPC 2.0 作为通信协议的客户端-服务端系统：
 
-+ Host（客户端）<font style="color:rgb(62, 62, 62);"> → 发 JSON-RPC 请求，调用 MCP Server 提供的 Tool</font>
-+ MCP Server（服务端）<font style="color:rgb(62, 62, 62);"> → 收到 JSON-RPC 请求后执行方法，并返回 JSON-RPC 响应</font>
++ Host（客户端） → 发 JSON-RPC 请求，调用 MCP Server 提供的 Tool
++ MCP Server（服务端） → 收到 JSON-RPC 请求后执行方法，并返回 JSON-RPC 响应
 
 例子：MCP 请求一个 Tool：
 
@@ -73,7 +72,7 @@ MCP 本质是一个用 JSON-RPC 2.0 作为通信协议的客户端-服务端系�
 }
 ```
 
-<font style="color:rgb(62, 62, 62);">MCP Server 响应：</font>
+MCP Server 响应：
 
 ```json
 {
@@ -114,13 +113,13 @@ MCP 本质是一个用 JSON-RPC 2.0 作为通信协议的客户端-服务端系�
 ## Mcp 使用
 基本逻辑就是利用 MCP 客户端，配置 MCP 服务器，启用然后让 AI 调用
 
-<font style="color:rgb(62, 62, 62);">基于 TypeScript 的服务器可直接通过 </font>`**<font style="color:rgb(17, 24, 39);background-color:rgba(238, 238, 238, 0.5);">npx</font>**`<font style="color:rgb(62, 62, 62);"> 使用：</font>
+基于 TypeScript 的服务器可直接通过 `**npx**` 使用：
 
 ```bash
 npx -y @modelcontextprotocol/server-memory
 ```
 
-<font style="color:rgb(62, 62, 62);">基于 Python 的服务器可使用 </font>`**<font style="color:rgb(17, 24, 39);background-color:rgba(238, 238, 238, 0.5);">uvx</font>**`<font style="color:rgb(62, 62, 62);">（推荐）或 </font>`**<font style="color:rgb(17, 24, 39);background-color:rgba(238, 238, 238, 0.5);">pip</font>**`<font style="color:rgb(62, 62, 62);">：</font>
+基于 Python 的服务器可使用 `**uvx**`（推荐）或 `**pip**`：
 
 ```bash
 # 使用 uvx
@@ -222,8 +221,7 @@ MCP 调用后
 
 调用效果还是不错的，结果是可以
 
-> <font style="color:rgb(0, 0, 0);">总决赛抢七大战的关键转折发生在首节，步行者核心球员</font>**<font style="color:rgb(0, 0, 0);">哈利伯顿在无对抗情况下右小腿跟腱受伤</font>**<font style="color:rgb(0, 0, 0);">，表情痛苦地退出比赛。这一伤病直接影响了比赛走势，雷霆队在下半场逐渐确立优势。</font>
->
+> 总决赛抢七大战的关键转折发生在首节，步行者核心球员**哈利伯顿在无对抗情况下右小腿跟腱受伤**，表情痛苦地退出比赛。这一伤病直接影响了比赛走势，雷霆队在下半场逐渐确立优势。
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1751183354031-0195b344-1699-4080-8cd5-87a05eaa4052.png)
 
@@ -442,14 +440,14 @@ if __name__ == "__main__":
 
 最后分析，官网文章是这样总结的
 
-<font style="color:rgb(62, 62, 62);">当你提出问题时：</font>
+当你提出问题时：
 
-1. <font style="color:rgb(62, 62, 62);">client 将你的问题发送给 Claude</font>
-2. <font style="color:rgb(62, 62, 62);">Claude 分析可用的 tools 并决定使用哪些 tool</font>
-3. <font style="color:rgb(62, 62, 62);">client 通过 MCP server 执行选择的 tool</font>
-4. <font style="color:rgb(62, 62, 62);">结果被发回给 Claude</font>
-5. <font style="color:rgb(62, 62, 62);">Claude 制定自然语言响应</font>
-6. <font style="color:rgb(62, 62, 62);">响应显示给你</font>
+1. client 将你的问题发送给 Claude
+2. Claude 分析可用的 tools 并决定使用哪些 tool
+3. client 通过 MCP server 执行选择的 tool
+4. 结果被发回给 Claude
+5. Claude 制定自然语言响应
+6. 响应显示给你
 
 
 

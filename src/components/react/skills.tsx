@@ -134,47 +134,66 @@ const categoryGroups = [
 
 const Skills: React.FC = () => {
   useEffect(() => {
-    document.querySelectorAll('.tech-badge').forEach((badge) => {
+    // 添加渐进式动画效果
+    const badges = document.querySelectorAll('.tech-badge')
+    badges.forEach((badge, index) => {
       badge.classList.add('tech-badge-visible')
+      // 为每个徽章添加延迟动画
+      ;(badge as HTMLElement).style.animationDelay = `${index * 0.1}s`
     })
   }, [])
 
   return (
     <div className="z-30 mt-8 flex w-full flex-col max-w-[calc(100vw-2rem)] mx-auto sm:mt-12 sm:max-w-[calc(100vw-5rem)] lg:max-w-full">
-      <div className="space-y-2 sm:space-y-3">
-        {categoryGroups.map((group, groupIndex) => (
-          <InfiniteScroll
-            key={groupIndex}
-            duration={50000}
-            direction={groupIndex % 2 === 0 ? 'normal' : 'reverse'}
-            showFade={true}
-            className="flex flex-row justify-center tech-scroll-container"
-          >
-            {group.flatMap((category) =>
-              technologies[category as keyof Technologies].map(
-                (tech: Category, techIndex: number) => {
-                  const IconComponent = iconMap[tech.logo] || FaQuestionCircle
-                  const colorClass = techColors[tech.text] || 'text-primary'
-                  
-                  return (
-                    <div
-                      key={`${category}-${techIndex}`}
-                      className="tech-badge repo-card border-border bg-card/80 backdrop-blur-sm text-muted-foreground mr-3 flex items-center gap-2 rounded-lg border p-2.5 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-md hover:bg-card group mobile-animation sm:mr-4 sm:gap-3 sm:rounded-xl sm:p-3"
-                      data-tech-name={`${category}-${techIndex}`}
-                    >
-                      <span className="bg-muted/50 flex h-8 w-8 items-center justify-center rounded-md p-1.5 text-base shadow-inner group-hover:bg-muted/70 transition-all duration-300 sm:h-10 sm:w-10 sm:rounded-lg sm:p-2 sm:text-lg">
-                        <IconComponent className={`tech-icon transition-all duration-300 group-hover:scale-110 ${colorClass}`} />
-                      </span>
-                      <span className="text-foreground font-medium text-xs whitespace-nowrap sm:text-sm">
-                        {tech.text}
-                      </span>
-                    </div>
-                  )
-                },
-              ),
-            )}
-          </InfiniteScroll>
-        ))}
+      <div className="space-y-3 sm:space-y-4">
+        {categoryGroups.map((group, groupIndex) => {
+          // 为不同行设置不同的速度，创造层次感
+          const baseSpeed = 40
+          const speedVariation = groupIndex * 5
+          const scrollSpeed = baseSpeed + speedVariation
+          
+          return (
+            <InfiniteScroll
+              key={groupIndex}
+              speed={scrollSpeed}
+              direction={groupIndex % 2 === 0 ? 'left' : 'right'}
+              className="flex flex-row justify-center tech-scroll-container"
+              pauseOnHover={true}
+            >
+              {group.flatMap((category) =>
+                technologies[category as keyof Technologies].map(
+                  (tech: Category, techIndex: number) => {
+                    const IconComponent = iconMap[tech.logo] || FaQuestionCircle
+                    const colorClass = techColors[tech.text] || 'text-primary'
+                    
+                    return (
+                      <div
+                        key={`${category}-${techIndex}`}
+                        className="tech-badge repo-card border-border bg-card/90 backdrop-blur-md text-muted-foreground mr-3 flex items-center gap-2 rounded-lg border p-2.5 shadow-sm group mobile-animation sm:mr-4 sm:gap-3 sm:rounded-xl sm:p-3 relative overflow-hidden"
+                        data-tech-name={`${category}-${techIndex}`}
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+                          backdropFilter: 'blur(10px)',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                        }}
+                      >
+                        {/* 添加微妙的光效背景 */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform -skew-x-12 group-hover:animate-pulse" />
+                        
+                        <span className="bg-muted/50 flex h-8 w-8 items-center justify-center rounded-md p-1.5 text-base shadow-inner group-hover:bg-muted/70 transition-all duration-300 sm:h-10 sm:w-10 sm:rounded-lg sm:p-2 sm:text-lg relative z-10">
+                          <IconComponent className={`tech-icon transition-all duration-300 ${colorClass}`} />
+                        </span>
+                        <span className="text-foreground font-medium text-xs whitespace-nowrap sm:text-sm relative z-10">
+                          {tech.text}
+                        </span>
+                      </div>
+                    )
+                  },
+                ),
+              )}
+            </InfiniteScroll>
+          )
+        })}
       </div>
     </div>
   )

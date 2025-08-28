@@ -21,7 +21,6 @@ const {
   modifiedTime,
   author,
   tags = [],
-  url,
   noindex = false
 } = Astro.props
 
@@ -151,7 +150,7 @@ if (type === 'article') {
 <meta name="twitter:image" content={imageURL} />
 
 <!-- 结构化数据 -->
-<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+<script type="application/ld+json" is:inline set:html={JSON.stringify(schemaData)} />
 
 <!-- 额外的 SEO 优化 -->
 <meta name="author" content={author || SITE.author} />

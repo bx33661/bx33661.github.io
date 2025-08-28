@@ -1,10 +1,10 @@
 import Fuse from 'fuse.js'
-import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import BlogCardJSX from './blog-card'
 import debounce from 'lodash.debounce'
-import { Search as SearchIcon, X, Filter, Clock, Tag, TrendingUp } from 'lucide-react'
+import { Search as SearchIcon, X, Filter, Clock, Tag } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { motion, AnimatePresence } from 'framer-motion'
 

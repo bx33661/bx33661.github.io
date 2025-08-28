@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react'
+import { useState, memo } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Hash, Calendar, Clock, Eye } from 'lucide-react'
 import type { CollectionEntry } from 'astro:content'

@@ -28,7 +28,7 @@ slug: "bx33661win1"          # 随机URL字符串
 
 ## IIS 学习
 
-> <font style="color:rgb(0, 0, 0);">基本概念：</font>
+> 基本概念：
 >
 > IIS（Internet Information Services）是微软提供的 Web 服务器平台，最早随 NT3.51 一起发布，现在几乎成为 Windows Server 上的标准组件之一。它不仅可以把 .NET、ASP、PHP、Node.js、Java（通过 Tomcat/Bridge）等站点托管在 Windows 机器上，还提供 FTP、SMTP、WebDav 等服务，并带有一整套系统管理与扩展接口。
 
@@ -84,7 +84,7 @@ W3SVC1--->`World Wide Web Publishing Service #1`
 
 可以理解成
 
-<font style="color:rgb(31, 35, 40);">服务器管理器就是 Windows Server 的"软件商店+系统监控+服务管理"的综合工具</font>
+服务器管理器就是 Windows Server 的"软件商店+系统监控+服务管理"的综合工具
 
 [服务器管理器](https://learn.microsoft.com/zh-cn/windows-server/administration/server-manager/server-manager)
 

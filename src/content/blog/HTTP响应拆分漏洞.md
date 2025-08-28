@@ -15,9 +15,9 @@ slug: "bxhttpSplit"
 
 
 # HTTP响应拆分漏洞分析
-## <font style="color:rgb(51, 51, 51);">基本了解</font>
-### <font style="color:rgb(51, 51, 51);">漏洞定义</font>
-HTTP响应拆分漏洞(HTTP Response Splitting)<font style="color:rgb(51, 51, 51);">是一种Web应用安全漏洞，攻击者通过在HTTP响应头中注入CRLF字符序列来"拆分"HTTP响应，从而控制响应的内容。</font>
+## 基本了解
+### 漏洞定义
+HTTP响应拆分漏洞(HTTP Response Splitting)是一种Web应用安全漏洞，攻击者通过在HTTP响应头中注入CRLF字符序列来"拆分"HTTP响应，从而控制响应的内容。
 
 **核心原理：**HTTP协议使用CRLF（\r\n）来分隔响应头和响应体
 
@@ -28,10 +28,10 @@ HTTP响应拆分漏洞(HTTP Response Splitting)<font style="color:rgb(51, 51, 51
 > - **CRLF组合**：`\r\n`，在HTTP协议中用于分隔头部字段
 > - **双CRLF**：`\r\n\r\n`，用于分隔HTTP头部和消息体
 
-### <font style="color:rgb(51, 51, 51);">攻击原理图解</font>
+### 攻击原理图解
 ![](https://cdn.nlark.com/yuque/__mermaid_v3/3076482d3db7456b9aea5f143c426dd3.svg)
 
-### <font style="color:rgb(51, 51, 51);">基础攻击流程</font>
+### 基础攻击流程
 ```http
 正常响应：
  HTTP/1.1 200 OK
@@ -56,9 +56,9 @@ HTTP响应拆分漏洞(HTTP Response Splitting)<font style="color:rgb(51, 51, 51
  <script>alert('XSS')</script>
 ```
 
-## <font style="color:rgb(51, 51, 51);">简单实验</font>
-### <font style="color:rgb(51, 51, 51);">Flask框架的局限性</font>
-<font style="color:rgb(51, 51, 51);">采用 Flask 等现代框架通常不会出现此漏洞，因为这些框架已经内置了CRLF过滤机制：</font>
+## 简单实验
+### Flask框架的局限性
+采用 Flask 等现代框架通常不会出现此漏洞，因为这些框架已经内置了CRLF过滤机制：
 
 ```python
 from flask import Flask, request, make_response
@@ -83,8 +83,8 @@ if __name__ == '__main__':
 
 
 
-### <font style="color:rgb(51, 51, 51);">漏洞实现</font>
-<font style="color:rgb(51, 51, 51);">为了演示真实的漏洞，我们使用更原始的socket实现：</font>
+### 漏洞实现
+为了演示真实的漏洞，我们使用更原始的socket实现：
 
 ```python
 from flask import Flask, request, make_response
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     app.run(debug=True)
 ```
 
-<font style="color:rgb(51, 51, 51);">我们采用更加原始的</font>
+我们采用更加原始的socket实现：
 
 ```python
 import socket
@@ -197,10 +197,10 @@ if __name__ == '__main__':
     start_server()
 ```
 
-### <font style="color:rgb(51, 51, 51);">payload</font>
-<font style="color:rgb(102, 102, 102);">HTTP 响应头位置使用了未经处理的用户数据 </font>
+### payload
+HTTP 响应头位置使用了未经处理的用户数据
 
-#### <font style="color:rgb(51, 51, 51);">XSS</font>
+#### XSS
 ```html
 http://localhost:5002/set_language?lang=en%0d%0aContent-Type:%20text/html%0d%0a%0d%0a<script>alert('XSS')</script>
 
@@ -211,11 +211,11 @@ Content-Type: text/html
 <script>alert('XSS')</script>
 ```
 
-<font style="color:rgb(51, 51, 51);">curl 测试</font>
+curl 测试
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753603337289-e07fe122-4976-4c96-b01d-c1089c9efc19.png)
 
-<font style="color:rgb(51, 51, 51);">浏览器测试</font>
+浏览器测试
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753603307322-00467d26-1fdc-4bc8-8195-940c6b477d37.png)
 
@@ -234,8 +234,8 @@ curl -v "http://localhost:5002/set_language?lang=en%0d%0aX-Hacked:%20true%0d%0aX
 curl -v "http://localhost:5002/set_language?lang=en%0d%0aLocation:%20http://www.bx33661.com"
 ```
 
-### <font style="color:rgb(51, 51, 51);">绕过安全机制</font>
-#### <font style="color:rgb(51, 51, 51);">绕过WAF</font>
+### 绕过安全机制
+#### 绕过WAF
 ```plain
 # 使用不同编码方式
  %0d%0a        # 标准URL编码
@@ -245,7 +245,7 @@ curl -v "http://localhost:5002/set_language?lang=en%0d%0aLocation:%20http://www.
  %E5%98%8A%E5%98%8D  # 双重编码
 ```
 
-#### <font style="color:rgb(51, 51, 51);">绕过输入过滤</font>
+#### 绕过输入过滤
 ```plain
 # 使用UTF-8编码
 %C0%8D%C0%8A  # 非标准UTF-8编码的CRLF
@@ -261,11 +261,11 @@ curl -v "http://localhost:5002/set_language?lang=en%0d%0aLocation:%20http://www.
 
 
 
-## <font style="color:rgb(51, 51, 51);">措施和修复</font>
+## 措施和修复
 这里记录一些理解
 
-### <font style="color:rgb(51, 51, 51);">输入验证和过滤</font>
-#### <font style="color:rgb(51, 51, 51);">严格的CRLF过滤</font>
+### 输入验证和过滤
+#### 严格的CRLF过滤
 ```python
 import re
 
@@ -291,7 +291,7 @@ safe_value = sanitize_header_value(user_input)
 response.headers['X-Language'] = safe_value
 ```
 
-#### <font style="color:rgb(51, 51, 51);">白名单验证</font>
+#### 白名单验证
 ```python
 def validate_language_code(lang):
     """验证语言代码"""
@@ -307,11 +307,11 @@ lang = validate_language_code(request.args.get('lang', 'en'))
 
 
 
-## <font style="color:rgb(51, 51, 51);">深度攻击思路（ing）</font>
-### <font style="color:rgb(51, 51, 51);">缓存投毒攻击 (Cache Poisoning)</font>
-<font style="color:rgb(51, 51, 51);">缓存投毒</font>
+## 深度攻击思路（ing）
+### 缓存投毒攻击 (Cache Poisoning)
+缓存投毒是通过HTTP响应拆分漏洞污染缓存服务器，使恶意内容被缓存并提供给后续用户的攻击方式。
 
-#### <font style="color:rgb(51, 51, 51);">攻击原理</font>
+#### 攻击原理
 ```plain
 # 正常请求
  GET /api/data?callback=handleData HTTP/1.1
@@ -322,7 +322,7 @@ lang = validate_language_code(request.args.get('lang', 'en'))
  Host: example.com
 ```
 
-#### <font style="color:rgb(51, 51, 51);">攻击效果</font>
+#### 攻击效果
 ```plain
 # 第一个响应（被缓存）
  HTTP/1.1 200 OK
@@ -336,8 +336,8 @@ lang = validate_language_code(request.args.get('lang', 'en'))
  <script>alert('Cached XSS')</script>
 ```
 
-### <font style="color:rgb(51, 51, 51);">会话固定攻击 (Session Fixation)</font>
-<font style="color:rgb(51, 51, 51);">通过响应拆分强制设置特定的会话ID。</font>
+### 会话固定攻击 (Session Fixation)
+通过响应拆分强制设置特定的会话ID。
 
 ```plain
 # 攻击载荷

@@ -13,7 +13,6 @@ import { formatDate, readingTime } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { render } from 'astro:content'
 
-
 export async function getStaticPaths() {
   const postSlugs = await getAllPostSlugs()
   return postSlugs.map(({ slug, post }) => ({

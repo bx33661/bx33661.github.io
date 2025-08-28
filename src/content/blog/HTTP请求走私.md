@@ -25,11 +25,7 @@ slug: "bx33661http"
 
 一般漏洞解释：
 
-_HTTP走私（HTTP Request Smuggling）是一种针对Web服务器和代理服务器通信过程中的协议解析差异进行攻击的安全漏洞。攻击者利用不同服务器（如前端负载均衡、反向代理与后端应用服务器）对HTTP请求的解析方式不一致，插入特殊构造的HTTP请求，从而绕过安全检测、劫持其他用户的请求或注入恶意数据。_
-
-__
-
-__
+HTTP走私（HTTP Request Smuggling）是一种针对Web服务器和代理服务器通信过程中的协议解析差异进行攻击的安全漏洞。攻击者利用不同服务器（如前端负载均衡、反向代理与后端应用服务器）对HTTP请求的解析方式不一致，插入特殊构造的HTTP请求，从而绕过安全检测、劫持其他用户的请求或注入恶意数据。
 
 ## CL 和 TE
 ### Content-Length   内容长度(CL)
@@ -52,13 +48,13 @@ Hello, World!
 
 
 ### Transfer-Encoding (TE)  传输编码 (TE)
-<font style="color:rgb(31, 35, 40);">Transfer-Encoding用于指定消息体的编码方式，最常见的是chunked编码</font>
+Transfer-Encoding用于指定消息体的编码方式，最常见的是chunked编码
 
-1. <font style="color:rgb(31, 35, 40);">chunked（分块编码）---主要主要</font>
-2. <font style="color:rgb(31, 35, 40);">compress（压缩编码）----废弃了</font>
-3. <font style="color:rgb(31, 35, 40);">gzip（gzip压缩）</font>
-4. <font style="color:rgb(31, 35, 40);">deflate 压缩</font>
-5. <font style="color:rgb(31, 35, 40);">identity（就是相当于不使用Transfer-Encoding）</font>
+1. chunked（分块编码）---主要主要
+2. compress（压缩编码）----废弃了
+3. gzip（gzip压缩）
+4. deflate 压缩
+5. identity（就是相当于不使用Transfer-Encoding）
 
 ```http
 POST /bxdemo HTTP/1.1
@@ -75,10 +71,10 @@ World!
 
 这里说明一下`Chunked`格式
 
-> <font style="color:rgb(31, 35, 40);">Chunked编码将HTTP消息体分割成一系列的数据块（chunks），每个块都有自己的大小标识，最后以一个大小为0的块表示结束。</font>
+> Chunked编码将HTTP消息体分割成一系列的数据块（chunks），每个块都有自己的大小标识，最后以一个大小为0的块表示结束。
 >
 
-<font style="color:rgb(31, 35, 40);">基本格式</font>
+基本格式
 
 ```http
 chunk-size[CRLF]
@@ -137,27 +133,27 @@ false}
 
 首先回到这个协议
 
-<font style="color:rgb(31, 35, 40);">根据HTTP/1.1规范（RFC 7230）：</font>
+根据HTTP/1.1规范（RFC 7230）：
 
-1. **<font style="color:rgb(31, 35, 40);">优先级规则</font>**<font style="color:rgb(31, 35, 40);">：当同时存在Transfer-Encoding和Content-Length时，应忽略Content-Length</font>
-2. **<font style="color:rgb(31, 35, 40);">现实差异</font>**<font style="color:rgb(31, 35, 40);">：不同服务器实现可能不严格遵循此规则</font>
+1. **优先级规则**：当同时存在Transfer-Encoding和Content-Length时，应忽略Content-Length
+2. **现实差异**：不同服务器实现可能不严格遵循此规则
 
-<font style="color:rgb(31, 35, 40);"></font>
 
-### <font style="color:rgb(31, 35, 40);">Connection: keep-alive</font>
-<font style="color:rgb(31, 35, 40);"> HTTP1.1 默认开启，并且一般会显式显示</font>
 
-<font style="color:rgb(31, 35, 40);">还是回到 HTTP1.1，我们经常会看见一个东西</font>
+### Connection: keep-alive
+ HTTP1.1 默认开启，并且一般会显式显示
+
+还是回到 HTTP1.1，我们经常会看见一个东西
 
 ```http
 Connection: keep-alive
 ```
 
-<font style="color:rgb(31, 35, 40);">这个响应头部用于指示客户端和服务器保持TCP连接开启状态，以便复用该连接处理后续的HTTP请求</font>
+这个响应头部用于指示客户端和服务器保持TCP连接开启状态，以便复用该连接处理后续的HTTP请求
 
-<font style="color:rgb(31, 35, 40);">对比一下就很好理解</font>
+对比一下就很好理解
 
-<font style="color:rgb(31, 35, 40);">使用</font>`<font style="color:rgb(31, 35, 40);">keep-alive</font>`
+使用`keep-alive`
 
 ```http
 时间轴：
@@ -234,12 +230,12 @@ MaxKeepAliveRequests 100
 
 
 ### 具体攻击
-+ <font style="color:rgb(31, 35, 40);">CL.TE攻击（Content-Length + Transfer-Encoding）</font>
-+ <font style="color:rgb(31, 35, 40);">TE.CL攻击（Transfer-Encoding + Content-Length）</font>
++ CL.TE攻击（Content-Length + Transfer-Encoding）
++ TE.CL攻击（Transfer-Encoding + Content-Length）
 
-<font style="color:rgb(31, 35, 40);">一个例子如下</font>
+一个例子如下
 
-<font style="color:rgb(31, 35, 40);">前端解析遵循（CL）</font>
+前端解析遵循（CL）
 
 ```http
 POST / HTTP/1.1
@@ -255,10 +251,10 @@ Host: example.com
 
 
 
-#### <font style="color:rgb(31, 35, 40);">CL.TE攻击</font>
-**<font style="color:rgb(31, 35, 40);">原理：</font>**
+#### CL.TE攻击
+**原理：**
 
-<font style="color:rgb(31, 35, 40);">前端服务器使用Content-Length，后端服务器使用Transfer-Encoding</font>
+前端服务器使用Content-Length，后端服务器使用Transfer-Encoding
 
 ```graphql
 POST / HTTP/1.1
@@ -271,16 +267,16 @@ Transfer-Encoding: chunked
 SMUGGLED
 ```
 
-<font style="color:rgb(31, 35, 40);">前端的话，会认为</font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">0\r\n\r\nSMUGGLED </font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">(</font><font style="color:rgb(31, 35, 40);">Content-Length),将完整请求转发给后端</font>
+前端的话，会认为`0\r\n\r\nSMUGGLED `(Content-Length),将完整请求转发给后端
 
-<font style="color:rgb(31, 35, 40);">后端的话，按chunked解析：</font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">0\r\n\r\n</font>`<font style="color:rgb(31, 35, 40);">，请求结束，剩余的</font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">SMUGGLED</font>`<font style="color:rgb(31, 35, 40);">被当作下一个请求的开始</font>
+后端的话，按chunked解析：`0\r\n\r\n`，请求结束，剩余的`SMUGGLED`被当作下一个请求的开始
 
-<font style="color:rgb(31, 35, 40);"></font>
 
-#### <font style="color:rgb(31, 35, 40);">TE.CL攻击</font>
-**<font style="color:rgb(31, 35, 40);">原理</font>**<font style="color:rgb(31, 35, 40);">：</font>
 
-<font style="color:rgb(31, 35, 40);">前端服务器使用Transfer-Encoding，后端服务器使用Content-Length</font>
+#### TE.CL攻击
+**原理**：
+
+前端服务器使用Transfer-Encoding，后端服务器使用Content-Length
 
 ```graphql
 POST / HTTP/1.1
@@ -294,15 +290,13 @@ SMUGGLED
 
 ```
 
-**<font style="color:rgb(31, 35, 40);">前端服务器</font>**<font style="color:rgb(31, 35, 40);">,按Transfer-Encoding: chunked解析,读取</font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">8\r\nSMUGGLED\r\n0\r\n\r\n</font>`
+**前端服务器**,按Transfer-Encoding: chunked解析,读取`8\r\nSMUGGLED\r\n0\r\n\r\n`
 
-**<font style="color:rgb(31, 35, 40);">后端服务器处理</font>**<font style="color:rgb(31, 35, 40);">：使用Content-Length: 3,只读取前3字节：</font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">8\r\n</font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">,</font><font style="color:rgb(31, 35, 40);">剩余部分</font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">SMUGGLED\r\n0\r\n\r\n</font>`<font style="color:rgb(31, 35, 40);">被当作下一个请求</font>
+**后端服务器处理**：使用Content-Length: 3,只读取前3字节：`8\r\n`,剩余部分`SMUGGLED\r\n0\r\n\r\n`被当作下一个请求
 
-<font style="color:rgb(31, 35, 40);"></font>
 
-<font style="color:rgb(31, 35, 40);"></font>
 
-#### <font style="color:rgb(31, 35, 40);">会话劫持</font>
+#### 会话劫持
 ```graphql
 POST / HTTP/1.1
 Host: website.com
@@ -318,7 +312,7 @@ Content-Length: 100
 username=admin&password=secret&next_user_data=
 ```
 
-<font style="color:rgb(31, 35, 40);">走私的POST请求会"搞掉"下一个正常用户请求的部分内容</font>
+走私的POST请求会"搞掉"下一个正常用户请求的部分内容
 
 
 
@@ -381,7 +375,7 @@ x=1
 
 
 
-#### <font style="color:rgb(0, 19, 80);">基本的 CL.TE 漏洞</font>
+#### 基本的 CL.TE 漏洞
 对应靶场
 
 [Lab: HTTP request smuggling, basic CL.TE vulnerability | Web Security Academy](https://portswigger.net/web-security/request-smuggling/lab-basic-cl-te)
@@ -421,14 +415,14 @@ G
 
 最后攻击效果
 
-<font style="color:rgb(31, 35, 40);">发送第二个正常请求时：</font>
+发送第二个正常请求时：
 
 ```plain
 第一个请求剩余: G
 第二个请求开始: POST /...
 ```
 
-<font style="color:rgb(31, 35, 40);">后端服务器会将它们拼接成：</font>
+后端服务器会将它们拼接成：
 
 ```plain
 GPOST /...
