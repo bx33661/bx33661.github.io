@@ -139,23 +139,38 @@ const Navbar = () => {
                 return (
                   <motion.div
                     key={item.href}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ 
+                      scale: 1.05,
+                      y: -2
+                    }}
+                    whileTap={{ 
+                      scale: 0.95,
+                      y: 0
+                    }}
                     className="relative"
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 17
+                    }}
                   >
                     <Link
                       href={item.href}
                       className={cn(
-                        "text-sm font-medium capitalize transition-colors duration-200",
-                        "relative py-1 px-1",
-                        "after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300",
-                        "hover:after:w-full hover:text-foreground",
+                        "text-sm font-medium capitalize transition-all duration-300",
+                        "relative py-2 px-3 rounded-lg",
+                        "before:absolute before:inset-0 before:rounded-lg before:bg-primary/10 before:scale-0 before:transition-transform before:duration-300",
+                        "hover:before:scale-100",
+                        "after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300",
+                        "hover:after:w-[calc(100%-0.5rem)] hover:text-foreground",
+                        "hover:shadow-lg hover:shadow-primary/20",
                         isActive 
-                          ? "text-foreground after:w-full after:bg-primary" 
+                          ? "text-foreground after:w-[calc(100%-0.5rem)] after:bg-primary before:scale-100 shadow-md shadow-primary/20" 
                           : "text-foreground/70"
                       )}
                       onClick={() => setActivePath(item.href)}
                     >
-                      {item.label}
+                      <span className="relative z-10">{item.label}</span>
                     </Link>
                   </motion.div>
                 );
@@ -196,22 +211,54 @@ const Navbar = () => {
           >
             <div className="flex flex-col items-center justify-start h-full pt-24 w-full p-6">
               <nav className="flex flex-col items-center justify-start gap-1 w-full">
-                {NAV_LINKS.map((item, i) => (
-                  <motion.div
-                    key={item.href}
-                    custom={i}
-                    className="w-full text-start"
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="dark:text-white text-lg font-bold font-custom capitalize dark:hover:text-white/80 transition-colors inline-block py-2 relative group"
+                {NAV_LINKS.map((item, i) => {
+                  const isActive = activePath.startsWith(item.href) && item.href !== "/";
+                  return (
+                    <motion.div
+                      key={item.href}
+                      custom={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ 
+                        delay: i * 0.1,
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 20
+                      }}
+                      whileHover={{ 
+                        scale: 1.02,
+                        x: 8
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full text-start"
                     >
-                      {item.label}
-                      <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-neutral-900 dark:bg-white group-hover:w-full transition-all duration-300 ease-in-out"></span>
-                    </Link>
-                  </motion.div>
-                ))}
+                      <Link
+                        href={item.href}
+                        onClick={() => {
+                          setActivePath(item.href);
+                          setMobileMenuOpen(false);
+                        }}
+                        className={cn(
+                          "block px-4 py-3 text-lg font-bold font-custom capitalize transition-all duration-300 rounded-lg mx-2",
+                          "relative overflow-hidden",
+                          "before:absolute before:inset-0 before:bg-primary/10 before:scale-x-0 before:origin-left before:transition-transform before:duration-300",
+                          "hover:before:scale-x-100",
+                          "after:absolute after:left-2 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-0 after:bg-primary after:transition-all after:duration-300",
+                          "hover:after:h-6",
+                          isActive 
+                            ? "text-primary before:scale-x-100 after:h-6 bg-primary/5" 
+                            : "dark:text-white text-foreground dark:hover:text-white/80 hover:text-foreground"
+                        )}
+                      >
+                        <span className="relative z-10 ml-3">{item.label}</span>
+                        <span className={cn(
+                          "absolute left-0 bottom-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out",
+                          isActive ? "w-full" : "w-0 group-hover:w-full"
+                        )}></span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
               </nav>
               
               <motion.div

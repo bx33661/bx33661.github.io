@@ -1,0 +1,311 @@
+/* 代码高亮增强样式 - 优化暗色模式可读性 */
+
+/* 暗色模式下的代码高亮增强样式 - 基于GitHub官方暗色主题 */
+@media (prefers-color-scheme: dark) {
+  /* 代码块容器样式 */
+  .expressive-code {
+    --ec-codeBg: #0d1117 !important;
+    --ec-codeFg: #e6edf3 !important;
+    --ec-brdCol: #21262d !important;
+    background: var(--ec-codeBg) !important;
+    border: 1px solid var(--ec-brdCol) !important;
+    border-radius: 6px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24) !important;
+  }
+
+  /* 代码内容区域 */
+  .expressive-code pre {
+    background: var(--ec-codeBg) !important;
+    color: var(--ec-codeFg) !important;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
+  }
+
+  /* 行号样式 */
+  .expressive-code .ec-line-numbers {
+    background: #0d1117 !important;
+    color: #6e7681 !important;
+    border-right: 1px solid var(--ec-brdCol) !important;
+    padding-right: 16px !important;
+    margin-right: 16px !important;
+  }
+
+  /* 代码行样式 */
+  .expressive-code .ec-line {
+    background: transparent !important;
+    min-height: 20px !important;
+  }
+
+  /* 悬停效果 */
+  .expressive-code .ec-line:hover {
+    background: rgba(56, 139, 253, 0.08) !important;
+  }
+
+  /* 复制按钮样式 */
+  .expressive-code .copy {
+    background: #21262d !important;
+    color: #c9d1d9 !important;
+    border: 1px solid #30363d !important;
+    border-radius: 6px !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+  }
+
+  .expressive-code .copy:hover {
+    background: #30363d !important;
+    border-color: #8b949e !important;
+    color: #f0f6fc !important;
+  }
+
+  /* 语法高亮颜色 - 鲜艳的暗色主题配色 */
+  .expressive-code .token.comment,
+  .expressive-code .token.prolog,
+  .expressive-code .token.doctype,
+  .expressive-code .token.cdata {
+    color: #7c7c7c !important; /* 注释 - 中性灰色 */
+    font-style: italic !important;
+  }
+
+  .expressive-code .token.punctuation {
+    color: #ffffff !important; /* 标点符号 - 纯白色 */
+  }
+
+  .expressive-code .token.property,
+  .expressive-code .token.tag,
+  .expressive-code .token.boolean,
+  .expressive-code .token.number,
+  .expressive-code .token.constant,
+  .expressive-code .token.symbol {
+    color: #569cd6 !important; /* 属性、标签、数字 - 鲜艳蓝色 */
+  }
+
+  .expressive-code .token.selector,
+  .expressive-code .token.attr-name,
+  .expressive-code .token.string,
+  .expressive-code .token.char,
+  .expressive-code .token.builtin,
+  .expressive-code .token.inserted {
+    color: #ce9178 !important; /* 字符串 - 温暖橙色 */
+  }
+
+  .expressive-code .token.operator,
+  .expressive-code .token.entity,
+  .expressive-code .token.url {
+    color: #d4d4d4 !important; /* 操作符 - 亮灰色 */
+  }
+
+  .expressive-code .token.atrule,
+  .expressive-code .token.attr-value,
+  .expressive-code .token.keyword {
+    color: #569cd6 !important; /* 关键字 - 鲜艳蓝色 */
+    font-weight: bold !important;
+  }
+
+  .expressive-code .token.function,
+  .expressive-code .token.class-name {
+    color: #dcdcaa !important; /* 函数、类名 - 亮黄色 */
+  }
+
+  .expressive-code .token.regex,
+  .expressive-code .token.important,
+  .expressive-code .token.variable {
+    color: #9cdcfe !important; /* 变量 - 亮蓝色 */
+  }
+
+  .expressive-code .token.deleted {
+    color: #f44747 !important; /* 删除的内容 - 鲜红色 */
+    background: rgba(244, 71, 71, 0.1) !important;
+  }
+
+  /* TypeScript/JavaScript 特定样式 */
+  .expressive-code .language-typescript .token.keyword,
+  .expressive-code .language-javascript .token.keyword {
+    color: #569cd6 !important; /* const, export, function 等关键字 */
+  }
+
+  .expressive-code .language-typescript .token.type,
+  .expressive-code .language-javascript .token.type {
+    color: #4ec9b0 !important; /* 类型注解 - 青绿色 */
+  }
+
+  .expressive-code .language-typescript .token.generic,
+  .expressive-code .language-javascript .token.generic {
+    color: #4ec9b0 !important; /* 泛型 - 青绿色 */
+  }
+
+  /* CSS特定样式 */
+  .expressive-code .language-css .token.string,
+  .expressive-code .style .token.string {
+    color: #ce9178 !important;
+  }
+
+  .expressive-code .language-css .token.property {
+    color: #92c5f7 !important; /* CSS属性名 - 亮蓝色 */
+  }
+
+  .expressive-code .language-css .token.selector {
+    color: #d7ba7d !important; /* CSS选择器 - 金黄色 */
+  }
+
+  /* JSON特定样式 */
+  .expressive-code .language-json .token.property {
+    color: #92c5f7 !important; /* JSON属性名 - 亮蓝色 */
+  }
+
+  .expressive-code .language-json .token.string {
+    color: #ce9178 !important; /* JSON字符串值 - 橙色 */
+  }
+
+  .expressive-code .language-json .token.number {
+    color: #b5cea8 !important; /* JSON数字 - 浅绿色 */
+  }
+
+  /* HTML特定样式 */
+  .expressive-code .language-html .token.tag .token.tag {
+    color: #569cd6 !important; /* HTML标签 - 蓝色 */
+  }
+
+  .expressive-code .language-html .token.attr-name {
+    color: #92c5f7 !important; /* HTML属性名 - 亮蓝色 */
+  }
+
+  .expressive-code .language-html .token.attr-value {
+    color: #ce9178 !important; /* HTML属性值 - 橙色 */
+  }
+
+  /* 增强特定语法元素 */
+  .expressive-code .token.namespace {
+    color: #4ec9b0 !important; /* 命名空间 - 青绿色 */
+  }
+
+  .expressive-code .token.annotation {
+    color: #dcdcaa !important; /* 注解 - 黄色 */
+  }
+
+  .expressive-code .token.decorator {
+    color: #dcdcaa !important; /* 装饰器 - 黄色 */
+  }
+
+  .expressive-code .token.template-string {
+    color: #ce9178 !important; /* 模板字符串 - 橙色 */
+  }
+
+  .expressive-code .token.interpolation {
+    color: #9cdcfe !important; /* 插值表达式 - 亮蓝色 */
+  }
+
+  /* 高亮行样式 */
+  .expressive-code .ec-line.highlighted {
+    background: rgba(56, 139, 253, 0.15) !important;
+    border-left: 3px solid #58a6ff !important;
+    padding-left: 13px !important;
+  }
+
+  /* 兼容旧版本选择器 */
+  .expressive-code .frame {
+    background-color: var(--ec-codeBg) !important;
+    border-color: var(--ec-brdCol) !important;
+  }
+  
+  .expressive-code .ec-line .code {
+    color: var(--ec-codeFg) !important;
+  }
+  
+  .expressive-code .gutter {
+    background-color: #0d1117 !important;
+    border-right-color: var(--ec-brdCol) !important;
+  }
+  
+  .expressive-code .ln {
+    color: #6e7681 !important;
+  }
+  
+  .expressive-code .copy button {
+    background-color: #21262d !important;
+    border-color: #30363d !important;
+    color: #c9d1d9 !important;
+  }
+  
+  .expressive-code .copy button:hover {
+    background-color: #30363d !important;
+    color: #f0f6fc !important;
+  }
+  
+  .auto-detect-mark {
+    background-color: #21262d !important;
+    color: #ffd700 !important;
+    border: 1px solid #30363d !important;
+  }
+  
+  /* 语法高亮颜色增强 - 更新为GitHub主题 */
+  .expressive-code .code span[style*="--0:#24292e"] {
+    color: #e6edf3 !important;
+  }
+  
+  .expressive-code .code span[style*="--0:#6f42c1"] {
+    color: #d2a8ff !important;
+  }
+  
+  .expressive-code .code span[style*="--0:#005cc5"] {
+    color: #79c0ff !important;
+  }
+  
+  .expressive-code .code span[style*="--0:#032f62"] {
+    color: #a5d6ff !important;
+  }
+  
+  .expressive-code .code span[style*="--0:#d73a49"] {
+    color: #ff7b72 !important;
+  }
+  
+  .expressive-code .code span[style*="--0:#22863a"] {
+    color: #7ee787 !important;
+  }
+}
+
+/* 亮色模式保持原有样式 */
+@media (prefers-color-scheme: light) {
+  .expressive-code {
+    --ec-codeBg: #f6f8fa;
+    --ec-codeFg: #24292e;
+    --ec-gutterBg: #f6f8fa;
+    --ec-gutterFg: #656d76;
+    --ec-brdCol: #d1d9e0;
+  }
+}
+
+/* 通用优化 */
+.expressive-code {
+  font-family: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+/* 确保代码块有足够的对比度 */
+.expressive-code .code {
+  font-weight: 400 !important;
+  letter-spacing: 0.025em !important;
+}
+
+/* 滚动条样式优化 */
+.expressive-code pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.expressive-code pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.expressive-code pre::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .expressive-code pre::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.expressive-code pre::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}

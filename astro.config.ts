@@ -9,11 +9,12 @@ import expressiveCode from 'astro-expressive-code'
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import rehypeExternalLinks from 'rehype-external-links'
 import rehypeKatex from 'rehype-katex'
-import rehypePrettyCode from 'rehype-pretty-code'
+
 import remarkEmoji from 'remark-emoji'
 import remarkMath from 'remark-math'
 import remarkSectionize from 'remark-sectionize'
 import rehypeDocument from 'rehype-document'
+import { rehypeAutoLanguage } from './src/lib/auto-language-plugin'
 
 import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
@@ -47,7 +48,7 @@ export default defineConfig({
 
   integrations: [
     expressiveCode({
-      themes: ['github-light', 'github-dark'],
+      themes: ['github-light', 'one-dark-pro'],
       plugins: [pluginCollapsibleSections(), pluginLineNumbers(), pluginFrames(), pluginTextMarkers()],
       useDarkModeMediaQuery: true,
       // 配置复制按钮和其他实用功能
@@ -78,6 +79,9 @@ export default defineConfig({
         uiLineHeight: '1.4',
         codeFontSize: '0.875rem',
         codeLineHeight: '1.5',
+        // 增强暗色模式对比度
+        codeBackground: ['#1e1e1e', '#f6f8fa'],
+        codeForeground: ['#d4d4d4', '#24292e']
       },
     }),
     mdx(),
@@ -166,16 +170,17 @@ export default defineConfig({
         },
       ],
       rehypeHeadingIds,
-      rehypeKatex,
       [
-        rehypePrettyCode,
+        rehypeAutoLanguage,
         {
-          theme: {
-            light: 'catppuccin-latte',
-            dark: 'ayu-dark',
-          },
-        },
+          enabled: true,
+          fallbackLanguage: 'text',
+          addDetectionMark: true,
+          minCodeLength: 10,
+          excludeLanguages: ['text', 'plain', 'txt']
+        }
       ],
+      rehypeKatex,
 
     ],
     remarkPlugins: [remarkMath, remarkEmoji, remarkSectionize],

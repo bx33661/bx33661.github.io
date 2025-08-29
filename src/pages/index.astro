@@ -7,6 +7,11 @@ import Logo from '@/components/ui/logo'
 import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts, getAllPostSlugs } from '@/lib/data-utils'
 import { SITE } from '@/consts'
+import AnimatedElement from '@/components/react/animated-element'
+import { ScrollProgress, ScrollReveal } from '@/components/react/scroll-animations'
+import Card3D from '@/components/react/card-3d'
+import RippleButton from '@/components/react/ripple-button'
+import { AnimationProvider } from '@/components/react/animation-optimizer'
 
 const recentPosts = await getRecentPosts(3)
 const allPostSlugs = await getAllPostSlugs()
@@ -21,17 +26,22 @@ const currentUrl = Astro.url;
 ---
 
 <Layout canonicalUrl={currentUrl}>
+  <AnimationProvider client:load>
+    <ScrollProgress client:load />
   <PageHead slot="head" title="BX/bpple -安全研究-中国" />
   <section class="flex flex-col gap-y-8 px-4 py-6 sm:gap-y-12 sm:px-8 sm:py-8 lg:px-16">
     <div
       class="flex flex-col items-center text-center gap-6 sm:flex-row sm:items-start sm:gap-8 sm:text-left"
     >
-      <div class="relative overflow-hidden rounded-xl shadow-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
-        <Logo
-          className="h-auto w-32 object-cover transition-transform duration-300 hover:scale-105 sm:w-48 md:w-56 lg:w-64"
-        />
-      </div>
-      <div class="mt-4 sm:mt-0 sm:max-w-xl">
+      <AnimatedElement client:load animation="scaleIn" delay={0.2}>
+        <div class="relative overflow-hidden rounded-xl shadow-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
+          <Logo
+            className="h-auto w-32 object-cover transition-transform duration-300 hover:scale-105 sm:w-48 md:w-56 lg:w-64"
+          />
+        </div>
+      </AnimatedElement>
+      <AnimatedElement client:load animation="slideRight" delay={0.4}>
+        <div class="mt-4 sm:mt-0 sm:max-w-xl">
         <h1
           class="font-custom text-foreground text-center text-3xl font-extrabold sm:text-start sm:text-5xl"
         >
@@ -67,46 +77,52 @@ const currentUrl = Astro.url;
         <p class="text-sm text-foreground mt-4 text-center font-sans whitespace-pre-line leading-relaxed sm:text-base sm:text-start" title="description" aria-label="description">
           {SITE.description}
         </p>
-      </div>
+        </div>
+      </AnimatedElement>
     </div>
 
-    <section class="relative" aria-labelledby="skills-title">
-      <h2
-        id="skills-title"
-        class="font-custom text-foreground text-2xl font-bold"
-        title="skills"
-        aria-label="skills"
-        role="heading"
-      >
-        技能与技术栈
-      </h2>
-      <p class="text-muted-foreground text-sm" aria-label="skills description">
-        为了好看加的动效🙂：
-      </p>
-      <div>
-        <Skills client:load />
-      </div>
-    </section>
-
-    <section class="flex flex-col gap-y-4" aria-labelledby="latest-posts-title" role="region">
-      <div class="relative" aria-labelledby="latest-posts-title">
+    <ScrollReveal client:load>
+      <section class="relative" aria-labelledby="skills-title">
         <h2
-          id="latest-posts-title"
+          id="skills-title"
           class="font-custom text-foreground text-2xl font-bold"
-          title="latest blog posts"
-          aria-label="latest blog posts"
+          title="skills"
+          aria-label="skills"
+          role="heading"
         >
-          最新博客文章
+          技能与技术栈
         </h2>
+        <p class="text-muted-foreground text-sm" aria-label="skills description">
+          为了好看加的动效🙂：
+        </p>
+        <div>
+          <Skills client:load />
+        </div>
+      </section>
+    </ScrollReveal>
+
+    <ScrollReveal client:load>
+      <section class="flex flex-col gap-y-4" aria-labelledby="latest-posts-title" role="region">
+        <div class="relative" aria-labelledby="latest-posts-title">
+          <h2
+            id="latest-posts-title"
+            class="font-custom text-foreground text-2xl font-bold"
+            title="latest blog posts"
+            aria-label="latest blog posts"
+          >
+            最新博客文章
+          </h2>
         <p class="text-muted-foreground text-sm" aria-label="blog description">
           这里是我最新的一些博客文章，您可以在博客页面查看更多内容。
         </p>
       </div>
       <ul class="flex flex-col gap-y-4">
         {
-          blog.map((post) => (
-            <li>
-              <article class="group relative overflow-hidden rounded-xl border transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 bg-card/50 backdrop-blur-sm dark:bg-gradient-to-br dark:from-card dark:to-background/50 dark:border-border/30 dark:hover:border-primary/40 dark:hover:shadow-2xl dark:hover:shadow-primary/10 p-4 sm:p-6">
+          blog.map((post, index) => (
+            <ScrollReveal client:load direction="up" delay={index * 0.1} threshold={0.2}>
+              <li>
+                <Card3D client:load>
+                <article class="group relative overflow-hidden rounded-xl border transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 bg-card/50 backdrop-blur-sm dark:bg-gradient-to-br dark:from-card dark:to-background/50 dark:border-border/30 dark:hover:border-primary/40 dark:hover:shadow-2xl dark:hover:shadow-primary/10 p-4 sm:p-6">
                 <a href={`/blog/${post.slug}`} class="flex flex-col gap-4" aria-label={`阅读文章: ${post.data.title}`}>
                   <div class="flex items-center gap-4 text-xs text-muted-foreground">
                     <div class="flex items-center gap-1">
@@ -156,22 +172,28 @@ const currentUrl = Astro.url;
                     </div>
                   )}
                 </a>
-              </article>
-            </li>
+                </article>
+                </Card3D>
+              </li>
+            </ScrollReveal>
           ))
         }
       </ul>
-      <div class="flex justify-center" aria-label="see all posts">
-        <Link
-          href="/blog"
-          class={buttonVariants({ variant: 'ghost' }) + ' group'}
-        >
-          查看所有文章 <span
-            class="ml-1.5 transition-transform group-hover:translate-x-1"
-            >&rarr;</span
-          >
-        </Link>
-      </div>
-    </section>
+      <ScrollReveal client:load direction="fade" delay={0.3} threshold={0.3}>
+        <div class="flex justify-center pt-4">
+          <RippleButton client:load>
+            <Link
+              href="/blog/"
+              class={buttonVariants({ variant: "outline" })}
+              aria-label="View all blog posts"
+            >
+              查看所有文章
+            </Link>
+          </RippleButton>
+        </div>
+      </ScrollReveal>
+      </section>
+    </ScrollReveal>
   </section>
+  </AnimationProvider>
 </Layout>

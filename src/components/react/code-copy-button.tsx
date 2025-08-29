@@ -23,21 +23,25 @@ export function CodeCopyButton({ code, className }: CodeCopyButtonProps) {
       document.body.appendChild(textArea)
       textArea.select()
       try {
-        navigator.clipboard.writeText(code).catch(() => {
-          // 降级到 execCommand
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(code)
+        } else {
+          // 降级到选择文本方案
           const textArea = document.createElement('textarea')
           textArea.value = code
+          textArea.style.position = 'fixed'
+          textArea.style.left = '-999999px'
+          textArea.style.top = '-999999px'
           document.body.appendChild(textArea)
+          textArea.focus()
           textArea.select()
-          document.execCommand('copy')
           document.body.removeChild(textArea)
-        })
+        }
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
       } catch (fallbackErr) {
-        console.error('Fallback copy failed:', fallbackErr)
+        console.error('Copy failed:', fallbackErr)
       }
-      document.body.removeChild(textArea)
     }
   }
 

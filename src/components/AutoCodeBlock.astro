@@ -1,0 +1,202 @@
+---
+/**
+ * 自动语言检测的代码块组件
+ * 当代码块没有指定语言时，自动检测并应用语法高亮
+ */
+import { detectLanguage } from '../lib/language-detector';
+
+export interface Props {
+  code: string;
+  language?: string;
+  filename?: string;
+  showLineNumbers?: boolean;
+  title?: string;
+}
+
+const { code, language, filename, showLineNumbers = true, title } = Astro.props;
+
+// 如果没有指定语言，自动检测
+const detectedLanguage = language || detectLanguage(code, filename);
+
+// 生成唯一ID
+const blockId = `code-block-${Math.random().toString(36).substring(2, 11)}`;
+---
+
+<div class="auto-code-block" data-language={detectedLanguage}>
+  {title && (
+    <div class="code-title">
+      <span class="title-text">{title}</span>
+      <span class="language-badge">{detectedLanguage}</span>
+    </div>
+  )}
+  
+  <div class="code-container">
+    <pre class={`language-${detectedLanguage}`} data-line-numbers={showLineNumbers}><code class={`language-${detectedLanguage}`} id={blockId}>{code}</code></pre>
+    
+    <!-- 复制按钮 -->
+    <button 
+      class="copy-button" 
+      data-copy-target={blockId}
+      aria-label="复制代码"
+      title="复制代码"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+    </button>
+    
+    <!-- 语言检测指示器 -->
+    {!language && (
+      <div class="auto-detect-indicator" title={`自动检测为: ${detectedLanguage}`}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+        </svg>
+        <span>自动检测</span>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .auto-code-block {
+    @apply relative mb-6 rounded-lg overflow-hidden;
+    @apply border border-border/50 bg-muted/30;
+  }
+
+  .code-title {
+    @apply flex items-center justify-between px-4 py-2;
+    @apply bg-muted/60 border-b border-border/50;
+    @apply text-sm font-medium text-muted-foreground;
+  }
+
+  .title-text {
+    @apply text-foreground font-semibold;
+  }
+
+  .language-badge {
+    @apply px-2 py-1 rounded text-xs;
+    @apply bg-primary/10 text-primary border border-primary/20;
+  }
+
+  .code-container {
+    @apply relative;
+  }
+
+  pre {
+    @apply m-0 p-4 overflow-x-auto;
+    @apply bg-transparent text-sm leading-relaxed;
+    font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  }
+
+  code {
+    @apply bg-transparent;
+  }
+
+  .copy-button {
+    @apply absolute top-3 right-3 p-2 rounded-md;
+    @apply bg-muted/80 hover:bg-muted text-muted-foreground hover:text-foreground;
+    @apply border border-border/50 hover:border-border;
+    @apply transition-all duration-200 opacity-0 group-hover:opacity-100;
+    @apply focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-primary/50;
+  }
+
+  .auto-code-block:hover .copy-button {
+    @apply opacity-100;
+  }
+
+  .auto-detect-indicator {
+    @apply absolute bottom-3 right-3 flex items-center gap-1;
+    @apply px-2 py-1 rounded text-xs;
+    @apply bg-amber-500/10 text-amber-600 dark:text-amber-400;
+    @apply border border-amber-500/20;
+    @apply opacity-0 hover:opacity-100 transition-opacity duration-200;
+  }
+
+  .auto-code-block:hover .auto-detect-indicator {
+    @apply opacity-100;
+  }
+
+  /* 行号样式 */
+  pre[data-line-numbers="true"] {
+    @apply pl-12;
+  }
+
+  pre[data-line-numbers="true"]::before {
+    content: counter(line-number);
+    counter-increment: line-number;
+    @apply absolute left-0 top-0 w-10 text-right pr-2;
+    @apply text-muted-foreground/60 text-xs leading-relaxed;
+    @apply border-r border-border/30;
+    white-space: pre;
+    counter-reset: line-number;
+  }
+
+  /* 暗色模式优化 */
+  .dark .auto-code-block {
+    @apply bg-slate-900/50 border-slate-700/50;
+  }
+
+  .dark .code-title {
+    @apply bg-slate-800/60 border-slate-700/50;
+  }
+
+  .dark .copy-button {
+    @apply bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-slate-200;
+    @apply border-slate-600/50 hover:border-slate-500;
+  }
+
+  .dark .language-badge {
+    @apply bg-blue-500/10 text-blue-400 border-blue-500/20;
+  }
+
+  .dark .auto-detect-indicator {
+    @apply bg-amber-500/10 text-amber-400 border-amber-500/20;
+  }
+</style>
+
+<script>
+  // 复制功能
+  document.addEventListener('DOMContentLoaded', () => {
+    const copyButtons = document.querySelectorAll('.copy-button');
+    
+    copyButtons.forEach(button => {
+      button.addEventListener('click', async () => {
+        const targetId = button.getAttribute('data-copy-target');
+        if (!targetId) return;
+        
+        const codeElement = document.getElementById(targetId);
+        
+        if (codeElement) {
+          try {
+            await navigator.clipboard.writeText(codeElement.textContent || '');
+            
+            // 显示复制成功反馈
+            const originalHTML = button.innerHTML;
+            const buttonElement = button as HTMLElement;
+            button.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+              </svg>
+            `;
+            buttonElement.style.color = '#10b981';
+            
+            setTimeout(() => {
+              button.innerHTML = originalHTML;
+              buttonElement.style.color = '';
+            }, 2000);
+          } catch (err) {
+            console.error('复制失败:', err);
+            
+            // 降级方案：选择文本
+            const range = document.createRange();
+            range.selectNodeContents(codeElement);
+            const selection = window.getSelection();
+            selection?.removeAllRanges();
+            selection?.addRange(range);
+          }
+        }
+      });
+    });
+  });
+</script>
