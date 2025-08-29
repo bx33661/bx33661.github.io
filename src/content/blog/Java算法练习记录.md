@@ -1,3 +1,17 @@
+---
+title: "Java算法练习记录"
+description: "主要是基于力扣上一些例题"
+date: 2024-07-26
+tags:
+  - "java"
+  - "bx"
+  - "算法学习"
+authors:
+  - "bx"
+draft: false
+slug: "java-algorithm-practice"
+---
+
 # Java算法练习记录
 
 > 主要是基于力扣上一些例题
