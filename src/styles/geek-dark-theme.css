@@ -1,0 +1,500 @@
+/* Geek风格暗夜模式主题 - 赛博朋克配色方案 */
+
+:root.dark {
+  /* 主要背景色 - 深邃的黑色系 */
+  --background: oklch(0.05 0.01 264);
+  --foreground: #D4ADFC; /* 主文本 - 浅紫色 */
+  
+  /* 卡片和容器 - 带有微妙的紫色调 */
+  --card: oklch(0.08 0.02 264);
+  --card-foreground: #D4ADFC; /* 主文本 - 浅紫色 */
+  
+  /* 弹出层 */
+  --popover: oklch(0.06 0.02 264);
+  --popover-foreground: #D4ADFC; /* 主文本 - 浅紫色 */
+  
+  /* 主色调 - 霓虹青色 */
+  --primary: oklch(0.70 0.25 180);
+  --primary-foreground: oklch(0.05 0.01 264);
+  
+  /* 次要色调 - 霓虹紫色 */
+  --secondary: oklch(0.15 0.05 300);
+  --secondary-foreground: oklch(0.85 0.15 300);
+  
+  /* 静音色调 */
+  --muted: oklch(0.12 0.02 264);
+  --muted-foreground: #A8A4C4; /* 次要文本 - 灰紫色 */
+  
+  /* 强调色 - 霓虹绿色 */
+  --accent: oklch(0.18 0.08 120);
+  --accent-foreground: oklch(0.85 0.20 120);
+  
+  /* 危险色 - 霓虹红色 */
+  --destructive: oklch(0.65 0.25 15);
+  
+  /* 边框和输入框 */
+  --border: oklch(0.20 0.05 264);
+  --input: oklch(0.15 0.03 264);
+  
+  /* 焦点环 */
+  --ring: oklch(0.70 0.25 180);
+  
+  /* 图表颜色 - 霓虹色系 */
+  --chart-1: oklch(0.70 0.25 180); /* 青色 */
+  --chart-2: oklch(0.75 0.25 120); /* 绿色 */
+  --chart-3: oklch(0.70 0.25 300); /* 紫色 */
+  --chart-4: oklch(0.75 0.25 60);  /* 黄色 */
+  --chart-5: oklch(0.70 0.25 15);  /* 红色 */
+  
+  /* 侧边栏 */
+  --sidebar: oklch(0.06 0.02 264);
+  --sidebar-foreground: oklch(0.90 0.04 120);
+  --sidebar-primary: oklch(0.70 0.25 180);
+  --sidebar-primary-foreground: oklch(0.05 0.01 264);
+  --sidebar-accent: oklch(0.12 0.03 264);
+  --sidebar-accent-foreground: oklch(0.85 0.15 120);
+  --sidebar-border: oklch(0.20 0.05 264);
+  --sidebar-ring: oklch(0.70 0.25 180);
+}
+
+/* Geek风格全局样式增强 */
+.dark {
+  /* 页面背景渐变 */
+  background: radial-gradient(ellipse at top, oklch(0.08 0.03 264) 0%, oklch(0.04 0.01 280) 50%, oklch(0.02 0.01 264) 100%);
+  
+  /* 全局文字发光效果 - 简化 */
+  text-shadow: none;
+  
+  /* 主要文本颜色 - Tokyo Night配色 */
+   color: #a9b1d6;
+}
+
+/* 霓虹光效动画 */
+@keyframes neon-pulse {
+  0%, 100% {
+    text-shadow: 
+      0 0 5px currentColor,
+      0 0 10px currentColor,
+      0 0 15px currentColor,
+      0 0 20px oklch(0.70 0.25 180);
+  }
+  50% {
+    text-shadow: 
+      0 0 2px currentColor,
+      0 0 5px currentColor,
+      0 0 8px currentColor,
+      0 0 12px oklch(0.70 0.25 180);
+  }
+}
+
+@keyframes border-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 5px oklch(0.70 0.25 180 / 0.5),
+      0 0 10px oklch(0.70 0.25 180 / 0.3),
+      0 0 15px oklch(0.70 0.25 180 / 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 10px oklch(0.70 0.25 180 / 0.8),
+      0 0 20px oklch(0.70 0.25 180 / 0.5),
+      0 0 30px oklch(0.70 0.25 180 / 0.2);
+  }
+}
+
+@keyframes matrix-rain {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+/* 标题效果 - 简化 */
+.dark h1,
+.dark h2,
+.dark h3 {
+  color: #a9b1d6; /* 主文本颜色 - Tokyo Night */
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(169, 177, 214, 0.25); /* 轻微发光 */
+}
+
+/* 链接效果 - 简化 */
+.dark a {
+  color: #7aa2f7; /* 链接颜色 - Tokyo Night */
+  text-decoration: none;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.dark a:hover {
+  color: #bb9af7; /* hover时的颜色 - Tokyo Night */
+  text-shadow: 0 0 6px rgba(187, 154, 247, 0.4); /* 轻微发光 */
+}
+
+.dark a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    oklch(0.75 0.25 120), 
+    oklch(0.70 0.25 180));
+  transition: width 0.3s ease;
+  box-shadow: 0 0 5px oklch(0.75 0.25 120);
+}
+
+.dark a:hover::after {
+  width: 100%;
+}
+
+/* 按钮效果 - 简化 */
+.dark button,
+.dark .btn {
+  background: linear-gradient(135deg, 
+    oklch(0.15 0.05 264) 0%, 
+    oklch(0.10 0.03 280) 100%);
+  border: 1px solid #7aa2f7;
+   color: #a9b1d6;
+  text-shadow: none;
+  box-shadow: none;
+  transition: all 0.3s ease;
+}
+
+.dark button:hover,
+.dark .btn:hover {
+  background: linear-gradient(135deg, 
+    oklch(0.20 0.08 264) 0%, 
+    oklch(0.15 0.05 280) 100%);
+  box-shadow: 0 0 8px rgba(122, 162, 247, 0.25); /* 轻微发光 */
+  transform: translateY(-1px);
+}
+
+/* 输入框效果 - 简化 */
+.dark input,
+.dark textarea,
+.dark select {
+  background: oklch(0.08 0.02 264);
+  border: 1px solid oklch(0.25 0.05 264);
+  color: #a9b1d6;
+  box-shadow: inset 0 1px 3px oklch(0.00 0 0 / 0.3);
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #7aa2f7;
+   box-shadow: 
+     0 0 0 2px rgba(122, 162, 247, 0.19),
+    inset 0 1px 3px oklch(0.00 0 0 / 0.3);
+  outline: none;
+}
+
+/* 卡片效果 - 简化 */
+.dark .card,
+.dark .bg-card {
+  background: linear-gradient(135deg, 
+    oklch(0.08 0.02 264) 0%, 
+    oklch(0.06 0.03 280) 50%, 
+    oklch(0.08 0.02 264) 100%);
+  border: 1px solid oklch(0.25 0.05 264);
+  transition: all 0.3s ease;
+}
+
+.dark .card:hover,
+.dark .bg-card:hover {
+  border-color: rgba(122, 162, 247, 0.38);
+   box-shadow: 0 0 12px rgba(122, 162, 247, 0.13); /* 轻微发光 */
+}
+
+@keyframes rainbow-border {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* 滚动条霓虹效果 */
+.dark ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: oklch(0.08 0.02 264);
+  border-radius: 6px;
+  border: 1px solid oklch(0.15 0.03 264);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, 
+    oklch(0.70 0.25 180) 0%, 
+    oklch(0.75 0.25 120) 100%);
+  border-radius: 6px;
+  border: 1px solid oklch(0.25 0.05 264);
+  box-shadow: 
+    0 0 5px oklch(0.70 0.25 180 / 0.5),
+    inset 0 1px 0 oklch(0.90 0.15 180 / 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, 
+    oklch(0.75 0.25 180) 0%, 
+    oklch(0.80 0.25 120) 100%);
+  box-shadow: 
+    0 0 10px oklch(0.70 0.25 180 / 0.8),
+    inset 0 1px 0 oklch(0.90 0.15 180 / 0.5);
+}
+
+/* 选择文本霓虹效果 */
+.dark ::selection {
+  background: oklch(0.70 0.25 180 / 0.3);
+  color: oklch(0.95 0.05 120);
+  text-shadow: 0 0 5px oklch(0.70 0.25 180);
+}
+
+/* 表格效果 - 简化 */
+.dark table {
+  background: oklch(0.06 0.02 264);
+  border: 1px solid oklch(0.25 0.05 264);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dark th {
+  background: linear-gradient(135deg, 
+    oklch(0.12 0.03 264) 0%, 
+    oklch(0.10 0.04 280) 100%);
+  color: #a9b1d6;
+   border-bottom: 2px solid #7aa2f7;
+  text-shadow: none;
+}
+
+.dark td {
+  background: oklch(0.08 0.02 264);
+  color: #565f89; /* 次要文本 - Tokyo Night */
+  border-bottom: 1px solid oklch(0.20 0.05 264);
+}
+
+.dark tr:hover td {
+  background: oklch(0.12 0.03 264);
+  box-shadow: none;
+}
+
+/* 引用块效果 - 简化 */
+.dark blockquote {
+  background: linear-gradient(135deg, 
+    oklch(0.08 0.02 264) 0%, 
+    oklch(0.06 0.03 280) 100%);
+  border-left: 4px solid #7aa2f7;
+   color: #565f89; /* 次要文本 - Tokyo Night */
+  position: relative;
+}
+
+.dark blockquote::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  font-size: 3rem;
+  color: #7aa2f7;
+  text-shadow: none;
+  opacity: 0.3;
+}
+
+/* 加载动画霓虹效果 */
+.dark .loading-spinner {
+  border: 3px solid oklch(0.20 0.05 264);
+  border-top: 3px solid oklch(0.70 0.25 180);
+  border-radius: 50%;
+  animation: spin 1s linear infinite, border-glow 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 工具提示霓虹效果 */
+.dark .tooltip {
+  background: oklch(0.06 0.02 264);
+  border: 1px solid oklch(0.70 0.25 180);
+  color: oklch(0.90 0.08 120);
+  box-shadow: 
+    0 0 20px oklch(0.70 0.25 180 / 0.3),
+    0 8px 32px oklch(0.00 0 0 / 0.5);
+  backdrop-filter: blur(20px);
+}
+
+/* 模态框霓虹效果 */
+.dark .modal {
+  background: oklch(0.06 0.02 264 / 0.95);
+  border: 1px solid oklch(0.70 0.25 180);
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 0 50px oklch(0.70 0.25 180 / 0.3),
+    0 25px 50px oklch(0.00 0 0 / 0.5);
+}
+
+.dark .modal-backdrop {
+  background: oklch(0.00 0 0 / 0.8);
+  backdrop-filter: blur(8px);
+}
+
+/* 进度条霓虹效果 */
+.dark .progress-bar {
+  background: oklch(0.15 0.03 264);
+  border: 1px solid oklch(0.25 0.05 264);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px oklch(0.00 0 0 / 0.3);
+}
+
+.dark .progress-bar-fill {
+  background: linear-gradient(90deg, 
+    oklch(0.70 0.25 180) 0%, 
+    oklch(0.75 0.25 120) 50%, 
+    oklch(0.70 0.25 300) 100%);
+  box-shadow: 
+    0 0 20px oklch(0.70 0.25 180 / 0.5),
+    0 0 40px oklch(0.70 0.25 180 / 0.3);
+  animation: progress-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes progress-glow {
+  0% {
+    box-shadow: 
+      0 0 15px oklch(0.70 0.25 180 / 0.4),
+      0 0 30px oklch(0.70 0.25 180 / 0.2);
+  }
+  100% {
+    box-shadow: 
+      0 0 25px oklch(0.70 0.25 180 / 0.6),
+      0 0 50px oklch(0.70 0.25 180 / 0.4);
+  }
+}
+
+/* 标签效果 - 简化 */
+.dark .tag,
+.dark .badge {
+  background: linear-gradient(135deg, 
+    oklch(0.15 0.05 264) 0%, 
+    oklch(0.12 0.03 280) 100%);
+  border: 1px solid #7aa2f7;
+   color: #a9b1d6;
+  text-shadow: none;
+  box-shadow: none;
+}
+
+/* 导航栏霓虹效果 */
+.dark nav {
+  background: oklch(0.06 0.02 264 / 0.9);
+  border-bottom: 1px solid oklch(0.70 0.25 180 / 0.3);
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 0 20px oklch(0.70 0.25 180 / 0.1),
+    0 1px 0 oklch(0.70 0.25 180 / 0.2);
+}
+
+/* 搜索框霓虹效果 */
+.dark .search-input {
+  background: oklch(0.08 0.02 264 / 0.8);
+  border: 1px solid oklch(0.25 0.05 264);
+  color: oklch(0.90 0.08 120);
+  backdrop-filter: blur(12px);
+}
+
+.dark .search-input:focus {
+  border-color: oklch(0.70 0.25 180);
+  box-shadow: 
+    0 0 0 2px oklch(0.70 0.25 180 / 0.3),
+    0 0 15px oklch(0.70 0.25 180 / 0.2);
+}
+
+/* 悬浮动作按钮霓虹效果 */
+.dark .floating-action-button {
+  background: linear-gradient(135deg, 
+    oklch(0.70 0.25 180) 0%, 
+    oklch(0.75 0.25 120) 100%);
+  box-shadow: 
+    0 8px 32px oklch(0.70 0.25 180 / 0.4),
+    0 0 0 1px oklch(0.70 0.25 180 / 0.3),
+    inset 0 1px 0 oklch(0.90 0.15 180 / 0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+.dark .floating-action-button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 
+    0 12px 40px oklch(0.70 0.25 180 / 0.6),
+    0 0 0 1px oklch(0.70 0.25 180 / 0.5),
+    inset 0 1px 0 oklch(0.90 0.15 180 / 0.5);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .dark {
+    /* 移动端减少发光效果以提升性能 */
+    text-shadow: 0 0 1px oklch(0.70 0.25 180 / 0.2);
+  }
+  
+  .dark h1,
+  .dark h2,
+  .dark h3 {
+    text-shadow: 
+      0 0 3px oklch(0.70 0.25 180),
+      0 0 6px oklch(0.70 0.25 180 / 0.3);
+  }
+  
+  .dark .card::before,
+  .dark .bg-card::before {
+    opacity: 0.3;
+  }
+  
+  .dark .card:hover::before,
+  .dark .bg-card:hover::before {
+    opacity: 0.4;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .dark {
+    --foreground: oklch(0.98 0.02 120);
+    --background: oklch(0.02 0.01 264);
+    --primary: oklch(0.80 0.30 180);
+  }
+  
+  .dark h1,
+  .dark h2,
+  .dark h3 {
+    color: oklch(0.95 0.25 180);
+  }
+}
+
+/* 减少动画模式支持 */
+@media (prefers-reduced-motion: reduce) {
+  .dark * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

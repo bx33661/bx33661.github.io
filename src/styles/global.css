@@ -61,37 +61,38 @@
 }
 
 .dark {
-  --background: oklch(0.06 0.02 264);
-  --foreground: oklch(0.95 0.05 120);
-  --card: oklch(0.08 0.02 264);
-  --card-foreground: oklch(0.92 0.04 120);
-  --popover: oklch(0.08 0.02 264);
-  --popover-foreground: oklch(0.95 0.05 120);
-  --primary: oklch(0.80 0.25 120);
-  --primary-foreground: oklch(0.06 0.02 264);
-  --secondary: oklch(0.15 0.05 300);
-  --secondary-foreground: oklch(0.90 0.15 180);
-  --muted: oklch(0.10 0.02 264);
-  --muted-foreground: oklch(0.75 0.08 120);
-  --accent: oklch(0.18 0.08 180);
-  --accent-foreground: oklch(0.92 0.12 180);
-  --destructive: oklch(0.70 0.25 15);
-  --border: oklch(0.18 0.05 264);
-  --input: oklch(0.12 0.03 264);
-  --ring: oklch(0.80 0.25 120);
-  --chart-1: oklch(0.75 0.25 120);
-  --chart-2: oklch(0.70 0.20 300);
-  --chart-3: oklch(0.80 0.22 180);
-  --chart-4: oklch(0.75 0.18 60);
-  --chart-5: oklch(0.70 0.25 15);
-  --sidebar: oklch(0.09 0.02 264);
-  --sidebar-foreground: oklch(0.90 0.03 120);
-  --sidebar-primary: oklch(0.75 0.25 120);
-  --sidebar-primary-foreground: oklch(0.08 0.02 264);
-  --sidebar-accent: oklch(0.14 0.03 264);
-  --sidebar-accent-foreground: oklch(0.85 0.15 180);
-  --sidebar-border: oklch(0.18 0.05 264);
-  --sidebar-ring: oklch(0.60 0.15 120);
+  /* 参考终端界面的优雅配色 - 深蓝黑色主题 */
+  --background: #1a1b26;
+  --foreground: #a9b1d6;
+  --card: #1f2335;
+  --card-foreground: #a9b1d6;
+  --popover: #1f2335;
+  --popover-foreground: #a9b1d6;
+  --primary: #7aa2f7;
+  --primary-foreground: #1a1b26;
+  --secondary: #24283b;
+  --secondary-foreground: #a9b1d6;
+  --muted: #24283b;
+  --muted-foreground: #565f89;
+  --accent: #292e42;
+  --accent-foreground: #7aa2f7;
+  --destructive: #f7768e;
+  --border: #292e42;
+  --input: #24283b;
+  --ring: #7aa2f7;
+  --chart-1: #7aa2f7;
+  --chart-2: #bb9af7;
+  --chart-3: #9ece6a;
+  --chart-4: #e0af68;
+  --chart-5: #f7768e;
+  --sidebar: #1a1b26;
+  --sidebar-foreground: #a9b1d6;
+  --sidebar-primary: #7aa2f7;
+  --sidebar-primary-foreground: #1a1b26;
+  --sidebar-accent: #24283b;
+  --sidebar-accent-foreground: #a9b1d6;
+  --sidebar-border: #292e42;
+  --sidebar-ring: #7aa2f7;
   
   --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.15);
   --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.15);
@@ -182,8 +183,16 @@
 
   body {
     @apply font-sans text-base leading-normal;
-    /* 暗夜模式body优化 */
+    /* 暗夜模式body优化 - Geek风格 */
     @apply dark:text-foreground/95 dark:leading-relaxed;
+  }
+
+  .dark body {
+    background: linear-gradient(135deg, 
+      oklch(0.04 0.02 264) 0%, 
+      oklch(0.02 0.03 280) 50%, 
+      oklch(0.04 0.02 300) 100%);
+    text-shadow: none;
   }
 
   h1,
@@ -193,8 +202,31 @@
   h5,
   h6 {
     @apply text-foreground font-bold;
-    /* 暗夜模式标题优化 */
+    /* 暗夜模式标题优化 - 霓虹效果 */
     @apply dark:text-foreground dark:font-bold dark:tracking-tight;
+  }
+
+  .dark h1,
+  .dark h2,
+  .dark h3 {
+    color: #a9b1d6;
+    text-shadow: 0 0 2px rgba(169, 177, 214, 0.3);
+    position: relative;
+  }
+
+  .dark h1::after,
+  .dark h2::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      #7aa2f7, 
+      #bb9af7, 
+      transparent);
+    box-shadow: none;
   }
 
   a {
@@ -234,84 +266,232 @@
     @apply text-muted-foreground/60 select-none;
   }
   
-/* 暗色模式下代码语法高亮增强 */
+/* 暗色模式下代码语法高亮增强 - Tokyo Night配色 */
 .dark .enhanced-code-block .token.comment {
-  @apply text-muted-foreground/80 italic;
+  color: #565f89;
+  font-style: italic;
+  text-shadow: none;
 }
 
 .dark .enhanced-code-block .token.string {
-  @apply text-green-400 font-medium;
+  color: #9ece6a;
+  font-weight: 500;
+  text-shadow: none;
 }
 
 .dark .enhanced-code-block .token.keyword {
-  @apply text-blue-300 font-semibold;
+  color: #7aa2f7;
+  font-weight: 600;
+  text-shadow: none;
 }
 
 .dark .enhanced-code-block .token.function {
-  @apply text-purple-300 font-medium;
+  color: #bb9af7;
+  font-weight: 500;
+  text-shadow: none;
 }
 
 .dark .enhanced-code-block .token.number {
-  @apply text-orange-300;
+  color: oklch(0.80 0.20 60);
+  text-shadow: 0 0 2px oklch(0.80 0.20 60 / 0.3);
 }
 
 .dark .enhanced-code-block .token.operator {
-  @apply text-cyan-300;
+  color: oklch(0.85 0.18 180);
+  font-weight: 500;
+  text-shadow: 0 0 2px oklch(0.85 0.18 180 / 0.3);
 }
 
 .dark .enhanced-code-block .token.variable {
-  @apply text-yellow-300;
+  color: oklch(0.82 0.20 80);
+  text-shadow: 0 0 2px oklch(0.82 0.20 80 / 0.3);
 }
 
-/* 暗色模式下的链接增强 */
+/* 暗色模式下的链接增强 - 霓虹链接 */
 .dark a {
-  @apply text-primary hover:text-primary/80 transition-colors duration-200;
+  color: oklch(0.75 0.25 120);
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 2px oklch(0.75 0.25 120 / 0.2);
 }
 
 .dark a:hover {
-  text-shadow: 0 0 8px oklch(0.70 0.18 264 / 0.4);
+  color: oklch(0.85 0.28 120);
+  text-shadow: 
+    0 0 5px oklch(0.75 0.25 120),
+    0 0 10px oklch(0.75 0.25 120 / 0.5),
+    0 0 15px oklch(0.75 0.25 120 / 0.3);
+  transform: translateY(-1px);
 }
 
-/* 暗色模式下的表格增强 */
+.dark a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: oklch(0.75 0.25 120);
+  transition: width 0.3s ease;
+  box-shadow: 0 0 3px oklch(0.75 0.25 120);
+}
+
+.dark a:hover::after {
+  width: 100%;
+}
+
+/* 暗色模式下的表格增强 - 数据矩阵风格 */
 .dark table {
-  @apply border-border/30 bg-card/30;
+  background: linear-gradient(135deg, 
+    oklch(0.06 0.03 264) 0%, 
+    oklch(0.04 0.04 280) 100%);
+  border: 1px solid oklch(0.70 0.25 120 / 0.2);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 
+    0 0 15px oklch(0.70 0.25 120 / 0.1),
+    inset 0 1px 0 oklch(0.70 0.25 120 / 0.1);
 }
 
 .dark th {
-  @apply bg-muted/20 border-border/30 text-foreground font-semibold;
+  background: linear-gradient(135deg, 
+    oklch(0.08 0.04 264) 0%, 
+    oklch(0.06 0.05 280) 100%);
+  color: oklch(0.88 0.15 120);
+  border-color: oklch(0.70 0.25 120 / 0.2);
+  font-weight: 600;
+  text-shadow: 0 0 2px oklch(0.75 0.25 120 / 0.2);
+  position: relative;
+}
+
+.dark th::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: oklch(0.70 0.25 120);
+  box-shadow: 0 0 3px oklch(0.70 0.25 120);
 }
 
 .dark td {
-  @apply border-border/20 text-foreground/90;
+  background: oklch(0.04 0.03 264);
+  color: oklch(0.86 0.08 120);
+  border-color: oklch(0.70 0.25 120 / 0.1);
+  transition: all 0.3s ease;
 }
 
-/* 暗色模式下的引用块增强 */
+.dark tr:hover td {
+  background: oklch(0.06 0.04 264);
+  color: oklch(0.90 0.12 120);
+  text-shadow: 0 0 1px oklch(0.75 0.25 120 / 0.1);
+}
+
+/* 暗色模式下的引用块增强 - 数据流风格 */
 .dark blockquote {
-  @apply border-l-primary/60 bg-card/20 text-foreground/90 pl-6 py-2;
-  box-shadow: inset 4px 0 0 oklch(0.70 0.18 264);
+  background: linear-gradient(135deg, 
+    oklch(0.04 0.02 264) 0%, 
+    oklch(0.02 0.03 280) 50%,
+    oklch(0.04 0.02 300) 100%);
+  border: none;
+  border-left: 3px solid oklch(0.70 0.25 180);
+  color: oklch(0.88 0.12 180);
+  padding: 16px 20px;
+  margin: 20px 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    inset 0 1px 3px oklch(0.00 0 0 / 0.3),
+    0 0 15px oklch(0.70 0.25 180 / 0.1),
+    0 4px 12px oklch(0.00 0 0 / 0.2);
 }
 
-/* 暗色模式下的表单元素增强 */
+.dark blockquote::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    oklch(0.70 0.25 180),
+    oklch(0.70 0.25 120),
+    oklch(0.70 0.25 300));
+  animation: quote-flow 2s ease-in-out infinite;
+}
+
+@keyframes quote-flow {
+  0%, 100% {
+    background: linear-gradient(180deg, 
+      oklch(0.70 0.25 180),
+      oklch(0.70 0.25 120),
+      oklch(0.70 0.25 300));
+  }
+  50% {
+    background: linear-gradient(180deg, 
+      oklch(0.80 0.25 300),
+      oklch(0.80 0.25 180),
+      oklch(0.80 0.25 120));
+  }
+}
+
+/* 暗色模式下的表单元素增强 - 科技感输入框 */
 .dark input,
 .dark textarea,
 .dark select {
-  @apply bg-background/50 border-border/50 text-foreground;
-  backdrop-filter: blur(8px);
+  background: linear-gradient(135deg, 
+    oklch(0.06 0.03 264) 0%, 
+    oklch(0.04 0.04 280) 100%);
+  border: 1px solid oklch(0.70 0.25 120 / 0.3);
+  color: oklch(0.90 0.10 120);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+  text-shadow: 0 0 1px oklch(0.70 0.15 120 / 0.1);
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: oklch(0.75 0.25 120);
+  box-shadow: 
+    0 0 0 2px oklch(0.75 0.25 120 / 0.2),
+    0 0 10px oklch(0.75 0.25 120 / 0.1);
+  text-shadow: 0 0 2px oklch(0.70 0.15 120 / 0.2);
 }
 
 .dark input::placeholder,
 .dark textarea::placeholder {
-  @apply text-muted-foreground/60;
+  color: oklch(0.60 0.08 120);
+  text-shadow: none;
 }
 
-/* 暗色模式下的按钮增强 */
+/* 暗色模式下的按钮增强 - 霓虹按钮 */
 .dark .btn-primary {
-  @apply bg-primary text-primary-foreground shadow-lg;
-  box-shadow: 0 4px 14px oklch(0.70 0.18 264 / 0.3);
+  background: linear-gradient(135deg, 
+    oklch(0.70 0.25 120) 0%, 
+    oklch(0.65 0.22 140) 100%);
+  color: oklch(0.04 0.02 264);
+  border: 1px solid oklch(0.75 0.25 120);
+  font-weight: 600;
+  text-shadow: 0 0 2px oklch(0.04 0.02 264);
+  box-shadow: 
+    0 4px 14px oklch(0.70 0.25 120 / 0.3),
+    0 0 20px oklch(0.70 0.25 120 / 0.1),
+    inset 0 1px 0 oklch(0.80 0.25 120 / 0.3);
+  transition: all 0.3s ease;
 }
 
 .dark .btn-primary:hover {
-  box-shadow: 0 6px 20px oklch(0.70 0.18 264 / 0.4);
+  background: linear-gradient(135deg, 
+    oklch(0.75 0.28 120) 0%, 
+    oklch(0.70 0.25 140) 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 6px 20px oklch(0.70 0.25 120 / 0.4),
+    0 0 30px oklch(0.70 0.25 120 / 0.2),
+    inset 0 1px 0 oklch(0.85 0.28 120 / 0.4);
 }
 
 /* 暗色模式下的导航栏增强 */

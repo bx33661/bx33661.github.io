@@ -2,28 +2,67 @@
 
 /* 暗色模式下的代码高亮增强样式 - 基于GitHub官方暗色主题 */
 @media (prefers-color-scheme: dark) {
-  /* 代码块容器样式 */
+  /* 代码块容器样式 - Mac风格暗色主题 */
   .expressive-code {
-    --ec-codeBg: #0d1117 !important;
-    --ec-codeFg: #e6edf3 !important;
-    --ec-brdCol: #21262d !important;
+    --ec-codeBg: #1a1a1a !important; /* 更深的黑色背景，提高对比度 */
+    --ec-codeFg: #f8f8f2 !important; /* 更亮的白色文本 */
+    --ec-brdCol: #333333 !important; /* 更明显的边框颜色 */
     background: var(--ec-codeBg) !important;
     border: 1px solid var(--ec-brdCol) !important;
-    border-radius: 6px !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24) !important;
+    border-radius: 12px !important; /* Mac风格圆角 */
+    box-shadow: 
+      0 8px 16px -4px rgba(0, 0, 0, 0.4),
+      0 4px 8px -2px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(8px) !important;
+  }
+
+  /* Mac风格标题栏 */
+  .expressive-code::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+    border-bottom: 1px solid #444444;
+    border-radius: 12px 12px 0 0;
+    z-index: 1;
+  }
+
+  /* Mac风格三个圆点按钮 */
+  .expressive-code::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    width: 12px;
+    height: 12px;
+    background: #ff5f57;
+    border-radius: 50%;
+    box-shadow: 
+      20px 0 0 #ffbd2e,
+      40px 0 0 #28ca42;
+    z-index: 2;
   }
 
   /* 代码内容区域 */
   .expressive-code pre {
     background: var(--ec-codeBg) !important;
     color: var(--ec-codeFg) !important;
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', Menlo, monospace !important;
+    padding: 50px 1rem 1rem 1rem !important; /* 为标题栏留出空间 */
+    position: relative;
+    z-index: 0;
   }
 
   /* 行号样式 */
   .expressive-code .ec-line-numbers {
-    background: #0d1117 !important;
-    color: #6e7681 !important;
+    background: #0f0f0f !important; /* 更深的行号背景 */
+    color: #888888 !important; /* 更明显的行号颜色 */
     border-right: 1px solid var(--ec-brdCol) !important;
     padding-right: 16px !important;
     margin-right: 16px !important;
@@ -32,41 +71,53 @@
   /* 代码行样式 */
   .expressive-code .ec-line {
     background: transparent !important;
-    min-height: 20px !important;
+    min-height: 24px !important; /* 增加行高 */
+    padding: 0 !important; /* 移除额外padding，由pre元素控制 */
   }
 
   /* 悬停效果 */
   .expressive-code .ec-line:hover {
-    background: rgba(56, 139, 253, 0.08) !important;
+    background: rgba(99, 179, 237, 0.1) !important; /* Mac风格悬停 */
+    border-radius: 4px !important;
   }
 
-  /* 复制按钮样式 */
+  /* 复制按钮样式 - Mac风格 */
   .expressive-code .copy {
-    background: #21262d !important;
-    color: #c9d1d9 !important;
-    border: 1px solid #30363d !important;
-    border-radius: 6px !important;
-    padding: 4px 8px !important;
+    background: #333333 !important;
+    color: #f8f8f2 !important;
+    border: 1px solid #555555 !important;
+    border-radius: 8px !important;
+    padding: 6px 12px !important;
     font-size: 12px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    position: absolute !important;
+    top: 8px !important;
+    right: 12px !important;
+    z-index: 3 !important;
   }
 
   .expressive-code .copy:hover {
-    background: #30363d !important;
-    border-color: #8b949e !important;
-    color: #f0f6fc !important;
+    background: #007acc !important;
+    border-color: #007acc !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
   }
 
-  /* 语法高亮颜色 - 鲜艳的暗色主题配色 */
+  /* 语法高亮颜色 - 高对比度暗色主题 */
   .expressive-code .token.comment,
   .expressive-code .token.prolog,
   .expressive-code .token.doctype,
   .expressive-code .token.cdata {
-    color: #7c7c7c !important; /* 注释 - 中性灰色 */
+    color: #75715e !important; /* 注释 - 更明显的灰色 */
     font-style: italic !important;
+    text-shadow: none !important;
   }
 
   .expressive-code .token.punctuation {
-    color: #ffffff !important; /* 标点符号 - 纯白色 */
+    color: #f8f8f2 !important; /* 标点符号 - 明亮白色 */
+    text-shadow: none !important;
   }
 
   .expressive-code .token.property,
@@ -75,7 +126,9 @@
   .expressive-code .token.number,
   .expressive-code .token.constant,
   .expressive-code .token.symbol {
-    color: #569cd6 !important; /* 属性、标签、数字 - 鲜艳蓝色 */
+    color: #ae81ff !important; /* 属性、标签、数字 - 明亮紫色 */
+    text-shadow: none !important;
+    font-weight: 600 !important;
   }
 
   .expressive-code .token.selector,
@@ -84,113 +137,174 @@
   .expressive-code .token.char,
   .expressive-code .token.builtin,
   .expressive-code .token.inserted {
-    color: #ce9178 !important; /* 字符串 - 温暖橙色 */
+    color: #a6e22e !important; /* 字符串 - 明亮绿色 */
+    text-shadow: none !important;
   }
 
   .expressive-code .token.operator,
   .expressive-code .token.entity,
   .expressive-code .token.url {
-    color: #d4d4d4 !important; /* 操作符 - 亮灰色 */
+    color: #f92672 !important; /* 操作符 - 明亮红色 */
+    text-shadow: none !important;
+    font-weight: 700 !important;
   }
 
   .expressive-code .token.atrule,
   .expressive-code .token.attr-value,
   .expressive-code .token.keyword {
-    color: #569cd6 !important; /* 关键字 - 鲜艳蓝色 */
-    font-weight: bold !important;
+    color: #66d9ef !important; /* 关键字 - 明亮青色 */
+    font-weight: 600 !important;
   }
 
   .expressive-code .token.function,
   .expressive-code .token.class-name {
-    color: #dcdcaa !important; /* 函数、类名 - 亮黄色 */
+    color: #fd971f !important; /* 函数名 - 明亮橙色 */
+    font-weight: 600 !important;
   }
 
   .expressive-code .token.regex,
   .expressive-code .token.important,
   .expressive-code .token.variable {
-    color: #9cdcfe !important; /* 变量 - 亮蓝色 */
+    color: #fd971f !important; /* 变量 - 明亮橙色 */
+  }
+
+  .expressive-code .token.important,
+  .expressive-code .token.bold {
+    font-weight: bold !important;
+  }
+
+  .expressive-code .token.italic {
+    font-style: italic !important;
   }
 
   .expressive-code .token.deleted {
-    color: #f44747 !important; /* 删除的内容 - 鲜红色 */
-    background: rgba(244, 71, 71, 0.1) !important;
+    color: #f92672 !important;
+  }
+
+  /* Python特定语法高亮 */
+  .expressive-code .token.decorator {
+    color: #66d9ef !important;
+  }
+
+  /* JavaScript特定语法高亮 */
+  .expressive-code .token.template-string {
+    color: #a6e22e !important;
+  }
+
+  /* 确保所有文本都有足够的对比度 */
+  .expressive-code .token {
+    color: #f8f8f2 !important; /* 默认文本颜色 */
+  }
+
+
+
+  .expressive-code .token.deleted {
+    color: oklch(0.7 0.35 0) !important; /* 删除的内容 - 霓虹红色 */
+    background: oklch(0.2 0.1 0 / 0.3) !important;
+    text-shadow: 0 0 8px oklch(0.7 0.35 0) !important;
   }
 
   /* TypeScript/JavaScript 特定样式 */
   .expressive-code .language-typescript .token.keyword,
   .expressive-code .language-javascript .token.keyword {
-    color: #569cd6 !important; /* const, export, function 等关键字 */
+    color: #7aa2f7 !important; /* const, export, function 等关键字 */
+    text-shadow: none !important;
   }
 
   .expressive-code .language-typescript .token.type,
   .expressive-code .language-javascript .token.type {
-    color: #4ec9b0 !important; /* 类型注解 - 青绿色 */
+    color: #e0af68 !important; /* 类型注解 */
+    text-shadow: none !important;
+    font-weight: 600 !important;
   }
 
   .expressive-code .language-typescript .token.generic,
   .expressive-code .language-javascript .token.generic {
-    color: #4ec9b0 !important; /* 泛型 - 青绿色 */
+    color: oklch(0.8 0.25 160) !important; /* 泛型 - 霓虹青绿色 */
+    text-shadow: 0 0 8px oklch(0.8 0.25 160) !important;
   }
 
   /* CSS特定样式 */
   .expressive-code .language-css .token.string,
   .expressive-code .style .token.string {
-    color: #ce9178 !important;
+    color: #9ece6a !important; /* CSS字符串 */
+    text-shadow: none !important;
   }
 
   .expressive-code .language-css .token.property {
-    color: #92c5f7 !important; /* CSS属性名 - 亮蓝色 */
+    color: oklch(0.8 0.25 240) !important; /* CSS属性名 - 霓虹蓝色 */
+    text-shadow: 0 0 8px oklch(0.8 0.25 240) !important;
   }
 
   .expressive-code .language-css .token.selector {
-    color: #d7ba7d !important; /* CSS选择器 - 金黄色 */
+    color: oklch(0.85 0.3 60) !important; /* CSS选择器 - 霓虹黄色 */
+    text-shadow: 0 0 10px oklch(0.85 0.3 60) !important;
+    font-weight: 700 !important;
   }
 
   /* JSON特定样式 */
   .expressive-code .language-json .token.property {
-    color: #92c5f7 !important; /* JSON属性名 - 亮蓝色 */
+    color: oklch(0.8 0.25 240) !important; /* JSON属性名 - 霓虹蓝色 */
+    text-shadow: 0 0 8px oklch(0.8 0.25 240) !important;
+    font-weight: 600 !important;
   }
 
   .expressive-code .language-json .token.string {
-    color: #ce9178 !important; /* JSON字符串值 - 橙色 */
+    color: oklch(0.8 0.2 120) !important; /* JSON字符串值 - 霓虹绿色 */
+    text-shadow: 0 0 8px oklch(0.8 0.2 120) !important;
   }
 
   .expressive-code .language-json .token.number {
-    color: #b5cea8 !important; /* JSON数字 - 浅绿色 */
+    color: oklch(0.8 0.25 80) !important; /* JSON数字 - 霓虹橙色 */
+    text-shadow: 0 0 8px oklch(0.8 0.25 80) !important;
+    font-weight: 600 !important;
   }
 
   /* HTML特定样式 */
   .expressive-code .language-html .token.tag .token.tag {
-    color: #569cd6 !important; /* HTML标签 - 蓝色 */
+    color: #7aa2f7 !important; /* HTML标签 */
+    text-shadow: none !important;
+    font-weight: 700 !important;
   }
 
   .expressive-code .language-html .token.attr-name {
-    color: #92c5f7 !important; /* HTML属性名 - 亮蓝色 */
+    color: oklch(0.8 0.25 240) !important; /* HTML属性名 - 霓虹蓝色 */
+    text-shadow: 0 0 8px oklch(0.8 0.25 240) !important;
   }
 
   .expressive-code .language-html .token.attr-value {
-    color: #ce9178 !important; /* HTML属性值 - 橙色 */
+    color: #9ece6a !important; /* HTML属性值 */
+    text-shadow: none !important;
   }
 
   /* 增强特定语法元素 */
   .expressive-code .token.namespace {
-    color: #4ec9b0 !important; /* 命名空间 - 青绿色 */
+    color: oklch(0.8 0.25 160) !important; /* 命名空间 - 霓虹青绿色 */
+    text-shadow: 0 0 8px oklch(0.8 0.25 160) !important;
+    font-weight: 600 !important;
   }
 
   .expressive-code .token.annotation {
-    color: #dcdcaa !important; /* 注解 - 黄色 */
+    color: oklch(0.85 0.3 60) !important; /* 注解 - 霓虹黄色 */
+    text-shadow: 0 0 10px oklch(0.85 0.3 60) !important;
+    font-weight: 700 !important;
   }
 
   .expressive-code .token.decorator {
-    color: #dcdcaa !important; /* 装饰器 - 黄色 */
+    color: oklch(0.85 0.3 60) !important; /* 装饰器 - 霓虹黄色 */
+    text-shadow: 0 0 10px oklch(0.85 0.3 60) !important;
+    font-weight: 700 !important;
   }
 
   .expressive-code .token.template-string {
-    color: #ce9178 !important; /* 模板字符串 - 橙色 */
+    color: oklch(0.8 0.2 120) !important; /* 模板字符串 - 霓虹绿色 */
+    text-shadow: 0 0 8px oklch(0.8 0.2 120) !important;
   }
 
   .expressive-code .token.interpolation {
-    color: #9cdcfe !important; /* 插值表达式 - 亮蓝色 */
+    color: oklch(0.8 0.3 200) !important; /* 插值表达式 - 霓虹青蓝色 */
+    text-shadow: 0 0 8px oklch(0.8 0.3 200) !important;
+    font-weight: 600 !important;
   }
 
   /* 高亮行样式 */
@@ -211,23 +325,23 @@
   }
   
   .expressive-code .gutter {
-    background-color: #0d1117 !important;
+    background-color: #1a202c !important;
     border-right-color: var(--ec-brdCol) !important;
   }
   
   .expressive-code .ln {
-    color: #6e7681 !important;
+    color: #718096 !important;
   }
   
   .expressive-code .copy button {
-    background-color: #21262d !important;
-    border-color: #30363d !important;
-    color: #c9d1d9 !important;
+    background-color: #4a5568 !important;
+    border-color: #718096 !important;
+    color: #e2e8f0 !important;
   }
   
   .expressive-code .copy button:hover {
-    background-color: #30363d !important;
-    color: #f0f6fc !important;
+    background-color: #63b3ed !important;
+    color: #1a202c !important;
   }
   
   .auto-detect-mark {
