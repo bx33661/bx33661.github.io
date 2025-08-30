@@ -1,0 +1,603 @@
+/* 移动端优化样式 */
+
+/* 基础移动端媒体查询 */
+@media (max-width: 768px) {
+  /* 全局字体和间距优化 */
+  html {
+    font-size: 14px; /* 减小基础字体大小 */
+  }
+
+  body {
+    line-height: 1.6; /* 增加行高提升可读性 */
+    padding: 0 16px; /* 增加左右内边距 */
+  }
+
+  /* 标题优化 */
+  h1 {
+    font-size: 1.8rem;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    margin-bottom: 0.8rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
+  }
+
+  h4, h5, h6 {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+  }
+
+  /* 段落优化 */
+  p {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+  }
+
+  /* 代码块移动端优化 */
+  .expressive-code {
+    margin: 1rem -16px; /* 扩展到屏幕边缘 */
+    border-radius: 0; /* 移除圆角 */
+    font-size: 0.85rem; /* 减小字体 */
+  }
+
+  .expressive-code .frame {
+    border-radius: 0;
+    box-shadow: none; /* 简化阴影 */
+  }
+
+  /* Mac风格标题栏在移动端简化 */
+  .expressive-code .header {
+    padding: 8px 16px; /* 减小内边距 */
+    min-height: 32px; /* 减小高度 */
+  }
+
+  .expressive-code .header .title {
+    font-size: 0.8rem;
+  }
+
+  /* 三个圆点按钮在移动端缩小 */
+  .expressive-code .header::before {
+    width: 8px;
+    height: 8px;
+    box-shadow: 16px 0 0 #ff5f57, 32px 0 0 #ffbd2e, 48px 0 0 #28ca42;
+  }
+
+  /* 代码内容区域 */
+  .expressive-code pre {
+    padding: 12px 16px; /* 减小内边距 */
+    font-size: 0.85rem;
+    line-height: 1.4;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* 平滑滚动 */
+  }
+
+  /* 行号优化 */
+  .expressive-code .ec-line-numbers {
+    padding-right: 8px;
+    font-size: 0.75rem;
+  }
+
+  /* 复制按钮移动端优化 */
+  .expressive-code .copy {
+    top: 8px;
+    right: 8px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    min-height: 28px;
+    min-width: 50px;
+  }
+
+  /* 表格移动端优化 */
+  table {
+    font-size: 0.9rem;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 图片响应式优化 */
+  img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin: 0.75rem auto; /* 居中显示 */
+    object-fit: contain; /* 保持宽高比 */
+  }
+
+  /* 文章内容中的图片 */
+  .prose img,
+  article img,
+  .content img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    border-radius: 0.75rem;
+    margin: 1rem auto;
+    display: block;
+    object-fit: contain;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  /* 确保图片容器也是响应式的 */
+  .image-container,
+  figure {
+    max-width: 100%;
+    margin: 1rem 0;
+    text-align: center;
+  }
+
+  /* 图片说明文字 */
+  figcaption {
+    font-size: 0.9rem;
+    color: var(--text-muted, #6b7280);
+    margin-top: 0.5rem;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  /* 引用块优化 */
+  blockquote {
+    margin: 1rem 0;
+    padding: 1rem;
+    font-size: 0.95rem;
+    border-left: 4px solid var(--accent-color, #3b82f6);
+  }
+
+  /* 列表优化 */
+  ul, ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+
+  /* 内联代码优化 */
+  code:not(pre code) {
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--code-bg, #f1f5f9);
+    color: var(--code-color, #e11d48);
+  }
+
+  /* 暗色模式下的内联代码 */
+  [data-theme="dark"] code:not(pre code) {
+    background: var(--code-bg-dark, #1e293b);
+    color: var(--code-color-dark, #f472b6);
+  }
+}
+
+/* 超小屏幕优化 (手机竖屏) */
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+
+  body {
+    padding: 0 12px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  .expressive-code {
+    margin: 1rem -12px;
+    font-size: 0.8rem;
+  }
+
+  .expressive-code pre {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+
+  .expressive-code .header {
+    padding: 6px 12px;
+    min-height: 28px;
+  }
+
+  .expressive-code .copy {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    min-height: 24px;
+    min-width: 40px;
+  }
+
+  /* 超小屏幕图片优化 */
+  img,
+  .prose img,
+  article img,
+  .content img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    margin: 0.5rem auto;
+    border-radius: 6px;
+  }
+
+  figcaption {
+    font-size: 0.8rem;
+    padding: 0 0.5rem;
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  /* 增大可点击区域 */
+  button, .button, a {
+    min-height: 44px; /* iOS推荐的最小触摸目标 */
+    min-width: 44px;
+  }
+
+  /* 复制按钮触摸优化 */
+  .expressive-code .copy {
+    min-height: 36px;
+    min-width: 60px;
+    padding: 8px 12px;
+  }
+
+  /* 移除hover效果，避免触摸设备的粘滞状态 */
+  .expressive-code .ec-line:hover {
+    background: transparent;
+  }
+
+  /* 优化滚动条 */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+  }
+
+  [data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* 横屏模式优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .expressive-code {
+    font-size: 0.9rem;
+  }
+
+  .expressive-code pre {
+    font-size: 0.9rem;
+    max-height: 60vh; /* 限制代码块高度 */
+    overflow-y: auto;
+  }
+}
+
+/* 移动端导航优化 */
+@media (max-width: 768px) {
+  /* 导航栏 */
+  header {
+    padding: 0.75rem 1rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* 导航菜单按钮 */
+  .mobile-menu-button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem;
+  }
+
+  /* 移动端菜单覆盖层 */
+  .mobile-menu-overlay {
+    padding-top: 80px; /* 为固定导航栏留出空间 */
+  }
+
+  /* 移动端菜单项 */
+  .mobile-menu-item {
+    min-height: 48px;
+    font-size: 1.1rem;
+    padding: 0.75rem 1rem;
+    margin: 0.25rem 0;
+  }
+
+  /* Logo 在移动端的优化 */
+  .navbar-logo {
+    font-size: 1.2rem;
+  }
+
+  .navbar-logo svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* 面包屑导航 */
+  .breadcrumbs {
+    font-size: 0.85rem;
+    padding: 0.5rem 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .breadcrumbs::-webkit-scrollbar {
+    height: 2px;
+  }
+
+  /* 标签 */
+  .tag, .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    margin: 0.125rem;
+  }
+
+  /* 文章元信息 */
+  .post-meta {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  /* 目录 */
+  .table-of-contents {
+    font-size: 0.9rem;
+    max-height: 40vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-of-contents ul {
+    padding-left: 1rem;
+  }
+
+  .table-of-contents li {
+    margin-bottom: 0.25rem;
+  }
+
+  .table-of-contents a {
+    display: block;
+    padding: 0.25rem 0;
+    line-height: 1.4;
+  }
+
+  /* 分页 */
+  .pagination {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .pagination button {
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* 搜索框 */
+  .search-input {
+    font-size: 1rem;
+    padding: 0.75rem;
+    min-height: 44px;
+  }
+
+  /* 主题切换按钮 */
+  .theme-toggle {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem;
+  }
+}
+
+/* 博客文章页面移动端优化 */
+@media (max-width: 768px) {
+  /* 文章标题区域 */
+  .post-header {
+    padding: 1rem 0;
+    text-align: left;
+  }
+
+  .post-title {
+    font-size: 1.8rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  /* 文章元信息 */
+  .post-meta-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  /* 标签容器 */
+  .post-tags {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .post-tags .badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  /* 文章内容区域 */
+  .prose {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* 目录在移动端隐藏或调整 */
+  .table-of-contents {
+    display: none;
+  }
+
+  /* 如果需要在移动端显示目录，可以使用折叠式 */
+  .mobile-toc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+
+  .mobile-toc-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .mobile-toc-content {
+    max-height: 200px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 侧边栏内容在移动端移到底部 */
+  .post-sidebar {
+    order: 10;
+    margin-top: 2rem;
+    padding: 1rem;
+    background: var(--card);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  /* 分享按钮优化 */
+  .share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .share-buttons .button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem;
+  }
+
+  /* 相关文章在移动端的优化 */
+  .related-posts {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: var(--card);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .related-posts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .related-post-card {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--background);
+  }
+
+  /* 文章导航 */
+  .post-navigation {
+    margin-top: 2rem;
+    padding: 1rem 0;
+  }
+
+  .post-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .post-nav-link {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .post-nav-link:hover {
+    background: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .post-nav-label {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    margin-bottom: 0.25rem;
+  }
+
+  .post-nav-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+}
+
+/* 移动端性能优化 */
+@media (max-width: 768px) {
+  /* 减少动画以提升性能 */
+  *, *::before, *::after {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+
+  /* 优化字体渲染 */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+  }
+
+  /* 减少重绘 */
+  .expressive-code {
+    will-change: auto;
+  }
+
+  /* 优化图片加载 */
+  img {
+    loading: lazy;
+  }
+
+  /* 减少不必要的阴影和效果 */
+  .card, .button {
+    box-shadow: none;
+  }
+}
