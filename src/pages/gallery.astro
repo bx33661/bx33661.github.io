@@ -3,6 +3,8 @@ import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
 import { Icon } from 'astro-icon/components'
+import { ScrollReveal } from "@/components/react/scroll-animations"
+import { ImageZoom } from "@/components/react/image-zoom"
 
 // 这里可以配置相册图片，将来可以移到配置文件或从数据库获取
 const galleryImages = [
@@ -74,58 +76,59 @@ const currentUrl = Astro.url;
   
   <div class="flex flex-col gap-y-8 px-4 py-8 sm:px-8 lg:px-16">
     <!-- 页面标题 -->
-    <section class="text-center">
-      <h1 class="font-custom text-foreground text-4xl font-extrabold sm:text-5xl mb-4">
-        生活相册
-      </h1>
-      <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
-        记录生活中的美好瞬间，分享日常的点点滴滴
-      </p>
-      <div class="mt-6 flex items-center justify-center gap-2">
-        <span class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1">
-          共 {galleryImages.length} 张照片
-        </span>
-      </div>
-    </section>
+    <ScrollReveal client:load direction="up" threshold={0.2}>
+      <section class="text-center">
+        <h1 class="font-custom text-foreground text-4xl font-extrabold sm:text-5xl mb-4">
+          生活相册
+        </h1>
+        <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+          记录生活中的美好瞬间，分享日常的点点滴滴
+        </p>
+        <div class="mt-6 flex items-center justify-center gap-2">
+          <span class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1">
+            共 {galleryImages.length} 张照片
+          </span>
+        </div>
+      </section>
+    </ScrollReveal>
 
     <!-- 相册网格 -->
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {galleryImages.map((image, index) => (
-        <div class="group relative overflow-hidden rounded-xl bg-secondary/20 hover:shadow-lg transition-all duration-300 ease-in-out hover:scale-[1.02]">
-          <!-- 图片容器 -->
-          <div class="aspect-square relative overflow-hidden">
-                         <img 
-               src={image.src}
-               alt={image.alt}
-               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-               loading={index < 6 ? 'eager' : 'lazy'}
-             />
-            <!-- 悬浮遮罩 -->
-            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-              <Icon name="lucide:zoom-in" class="w-8 h-8 text-white" />
+        <ScrollReveal client:load direction="up" delay={index * 0.06} threshold={0.2}>
+          <div class="group relative overflow-hidden rounded-xl bg-secondary/20 hover:shadow-lg transition-all duration-300 ease-in-out hover:scale-[1.02]">
+            <!-- 图片容器 -->
+            <div class="aspect-square relative overflow-hidden">
+              <ImageZoom 
+                client:load 
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-full object-cover"
+                loading={index < 6 ? 'eager' : 'lazy'}
+              />
+            </div>
+            
+            <!-- 图片信息 -->
+            <div class="p-4 space-y-2">
+              <h3 class="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">
+                {image.title}
+              </h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">
+                {image.description}
+              </p>
+              <div class="flex items-center gap-2 text-muted-foreground text-xs">
+                <Icon name="lucide:calendar" class="w-3 h-3" />
+                <time datetime={image.date}>
+                  {new Date(image.date).toLocaleDateString('zh-CN', {
+                    year: 'numeric',
+                    month: 'long', 
+                    day: 'numeric'
+                  })}
+                </time>
+              </div>
             </div>
           </div>
-          
-          <!-- 图片信息 -->
-          <div class="p-4 space-y-2">
-            <h3 class="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">
-              {image.title}
-            </h3>
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              {image.description}
-            </p>
-            <div class="flex items-center gap-2 text-muted-foreground text-xs">
-              <Icon name="lucide:calendar" class="w-3 h-3" />
-              <time datetime={image.date}>
-                {new Date(image.date).toLocaleDateString('zh-CN', {
-                  year: 'numeric',
-                  month: 'long', 
-                  day: 'numeric'
-                })}
-              </time>
-            </div>
-          </div>
-        </div>
+        </ScrollReveal>
       ))}
     </section>
 
@@ -163,17 +166,11 @@ const currentUrl = Astro.url;
     </section>
   </div>
 
-  <!-- 图片查看模态框 (可选扩展功能) -->
-  <script>
-    // 可以在这里添加图片点击放大功能
-    document.addEventListener('DOMContentLoaded', function() {
-      const images = document.querySelectorAll('.group img');
-      images.forEach(img => {
-                 img.addEventListener('click', function(this: HTMLImageElement) {
-           // 这里可以实现图片放大查看功能
-           console.log('点击了图片:', this.alt);
-         });
-      });
-    });
-  </script>
+  <!-- 移除原点击脚本，改用 ImageZoom 组件提供的放大查看 -->
 </Layout>
+
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    .group:hover { transform: none !important; }
+  }
+</style>
