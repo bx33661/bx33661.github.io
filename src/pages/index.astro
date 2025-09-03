@@ -5,7 +5,7 @@ import Skills from '@/components/react/skills'
 import { buttonVariants } from '@/components/ui/button'
 import Logo from '@/components/ui/logo'
 import Layout from '@/layouts/Layout.astro'
-import { getRecentPosts, getAllPostSlugs } from '@/lib/data-utils'
+import { getAllPosts, getAllPostSlugs } from '@/lib/data-utils'
 import { SITE } from '@/consts'
 import AnimatedElement from '@/components/react/animated-element'
 import { ScrollProgress, ScrollReveal } from '@/components/react/scroll-animations'
@@ -13,7 +13,8 @@ import Card3D from '@/components/react/card-3d'
 import RippleButton from '@/components/react/ripple-button'
 import { AnimationProvider } from '@/components/react/animation-optimizer'
 
-const recentPosts = await getRecentPosts(3)
+const allPosts = await getAllPosts()
+const recentPosts = allPosts.slice(0, 3)
 const allPostSlugs = await getAllPostSlugs()
 
 // 为最近的文章添加slug信息
