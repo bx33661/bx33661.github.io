@@ -14,7 +14,7 @@ import RippleButton from '@/components/react/ripple-button'
 import { AnimationProvider } from '@/components/react/animation-optimizer'
 
 const allPosts = await getAllPosts()
-const recentPosts = allPosts.slice(0, 3)
+const recentPosts = allPosts.slice(0, 5)
 const allPostSlugs = await getAllPostSlugs()
 
 // 为最近的文章添加slug信息
