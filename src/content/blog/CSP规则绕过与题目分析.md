@@ -1,7 +1,7 @@
 ---
 title: "CSP规则绕过与题目分析"
 description: "深入分析CSP（内容安全策略）规则绕过技术，通过HTB CTF中的Cursed Secret Party题目详细讲解CSP绕过方法和防护机制。"
-date: "2025-08-30"
+date: "2025-09-04"
 tags:
   - "CSP"
   - "XSS"

@@ -6,15 +6,15 @@ export const NAV_LINKS: SocialLink[] = [
     label: '首页',
   },
   {
-    href: '/about',
+    href: '/about/',
     label: '关于我',
   },
   {
-    href: '/projects',
+    href: '/projects/',
     label: '项目',
   },
   {
-    href: '/blog',
+    href: '/blog/',
     label: '博客',
   },
   {
