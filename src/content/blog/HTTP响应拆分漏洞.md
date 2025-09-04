@@ -1,6 +1,6 @@
 ---
 title: "HTTP响应拆分漏洞分析"
-description: "HTTP响应拆分漏洞分析"
+description: "深入分析HTTP响应拆分漏洞（HTTP Response Splitting）的攻击原理、CRLF注入技术及防护措施，包含详细的攻击流程图解。"
 date: 2025-07-25
 tags:
   - "HTTP"

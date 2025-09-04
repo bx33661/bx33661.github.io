@@ -1,6 +1,6 @@
 ---
 title: "春秋云境-Initial"
-description: "春秋云境-Initial"
+description: "春秋云境Initial靶场渗透测试实战记录，涵盖端口扫描、ThinkPHP漏洞利用、SUID提权等内网渗透技术的详细分析。"
 date: 2025-06-16
 tags:
   - "内网渗透"

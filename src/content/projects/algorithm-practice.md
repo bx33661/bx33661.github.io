@@ -1,6 +1,6 @@
 ---
 name: 'Api-finder'
-description: ''
+description: '一个用于从前端文件中发现API端点的Python扫描工具，支持多种文件格式解析，提供灵活的规则配置和多种输出格式。'
 tags: ['python', 'api', 'finder', 'program']
 image: '../../../public/static/finder.png'
 link: 'https://github.com/jujubooom/Api-Finder'

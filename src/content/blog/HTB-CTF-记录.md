@@ -1,6 +1,6 @@
 ---
 title: "HTB-CTF Challenge做题记录"
-description: "HTB-Challenge，HTB的一些类型题目，比较深入全面，方向也是比较广泛的，没事儿去学习了一下"
+description: "HackTheBox CTF Challenge做题记录，涵盖WEB、MOBILE、CRYPTO、REVERSE等多个安全方向的深入分析与解题思路分享。"
 date: "2025-08-30"
 tags:
   - "HTB"

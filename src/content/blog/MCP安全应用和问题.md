@@ -1,6 +1,6 @@
 ---
 title: "MCP安全应用和问题"
-description: "MCP"
+description: "深入探讨MCP（Model Context Protocol）在安全领域的应用，包括安全检查清单、IDA-Pro-MCP等安全工具的实践使用与配置指南。"
 date: 2025-08-15
 tags:
   - "MCP"

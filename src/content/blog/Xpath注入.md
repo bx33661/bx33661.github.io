@@ -1,6 +1,6 @@
 ---
 title: "Xpath注入学习和分析"
-description: "Xpath注入学习和分析"
+description: "深入学习XPath注入攻击技术，包括XPath语法基础、注入原理分析、漏洞利用方法及在XML数据查询中的安全防护。"
 date: 2025-07-23
 tags:
   - "Xpath"
