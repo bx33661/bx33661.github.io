@@ -30,4 +30,20 @@ const projects = defineCollection({
     }),
 })
 
-export const collections = { blog, projects }
+const notes = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/notes' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      date: z.coerce.date(),
+      image: image().optional(),
+      tags: z.array(z.string()).optional(),
+      category: z.string().optional(), // 学习笔记分类
+      authors: z.array(z.string()).optional(),
+      draft: z.boolean().optional(),
+      slug: z.string().optional(),
+    }),
+})
+
+export const collections = { blog, projects, notes }

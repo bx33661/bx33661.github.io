@@ -18,6 +18,10 @@ export const NAV_LINKS: SocialLink[] = [
     label: '博客',
   },
   {
+    href: '/notes/',
+    label: '其他',
+  },
+  {
     href: '/archive',
     label: '归档',
   },

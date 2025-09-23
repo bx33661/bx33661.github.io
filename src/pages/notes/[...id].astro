@@ -1,0 +1,165 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import PostNavigation from '@/components/PostNavigation.astro'
+import TableOfContents from '@/components/TableOfContents.astro'
+import Layout from '@/layouts/Layout.astro'
+import { getAllNoteSlugs } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
+import { render } from 'astro:content'
+
+export async function getStaticPaths() {
+  const allNoteSlugs = await getAllNoteSlugs()
+  return allNoteSlugs.map(({ slug, note }) => ({
+    params: { id: slug },
+    props: { note, slug },
+  }))
+}
+
+const { note, slug } = Astro.props
+const { Content, headings } = await render(note)
+
+const currentUrl = Astro.url
+---
+
+<Layout canonicalUrl={currentUrl}>
+  <PageHead 
+    slot="head" 
+    title={note.data.title}
+    description={note.data.description}
+  />
+  
+  <Breadcrumbs
+    items={[
+      { label: '其他', href: '/notes', icon: 'lucide:book-open' },
+      { label: note.data.category || '未分类', href: '/notes', icon: 'lucide:folder' },
+      { label: note.data.title, icon: 'lucide:file-text' },
+    ]}
+  />
+
+  <article class="max-screen mt-12 px-4 md:px-6">
+    <!-- 文章头部 -->
+    <header class="mb-8">
+      <div class="flex w-fit items-center gap-2 text-primary mb-4">
+        <Icon class="h-4 w-4 text-secondary-foreground animate-pulse" name="lucide:book-open" />
+        <p class="shimmer word-spacing font-mono text-sm uppercase leading-none text-secondary-foreground">
+          Learning Note
+        </p>
+      </div>
+      
+      <h1 class="font-custom text-foreground text-4xl font-bold mb-4">
+        {note.data.title}
+      </h1>
+      
+      <p class="text-muted-foreground text-lg mb-6">
+        {note.data.description}
+      </p>
+
+      <!-- 元信息 -->
+      <div class="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
+        <div class="flex items-center gap-1">
+          <Icon class="h-4 w-4" name="lucide:calendar" />
+          <time datetime={note.data.date.toISOString()}>
+            {note.data.date.toLocaleDateString('zh-CN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </time>
+        </div>
+        
+        {note.data.category && (
+          <div class="flex items-center gap-1">
+            <Icon class="h-4 w-4" name="lucide:folder" />
+            <span>{note.data.category}</span>
+          </div>
+        )}
+
+        {note.data.authors && note.data.authors.length > 0 && (
+          <div class="flex items-center gap-1">
+            <Icon class="h-4 w-4" name="lucide:user" />
+            <span>{note.data.authors.join(', ')}</span>
+          </div>
+        )}
+      </div>
+
+      <!-- 标签 -->
+      {note.data.tags && note.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-6">
+          {note.data.tags.map((tag) => (
+            <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <!-- 分割线 -->
+      <hr class="border-border" />
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- 主要内容 -->
+      <div class="lg:col-span-3">
+        <div class="prose prose-lg dark:prose-invert max-w-none">
+          <Content />
+        </div>
+      </div>
+
+      <!-- 侧边栏 -->
+      <aside class="lg:col-span-1">
+        <div class="sticky top-8 space-y-6">
+          <!-- 目录 -->
+          {headings.length > 0 && (
+            <div class="bg-card border rounded-lg p-4">
+              <h3 class="font-semibold mb-3 flex items-center gap-2">
+                <Icon class="h-4 w-4" name="lucide:list" />
+                目录
+              </h3>
+              <TableOfContents headings={headings} />
+            </div>
+          )}
+
+          <!-- 返回笔记列表 -->
+          <div class="bg-card border rounded-lg p-4">
+            <a 
+              href="/notes" 
+              class="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+            >
+              <Icon class="h-4 w-4" name="lucide:arrow-left" />
+              返回笔记列表
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- 文章导航 -->
+    <div class="mt-12 pt-8 border-t border-border">
+      <PostNavigation currentSlug={slug} />
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .shimmer {
+    background: linear-gradient(90deg, 
+      hsl(var(--muted-foreground)) 0%, 
+      hsl(var(--primary)) 50%, 
+      hsl(var(--muted-foreground)) 100%);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 2s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .word-spacing {
+    letter-spacing: 0.1em;
+  }
+</style>

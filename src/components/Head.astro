@@ -66,6 +66,16 @@ import Favicons from './Favicons.astro'
     media="(prefers-color-scheme: light)"
   />
   <meta name="msapplication-TileColor" content="#121212" />
+  <meta name="color-scheme" content="light dark" />
+
+  <style is:inline>
+    html { background-color: #f8fafc; }
+    @media (prefers-color-scheme: dark) {
+      html { background-color: #1a1b26; }
+    }
+    html.dark,
+    html[data-theme='dark'] { background-color: #1a1b26; }
+  </style>
 
   <!-- 安全性增强 -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />

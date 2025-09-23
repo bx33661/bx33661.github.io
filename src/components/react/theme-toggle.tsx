@@ -10,80 +10,45 @@ const ThemeToggle: React.FC = () => {
   const [mounted, setMounted] = useState(false)
 
   const handleToggleClick = () => {
-    const element = document.documentElement
-    
-    // 添加平滑过渡
-    element.style.transition = 'background-color 0.3s ease, color 0.3s ease'
-    
-    const willBeDark = !element.classList.contains('dark')
-    setIsDark(willBeDark)
-    
-    if (willBeDark) {
-      element.classList.add('dark')
-    } else {
-      element.classList.remove('dark')
+    const api = window.__BX_THEME__
+    if (api && typeof api.toggle === 'function') {
+      const nextTheme = api.toggle()
+      setIsDark(nextTheme === 'dark')
+      return
     }
 
-    localStorage.setItem('theme', willBeDark ? 'dark' : 'light')
-    
-    // 移除过渡效果
-    setTimeout(() => {
-      element.style.transition = ''
-    }, 300)
+    const element = document.documentElement
+    const nextIsDark = !element.classList.contains('dark')
+    const nextTheme = nextIsDark ? 'dark' : 'light'
+
+    element.classList.toggle('dark', nextIsDark)
+    element.dataset.theme = nextTheme
+    element.style.colorScheme = nextIsDark ? 'dark' : 'light'
+    element.style.backgroundColor = nextIsDark ? '#1a1b26' : '#f8fafc'
+
+    setIsDark(nextIsDark)
   }
 
   useEffect(() => {
     setMounted(true)
-    
-    const theme = (() => {
-      const localStorageTheme = localStorage?.getItem('theme') ?? ''
-      if (['dark', 'light'].includes(localStorageTheme)) {
-        return localStorageTheme
-      }
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark'
-      }
-      return 'light'
-    })()
+    const api = window.__BX_THEME__
+    const initialTheme = api && typeof api.get === 'function'
+      ? api.get()
+      : document.documentElement.classList.contains('dark') ? 'dark' : 'light'
 
-    const isInitiallyDark = theme === 'dark'
-    setIsDark(isInitiallyDark)
+    setIsDark(initialTheme === 'dark')
 
-    if (theme === 'light') {
-      document.documentElement.classList.remove('dark')
-    } else {
-      document.documentElement.classList.add('dark')
+    const handleThemeChange = (event: Event) => {
+      const detail = (event as CustomEvent<{ theme?: 'light' | 'dark' }>).detail
+      if (detail?.theme === 'light' || detail?.theme === 'dark') {
+        setIsDark(detail.theme === 'dark')
+      }
     }
 
-    window.localStorage.setItem('theme', theme)
-
-    const handleAfterSwap = () => {
-      const storedTheme = localStorage.getItem('theme')
-      const element = document.documentElement
-      const newIsDark = storedTheme === 'dark'
-      
-      setIsDark(newIsDark)
-
-      element.classList.add('disable-transitions')
-
-      window.getComputedStyle(element).getPropertyValue('opacity')
-
-      if (newIsDark) {
-        element.classList.add('dark')
-      } else {
-        element.classList.remove('dark')
-      }
-
-      requestAnimationFrame(() => {
-        element.classList.remove('disable-transitions')
-      })
-
-    }
-
-    document.addEventListener('astro:after-swap', handleAfterSwap)
+    window.addEventListener('bx-theme-change', handleThemeChange)
 
     return () => {
-      document.removeEventListener('astro:after-swap', handleAfterSwap)
+      window.removeEventListener('bx-theme-change', handleThemeChange)
     }
   }, [])
 

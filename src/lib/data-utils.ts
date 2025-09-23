@@ -225,3 +225,119 @@ export async function getRelatedPosts(
   
   return postsWithScore.slice(0, count).map(item => item.post)
 }
+
+// Notes相关函数
+export async function getAllNotes(): Promise<CollectionEntry<'notes'>[]> {
+  return withCache('all-notes', async () => {
+    const notes = await getCollection('notes')
+    return notes
+      .filter((note) => !note.data.draft)
+      .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  })
+}
+
+/**
+ * 获取笔记的slug，如果没有则生成一个随机的
+ * @param note 笔记对象
+ * @param existingSlugs 已存在的slug数组
+ * @returns 笔记的slug
+ */
+export function getNoteSlug(note: CollectionEntry<'notes'>, existingSlugs: string[] = []): string {
+  if (note.data.slug) {
+    return note.data.slug
+  }
+  return generateUniqueSlug(existingSlugs)
+}
+
+/**
+ * 为所有笔记生成slug映射
+ * @returns Promise<Map<string, CollectionEntry<'notes'>>> slug到笔记的映射
+ */
+export async function getNoteSlugMap(): Promise<Map<string, CollectionEntry<'notes'>>> {
+  const notes = await getAllNotes()
+  const slugMap = new Map<string, CollectionEntry<'notes'>>()
+  const usedSlugs: string[] = []
+  
+  // 首先处理已有slug的笔记
+  for (const note of notes) {
+    if (note.data.slug) {
+      slugMap.set(note.data.slug, note)
+      usedSlugs.push(note.data.slug)
+    }
+  }
+  
+  // 然后为没有slug的笔记生成随机slug
+  for (const note of notes) {
+    if (!note.data.slug) {
+      const slug = generateUniqueSlug(usedSlugs)
+      slugMap.set(slug, note)
+      usedSlugs.push(slug)
+    }
+  }
+  
+  return slugMap
+}
+
+/**
+ * 通过slug获取笔记
+ * @param slug 笔记的slug
+ * @returns 笔记对象或null
+ */
+export async function getNoteBySlug(slug: string): Promise<CollectionEntry<'notes'> | null> {
+  const slugMap = await getNoteSlugMap()
+  return slugMap.get(slug) || null
+}
+
+/**
+ * 获取所有笔记的slug路径（用于静态路由生成）
+ * @returns Promise<Array<{slug: string, note: CollectionEntry<'notes'>}>>
+ */
+export async function getAllNoteSlugs(): Promise<Array<{slug: string, note: CollectionEntry<'notes'>}>> {
+  const slugMap = await getNoteSlugMap()
+  return Array.from(slugMap.entries()).map(([slug, note]) => ({ slug, note }))
+}
+
+/**
+ * 获取所有笔记分类
+ * @returns Promise<Map<string, number>> 分类名称到数量的映射
+ */
+export async function getAllNoteCategories(): Promise<Map<string, number>> {
+  const notes = await getAllNotes()
+  const categories = new Map<string, number>()
+  
+  for (const note of notes) {
+    const category = note.data.category || '未分类'
+    categories.set(category, (categories.get(category) || 0) + 1)
+  }
+  
+  return categories
+}
+
+/**
+ * 按分类获取笔记
+ * @param category 分类名称
+ * @returns Promise<CollectionEntry<'notes'>[]>
+ */
+export async function getNotesByCategory(category: string): Promise<CollectionEntry<'notes'>[]> {
+  const notes = await getAllNotes()
+  return notes.filter(note => (note.data.category || '未分类') === category)
+}
+
+/**
+ * 获取笔记的所有标签
+ * @returns Promise<Map<string, number>> 标签名称到数量的映射
+ */
+export async function getAllNoteTags(): Promise<Map<string, number>> {
+  const notes = await getAllNotes()
+  const tags = new Map<string, number>()
+  
+  for (const note of notes) {
+    if (note.data.tags) {
+      for (const tag of note.data.tags) {
+        tags.set(tag, (tags.get(tag) || 0) + 1)
+      }
+    }
+  }
+  
+  return tags
+}

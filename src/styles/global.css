@@ -169,7 +169,8 @@
   html {
     @apply bg-background text-foreground scheme-light;
 
-    &.dark {
+    &.dark,
+    &[data-theme='dark'] {
       @apply scheme-dark;
     }
 
