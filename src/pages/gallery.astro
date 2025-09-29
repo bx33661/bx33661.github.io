@@ -103,12 +103,16 @@ const currentUrl = Astro.url;
             <!-- 图片容器 -->
             <div class="aspect-square relative overflow-hidden">
               <ImageZoom 
-                client:load 
-                src={image.src}
-                alt={image.alt}
-                className="w-full h-full object-cover"
-                loading={index < 6 ? 'eager' : 'lazy'}
-              />
+              -                client:load 
+              +                client:idle 
+                 src={image.src}
+                 alt={image.alt}
+                 className="w-full h-full object-cover"
+              -                loading={index < 6 ? 'eager' : 'lazy'}
+              +                loading={index < 6 ? 'eager' : 'lazy'}
+              +                priority={index < 6}
+              +                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                />
             </div>
             
             <!-- 图片信息 -->

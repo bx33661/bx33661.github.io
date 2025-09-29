@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from 'react'
+import { useState, useEffect, useCallback, memo, useRef } from 'react'
 import { X, ZoomIn, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -26,11 +26,10 @@ export const ImageZoom = memo(function ImageZoom({
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
-  // 优化的键盘事件处理
+  const imgRef = useRef<HTMLImageElement | null>(null)
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setIsOpen(false)
-    }
+    if (e.key === 'Escape') setIsOpen(false)
   }, [])
 
   useEffect(() => {
@@ -40,14 +39,13 @@ export const ImageZoom = memo(function ImageZoom({
     } else {
       document.body.style.overflow = 'unset'
     }
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'unset'
     }
   }, [isOpen, handleKeyDown])
 
-  // 图片预加载
+  // 预加载：首屏优先图片提前加载
   useEffect(() => {
     if (priority && src) {
       const img = new Image()
@@ -59,6 +57,14 @@ export const ImageZoom = memo(function ImageZoom({
       }
     }
   }, [src, priority])
+
+  // 水合后检查：如果水合前已加载完成，React 的 onLoad 不会触发
+  useEffect(() => {
+    const el = imgRef.current
+    if (el && (el.complete || el.naturalWidth > 0)) {
+      setIsLoading(false)
+    }
+  }, [src])
 
   const handleLoad = useCallback(() => {
     setIsLoading(false)
@@ -79,18 +85,13 @@ export const ImageZoom = memo(function ImageZoom({
     document.body.removeChild(link)
   }, [src, alt])
 
-  const openModal = useCallback(() => {
-    setIsOpen(true)
-  }, [])
-
-  const closeModal = useCallback(() => {
-    setIsOpen(false)
-  }, [])
+  const openModal = useCallback(() => setIsOpen(true), [])
+  const closeModal = useCallback(() => setIsOpen(false), [])
 
   return (
     <>
       {/* 缩略图 */}
-      <div 
+      <div
         className={cn(
           'group relative cursor-zoom-in overflow-hidden rounded-lg',
           'transition-all duration-300 hover:shadow-lg',
@@ -109,35 +110,36 @@ export const ImageZoom = memo(function ImageZoom({
         aria-label={`查看大图: ${alt}`}
       >
         {isLoading && (
-          <div 
-            className="absolute inset-0 bg-muted animate-pulse rounded-lg"
+          <div
+            className="absolute inset-0 bg-muted animate-pulse rounded-lg pointer-events-none"
             style={{ width, height }}
           />
         )}
-        
+
         <img
           src={src}
           alt={alt}
           width={width}
           height={height}
-          loading={priority ? "eager" : loading}
-          fetchPriority={priority ? "high" : "low"}
+          loading={priority ? 'eager' : loading}
+          fetchPriority={priority ? 'high' : 'low'}
           decoding="async"
           sizes={sizes}
           onLoad={handleLoad}
           onError={handleError}
+          ref={imgRef}
           className={cn(
             'transition-all duration-300 group-hover:scale-105',
-            isLoading ? 'opacity-0' : 'opacity-100',
+            isLoading ? 'blur-sm scale-105' : 'blur-0',
             error && 'opacity-50'
           )}
         />
-        
+
         {/* 放大图标覆盖层 */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
           <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
-        
+
         {error && (
           <div className="absolute inset-0 flex items-center justify-center bg-muted/50 rounded-lg">
             <span className="text-xs text-muted-foreground">图片加载失败</span>
@@ -147,7 +149,7 @@ export const ImageZoom = memo(function ImageZoom({
 
       {/* 模态框 */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
           onClick={closeModal}
           role="dialog"
@@ -179,7 +181,7 @@ export const ImageZoom = memo(function ImageZoom({
           </button>
 
           {/* 大图 */}
-          <div 
+          <div
             className="relative max-w-[90vw] max-h-[90vh] overflow-hidden rounded-lg"
             onClick={(e) => e.stopPropagation()}
           >
@@ -190,7 +192,7 @@ export const ImageZoom = memo(function ImageZoom({
               className="w-full h-full object-contain"
               style={{ maxWidth: '90vw', maxHeight: '90vh' }}
             />
-            
+
             {/* 图片信息 */}
             {alt && (
               <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4">
