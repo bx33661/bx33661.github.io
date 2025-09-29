@@ -5,61 +5,62 @@ import Layout from '@/layouts/Layout.astro'
 import { Icon } from 'astro-icon/components'
 import { ScrollReveal } from "@/components/react/scroll-animations"
 import { ImageZoom } from "@/components/react/image-zoom"
+import { BASE_URL } from '@/config/env'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 
 // 这里可以配置相册图片，将来可以移到配置文件或从数据库获取
 const galleryImages = [
   {
-    src: '/gallery/79d35189354e2824167cfebb10876af4.jpg',
+    src: `${BASE_URL}gallery/79d35189354e2824167cfebb10876af4.jpg`,
     alt: '新乡',
     title: 'labubu',
     description: '记录生活中的美好瞬间',
     date: '2025-07-05'
   },
   {
-    src: '/gallery/738eadca2488bd4f583bb071d15fc038.jpg', 
+    src: `${BASE_URL}gallery/738eadca2488bd4f583bb071d15fc038.jpg`, 
     alt: '新乡',
     title: '宝泉',
     description: '记录生活中的美好瞬间',
     date: '2025-07-05'
   },
   {
-    src: '/gallery/c9531bcaeefed42bb36b974696149c7a.jpg',
+    src: `${BASE_URL}gallery/c9531bcaeefed42bb36b974696149c7a.jpg`,
     alt: '新乡', 
     title: '宝泉',
     description: '记录生活中的美好瞬间',
     date: '2025-07-05'
   },
   {
-    src: '/gallery/3a05e267fc3eb4a6c146489836f5d50e.jpg',
+    src: `${BASE_URL}gallery/3a05e267fc3eb4a6c146489836f5d50e.jpg`,
     alt: '海大', 
     title: '美丽校园',
     description: '记录生活中的美好瞬间',
     date: '2025-05-05'
   },
   {
-    src: '/gallery/cd3ca9f14be50495c1be8ed017c7b348.jpg',
+    src: `${BASE_URL}gallery/cd3ca9f14be50495c1be8ed017c7b348.jpg`,
     alt: '海南', 
     title: '海南落日',
     description: '记录生活中的美好瞬间',
     date: '2024-07-05'
   },
   {
-    src: '/gallery/fb450aaf347e5d8e64d0341cf3b23b61.jpg',
+    src: `${BASE_URL}gallery/fb450aaf347e5d8e64d0341cf3b23b61.jpg`,
     alt: '洛阳', 
     title: '洛阳古都',
     description: '记录生活中的美好瞬间',
     date: '2024-09-05'
   },
   {
-    src: '/gallery/b4fb8f48829b62de174d7b1e24a3b7ca.jpg',
+    src: `${BASE_URL}gallery/b4fb8f48829b62de174d7b1e24a3b7ca.jpg`,
     alt: '云朵', 
     title: '云朵',
     description: '记录生活中的美好瞬间',
     date: '2024-10-05'
   },
   {
-    src: '/gallery/2713625f33c9006f62b6e40783e27527.jpg',
+    src: `${BASE_URL}gallery/2713625f33c9006f62b6e40783e27527.jpg`,
     alt: '云朵', 
     title: '云朵',
     description: '记录生活中的美好瞬间',
