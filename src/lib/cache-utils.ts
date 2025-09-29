@@ -11,7 +11,7 @@ const cache = new Map<string, { data: any; timestamp: number; ttl: number }>()
  * @param key 缓存键
  * @param ttl 缓存时间（毫秒），默认5分钟
  */
-export function withCache<T>(
+export async function withCache<T>(
   key: string,
   fn: () => Promise<T>,
   ttl: number = 5 * 60 * 1000
@@ -21,18 +21,17 @@ export function withCache<T>(
 
   // 检查缓存是否有效
   if (cached && now - cached.timestamp < cached.ttl) {
-    return Promise.resolve(cached.data)
+    return cached.data
   }
 
   // 执行函数并缓存结果
-  return fn().then(result => {
-    cache.set(key, {
-      data: result,
-      timestamp: now,
-      ttl
-    })
-    return result
+  const result = await fn()
+  cache.set(key, {
+    data: result,
+    timestamp: now,
+    ttl
   })
+  return result
 }
 
 /**

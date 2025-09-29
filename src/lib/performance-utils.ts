@@ -97,18 +97,21 @@ export const performanceMonitor = new PerformanceMonitor()
  * 性能监控装饰器
  * @param name 监控名称
  */
-export function withPerformanceMonitoring<T>(
+export async function withPerformanceMonitoring<T>(
   name: string,
   fn: () => Promise<T>
 ): Promise<T> {
   performanceMonitor.start(name)
   
-  return fn().finally(() => {
+  try {
+    const result = await fn()
+    return result
+  } finally {
     const duration = performanceMonitor.end(name)
     if (import.meta.env.DEV) {
       console.log(`[Performance] ${name}: ${duration.toFixed(2)}ms`)
     }
-  })
+  }
 }
 
 /**
