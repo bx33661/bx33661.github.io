@@ -13,6 +13,7 @@ export const BASE_URL = import.meta.env.BASE_URL || '/'
 
 // 分析工具配置
 export const GOOGLE_ANALYTICS_ID = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID
+export const GTM_ID = import.meta.env.PUBLIC_GTM_ID
 export const POSTHOG_KEY = import.meta.env.PUBLIC_POSTHOG_KEY
 export const POSTHOG_HOST = import.meta.env.PUBLIC_POSTHOG_HOST
 

@@ -6,6 +6,7 @@ category: "网络安全"
 tags: ["安全", "Web安全", "漏洞", "渗透测试"]
 authors: ["bx33661"]
 draft: false
+slug: "web-security-basics"
 ---
 
 # Web安全基础概念

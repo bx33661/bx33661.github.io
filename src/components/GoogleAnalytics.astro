@@ -1,0 +1,39 @@
+---
+import { GOOGLE_ANALYTICS_ID, ENABLE_ANALYTICS } from '@/config/env'
+
+// 只在生产环境且启用分析时加载
+const shouldLoadGA = import.meta.env.PROD && ENABLE_ANALYTICS && GOOGLE_ANALYTICS_ID
+---
+
+{shouldLoadGA && (
+  <>
+    <!-- Google Analytics -->
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`}></script>
+    <script is:inline define:vars={{ GOOGLE_ANALYTICS_ID }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', GOOGLE_ANALYTICS_ID, {
+        // 隐私保护配置
+        anonymize_ip: true,
+        cookie_flags: 'SameSite=None;Secure',
+        // 性能优化
+        send_page_view: true,
+        // GDPR 合规
+        allow_google_signals: false,
+        allow_ad_personalization_signals: false
+      });
+    </script>
+  </>
+)}
+
+{import.meta.env.DEV && (
+  <script is:inline>
+    // 开发环境下的模拟 gtag 函数
+    window.gtag = function() {
+      console.log('[GA Dev Mode]', arguments);
+    };
+  </script>
+)}

@@ -6,6 +6,7 @@ category: "前端开发"
 tags: ["JavaScript", "前端", "基础"]
 authors: ["bx33661"]
 draft: false
+slug: "javascript-basics"
 ---
 
 # JavaScript基础知识总结

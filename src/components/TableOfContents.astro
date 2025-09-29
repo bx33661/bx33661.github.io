@@ -1,6 +1,4 @@
 ---
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { cn } from '@/lib/utils'
 import type { MarkdownHeading } from 'astro'
 import { Icon } from 'astro-icon/components'
 
@@ -51,11 +49,7 @@ function cleanupHeading(text: string): string {
     </div>
   </summary>
 
-  <ScrollArea
-    client:load
-    className="flex max-h-64 flex-col overflow-y-auto xl:max-h-[calc(100vh-8rem)]"
-    type="always"
-  >
+  <div class="flex max-h-64 flex-col overflow-y-auto xl:max-h-[calc(100vh-8rem)]">
     <ul
       class="flex list-none flex-col gap-y-2 px-4 xl:mr-8"
       id="table-of-contents"
@@ -63,10 +57,7 @@ function cleanupHeading(text: string): string {
       {
         headings.map((heading: MarkdownHeading) => (
           <li
-            class={cn(
-              'text-foreground/60 text-sm xl:p-0',
-              getHeadingMargin(heading.depth)
-            )}
+            class={`text-foreground/60 text-sm xl:p-0 ${getHeadingMargin(heading.depth)}`}
           >
             <a
               href={`#${heading.slug}`}
@@ -80,7 +71,7 @@ function cleanupHeading(text: string): string {
         ))
       }
     </ul>
-  </ScrollArea>
+  </div>
 </details>
 
 <script>

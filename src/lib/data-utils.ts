@@ -237,7 +237,7 @@ export async function getAllNotes(): Promise<CollectionEntry<'notes'>[]> {
 }
 
 /**
- * 获取笔记的slug，如果没有则生成一个随机的
+ * 获取笔记的slug，如果没有则使用文件名
  * @param note 笔记对象
  * @param existingSlugs 已存在的slug数组
  * @returns 笔记的slug
@@ -246,7 +246,8 @@ export function getNoteSlug(note: CollectionEntry<'notes'>, existingSlugs: strin
   if (note.data.slug) {
     return note.data.slug
   }
-  return generateUniqueSlug(existingSlugs)
+  // 使用文件名作为slug（去掉扩展名）
+  return note.id.replace(/\.(md|mdx)$/, '')
 }
 
 /**

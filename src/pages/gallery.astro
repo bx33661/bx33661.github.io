@@ -5,6 +5,7 @@ import Layout from '@/layouts/Layout.astro'
 import { Icon } from 'astro-icon/components'
 import { ScrollReveal } from "@/components/react/scroll-animations"
 import { ImageZoom } from "@/components/react/image-zoom"
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
 
 // 这里可以配置相册图片，将来可以移到配置文件或从数据库获取
 const galleryImages = [
@@ -75,6 +76,7 @@ const currentUrl = Astro.url;
   <PageHead slot="head" title="生活相册 - BX/bpple" />
   
   <div class="flex flex-col gap-y-8 px-4 py-8 sm:px-8 lg:px-16">
+    <Breadcrumbs items={[{ label: '相册', icon: 'lucide:image' }]} />
     <!-- 页面标题 -->
     <ScrollReveal client:load direction="up" threshold={0.2}>
       <section class="text-center">

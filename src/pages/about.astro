@@ -7,6 +7,7 @@ import Logo from '@/components/ui/logo'
 import Layout from '@/layouts/Layout.astro'
 import { SITE, SOCIAL_LINKS } from '@/consts'
 import { Icon } from 'astro-icon/components'
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
 
 const currentUrl = Astro.url;
 ---
@@ -14,6 +15,7 @@ const currentUrl = Astro.url;
 <Layout canonicalUrl={currentUrl}>
   <PageHead slot="head" title="关于我 - BX/bpple" />
   <div class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
+    <Breadcrumbs items={[{ label: '关于我', icon: 'lucide:user' }]} />
     <!-- 个人介绍部分 -->
     <section class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
       <div class="relative overflow-hidden rounded-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">

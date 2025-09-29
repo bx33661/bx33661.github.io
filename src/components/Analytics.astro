@@ -1,0 +1,29 @@
+---
+/**
+ * 统一的分析工具管理组件
+ * 集成 Google Analytics、Google Tag Manager 和 PostHog
+ */
+import GoogleAnalytics from './GoogleAnalytics.astro'
+import GoogleTagManager from './GoogleTagManager.astro'
+import Posthog from './Posthog.astro'
+import { ENABLE_ANALYTICS } from '@/config/env'
+---
+
+{ENABLE_ANALYTICS && (
+  <>
+    <!-- Google Tag Manager -->
+    <GoogleTagManager />
+    
+    <!-- Google Analytics -->
+    <GoogleAnalytics />
+    
+    <!-- PostHog -->
+    <Posthog />
+  </>
+)}
+
+{import.meta.env.DEV && (
+  <script is:inline>
+    console.log('[Analytics] 开发环境 - 分析工具已禁用');
+  </script>
+)}

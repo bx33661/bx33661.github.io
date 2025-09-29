@@ -6,6 +6,7 @@ category: "算法学习"
 tags: ["算法", "数据结构", "编程", "面试"]
 authors: ["bx33661"]
 draft: false
+slug: "algorithm-study"
 ---
 
 # 数据结构与算法学习笔记

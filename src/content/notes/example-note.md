@@ -6,6 +6,7 @@ category: "学习方法"
 tags: ["示例", "学习笔记", "教程"]
 authors: ["bx33661"]
 draft: false
+slug: "example-note"
 ---
 
 # 示例学习笔记

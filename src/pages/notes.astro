@@ -2,7 +2,7 @@
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
-import { getAllNotes, getAllNoteCategories, getAllNoteTags } from '@/lib/data-utils'
+import { getAllNotes, getAllNoteCategories, getAllNoteTags, getNoteSlug } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
 import type { CollectionEntry } from 'astro:content'
 
@@ -92,7 +92,7 @@ const currentUrl = Astro.url
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div class="flex-1">
                     <h4 class="font-semibold text-lg hover:text-primary transition-colors">
-                      <a href={`/notes/${note.data.slug || note.id}`}>
+                      <a href={`/notes/${getNoteSlug(note)}`}>
                         {note.data.title}
                       </a>
                     </h4>
