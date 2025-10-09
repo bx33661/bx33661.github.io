@@ -72,8 +72,8 @@ export const FRIEND_LINKS: FriendLink[] = [
   {
     name: "orxiain.",
     url: "https://orxiain.life",
-    description: "",
-    avatar: "https://xxx",
+    description: "orororororor",
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1193087005&s=640",
     tags: ["web"]
   },
   {
@@ -96,5 +96,12 @@ export const FRIEND_LINKS: FriendLink[] = [
     description: "原批",
     avatar: "https://github.com/LH864042219/PWN-Obsidian/blob/main/picture/QQ.jpg?raw=true",
     tags: ["pwn"]
+  }
+  ,
+  {
+    name: "Jatopos",
+    url: "https://jatopos.github.io",
+    description: "一往无前虎山行，拨开云雾见光明。",
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=3636469976&s=640"
   }
 ]
