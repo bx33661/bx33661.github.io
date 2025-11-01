@@ -96,23 +96,23 @@ const currentUrl = Astro.url;
     </ScrollReveal>
 
     <!-- 相册网格 -->
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-grid">
       {galleryImages.map((image, index) => (
         <ScrollReveal client:load direction="up" delay={index * 0.06} threshold={0.2}>
-          <div class="group relative overflow-hidden rounded-xl bg-secondary/20 hover:shadow-lg transition-all duration-300 ease-in-out hover:scale-[1.02]">
+          <div class="group relative overflow-hidden rounded-xl bg-secondary/20 hover:shadow-lg transition-all duration-300 ease-in-out hover:scale-[1.02]" data-index={index}>
             <!-- 图片容器 -->
             <div class="aspect-square relative overflow-hidden">
-              <ImageZoom 
-              -                client:load 
-              +                client:idle 
-                 src={image.src}
-                 alt={image.alt}
-                 className="w-full h-full object-cover"
-              -                loading={index < 6 ? 'eager' : 'lazy'}
-              +                loading={index < 6 ? 'eager' : 'lazy'}
-              +                priority={index < 6}
-              +                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                />
+              <ImageZoom
+                client:idle
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-full object-cover"
+                loading={index < 6 ? 'eager' : 'lazy'}
+                priority={index < 6}
+                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                width={400}
+                height={400}
+              />
             </div>
             
             <!-- 图片信息 -->
@@ -173,11 +173,66 @@ const currentUrl = Astro.url;
     </section>
   </div>
 
-  <!-- 移除原点击脚本，改用 ImageZoom 组件提供的放大查看 -->
+  <!-- 性能优化和错误处理脚本 -->
+  <script define:vars={{ galleryImages }}>
+    // 预加载下一批图片（IntersectionObserver）
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const index = parseInt(entry.target.dataset.index || '0');
+            // 预加载接下来3张图片
+            for (let i = index + 1; i <= Math.min(index + 3, galleryImages.length - 1); i++) {
+              const img = new Image();
+              img.src = galleryImages[i].src;
+            }
+            imageObserver.unobserve(entry.target);
+          }
+        });
+      }, {
+        rootMargin: '50px'
+      });
+
+      // 观察所有图片容器
+      document.querySelectorAll('[data-index]').forEach(el => {
+        imageObserver.observe(el);
+      });
+    }
+
+    // 图片错误处理
+    document.addEventListener('error', (e) => {
+      if (e.target.tagName === 'IMG') {
+        console.error('图片加载失败:', e.target.src);
+        // 可以在这里添加错误上报逻辑
+      }
+    }, true);
+
+    // 性能监控
+    if ('performance' in window) {
+      window.addEventListener('load', () => {
+        const perfData = performance.getEntriesByType('navigation')[0];
+        const loadTime = perfData.loadEventEnd - perfData.loadEventStart;
+        console.log(`相册页面加载完成，耗时: ${loadTime}ms`);
+      });
+    }
+  </script>
 </Layout>
 
 <style>
   @media (prefers-reduced-motion: reduce) {
     .group:hover { transform: none !important; }
+    .transition-all, .transition-opacity, .transition-transform {
+      transition: none !important;
+    }
+  }
+
+  /* 优化图片加载体验 */
+  .aspect-square {
+    contain: layout style paint;
+  }
+
+  /* 防止布局偏移 */
+  .grid {
+    contain: layout;
   }
 </style>
