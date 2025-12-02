@@ -4,6 +4,7 @@ import Link from '@/components/Link.astro'
 import PostHead from '@/components/PostHead.astro'
 import PostNavigation from '@/components/PostNavigation.astro'
 import TableOfContents from '@/components/TableOfContents.astro'
+import PasswordProtect from '@/components/react/password-protect'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -26,6 +27,9 @@ const currentSlug = Astro.params.id // 这里获取的是slug
 const { Content, headings } = await render(post)
 const { next, prev } = await getAdjacentPosts(currentSlug)
 const relatedPosts = await getRelatedPosts(post, 3)
+
+// 检查文章是否设置了密码保护
+const isPasswordProtected = !!post.data.password
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -107,9 +111,23 @@ const currentUrl = Astro.url;
 
     {headings.length > 0 && <div class="hidden xl:block xl:col-start-1"><TableOfContents headings={headings} /></div>}
 
-    <article class="prose px-4 md:px-6 lg:px-0 sm:col-start-2 max-w-none sm:max-w-[95ch] xl:max-w-[800px] xl:mx-auto w-full">
-      <Content />
-    </article>
+    {isPasswordProtected ? (
+      <div class="sm:col-start-2">
+        <PasswordProtect
+          client:load
+          articleId={post.id}
+          correctPassword={post.data.password!}
+        >
+          <article class="prose px-4 md:px-6 lg:px-0 max-w-none sm:max-w-[95ch] xl:max-w-[800px] xl:mx-auto w-full">
+            <Content />
+          </article>
+        </PasswordProtect>
+      </div>
+    ) : (
+      <article class="prose px-4 md:px-6 lg:px-0 sm:col-start-2 max-w-none sm:max-w-[95ch] xl:max-w-[800px] xl:mx-auto w-full">
+        <Content />
+      </article>
+    )}
 
     <aside
       class="hidden xl:block group xl:col-start-3 xl:rounded-none xl:border-none xl:p-0 xl:sticky xl:top-26 xl:h-[calc(100vh-5rem)] xl:min-w-[300px] xl:max-w-[300px]"

@@ -13,6 +13,7 @@ const blog = defineCollection({
       authors: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
       slug: z.string().optional(), // 随机URL字符串，如果不提供会自动生成
+      password: z.string().optional(), // 文章密码保护，如果设置则需要输入密码才能阅读
     }),
 })
 

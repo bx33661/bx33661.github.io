@@ -117,22 +117,22 @@ const Navbar = () => {
           isMobile && 'border-0'
         )}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 p-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2 md:gap-4 md:p-4">
           <Link
             href="/"
-            className="font-custom flex shrink-0 items-center gap-2 text-xl font-bold"
+            className="font-custom flex shrink-0 items-center gap-1.5 text-base font-bold md:gap-2 md:text-xl"
             aria-label="Home"
             title="Home"
             navigation="true"
           >
-            <Logo className="h-8 w-8" />
+            <Logo className="h-6 w-6 md:h-8 md:w-8" />
             <span className={
               'transition-opacity duration-200 ease-in-out text-foreground/90 dark:text-white'}>
               {SITE.title}
             </span>
           </Link>
 
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-1 md:gap-2">
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main navigation" role="navigation">
               {NAV_LINKS.map((item) => {
                 const isActive = activePath.startsWith(item.href) && item.href !== "/";
@@ -186,13 +186,13 @@ const Navbar = () => {
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                 className={
-                  "ml-1 h-9 w-9 rounded-full p-0 transition-colors duration-200 ease-in-out"
+                  "h-8 w-8 rounded-full p-0 transition-colors duration-200 ease-in-out"
                 }
               >
                 {mobileMenuOpen ? (
-                  <X className="h-5 w-5" />
+                  <X className="h-4 w-4" />
                 ) : (
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-4 w-4" />
                 )}
               </Button>
             )}
