@@ -13,86 +13,128 @@ const currentUrl = Astro.url;
 ---
 
 <Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="关于我 - BX/bpple" />
+  <PageHead slot="head" title="个人简历 - BX" />
   <div class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
-    <Breadcrumbs items={[{ label: '关于我', icon: 'lucide:user' }]} />
-    <!-- 个人介绍部分 -->
+    <Breadcrumbs items={[{ label: '个人简历', icon: 'lucide:user' }]} />
+    
+    <!-- 个人基本信息 -->
     <section class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
       <div class="relative overflow-hidden rounded-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
         <Logo className="h-auto w-40 object-cover sm:w-48 md:w-56 lg:w-64" />
       </div>
-      <div class="mt-8 sm:mt-0 sm:max-w-2xl">
+      <div class="mt-8 sm:mt-0 sm:flex-1">
         <h1 class="font-custom text-foreground text-start text-4xl font-extrabold sm:text-5xl">
-          关于我
+          BX
         </h1>
-        <div class="mt-4 flex items-center gap-2" aria-label="location">
-          <span class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1">
-            来自
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="text-foreground text-sm font-medium">{SITE.location}</span>
-            <!-- 中国国旗 SVG -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 60 40"
-              class="h-6 w-8 transition-transform duration-500 hover:rotate-12"
-              aria-hidden="true"
-              role="img"
-              focusable="false"
-              aria-labelledby="china-flag"
-            >
-              <title id="china-flag">中国国旗</title>
-              <rect width="60" height="40" fill="#de2910"/>
-              <polygon points="12,8 9.5,15.5 2,12 9.5,8.5" fill="#ffde00"/>
-              <polygon points="20,4 19,7 17,6 18.5,8 16.5,9 20,7" fill="#ffde00"/>
-              <polygon points="20,12 19,15 17,14 18.5,16 16.5,17 20,15" fill="#ffde00"/>
-              <polygon points="20,20 19,23 17,22 18.5,24 16.5,25 20,23" fill="#ffde00"/>
-              <polygon points="16,28 15,31 13,30 14.5,32 12.5,33 16,31" fill="#ffde00"/>
-            </svg>
-          </span>
+        <p class="text-muted-foreground mt-2 text-start text-xl font-medium">
+          网络安全研究员 | 信息安全专业
+        </p>
+        <div class="mt-6 space-y-3 text-start">
+          <div class="flex items-center gap-3">
+            <Icon name="lucide:graduation-cap" class="size-5 text-primary" />
+            <span class="text-foreground">海南大学 · 信息安全专业 · 本科在读</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <Icon name="lucide:shield" class="size-5 text-primary" />
+            <span class="text-foreground">HnuSec 战队成员</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <Icon name="lucide:map-pin" class="size-5 text-primary" />
+            <span class="text-foreground">{SITE.location}</span>
+          </div>
         </div>
-        <p class="text-md text-foreground mt-4 text-start font-sans whitespace-pre-line">
-          {SITE.description}
+      </div>
+    </section>
+
+    <!-- 专业简介 -->
+    <section class="space-y-6">
+      <h2 class="font-custom text-foreground text-3xl font-bold flex items-center gap-3">
+        <Icon name="lucide:user-circle" class="size-8" />
+        专业简介
+      </h2>
+      <div class="bg-muted/30 rounded-lg p-6 border border-border">
+        <p class="text-foreground text-lg leading-relaxed">
+          专注于网络安全领域的研究与实践，具备扎实的信息安全理论基础和丰富的实战经验。
+          作为 HnuSec 战队成员，积极参与各类安全竞赛和技术研究，持续提升专业技能。
         </p>
       </div>
     </section>
 
-    <!-- 详细个人信息 -->
+    <!-- 研究方向 -->
     <section class="space-y-6">
-      <h2 class="font-custom text-foreground text-3xl font-bold">我的故事</h2>
-      <div class="prose prose-lg max-w-none text-foreground">
-        <p class="text-lg leading-relaxed">
-          你好！我是 <strong>BX</strong> & <strong>bpple</strong>，
-          本科:就读于海南大学，信息安全专业。
-          主要研究方向: WEB安全、网络安全、渗透测试、漏洞分析
-        </p>
-        <p class="text-lg leading-relaxed">
-          我喜欢研究各个方面的。
-        </p>
-        <p class="text-lg leading-relaxed">
-          除了编程，我还热衷于开源项目贡献、技术写作和知识分享。我相信通过分享知识可以让整个开发者社区变得更好。
-        </p>
+      <h2 class="font-custom text-foreground text-3xl font-bold flex items-center gap-3">
+        <Icon name="lucide:target" class="size-8" />
+        研究方向
+      </h2>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="bg-muted/30 rounded-lg p-5 border border-border hover:border-primary transition-colors">
+          <div class="flex items-start gap-3">
+            <Icon name="lucide:globe" class="size-6 text-primary mt-1" />
+            <div>
+              <h3 class="text-foreground font-semibold text-lg mb-2">Web 安全</h3>
+              <p class="text-muted-foreground text-sm">Web 应用漏洞挖掘、代码审计、安全加固</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-muted/30 rounded-lg p-5 border border-border hover:border-primary transition-colors">
+          <div class="flex items-start gap-3">
+            <Icon name="lucide:network" class="size-6 text-primary mt-1" />
+            <div>
+              <h3 class="text-foreground font-semibold text-lg mb-2">网络安全</h3>
+              <p class="text-muted-foreground text-sm">网络协议分析、流量分析、入侵检测</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-muted/30 rounded-lg p-5 border border-border hover:border-primary transition-colors">
+          <div class="flex items-start gap-3">
+            <Icon name="lucide:search" class="size-6 text-primary mt-1" />
+            <div>
+              <h3 class="text-foreground font-semibold text-lg mb-2">渗透测试</h3>
+              <p class="text-muted-foreground text-sm">渗透测试方法论、攻防演练、红队技术</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-muted/30 rounded-lg p-5 border border-border hover:border-primary transition-colors">
+          <div class="flex items-start gap-3">
+            <Icon name="lucide:bug" class="size-6 text-primary mt-1" />
+            <div>
+              <h3 class="text-foreground font-semibold text-lg mb-2">漏洞分析</h3>
+              <p class="text-muted-foreground text-sm">漏洞原理研究、PoC 编写、安全情报分析</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- 技能展示 -->
-    <section class="space-y-6">
-      <h2 class="font-custom text-foreground text-3xl font-bold">My Skills</h2>
-      <p class="text-muted-foreground text-lg">
-        以下是我现在和未来学习的方向，我也会持续学习和更新自己的技能。
-      </p>
-      <div>
-        <Skills client:load />
-      </div>
-    </section>
 
     <!-- 联系方式 -->
     <section class="space-y-6">
-      <h2 class="font-custom text-foreground text-3xl font-bold">联系我</h2>
+      <h2 class="font-custom text-foreground text-3xl font-bold flex items-center gap-3">
+        <Icon name="lucide:mail" class="size-8" />
+        联系方式
+      </h2>
       <p class="text-muted-foreground text-lg">
-        如果您想与我讨论技术话题、合作项目或者只是聊天，欢迎通过以下方式联系我：
+        欢迎交流技术问题、合作机会或安全研究话题
       </p>
-      <div class="flex flex-wrap gap-4">
+      <div class="bg-muted/30 rounded-lg p-6 border border-border">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="flex items-center gap-3">
+            <Icon name="lucide:message-circle" class="size-5 text-primary" />
+            <div>
+              <p class="text-sm text-muted-foreground">微信</p>
+              <p class="text-foreground font-medium">bx33661</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <Icon name="lucide:message-square" class="size-5 text-primary" />
+            <div>
+              <p class="text-sm text-muted-foreground">QQ</p>
+              <p class="text-foreground font-medium">1811753380</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-4 mt-6">
         {
           SOCIAL_LINKS.slice(0, -1).map((link) => (
             <Link
@@ -100,19 +142,13 @@ const currentUrl = Astro.url;
               class={buttonVariants({ variant: 'outline' }) + ' flex items-center gap-2'}
               aria-label={`联系我通过 ${link.label}`}
             >
-                             <Icon name="lucide:external-link" class="size-4" />
+              <Icon name="lucide:external-link" class="size-4" />
               {link.label}
             </Link>
           ))
         }
       </div>
-      <div class="mt-4">
-        <p class="text-muted-foreground text-lg">微信: bx33661</p>
-        <p class="text-muted-foreground text-lg">QQ: 1811753380</p>
-      </div>
     </section>
-
-    <!-- 兴趣爱好 -->
 
     <!-- 返回首页 -->
     <div class="flex justify-center pt-8">
