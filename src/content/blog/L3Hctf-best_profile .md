@@ -61,7 +61,7 @@ location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$ {
 
 具体payload如下
 
-```Python
+```python
 import requests
 
 def main():

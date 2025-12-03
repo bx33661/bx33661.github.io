@@ -1,11 +1,11 @@
 ---
 import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
-import Skills from '@/components/react/skills'
+import { BentoGrid, BentoCard, ProjectCard, InfoCard } from '@/components/react/bento-grid'
+import { Card3D } from '@/components/react/card-3d'
+import AnimatedElement from '@/components/react/animated-element'
 import { buttonVariants } from '@/components/ui/button'
-import Logo from '@/components/ui/logo'
 import Layout from '@/layouts/Layout.astro'
-import { SITE, SOCIAL_LINKS } from '@/consts'
 import { Icon } from 'astro-icon/components'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 
@@ -14,152 +14,147 @@ const currentUrl = Astro.url;
 
 <Layout canonicalUrl={currentUrl}>
   <PageHead slot="head" title="个人简历 - BX" />
-  <div class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
+  
+  <div class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16 max-w-7xl mx-auto">
     <Breadcrumbs items={[{ label: '个人简历', icon: 'lucide:user' }]} />
     
-    <!-- 个人基本信息 -->
-    <section class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
-      <div class="relative overflow-hidden rounded-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
-        <Logo className="h-auto w-40 object-cover sm:w-48 md:w-56 lg:w-64" />
-      </div>
-      <div class="mt-8 sm:mt-0 sm:flex-1">
-        <h1 class="font-custom text-foreground text-start text-4xl font-extrabold sm:text-5xl">
-          BX
-        </h1>
-        <p class="text-muted-foreground mt-2 text-start text-xl font-medium">
-          网络安全研究员 | 信息安全专业
-        </p>
-        <div class="mt-6 space-y-3 text-start">
-          <div class="flex items-center gap-3">
-            <Icon name="lucide:graduation-cap" class="size-5 text-primary" />
-            <span class="text-foreground">海南大学 · 信息安全专业 · 本科在读</span>
+    <!-- Hero Section with 3D Card -->
+    <AnimatedElement client:load animation="scaleIn" duration={0.8}>
+      <Card3D client:load className="w-full" intensity={20}>
+        <div class="bg-gradient-to-br from-background/80 to-muted/80 backdrop-blur-md p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl flex flex-col md:flex-row items-center gap-8 md:gap-12 text-center md:text-left relative overflow-hidden">
+          <!-- Background decoration -->
+          <div class="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="relative group shrink-0">
+             <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white/50 dark:border-white/10 shadow-xl group-hover:scale-105 transition-transform duration-500 ease-out">
+               <img src="/static/blogo.jpg" alt="BX" class="w-full h-full object-cover" />
+             </div>
+             <div class="absolute inset-0 rounded-full ring-2 ring-white/20 ring-offset-4 ring-offset-transparent"></div>
           </div>
-          <div class="flex items-center gap-3">
-            <Icon name="lucide:shield" class="size-5 text-primary" />
-            <span class="text-foreground">HnuSec 战队成员</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <Icon name="lucide:map-pin" class="size-5 text-primary" />
-            <span class="text-foreground">{SITE.location}</span>
+          
+          <div class="flex-1 space-y-4 relative z-10">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+              BX
+            </h1>
+            <p class="text-xl md:text-2xl font-medium text-muted-foreground">
+              网络安全研究员 | Web 安全 | AI 应用
+            </p>
+            <p class="text-lg text-muted-foreground/80 max-w-2xl leading-relaxed">
+              专注于WEB安全，AI应用，和一些其他安全领域。
+            </p>
+             <div class="flex flex-wrap gap-3 justify-center md:justify-start pt-4">
+               <a href="https://github.com/bx33661" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-all duration-300 backdrop-blur-sm border border-black/5 dark:border-white/5">
+                 <Icon name="lucide:github" class="size-5" />
+                 <span class="font-medium">bx33661</span>
+               </a>
+               <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-all duration-300 cursor-pointer group relative backdrop-blur-sm border border-black/5 dark:border-white/5">
+                 <Icon name="lucide:message-circle" class="size-5" />
+                 <span class="font-medium">bx33661</span>
+                 <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs bg-foreground text-background rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none translate-y-2 group-hover:translate-y-0">WeChat</span>
+               </div>
+             </div>
           </div>
         </div>
-      </div>
+      </Card3D>
+    </AnimatedElement>
+
+    <!-- Bento Grid Section -->
+    <section class="space-y-8">
+       <AnimatedElement client:load animation="slideUp" delay={0.2}>
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold flex items-center gap-3">
+            <Icon name="lucide:grid" class="size-8" />
+            全景概览
+          </h2>
+          <span class="text-muted-foreground text-sm font-medium px-3 py-1 rounded-full bg-muted">Welcome to my world</span>
+        </div>
+        
+        <BentoGrid className="auto-rows-[minmax(180px,auto)] gap-6">
+          
+          <!-- Education - Pastel Green/Emerald -->
+          <InfoCard 
+            client:visible
+            title="教育经历" 
+            subtitle="海南大学" 
+            content="网络空间安全学院 · 信息安全专业"
+            icon="🎓"
+            span="md:col-span-2"
+            gradient="bg-gradient-to-br from-[#E0F7FA] to-[#B2DFDB] dark:from-emerald-900/30 dark:to-teal-900/30 border-emerald-100 dark:border-emerald-800"
+          />
+
+          <!-- Teams - Pastel Purple/Violet -->
+          <InfoCard 
+            client:visible
+            title="所属团队" 
+            subtitle="活跃社区" 
+            content="HnuSec / XMCVE / Fruit-Guardians"
+            icon="🛡️"
+            span="md:col-span-1"
+            gradient="bg-gradient-to-br from-[#F3E5F5] to-[#E1BEE7] dark:from-purple-900/30 dark:to-violet-900/30 border-purple-100 dark:border-purple-800"
+          />
+
+          <!-- Project - Pastel Orange/Peach -->
+           <a href="https://github.com/Fruit-Guardians/PureAutoCodeql" target="_blank" class="contents md:col-span-1 group">
+             <div class="h-full w-full md:col-span-1">
+               <ProjectCard
+                 client:visible
+                 title="PuraAutoCodeQL"
+                 description="自动化 CodeQL 分析工具"
+                 icon="🚀"
+                 color="from-[#FFE0B2] to-[#FFCC80] dark:from-orange-900/30 dark:to-amber-900/30 text-orange-900 dark:text-orange-100"
+                 span="h-full w-full"
+               />
+             </div>
+           </a>
+           
+           <!-- Research Focus - Pastel Blue -->
+           <BentoCard client:visible className="md:col-span-2 bg-gradient-to-br from-[#E3F2FD] to-[#BBDEFB] dark:from-blue-900/30 dark:to-cyan-900/30 border-blue-100 dark:border-blue-800">
+             <div class="flex flex-col h-full">
+               <div class="flex items-center gap-3 mb-4">
+                 <div class="p-2 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                   <span class="text-2xl">🔬</span>
+                 </div>
+                 <h3 class="text-xl font-bold text-gray-800 dark:text-white">研究方向</h3>
+               </div>
+               <div class="flex flex-wrap gap-2">
+                 {['Web 安全', 'AI 安全应用', '网络攻防', '漏洞挖掘'].map(tag => (
+                   <span class="px-4 py-1.5 rounded-full bg-white/60 dark:bg-white/10 border border-white/20 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm">
+                     {tag}
+                   </span>
+                 ))}
+               </div>
+               <p class="mt-6 text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed">
+                 致力于探索 Web 安全与 AI 技术的交叉领域，以及前沿网络攻防技术的研究。
+               </p>
+             </div>
+           </BentoCard>
+
+           <!-- Bio / Motto - Modern Dark -->
+           <BentoCard client:visible className="md:col-span-2 flex items-center justify-center bg-[#263238] text-white min-h-[180px] relative overflow-hidden group">
+              <!-- Decorative elements -->
+              <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:bg-white/10 transition-colors duration-500"></div>
+              <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-xl group-hover:bg-white/10 transition-colors duration-500"></div>
+              
+              <div class="flex flex-col items-center text-center p-6 relative z-10">
+                <Icon name="lucide:quote" class="size-8 text-white/20 mb-4" />
+                <p class="text-2xl md:text-3xl font-serif italic tracking-wide text-white/90">
+                  "一起见证星辰大海"
+                </p>
+              </div>
+           </BentoCard>
+
+        </BentoGrid>
+      </AnimatedElement>
     </section>
 
-    <!-- 专业简介 -->
-    <section class="space-y-6">
-      <h2 class="font-custom text-foreground text-3xl font-bold flex items-center gap-3">
-        <Icon name="lucide:user-circle" class="size-8" />
-        专业简介
-      </h2>
-      <div class="bg-muted/30 rounded-lg p-6 border border-border">
-        <p class="text-foreground text-lg leading-relaxed">
-          专注于网络安全领域的研究与实践，具备扎实的信息安全理论基础和丰富的实战经验。
-          作为 HnuSec 战队成员，积极参与各类安全竞赛和技术研究，持续提升专业技能。
-        </p>
-      </div>
-    </section>
-
-    <!-- 研究方向 -->
-    <section class="space-y-6">
-      <h2 class="font-custom text-foreground text-3xl font-bold flex items-center gap-3">
-        <Icon name="lucide:target" class="size-8" />
-        研究方向
-      </h2>
-      <div class="grid gap-4 sm:grid-cols-2">
-        <div class="bg-muted/30 rounded-lg p-5 border border-border hover:border-primary transition-colors">
-          <div class="flex items-start gap-3">
-            <Icon name="lucide:globe" class="size-6 text-primary mt-1" />
-            <div>
-              <h3 class="text-foreground font-semibold text-lg mb-2">Web 安全</h3>
-              <p class="text-muted-foreground text-sm">Web 应用漏洞挖掘、代码审计、安全加固</p>
-            </div>
-          </div>
-        </div>
-        <div class="bg-muted/30 rounded-lg p-5 border border-border hover:border-primary transition-colors">
-          <div class="flex items-start gap-3">
-            <Icon name="lucide:network" class="size-6 text-primary mt-1" />
-            <div>
-              <h3 class="text-foreground font-semibold text-lg mb-2">网络安全</h3>
-              <p class="text-muted-foreground text-sm">网络协议分析、流量分析、入侵检测</p>
-            </div>
-          </div>
-        </div>
-        <div class="bg-muted/30 rounded-lg p-5 border border-border hover:border-primary transition-colors">
-          <div class="flex items-start gap-3">
-            <Icon name="lucide:search" class="size-6 text-primary mt-1" />
-            <div>
-              <h3 class="text-foreground font-semibold text-lg mb-2">渗透测试</h3>
-              <p class="text-muted-foreground text-sm">渗透测试方法论、攻防演练、红队技术</p>
-            </div>
-          </div>
-        </div>
-        <div class="bg-muted/30 rounded-lg p-5 border border-border hover:border-primary transition-colors">
-          <div class="flex items-start gap-3">
-            <Icon name="lucide:bug" class="size-6 text-primary mt-1" />
-            <div>
-              <h3 class="text-foreground font-semibold text-lg mb-2">漏洞分析</h3>
-              <p class="text-muted-foreground text-sm">漏洞原理研究、PoC 编写、安全情报分析</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- 联系方式 -->
-    <section class="space-y-6">
-      <h2 class="font-custom text-foreground text-3xl font-bold flex items-center gap-3">
-        <Icon name="lucide:mail" class="size-8" />
-        联系方式
-      </h2>
-      <p class="text-muted-foreground text-lg">
-        欢迎交流技术问题、合作机会或安全研究话题
-      </p>
-      <div class="bg-muted/30 rounded-lg p-6 border border-border">
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div class="flex items-center gap-3">
-            <Icon name="lucide:message-circle" class="size-5 text-primary" />
-            <div>
-              <p class="text-sm text-muted-foreground">微信</p>
-              <p class="text-foreground font-medium">bx33661</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <Icon name="lucide:message-square" class="size-5 text-primary" />
-            <div>
-              <p class="text-sm text-muted-foreground">QQ</p>
-              <p class="text-foreground font-medium">1811753380</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-wrap gap-4 mt-6">
-        {
-          SOCIAL_LINKS.slice(0, -1).map((link) => (
-            <Link
-              href={link.href}
-              class={buttonVariants({ variant: 'outline' }) + ' flex items-center gap-2'}
-              aria-label={`联系我通过 ${link.label}`}
-            >
-              <Icon name="lucide:external-link" class="size-4" />
-              {link.label}
-            </Link>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- 返回首页 -->
-    <div class="flex justify-center pt-8">
-      <Link
-        href="/"
-        class={buttonVariants({ variant: 'default' }) + ' group'}
-      >
-        <Icon name="lucide:home" class="mr-2 size-4" />
+    <!-- Footer Links -->
+    <div class="flex justify-center pt-12 pb-8">
+      <Link href="/" class={buttonVariants({ variant: 'ghost' }) + ' group text-muted-foreground hover:text-foreground transition-colors'}>
+        <Icon name="lucide:arrow-left" class="mr-2 size-4 transition-transform group-hover:-translate-x-1" />
         返回首页
-        <span class="ml-2 transition-transform group-hover:translate-x-1">&rarr;</span>
       </Link>
     </div>
+
   </div>
 </Layout>
