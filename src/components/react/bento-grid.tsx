@@ -132,6 +132,7 @@ interface InfoCardProps {
   content?: string;
   gradient?: string;
   icon?: string;
+  image?: string;
   span?: string;
 }
 
@@ -141,18 +142,23 @@ export const InfoCard: React.FC<InfoCardProps> = ({
   content,
   gradient = 'bg-gradient-to-br from-pink-100 to-orange-100 dark:from-pink-900/30 dark:to-orange-900/30',
   icon,
+  image,
   span = 'md:col-span-1'
 }) => {
   return (
     <BentoCard className={`${span} ${gradient}`}>
       <div className="flex flex-col h-full justify-between">
-        {icon && (
+        {image ? (
+          <div className="mb-3 w-full h-28 overflow-hidden rounded-xl bg-white/30 dark:bg-black/20">
+            <img src={image} alt={title} className="w-full h-full object-cover" />
+          </div>
+        ) : icon ? (
           <div className="mb-3">
             <div className="w-8 h-8 rounded-lg bg-white/50 dark:bg-black/30 flex items-center justify-center">
               <span className="text-xl">{icon}</span>
             </div>
           </div>
-        )}
+        ) : null}
         <div>
           <h3 className="text-lg font-bold mb-1 text-gray-900 dark:text-white">
             {title}

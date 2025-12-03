@@ -9,10 +9,7 @@ export const NAV_LINKS: SocialLink[] = [
     href: '/about/',
     label: '关于我',
   },
-  {
-    href: '/projects/',
-    label: '项目',
-  },
+
   {
     href: '/blog/',
     label: '博客',
@@ -30,7 +27,7 @@ export const NAV_LINKS: SocialLink[] = [
     label: '相册',
   },
   {
-    href: '/friends',
+    href: '/friends/',
     label: '友链',
   },
 ]

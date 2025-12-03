@@ -1,5 +1,5 @@
 ---
-name: 'Fruit-Guardians | 现代化VitePress文档模板'
+name: 'Astro-Blog'
 description: '一个现代化、美观的VitePress文档模板，专为开发者打造。提供最佳的用户体验和开发体验。'
 tags: ['vue', 'vitepress', 'web', 'bx']
 image: '../../../public/static/vitepress.png'
