@@ -37,14 +37,14 @@ const currentUrl = Astro.url;
       <AnimatedElement client:load animation="scaleIn" delay={0.2}>
         <div class="relative overflow-hidden rounded-xl shadow-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
           <Logo
-            className="h-auto w-24 object-cover transition-transform duration-300 hover:scale-105 sm:w-32 md:w-40 lg:w-48"
+            className="hero-avatar h-auto w-20 object-cover transition-transform duration-300 hover:scale-105 sm:w-32 md:w-40 lg:w-48"
           />
         </div>
       </AnimatedElement>
       <AnimatedElement client:load animation="slideRight" delay={0.4}>
         <div class="mt-4 sm:mt-0 sm:max-w-xl">
         <h1
-          class="font-custom text-foreground text-center text-3xl font-extrabold sm:text-start sm:text-5xl"
+          class="hero-title font-custom text-foreground text-center text-3xl font-extrabold sm:text-start sm:text-5xl"
         >
           {SITE.title}
         </h1>
@@ -75,7 +75,7 @@ const currentUrl = Astro.url;
             </svg>
           </span>
         </div>
-        <p class="text-sm text-foreground mt-4 text-center font-sans whitespace-pre-line leading-relaxed sm:text-base sm:text-start" title="description" aria-label="description">
+        <p class="hero-desc text-sm text-foreground mt-4 text-center font-sans whitespace-pre-line leading-relaxed sm:text-base sm:text-start" title="description" aria-label="description">
           {SITE.description}
         </p>
         </div>

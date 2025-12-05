@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef, type TouchEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from './link'
 import ThemeToggle from './theme-toggle'
@@ -16,6 +16,7 @@ const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activePath, setActivePath] = useState("/")
+  const touchStartY = useRef<number | null>(null)
   
   useEffect(() => {
     setActivePath(window.location.pathname)
@@ -78,6 +79,18 @@ const Navbar = () => {
     }
   }, [mobileMenuOpen])
 
+  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    touchStartY.current = event.touches[0]?.clientY ?? null
+  }
+
+  const handleTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    const endY = event.changedTouches[0]?.clientY ?? 0
+    if (touchStartY.current !== null && endY - touchStartY.current > 60) {
+      setMobileMenuOpen(false)
+    }
+    touchStartY.current = null
+  }
+
   const sizeVariants = useMemo(() => ({
     0: { width: '100%' },
     1: { width: '98%' },
@@ -99,22 +112,18 @@ const Navbar = () => {
           layout: { duration: 0.3, ease: "easeInOut" }
         }}
         className={cn(
-          'fixed left-1/2 z-30 -translate-x-1/2 transform backdrop-blur-lg',
-          'bg-background/90 border-0',
-          'rounded-none shadow-none transition-all duration-400 ease-in-out',
-          'border border-transparent w-full',
-          isScrolled && !isMobile && 'rounded-full',
-          isScrolled && !isMobile && 'backdrop-blur-md',
-          isScrolled && !isMobile && 'border-foreground/10',
-          isScrolled && !isMobile && 'border',
-          isScrolled && !isMobile && 'bg-background/80',
-          isScrolled && !isMobile && 'max-w-[calc(100vw-5rem)]',
-          !isMobile && 'top-2 lg:top-4 xl:top-6',
-          isMobile && 'top-0',
-          isMobile && 'rounded-none',
-          isMobile && 'border-0',
-          isMobile && 'shadow-none',
-          isMobile && 'border-0'
+          'z-30 transition-all duration-400 ease-in-out w-full',
+          !isMobile && [
+            'fixed left-1/2 -translate-x-1/2 transform',
+            'top-2 lg:top-4 xl:top-6',
+            'backdrop-blur-lg bg-background/90 border border-transparent',
+            isScrolled && 'rounded-full backdrop-blur-md border-foreground/10 border bg-background/80 max-w-[calc(100vw-5rem)]'
+          ],
+          isMobile && [
+            'sticky top-0 inset-x-0 translate-x-0 left-0',
+            'rounded-none border-0 border-b border-foreground/10',
+            'bg-background/92 shadow-sm backdrop-blur-md'
+          ]
         )}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2 md:gap-4 md:p-4">
@@ -202,14 +211,26 @@ const Navbar = () => {
       
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            key="mobile-menu"
-            initial="closed"
-            animate="open"
-            exit="closed"
-            className="fixed inset-0 z-20 flex flex-col items-center justify-start bg-background border-0 shadow-none"
-          >
-            <div className="flex flex-col items-center justify-start h-full pt-24 w-full p-6">
+          <>
+            <motion.div
+              key="mobile-menu-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mobile-menu-overlay fixed inset-0 z-10 bg-black/40 backdrop-blur-sm"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              key="mobile-menu"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+              className="mobile-menu-sheet fixed inset-0 z-20 flex flex-col items-center justify-start bg-background/95 border-0 shadow-none"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+            <div className="mobile-menu-panel flex flex-col items-center justify-start h-full w-full p-6 pb-8">
               <nav className="flex flex-col items-center justify-start gap-1 w-full">
                 {NAV_LINKS.map((item, i) => {
                   const isActive = activePath.startsWith(item.href) && item.href !== "/";
@@ -265,6 +286,13 @@ const Navbar = () => {
                 custom={NAV_LINKS.length + 1}
                 className="mt-auto flex flex-col items-center gap-6"
               >
+                <Button
+                  variant="ghost"
+                  className="w-full max-w-sm rounded-xl border text-base py-3"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  关闭菜单
+                </Button>
                 <div className="flex flex-wrap items-center justify-center gap-x-2 text-center">
                   <span className="text-muted-foreground text-sm" aria-label="copyright">
                     2020 - {new Date().getFullYear()} &copy; All rights reserved.
@@ -282,6 +310,7 @@ const Navbar = () => {
               </motion.div>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

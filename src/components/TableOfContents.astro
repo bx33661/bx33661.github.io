@@ -26,7 +26,7 @@ function cleanupHeading(text: string): string {
 
 <details
   open
-  class="group xl:sticky xl:top-26 xl:h-[calc(100vh-5rem)] xl:max-w-[300px] xl:rounded-none xl:border-none xl:p-0"
+  class="toc-card group xl:sticky xl:top-26 xl:h-[calc(100vh-5rem)] xl:max-w-[300px] xl:rounded-none xl:border-none xl:p-0"
 >
   <summary
     class="flex cursor-pointer items-center justify-between text-xl font-medium group-open:pb-4"
@@ -49,9 +49,9 @@ function cleanupHeading(text: string): string {
     </div>
   </summary>
 
-  <div class="flex max-h-64 flex-col overflow-y-auto xl:max-h-[calc(100vh-8rem)]">
+  <div class="toc-scroll flex max-h-64 flex-col overflow-y-auto xl:max-h-[calc(100vh-8rem)]">
     <ul
-      class="flex list-none flex-col gap-y-2 px-4 xl:mr-8"
+      class="toc-list flex list-none flex-col gap-y-2 px-4 xl:mr-8"
       id="table-of-contents"
     >
       {

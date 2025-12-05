@@ -1,8 +1,6 @@
 @import 'tailwindcss';
 @import './card-links.css';
-@import './mobile-optimization.css';
-@import './mobile-reading.css';
-@import './mobile-redesign.css'; /* 移动端UI完全重构 */
+@import './mobile-base.css'; /* 新移动端基线，独立于桌面样式 */
 
 /* 密码错误震动动画 */
 @keyframes shake {
