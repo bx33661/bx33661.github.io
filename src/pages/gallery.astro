@@ -74,7 +74,7 @@ const currentUrl = Astro.url;
 ---
 
 <Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="生活相册 - BX/bpple" />
+  <PageHead slot="head" title="生活相册 - BX/bpple" description="记录生活中的美好瞬间与旅途足迹。" canonicalURL={currentUrl} />
   
   <div class="flex flex-col gap-y-8 px-4 py-8 sm:px-8 lg:px-16">
     <Breadcrumbs items={[{ label: '相册', icon: 'lucide:image' }]} />
@@ -99,13 +99,13 @@ const currentUrl = Astro.url;
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-grid">
       {galleryImages.map((image, index) => (
         <ScrollReveal client:load direction="up" delay={index * 0.06} threshold={0.2}>
-          <div class="group relative overflow-hidden rounded-xl bg-secondary/20 hover:shadow-lg transition-all duration-300 ease-in-out hover:scale-[1.02]" data-index={index}>
+          <div class="group relative overflow-hidden rounded-xl bg-secondary/20 hover:shadow-lg transition-all duration-300 ease-in-out hover:scale-[1.02]" data-index={index} aria-label={`相册图片 ${image.title}`}>
             <!-- 图片容器 -->
             <div class="aspect-square relative overflow-hidden">
               <ImageZoom
-                client:idle
+                client:load
                 src={image.src}
-                alt={image.alt}
+                alt={image.alt || image.title || '生活相册图片'}
                 className="w-full h-full object-cover"
                 loading={index < 6 ? 'eager' : 'lazy'}
                 priority={index < 6}
@@ -151,14 +151,15 @@ const currentUrl = Astro.url;
     )}
 
     <!-- 加载更多按钮 (可选) -->
+    <!-- CTA 引导 -->
     <section class="text-center pt-8">
-      <button 
-        class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled
+      <Link 
+        href="/blog"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200"
       >
-        <Icon name="lucide:plus" class="w-4 h-4" />
-        加载更多
-      </button>
+        <Icon name="lucide:book-open" class="w-4 h-4" />
+        去看看我的博客
+      </Link>
     </section>
 
     <!-- 返回首页链接 -->

@@ -9,6 +9,15 @@
   20%, 40%, 60%, 80% { transform: translateX(8px); }
 }
 
+/* 代码内容可见性：确保浅色背景下的文字不被“隐形” */
+.expressive-code,
+.expressive-code pre,
+.expressive-code code,
+.prose pre,
+.prose code {
+  color: var(--foreground);
+}
+
 .animate-shake {
   animation: shake 0.5s ease-in-out;
 }

@@ -1,14 +1,15 @@
 ---
 import { SITE } from '@/consts'
 import Favicons from './Favicons.astro'
-import GoogleTagManager from './GoogleTagManager.astro'
-import GoogleAnalytics from './GoogleAnalytics.astro'
+import Analytics from './Analytics.astro'
+import { ENABLE_ANALYTICS, POSTHOG_HOST } from '@/config/env'
+
+const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.com') : null
 ---
 
 <head>
-  <!-- 分析工具 -->
-  <GoogleTagManager />
-  <GoogleAnalytics />
+  <!-- 分析工具（统一入口，受开关控制） -->
+  <Analytics />
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -33,9 +34,6 @@ import GoogleAnalytics from './GoogleAnalytics.astro'
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" 
     rel="stylesheet" 
   />
-  
-  <!-- 关键CSS预加载 -->
-  <link rel="preload" href="/src/styles/global.css" as="style" />
   
   <!-- DNS 预解析 - 减少连接延迟 -->
   <link rel="dns-prefetch" href="//res.cloudinary.com" />
@@ -82,7 +80,7 @@ import GoogleAnalytics from './GoogleAnalytics.astro'
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
   <meta 
     http-equiv="Content-Security-Policy" 
-    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com;" 
+    content={`default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com${posthogConnect ? ' ' + posthogConnect : ''};`} 
   />
 
   <!-- 关键文件链接 -->
@@ -98,7 +96,7 @@ import GoogleAnalytics from './GoogleAnalytics.astro'
   <!-- 性能优化脚本 -->
   <script is:inline>
     // 预加载重要页面
-    const criticalPages = ['/blog', '/projects', '/about'];
+    const criticalPages = ['/blog', '/about'];
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => {
         criticalPages.forEach(page => {

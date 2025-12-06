@@ -15,19 +15,23 @@ export interface Props {
 const { 
   title = SITE.title, 
   description = SITE.description,
-  image = new URL('/ogImage.png', Astro.site).toString(),
+  image,
   article = false,
   tags = [],
   publishedTime,
-  modifiedTime
+  modifiedTime,
+  canonicalURL
 } = Astro.props
 
-const canonicalUrl = Astro.url.toString()
+const fallbackImage = new URL('/ogImage.png', Astro.site).toString()
+const ogImage = image ? new URL(image, Astro.site).toString() : fallbackImage
+const canonicalUrl = canonicalURL ?? Astro.url.toString()
 const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
 ---
 
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
 
 <!-- 增强的SEO标签 -->
 <meta name="keywords" content={tags.length > 0 ? tags.join(', ') : "bx, 安全研究, 技术分享, 网络安全, 编程, 博客, CTF, Web安全, 应急响应"} />
@@ -48,7 +52,7 @@ const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
 <!-- 增强的Open Graph标签 -->
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={image} />
+<meta property="og:image" content={ogImage} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={title} />
@@ -64,11 +68,11 @@ const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
 <!-- Twitter Cards -->
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={image} />
+<meta name="twitter:image" content={ogImage} />
 <meta name="twitter:image:alt" content={title} />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:creator" content={`@${SITE.author}`} />
-<meta name="twitter:site" content={SITE.href} />
+<meta name="twitter:site" content={`@${SITE.author}`} />
 <meta name="twitter:domain" content={SITE.href} />
 
 <!-- 增强结构化数据 -->

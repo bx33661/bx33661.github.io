@@ -13,7 +13,6 @@ import Head from '@/components/Head.astro'
 import Navbar from '@/components/react/navbar'
 import { SITE } from '@/consts'
 import { cn } from '@/lib/utils'
-import Posthog from '@/components/Posthog.astro'
 
 const {
   isWide = false
@@ -150,7 +149,6 @@ const {
       })()
     </script>
     <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
-    <Posthog />
   </Head>
   <body>
 

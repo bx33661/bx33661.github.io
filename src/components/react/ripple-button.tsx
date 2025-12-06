@@ -151,15 +151,15 @@ export const RippleButton: React.FC<RippleButtonProps> = ({
         </AnimatePresence>
       </div>
 
-      {/* 悬停光效 */}
+      {/* 悬停光效 - 提高可见度 */}
       <motion.div
-        className="absolute inset-0 opacity-0 rounded-md"
+        className="absolute inset-0 opacity-0 rounded-md pointer-events-none mix-blend-screen"
         style={{
-          background: `linear-gradient(45deg, transparent 30%, ${rippleColor} 50%, transparent 70%)`,
+          background: `linear-gradient(135deg, transparent 20%, ${rippleColor} 50%, transparent 80%)`,
         }}
         whileHover={{
-          opacity: 0.1,
-          transition: { duration: 0.3 }
+          opacity: 0.18,
+          transition: { duration: 0.25, ease: 'easeOut' }
         }}
       />
     </motion.button>

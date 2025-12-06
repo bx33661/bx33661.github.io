@@ -398,6 +398,12 @@
 .expressive-code .code {
   font-weight: 400 !important;
   letter-spacing: 0.025em !important;
+  color: var(--foreground) !important;
+}
+
+/* 防御颜色丢失：所有 token 默认继承前景色 */
+.expressive-code .code span {
+  color: inherit !important;
 }
 
 /* 滚动条样式优化 */

@@ -103,6 +103,7 @@ export const ImageZoom = memo(function ImageZoom({
           'group relative cursor-zoom-in overflow-hidden rounded-lg',
           'transition-all duration-300 hover:shadow-lg',
           'focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2',
+          'touch-manipulation', // 避免移动端点击延迟
           className
         )}
         onClick={openModal}
@@ -204,7 +205,7 @@ export const ImageZoom = memo(function ImageZoom({
 
           {/* 大图容器 */}
           <div
-            className="relative max-w-[90vw] max-h-[90vh] overflow-hidden rounded-lg animate-in zoom-in-95 duration-200"
+            className="relative max-w-[90vw] max-h-[90vh] overflow-hidden rounded-lg animate-in zoom-in-95 duration-200 bg-black/60"
             onClick={(e) => e.stopPropagation()}
           >
             <img

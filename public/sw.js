@@ -7,7 +7,6 @@ const IMAGE_CACHE = 'bx-blog-images-v1.0.0'
 const STATIC_ASSETS = [
   '/',
   '/blog',
-  '/projects',
   '/about',
   '/offline',
   '/manifest.json',
