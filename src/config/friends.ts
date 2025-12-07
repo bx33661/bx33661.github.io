@@ -38,64 +38,49 @@ export const FRIEND_LINKS: FriendLink[] = [
     name: "Bx",
     url: "http://www.bx33661.com",
     description: "见证星辰大海",
-    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1811753380&s=640",
-    tags: ["Web"]
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1811753380&s=640"
   },
   {
     name: "iam0range",
     url: "https://iam0range.github.io/",
     description: "Stay confident",
-    avatar: "https://q1.qlogo.cn/g?b=qq&nk=3081999683&s=640",
-    tags: ["pwn"]
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=3081999683&s=640"
   },
   {
     name: "Ewoji",
     url: "https://ewoji.cn/",
     description: "下雨天留客天留我不留",
-    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=1060089371&spec=640&img_type=jpg",
-    tags: ["Web"]
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=1060089371&spec=640&img_type=jpg"
   },
   {
     name: "Unjoke",
     url: "https://unjoke.cn/",
     description: "等雨也等你",
-    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=2801238549&spec=640&img_type=jpg",
-    tags: ["Web"]
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=2801238549&spec=640&img_type=jpg"
   },
   {
     name: "Berial",
     url: "https://berial.cn",
     description: "Stay hungry and cross classes",
-    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1409080135&s=640",
-    tags: ["pwn"]
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1409080135&s=640"
   },
   {
     name: "orxiain.",
     url: "https://orxiain.life",
     description: "orororororor",
-    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1193087005&s=640",
-    tags: ["web"]
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1193087005&s=640"
   },
   {
     name: "Natro92",
     url: "https://natro92.fun",
     description: "Carpe diem.",
-    avatar: "https://berial123.oss-cn-beijing.aliyuncs.com/img/860dd94f08a30cf4a8b7fd9685aed42.webp",
-    tags: ["web"]
+    avatar: "https://berial123.oss-cn-beijing.aliyuncs.com/img/860dd94f08a30cf4a8b7fd9685aed42.webp"
   },
   {
     name: "m1n9",
     url: "https://mi1n9.github.io/",
     description: "苍山负雪，明烛天南",
-    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=2605742754&spec=640&img_type=jpg",
-    tags: ["Crypto"]
-  },
-  {
-    name: "CrazyCat",
-    url: "https://lh864042219.github.io/",
-    description: "原批",
-    avatar: "https://github.com/LH864042219/PWN-Obsidian/blob/main/picture/QQ.jpg?raw=true",
-    tags: ["pwn"]
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=2605742754&spec=640&img_type=jpg"
   }
   ,
   {

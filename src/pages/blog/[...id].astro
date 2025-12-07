@@ -118,15 +118,19 @@ const currentUrl = Astro.url;
           articleId={post.id}
           correctPassword={post.data.password!}
         >
-          <article class="prose px-4 md:px-6 lg:px-0 max-w-none sm:max-w-[95ch] xl:max-w-[800px] xl:mx-auto w-full">
-            <Content />
-          </article>
+          <div class="article-shell">
+            <article class="prose max-w-none sm:max-w-[95ch] xl:max-w-[820px] xl:mx-auto w-full">
+              <Content />
+            </article>
+          </div>
         </PasswordProtect>
       </div>
     ) : (
-      <article class="prose px-4 md:px-6 lg:px-0 sm:col-start-2 max-w-none sm:max-w-[95ch] xl:max-w-[800px] xl:mx-auto w-full">
-        <Content />
-      </article>
+      <div class="article-shell sm:col-start-2">
+        <article class="prose max-w-none sm:max-w-[95ch] xl:max-w-[820px] xl:mx-auto w-full">
+          <Content />
+        </article>
+      </div>
     )}
 
     <aside
@@ -423,3 +427,102 @@ const currentUrl = Astro.url;
     })
   </script>
 </Layout>
+
+<style>
+  .article-shell {
+    background: color-mix(in srgb, var(--color-card, #0b1220) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 85%, transparent);
+    border-radius: 18px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+    padding: 24px 24px;
+    backdrop-filter: blur(4px);
+  }
+
+  .article-shell .prose {
+    color: var(--foreground);
+  }
+
+  .article-shell .prose p {
+    line-height: 1.85;
+    font-size: 1.03rem;
+  }
+
+  .article-shell .prose h2,
+  .article-shell .prose h3,
+  .article-shell .prose h4 {
+    scroll-margin-top: 110px;
+    letter-spacing: -0.01em;
+  }
+
+  .article-shell .prose h2 { margin-top: 2.25rem; margin-bottom: 1rem; }
+  .article-shell .prose h3 { margin-top: 1.75rem; margin-bottom: 0.85rem; }
+
+  .article-shell .prose img {
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin: 1.5rem auto;
+  }
+
+  .article-shell .prose blockquote {
+    background: color-mix(in srgb, var(--color-muted, #f6f7fb) 70%, transparent);
+    border-left: 4px solid color-mix(in srgb, var(--color-primary, #7aa2f7) 65%, transparent);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+
+  .article-shell .prose pre {
+    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 90%, transparent);
+    border-radius: 14px;
+    padding: 14px 16px;
+    background: color-mix(in srgb, var(--color-muted, #0f172a) 65%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .article-shell .prose code:not(pre code) {
+    background: color-mix(in srgb, var(--color-muted, #e2e8f0) 70%, transparent);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 0.95em;
+  }
+
+  .article-shell .prose ul,
+  .article-shell .prose ol {
+    margin-left: 1.1rem;
+    padding-left: 0.3rem;
+    line-height: 1.8;
+  }
+
+  .article-shell .prose a {
+    color: var(--color-primary, #7aa2f7);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .article-shell .prose a:hover {
+    color: color-mix(in srgb, var(--color-primary, #7aa2f7) 80%, white 20%);
+  }
+
+  @media (min-width: 640px) {
+    .article-shell {
+      padding: 26px 28px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .article-shell {
+      padding: 30px 32px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .article-shell {
+      padding: 20px 20px;
+      border-radius: 14px;
+    }
+
+    .article-shell .prose p {
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+  }
+</style>

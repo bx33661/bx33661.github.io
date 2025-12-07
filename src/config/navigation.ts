@@ -23,10 +23,6 @@ export const NAV_LINKS: SocialLink[] = [
     label: '归档',
   },
   {
-    href: '/gallery',
-    label: '相册',
-  },
-  {
     href: '/friends/',
     label: '友链',
   },

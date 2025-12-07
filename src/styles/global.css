@@ -1757,3 +1757,78 @@ html {
     width: 50px;
   }
 }
+
+/* 统一暗色模式与性能优化的简化覆写 */
+:root {
+  --background: var(--background);
+  --foreground: var(--foreground);
+}
+
+.dark {
+  background: #1a1b26;
+  color: #c7cdea;
+  text-shadow: none;
+}
+
+.dark body {
+  background: #1a1b26;
+  text-shadow: none;
+}
+
+.dark::before,
+.dark::after {
+  display: none !important;
+}
+
+.dark a,
+.dark a:hover,
+.dark a::after,
+.dark a:hover::after {
+  text-shadow: none;
+  box-shadow: none;
+}
+
+.dark pre,
+.dark .enhanced-code-block {
+  background: #1f2335;
+  border: 1px solid #2f354c;
+  box-shadow: none;
+}
+
+.dark blockquote {
+  background: #1f2335;
+  border-left: 3px solid #7aa2f7;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.dark table {
+  background: #1f2335;
+  border-color: #2f354c;
+  box-shadow: none;
+}
+
+.dark th {
+  background: #252a3d;
+  color: #e2e8f0;
+  text-shadow: none;
+}
+
+.dark td {
+  color: #cbd5e1;
+}
+
+.dark .friend-link-card::before,
+.dark .bg-card::before,
+.dark .floating-action-button,
+.dark .loading-spinner {
+  animation: none !important;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dark * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -10,10 +10,15 @@ const { post } = Astro.props
 
 const title = post.data.title || SITE.title
 const description = post.data.description || SITE.description
-const postUrl = new URL(`/blog/${post.slug}/`, SITE.href).toString()
+const slug =
+  // Astro 5 content entries没有 slug 类型，手动推导
+  'slug' in post && typeof (post as any).slug === 'string'
+    ? (post as any).slug
+    : post.id.split('/').pop()?.replace(/\.(md|mdx)$/, '') ?? post.id
+const postUrl = new URL(`/blog/${slug}/`, SITE.href).toString()
 const fallbackImage = new URL('/ogImage.png', SITE.href).toString()
-const image = post?.data?.image
-  ? new URL(post.data.image, SITE.href).toString()
+const image = post?.data?.image?.src
+  ? new URL(post.data.image.src, SITE.href).toString()
   : new URL(`/image/${post.id}.png`, SITE.href).toString()
 const author = post.data.authors ? post.data.authors.join(', ') : SITE.author
 const fullTitle = `${title} - ${SITE.title}`
@@ -72,7 +77,7 @@ const fullTitle = `${title} - ${SITE.title}`
   "description": description,
   "image": {
     "@type": "ImageObject",
-    "url": image,
+    "url": image || fallbackImage,
     "width": 1200,
     "height": 630
   },
@@ -120,7 +125,7 @@ const fullTitle = `${title} - ${SITE.title}`
 <link rel="canonical" href={postUrl} />
 
 <!-- 预加载关键资源 -->
-<link rel="preload" href={image} as="image" />
+<link rel="preload" href={image || fallbackImage} as="image" />
 <link rel="prefetch" href="/blog" />
 {post?.data.tags && post.data.tags.map(tag => 
   <link rel="prefetch" href={`/tags/${tag}`} />

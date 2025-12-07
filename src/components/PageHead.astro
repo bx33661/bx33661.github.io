@@ -23,9 +23,9 @@ const {
   canonicalURL
 } = Astro.props
 
-const fallbackImage = new URL('/ogImage.png', Astro.site).toString()
-const ogImage = image ? new URL(image, Astro.site).toString() : fallbackImage
-const canonicalUrl = canonicalURL ?? Astro.url.toString()
+const fallbackImage = new URL('/logo.png', Astro.site).toString()
+const finalImage = image ? new URL(image, Astro.site).toString() : fallbackImage
+const canonicalUrl = canonicalURL ?? Astro.url?.toString() ?? SITE.href
 const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
 ---
 
@@ -44,18 +44,13 @@ const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
 <meta name="rating" content="general" />
 <meta name="copyright" content={`© ${new Date().getFullYear()} ${SITE.author}`} />
 
-<!-- 百度SEO优化 -->
-<meta name="baidu-site-verification" content="codeva-verify" />
-<meta name="360-site-verification" content="verify-code-here" />
-<meta name="sogou_site_verification" content="verify-code-here" />
-
 <!-- 增强的Open Graph标签 -->
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={ogImage} />
+<meta property="og:image" content={finalImage} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content={title} />
+<meta property="og:image:alt" content={fullTitle} />
 <meta property="og:type" content={article ? 'article' : 'website'} />
 <meta property="og:locale" content={SITE.locale} />
 <meta property="og:locale:alternate" content="en_US" />
@@ -68,8 +63,8 @@ const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
 <!-- Twitter Cards -->
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={ogImage} />
-<meta name="twitter:image:alt" content={title} />
+<meta name="twitter:image" content={finalImage} />
+<meta name="twitter:image:alt" content={fullTitle} />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:creator" content={`@${SITE.author}`} />
 <meta name="twitter:site" content={`@${SITE.author}`} />
@@ -141,7 +136,7 @@ const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
       },
       "primaryImageOfPage": {
         "@type": "ImageObject",
-        "url": image,
+        "url": finalImage,
         "width": 1200,
         "height": 630
       },
@@ -162,9 +157,6 @@ const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
   ]
 }
 </script>
-
-<!-- Canonical URL -->
-<link rel="canonical" href={canonicalUrl} />
 
 <!-- 预连接重要资源 -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
