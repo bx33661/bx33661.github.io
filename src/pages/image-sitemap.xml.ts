@@ -56,7 +56,7 @@ export async function GET(context: APIContext) {
           caption: SITE.description
         },
         {
-          loc: `${baseUrl}/logo.png`,
+          loc: `${baseUrl}/logo.ico`,
           title: `${SITE.title} Logo`,
           caption: `${SITE.title}网站标志`
         }

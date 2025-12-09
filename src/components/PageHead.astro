@@ -23,7 +23,7 @@ const {
   canonicalURL
 } = Astro.props
 
-const fallbackImage = new URL('/logo.png', Astro.site).toString()
+const fallbackImage = new URL('/logo.ico', Astro.site).toString()
 const finalImage = image ? new URL(image, Astro.site).toString() : fallbackImage
 const canonicalUrl = canonicalURL ?? Astro.url?.toString() ?? SITE.href
 const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`

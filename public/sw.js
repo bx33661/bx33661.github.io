@@ -1,7 +1,7 @@
-const CACHE_NAME = 'bx-blog-v1.0.0'
-const STATIC_CACHE = 'bx-blog-static-v1.0.0'
-const DYNAMIC_CACHE = 'bx-blog-dynamic-v1.0.0'
-const IMAGE_CACHE = 'bx-blog-images-v1.0.0'
+const CACHE_NAME = 'bx-blog-v1.0.1'
+const STATIC_CACHE = 'bx-blog-static-v1.0.1'
+const DYNAMIC_CACHE = 'bx-blog-dynamic-v1.0.1'
+const IMAGE_CACHE = 'bx-blog-images-v1.0.1'
 
 // 需要缓存的静态资源
 const STATIC_ASSETS = [
@@ -15,7 +15,7 @@ const STATIC_ASSETS = [
   '/fonts/GeistVF.woff2',
   '/fonts/GeistMonoVF.woff2',
   '/favicon.ico',
-  '/logo.png',
+  '/logo.ico',
   '/ogImage.png'
 ]
 
