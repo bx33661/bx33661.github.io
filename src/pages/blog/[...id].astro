@@ -46,6 +46,8 @@ const structuredData = {
   description: post.data.description || '',
 }
 const currentUrl = Astro.url;
+const shareUrl = Astro.site + 'blog/' + currentSlug
+const avatarUrl = '/logo.png'
 ---
 
 <Layout canonicalUrl={currentUrl} isWide={true}>
@@ -134,223 +136,131 @@ const currentUrl = Astro.url;
     )}
 
     <aside
-      class="hidden xl:block group xl:col-start-3 xl:rounded-none xl:border-none xl:p-0 xl:sticky xl:top-26 xl:h-[calc(100vh-5rem)] xl:min-w-[300px] xl:max-w-[300px]"
+      class="hidden xl:block xl:col-start-3 xl:sticky xl:top-26 xl:h-[calc(100vh-5rem)] xl:min-w-[280px] xl:max-w-[300px]"
     >
-      <hr class="mb-8 hidden md:block" />
-      <div class="mb-2">
-        <h2
-          id="skills-title"
-          class="font-custom text-2xl font-bold text-neutral-900 dark:text-white"
-        >
-          Share this post
-        </h2>
-        <p class="text-sm text-neutral-500 dark:text-neutral-400 break-words">
-          If you found this post helpful, consider sharing it with your friends
-          or on social media. Your support helps me create more content like
-          this.
-        </p>
-      </div>
-
-      <div class="flex flex-wrap gap-2">
-        <Link
-          href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Share on Facebook"
-          aria-label="Share on Facebook"
-        >
-          <Button variant="outline" size="icon">
-            <Icon name="line-md:facebook" class="size-4" />
-          </Button>
-        </Link>
-        <Link
-          href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Share on Twitter"
-          aria-label="Share on Twitter"
-        >
-          <Button variant="outline" size="icon">
-            <Icon name="line-md:twitter" class="size-4" />
-          </Button>
-        </Link>
-        <Link
-          href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Share on LinkedIn"
-          aria-label="Share on LinkedIn"
-        >
-          <Button variant="outline" size="icon">
-            <Icon name="line-md:linkedin" class="size-4" />
-          </Button>
-        </Link>
-        <Link
-          href={`https://www.reddit.com/submit?url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Share on Reddit"
-          aria-label="Share on Reddit"
-        >
-          <Button variant="outline" size="icon">
-            <Icon name="line-md:reddit-loop" class="size-4" />
-          </Button>
-        </Link>
-        <Link
-          href={`https://wa.me/?text=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Share on WhatsApp"
-          aria-label="Share on WhatsApp"
-        >
-          <Button variant="outline" size="icon">
-            <Icon name="mdi:whatsapp" class="size-4" />
-          </Button>
-        </Link>
-        <Link
-          href={`https://t.me/share/url?url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Share on Telegram"
-          aria-label="Share on Telegram"
-        >
-          <Button variant="outline" size="icon">
-            <Icon name="line-md:telegram" class="size-4" />
-          </Button>
-        </Link>
-        <Link
-          href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(Astro.site + 'blog/' + currentSlug)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Share on Pinterest"
-          aria-label="Share on Pinterest"
-        >
-          <Button variant="outline" size="icon">
-            <Icon name="mdi:pinterest" class="size-4" />
-          </Button>
-        </Link>
-      </div>
-
-      <hr class="my-8 hidden md:block" />
-      
-      <!-- 文章统计信息 -->
-      <div class="mb-6">
-        <h2 class="font-custom text-xl font-bold text-neutral-900 dark:text-white mb-3">
-          <Icon name="lucide:bar-chart-3" class="size-5 inline mr-2" />
-          文章统计
-        </h2>
-        <div class="space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
-          <div class="flex justify-between">
-            <span>发布时间:</span>
-            <span>{formatDate(post.data.date)}</span>
+      <div class="space-y-6 bg-neutral-50/60 dark:bg-neutral-900/40 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 shadow-sm">
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-neutral-500">分享</span>
+            <div class="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
           </div>
-          <div class="flex justify-between">
-            <span>阅读时间:</span>
-            <span>{readingTime(post.body!)}</span>
-          </div>
-          <div class="flex justify-between">
-            <span>字数统计:</span>
-            <span>{post.body?.length || 0} 字</span>
-          </div>
-          <div class="flex justify-between">
-            <span>标签数量:</span>
-            <span>{post.data.tags?.length || 0} 个</span>
+          <div class="flex flex-wrap gap-2">
+            <Button variant="secondary" size="sm" id="copy-share-link" className="flex-1 justify-center">
+              <Icon name="lucide:copy" class="size-4 mr-1" />
+              复制链接
+            </Button>
+            <Link
+              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Share on X"
+              aria-label="Share on X"
+              class="flex-1"
+            >
+              <Button variant="outline" size="sm" className="w-full justify-center">
+                <Icon name="line-md:twitter" class="size-4 mr-1" />
+                X
+              </Button>
+            </Link>
           </div>
         </div>
-      </div>
 
-      <hr class="my-8 hidden md:block" />
-      
-      <!-- 作者信息 -->
-      <div class="mb-6">
-        <h2 class="font-custom text-xl font-bold text-neutral-900 dark:text-white mb-3">
-          <Icon name="lucide:user" class="size-5 inline mr-2" />
-          About the author
-        </h2>
-        <div class="flex items-center space-x-3 mb-3">
-          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-            {(post.data.authors?.[0] || 'A').charAt(0).toUpperCase()}
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-neutral-500">文章信息</span>
+            <div class="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
           </div>
-          <div>
-            <div class="font-medium text-neutral-900 dark:text-white">
-              {post.data.authors?.[0] || 'Anonymous'}
+          <div class="space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
+            <div class="flex justify-between">
+              <span>发布时间</span>
+              <span>{formatDate(post.data.date)}</span>
             </div>
-            <div class="text-sm text-neutral-500 dark:text-neutral-400">
-              在校学生 & 学习者
+            <div class="flex justify-between">
+              <span>阅读时间</span>
+              <span>{readingTime(post.body!)}</span>
+            </div>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="flex items-center gap-2">
+                <span>标签</span>
+                <div class="flex flex-wrap gap-1">
+                  {post.data.tags.slice(0, 3).map((tag) => (
+                    <span class="text-xs px-2 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-neutral-500">作者</span>
+            <div class="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+          </div>
+          <div class="flex items-center gap-3">
+            <img
+              src={avatarUrl}
+              alt={post.data.authors?.[0] || 'bx'}
+              class="w-10 h-10 rounded-full border border-neutral-200 dark:border-neutral-700 object-cover bg-white"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="space-y-1">
+              <div class="font-medium text-neutral-900 dark:text-white">{post.data.authors?.[0] || 'bx'}</div>
+              <div class="text-xs text-neutral-500 dark:text-neutral-400">安全 / 开发 / 记录</div>
             </div>
           </div>
+          <div class="flex gap-3 text-neutral-500 dark:text-neutral-400">
+            <Link href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-900 dark:hover:text-white transition-colors">
+              <Icon name="line-md:github" class="size-5" />
+            </Link>
+            <Link href="mailto:bx@gmail.com" class="hover:text-neutral-900 dark:hover:text-white transition-colors">
+              <Icon name="lucide:mail" class="size-5" />
+            </Link>
+          </div>
         </div>
-        <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
-          专注于网络安全、WEB技术和开发实践。分享实用的技术经验和安全知识。
-        </p>
-        <div class="flex space-x-2">
-          <Link href="https://github.com/bx" target="_blank" rel="noopener noreferrer" class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
-            <Icon name="line-md:github" class="size-5" />
-          </Link>
-          <Link href="https://twitter.com/bx" target="_blank" rel="noopener noreferrer" class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
-            <Icon name="line-md:twitter" class="size-5" />
-          </Link>
-          <Link href="mailto:bx@gmail.com" class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
-            <Icon name="lucide:mail" class="size-5" />
-          </Link>
-        </div>
-      </div>
 
-      <hr class="my-8 hidden md:block" />
-      
-      <!-- 相关文章 -->
-      {relatedPosts && relatedPosts.length > 0 && (
-        <div class="mb-6">
-          <h2 class="font-custom text-xl font-bold text-neutral-900 dark:text-white mb-3">
-            <Icon name="lucide:book-open" class="size-5 inline mr-2" />
-            Related Posts
-          </h2>
+        {relatedPosts && relatedPosts.length > 0 && (
           <div class="space-y-3">
-            {relatedPosts.slice(0, 3).map((relatedPost) => (
-              <Link
-                href={`/blog/${relatedPost.id}`}
-                class="block p-3 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors group"
-              >
-                <div class="font-medium text-neutral-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
-                  {relatedPost.data.title}
-                </div>
-                <div class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-                  {formatDate(relatedPost.data.date)}
-                </div>
-                {relatedPost.data.tags && relatedPost.data.tags.length > 0 && (
-                  <div class="flex flex-wrap gap-1 mt-2">
-                    {relatedPost.data.tags.slice(0, 2).map((tag) => (
-                      <span class="text-xs px-2 py-1 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded">
-                        {tag}
-                      </span>
-                    ))}
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-neutral-500">相关文章</span>
+              <div class="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+            </div>
+            <div class="space-y-3">
+              {relatedPosts.slice(0, 3).map((relatedPost) => (
+                <Link
+                  href={`/blog/${relatedPost.id}`}
+                  class="block p-3 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-primary/50 transition-colors"
+                >
+                  <div class="font-medium text-neutral-900 dark:text-white line-clamp-2">
+                    {relatedPost.data.title}
                   </div>
-                )}
-              </Link>
-            ))}
+                  <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                    {formatDate(relatedPost.data.date)}
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <hr class="my-8 hidden md:block" />
-      
-      <div class="mb-2 mt-4">
-        <h2
-          id="skills-title"
-          class="font-custom text-2xl font-bold text-neutral-900 dark:text-white"
-        >
-          Enjoyed this blog?
-        </h2>
-        <div class="text-sm text-neutral-500 dark:text-neutral-400 flex items-center flex-wrap break-words">
-          Give it a star&nbsp;
-          <Icon name="line-md:star" class="size-4 text-yellow-500" />&nbsp;on&nbsp;
-          <Link href="https://github.com/bx33661/bx33661" target="_blank" rel="noopener noreferrer" class="text-primary underline flex items-center flex-wrap gap-2">
-            GitHub
+        <div class="rounded-lg bg-white/50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 p-3">
+          <div class="text-sm text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+            <Icon name="line-md:star" class="size-4 text-yellow-500" />
+            如果觉得有帮助，欢迎 GitHub 点星支持
+          </div>
+          <Link
+            href="https://github.com/bx33661/bx33661"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-2 inline-flex items-center gap-2 text-primary hover:underline text-sm"
+          >
             <Icon name="line-md:github" class="size-4" />
+            GitHub Repo
           </Link>
-          to support this project and help it grow. Your support means the world!
         </div>
-        
       </div>
     </aside>
 
