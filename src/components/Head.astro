@@ -8,6 +8,9 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
 ---
 
 <head>
+  <!-- Slot 内容优先（包括 title、meta 等 SEO 标签） -->
+  <slot name="head" />
+  
   <!-- 分析工具（统一入口，受开关控制） -->
   <Analytics />
 
@@ -22,6 +25,9 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
   <meta name="googlebot" content="index, follow" />
   <meta name="google" content="notranslate" />
   <meta name="revisit-after" content="1 days" />
+  
+  <!-- 默认标题（如果 slot 中没有提供标题，则使用此默认值） -->
+  <title>{SITE.title}</title>
 
   <!-- Core Web Vitals 优化 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
@@ -129,6 +135,4 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
   </script>
 
   <Favicons />
-
-  <slot />
 </head>
