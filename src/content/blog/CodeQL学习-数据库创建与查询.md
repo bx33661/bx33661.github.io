@@ -1,7 +1,7 @@
 ---
 title: "CodeQL第一弹-数据库创建与查询"
 description: "CodeQL静态污点分析、数据库创建（Python/C++）和查询执行完整实践指南，包含AI4CodeQL项目经验总结。"
-date: 2025-01-12
+date: "2025-12-11"
 tags:
   - "CodeQL"
   - "静态分析"
@@ -11,8 +11,8 @@ authors:
   - "bx"
 draft: false
 slug: "codeql-learning"
-cover: "/blog/codeql-learning/bfbf4068-05f1-40be-9d56-f6285a366cf2.png"
 ---
+
 
 前段时间我们团队搞了一个AI4CodeQL的智能漏洞挖掘项目，这里总结几篇关于CodeQL的文章
 
