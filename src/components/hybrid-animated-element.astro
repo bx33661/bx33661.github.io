@@ -1,0 +1,88 @@
+---
+interface Props {
+  children: React.ReactNode;
+  animation?: 'fadeIn' | 'slideUp' | 'slideDown' | 'slideLeft' | 'slideRight' | 'scaleIn' | 'rotateIn' | 'bounceIn';
+  delay?: number;
+  duration?: number;
+  threshold?: number;
+  once?: boolean;
+  stagger?: boolean;
+  staggerDelay?: number;
+  className?: string;
+}
+
+const {
+  children,
+  animation = 'fadeIn',
+  delay = 0,
+  duration = 0.6,
+  threshold = 0.1,
+  once = true,
+  stagger = false,
+  staggerDelay = 0.1,
+  className = ''
+} = Astro.props;
+
+// 使用 CSS-only 动画，静态预渲染，无需客户端水合
+const getAnimationStyles = () => {
+  const baseStyles = `
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-duration: ${duration}s;
+    animation-timing-function: ease-out;
+    animation-delay: ${delay}s;
+  `;
+
+  switch (animation) {
+    case 'fadeIn':
+      return `${baseStyles} animation-name: fadeIn;`;
+    case 'slideUp':
+      return `${baseStyles} animation-name: slideUp; transform: translateY(50px);`;
+    case 'slideDown':
+      return `${baseStyles} animation-name: slideDown; transform: translateY(-50px);`;
+    case 'slideLeft':
+      return `${baseStyles} animation-name: slideLeft; transform: translateX(50px);`;
+    case 'slideRight':
+      return `${baseStyles} animation-name: slideRight; transform: translateX(-50px);`;
+    case 'scaleIn':
+      return `${baseStyles} animation-name: scaleIn; transform: scale(0.8);`;
+    case 'rotateIn':
+      return `${baseStyles} animation-name: rotateIn; transform: rotate(-10deg) scale(0.9);`;
+    case 'bounceIn':
+      return `${baseStyles} animation-name: bounceIn; transform: scale(0.3);`;
+    default:
+      return `${baseStyles} animation-name: fadeIn;`;
+  }
+};
+---
+
+<div class={className} style={getAnimationStyles()}>
+  {children}
+</div>
+
+<style>
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+  @keyframes slideUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideDown {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideLeft {
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideRight {
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes scaleIn {
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes rotateIn {
+    to { opacity: 1; transform: rotate(0) scale(1); }
+  }
+  @keyframes bounceIn {
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
