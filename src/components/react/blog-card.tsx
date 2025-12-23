@@ -1,4 +1,4 @@
-import { useState, memo } from 'react'
+﻿import { useState, memo } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Hash, Calendar, Clock, Eye } from 'lucide-react'
 import type { CollectionEntry } from 'astro:content'
@@ -15,10 +15,10 @@ interface BlogCardProps {
 const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCardProps) => {
   const [isHovered, setIsHovered] = useState(false)
 
-  // 估算阅读时间（基于字数）
+  // 浼扮畻闃呰鏃堕棿锛堝熀浜庡瓧鏁帮級
   const estimatedReadTime = Math.ceil((entry.body?.length || 0) / 1000 * 2) || 3
 
-  // 格式化日期
+  // 鏍煎紡鍖栨棩鏈?
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('zh-CN', {
       year: 'numeric',
@@ -49,7 +49,7 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
         "dark:hover:animate-pulse"
       )}
     >
-      {/* 背景渐变效果 */}
+      {/* 鑳屾櫙娓愬彉鏁堟灉 */}
       <div className={cn(
         "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300",
         "bg-gradient-to-br from-primary/5 to-transparent",
@@ -60,28 +60,28 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
         <a
           href={`/blog/${slug}`}
           className="flex flex-col gap-4"
-          aria-label={`阅读文章: ${entry.data.title}`}
+          aria-label={`闃呰鏂囩珷: ${entry.data.title}`}
         >
-          {/* 文章元信息 */}
+          {/* 鏂囩珷鍏冧俊鎭?*/}
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
-              <time dateTime={entry.data.date.toISOString()}>
+              <time dateTime={new Date(entry.data.date as any).toISOString()}>
                 {formatDate(entry.data.date)}
               </time>
             </div>
             <div className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              <span>{estimatedReadTime} 分钟读完</span>
+              <span>{estimatedReadTime} 鍒嗛挓璇诲畬</span>
             </div>
             {(entry.data as any).featured && (
               <Badge variant="default" className="text-xs px-2 py-0.5">
-                精选
+                绮鹃€?
               </Badge>
             )}
           </div>
 
-          {/* 文章标题 */}
+          {/* 鏂囩珷鏍囬 */}
           <div className="space-y-2">
             <h3 className={cn(
               "font-semibold leading-tight transition-colors duration-200",
@@ -93,15 +93,15 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
               {entry.data.title}
             </h3>
             
-            {/* 文章描述 */}
+            {/* 鏂囩珷鎻忚堪 */}
             <p className="text-muted-foreground text-sm sm:text-base leading-relaxed line-clamp-2 dark:text-muted-foreground/90 dark:group-hover:text-accent-foreground/80">
               {entry.data.description}
             </p>
           </div>
 
-          {/* 标签和互动元素 */}
+          {/* 鏍囩鍜屼簰鍔ㄥ厓绱?*/}
           <div className="flex items-center justify-between">
-            {/* 标签 */}
+            {/* 鏍囩 */}
             {entry.data.tags && (
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {entry.data.tags.slice(0, 3).map((tag, tagIndex) => (
@@ -139,18 +139,18 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
               </div>
             )}
 
-            {/* 阅读指示器 */}
+            {/* 闃呰鎸囩ず鍣?*/}
             <motion.div
               className="flex items-center gap-1 text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               animate={isHovered ? { x: 0 } : { x: 10 }}
               transition={{ duration: 0.2 }}
             >
               <Eye className="w-3 h-3" />
-              <span>阅读更多</span>
+              <span>闃呰鏇村</span>
             </motion.div>
           </div>
 
-          {/* 悬停时的动画效果 */}
+          {/* 鎮仠鏃剁殑鍔ㄧ敾鏁堟灉 */}
           <motion.div
             className={cn(
               "absolute bottom-0 left-0 h-0.5",
@@ -163,7 +163,7 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
         </a>
       </article>
 
-      {/* 特色文章标记 */}
+      {/* 鐗硅壊鏂囩珷鏍囪 */}
       {(entry.data as any).featured && (
         <div className="absolute top-3 right-3">
           <motion.div
@@ -181,3 +181,4 @@ const BlogCardJSX = memo(({ entry, slug, index = 0, priority = false }: BlogCard
 BlogCardJSX.displayName = 'BlogCard'
 
 export default BlogCardJSX
+
