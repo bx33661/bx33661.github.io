@@ -8,6 +8,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.prose img {
+  background: #f6f8fb;
+  transition: opacity 0.25s ease, filter 0.25s ease;
+}
+
+.dark .prose img {
+  background: #0f172a;
+}
+
 /* 暗夜模式下的中文文字优化 */
 .dark .prose {
   text-rendering: optimizeLegibility;
@@ -120,5 +129,13 @@
     font-size: 1.2rem;
     line-height: 1.6;
     margin-bottom: 0.75rem;
+  }
+
+  /* 防止移动端 ASCII 树/长行溢出 */
+  .prose pre,
+  .prose pre code {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 }

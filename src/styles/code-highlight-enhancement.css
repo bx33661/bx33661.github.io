@@ -398,12 +398,7 @@
 .expressive-code .code {
   font-weight: 400 !important;
   letter-spacing: 0.025em !important;
-  color: var(--foreground) !important;
-}
-
-/* 防御颜色丢失：所有 token 默认继承前景色 */
-.expressive-code .code span {
-  color: inherit !important;
+  color: var(--ec-codeFg, inherit);
 }
 
 /* 滚动条样式优化 */
@@ -423,6 +418,18 @@
 @media (prefers-color-scheme: dark) {
   .expressive-code pre::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* 柔化夜间模式的霓虹效果，适合长时间阅读 */
+@media (prefers-color-scheme: dark) {
+  .expressive-code .token {
+    text-shadow: none !important;
+    color: color-mix(in srgb, currentColor 80%, #e6edf3 20%) !important;
+  }
+
+  .expressive-code {
+    --ec-codeFg: #e6edf3;
   }
 }
 

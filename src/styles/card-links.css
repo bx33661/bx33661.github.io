@@ -1,140 +1,94 @@
-/* 优化的URL链接卡片样式 */
-.prose a[href^="http"] {
-  @apply block w-full p-5 rounded-xl border border-gray-200/60 bg-white/80 backdrop-blur-sm;
-  @apply hover:border-blue-300/80 hover:shadow-lg hover:shadow-blue-100/50 hover:-translate-y-0.5;
-  @apply dark:border-gray-700/60 dark:bg-gray-900/80 dark:hover:border-blue-600/60 dark:hover:shadow-blue-900/20;
-  @apply no-underline relative overflow-hidden;
-  @apply flex items-center gap-4;
-  @apply text-base font-semibold text-gray-800 dark:text-gray-200;
-  @apply hover:text-blue-600 dark:hover:text-blue-400;
-  @apply transition-all duration-300 ease-out;
-  @apply my-3;
-  
-  /* 添加微妙的渐变背景 */
-  background-image: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.03) 100%);
+/* Notion 风格书签卡片（自动转换单链接段落） */
+.prose a.bookmark-card {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  padding: 16px 18px;
+  margin: 12px 0;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 80%, transparent);
+  background: color-mix(in srgb, var(--card, #fff) 88%, transparent);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
 }
 
-.prose a[href^="http"]:hover {
-  background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.08) 100%);
+.prose a.bookmark-card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-primary, #7aa2f7) 60%, transparent);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.08);
 }
 
-.dark .prose a[href^="http"] {
-  background-image: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
+.dark .prose a.bookmark-card {
+  background: color-mix(in srgb, var(--card, #0f172a) 92%, transparent);
+  border-color: color-mix(in srgb, var(--color-border, #303446) 75%, transparent);
 }
 
-.dark .prose a[href^="http"]:hover {
-  background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.12) 100%);
+.prose .bookmark-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #6366f1, #3b82f6);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
 }
 
-/* 左侧网站图标区域 */
-.prose a[href^="http"]::before {
-  content: '🌐';
-  @apply flex-shrink-0 w-12 h-12 rounded-xl;
-  @apply bg-gradient-to-br from-blue-500 to-indigo-600;
-  @apply dark:from-blue-600 dark:to-indigo-700;
-  @apply flex items-center justify-center;
-  @apply text-white text-lg font-bold;
-  @apply shadow-md shadow-blue-200/50 dark:shadow-blue-900/30;
-  @apply transition-all duration-300;
-  @apply border border-blue-300/30 dark:border-blue-600/30;
+.dark .prose .bookmark-icon {
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.45);
 }
 
-.prose a[href^="http"]:hover::before {
-  @apply scale-105 shadow-lg shadow-blue-300/60 dark:shadow-blue-800/40;
-  @apply rotate-3;
+.prose .bookmark-body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
 }
 
-/* 链接内容区域 */
-.prose a[href^="http"] {
-  position: relative;
+.prose .bookmark-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--foreground);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.prose a[href^="http"]::after {
-  content: attr(href);
-  @apply block text-xs text-gray-500 dark:text-gray-400 font-normal mt-1;
-  @apply truncate max-w-full;
-  @apply opacity-70;
+.prose .bookmark-meta {
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
 }
 
-/* 外部链接指示器 */
-.prose a[href^="http"][target="_blank"] {
-  position: relative;
+.prose .bookmark-url {
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--foreground) 60%, transparent);
+  opacity: 0.9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.prose a[href^="http"][target="_blank"]::after {
-  content: attr(href) ' ↗';
-  @apply block text-xs text-gray-500 dark:text-gray-400 font-normal mt-1;
-  @apply truncate max-w-full;
-  @apply opacity-70;
-}
-
-/* 悬停时的外部链接指示器动画 */
-.prose a[href^="http"][target="_blank"]:hover::after {
-  @apply text-blue-500 dark:text-blue-400 opacity-100;
-}
-
-/* 添加微妙的边框光效 */
-.prose a[href^="http"]:hover {
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2), 0 8px 25px -5px rgba(59, 130, 246, 0.1);
-}
-
-.dark .prose a[href^="http"]:hover {
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3), 0 8px 25px -5px rgba(59, 130, 246, 0.2);
-}
-
-/* 移动端优化 */
 @media (max-width: 768px) {
-  .prose a[href^="http"] {
-    @apply p-4 mx-[-1rem] rounded-lg;
-    @apply text-sm;
+  .prose a.bookmark-card {
+    padding: 14px 16px;
+    margin: 10px -0.25rem;
+    border-radius: 14px;
+    grid-template-columns: 46px 1fr;
   }
-  
-  .prose a[href^="http"]::before {
-    @apply w-10 h-10 text-base;
+
+  .prose .bookmark-icon {
+    width: 46px;
+    height: 46px;
   }
-  
-  .prose a[href^="http"]::after {
-    @apply text-xs;
-  }
-  
-  .prose a[href^="http"]:hover {
-    @apply translate-y-0;
-  }
-}
 
-/* 增强的URL卡片组件样式 */
-.enhanced-url-card {
-  @apply block w-full p-4 rounded-xl border border-gray-200/60 bg-white/80 backdrop-blur-sm;
-  @apply hover:border-blue-300/80 hover:shadow-lg hover:shadow-blue-100/50 hover:-translate-y-1;
-  @apply dark:border-gray-700/60 dark:bg-gray-900/80 dark:hover:border-blue-600/60 dark:hover:shadow-blue-900/20;
-  @apply no-underline relative overflow-hidden;
-  @apply transition-all duration-300 ease-out;
-  @apply my-3;
-  
-  background-image: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.03) 100%);
-}
-
-.enhanced-url-card:hover {
-  background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.08) 100%);
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2), 0 8px 25px -5px rgba(59, 130, 246, 0.1);
-}
-
-.dark .enhanced-url-card {
-  background-image: linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
-}
-
-.dark .enhanced-url-card:hover {
-  background-image: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.12) 100%);
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3), 0 8px 25px -5px rgba(59, 130, 246, 0.2);
-}
-
-/* 移动端增强URL卡片优化 */
-@media (max-width: 768px) {
-  .enhanced-url-card {
-    @apply p-3 mx-[-1rem] rounded-lg;
-  }
-  
-  .enhanced-url-card:hover {
-    @apply translate-y-0;
+  .prose .bookmark-title {
+    font-size: 0.98rem;
   }
 }

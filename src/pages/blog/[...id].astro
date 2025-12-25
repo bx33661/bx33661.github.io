@@ -59,7 +59,7 @@ const avatarUrl = '/logo.png'
     set:html={JSON.stringify(structuredData)}
   />
   <section
-    class="px-0 sm:px-6 grid grid-cols-1 gap-y-3 sm:gap-y-6 sm:grid-cols-[minmax(0px,1fr)_min(calc(var(--breakpoint-lg)-2rem),100%)_minmax(0px,1fr)] xl:grid-cols-[300px_minmax(0,800px)_300px] xl:gap-x-16 blog-layout-mobile"
+    class="px-0 sm:px-6 grid grid-cols-1 gap-y-3 sm:gap-y-6 xl:grid-cols-[var(--toc-width)_minmax(0,var(--article-width))_var(--meta-width)] xl:gap-x-12 blog-layout-mobile blog-grid"
   >
     <div class="px-4 sm:px-0 sm:col-start-2">
       <Breadcrumbs
@@ -135,10 +135,8 @@ const avatarUrl = '/logo.png'
       </div>
     )}
 
-    <aside
-      class="hidden xl:block xl:col-start-3 xl:sticky xl:top-26 xl:h-[calc(100vh-5rem)] xl:min-w-[280px] xl:max-w-[300px]"
-    >
-      <div class="space-y-6 bg-neutral-50/60 dark:bg-neutral-900/40 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 shadow-sm">
+    <aside class="hidden xl:block xl:col-start-3 article-aside">
+      <div class="article-aside-card space-y-6 bg-neutral-50/60 dark:bg-neutral-900/40 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 shadow-sm">
         <div class="space-y-3">
           <div class="flex items-center gap-2">
             <span class="text-sm text-neutral-500">分享</span>
@@ -296,6 +294,61 @@ const avatarUrl = '/logo.png'
       const footer = document.querySelector('footer')
       const readingProgress = document.getElementById('reading-progress')
       const article = document.querySelector('article')
+      const proseBlocks = document.querySelectorAll('.article-shell .prose')
+
+      // 将纯链接段落转换为书签卡片（Notion 风格）
+      const applyBookmarkCards = () => {
+        proseBlocks.forEach((prose) => {
+          const paragraphs = prose.querySelectorAll('p')
+          paragraphs.forEach((p) => {
+            const links = Array.from(
+              p.querySelectorAll<HTMLAnchorElement>('a[href^="http"]')
+            )
+            if (links.length !== 1) return
+            const link = links[0]
+
+            // 仅处理“整段只有一个链接”的情况，避免误伤行内链接
+            const textOnly = p.textContent?.trim() || ''
+            const linkText = link.textContent?.trim() || ''
+            if (textOnly !== linkText) return
+
+            try {
+              const urlObj = new URL(link.href)
+              const host = urlObj.hostname.replace(/^www\./, '')
+              const isRawUrlText =
+                linkText === link.href ||
+                linkText === urlObj.href ||
+                linkText === decodeURI(urlObj.href)
+
+              const displayTitle =
+                isRawUrlText && urlObj.pathname
+                  ? urlObj.pathname.replace(/^\//, '') || host
+                  : linkText || host
+
+              const displayUrl = `${host}${urlObj.pathname}`
+
+              const card = document.createElement('a')
+              card.className = 'bookmark-card'
+              card.href = link.href
+              card.target = link.target || '_blank'
+              card.rel = link.rel || 'noopener noreferrer'
+              card.setAttribute('aria-label', `${displayTitle} - ${displayUrl}`)
+
+              card.innerHTML = `
+                <div class="bookmark-icon" aria-hidden="true">🌐</div>
+                <div class="bookmark-body">
+                  <div class="bookmark-title">${displayTitle}</div>
+                  <div class="bookmark-meta">${host}</div>
+                  <div class="bookmark-url">${displayUrl}</div>
+                </div>
+              `
+              p.replaceWith(card)
+            } catch (err) {
+              // ignore invalid URL
+            }
+          })
+        })
+      }
 
       // 阅读进度条功能
       if (readingProgress && article) {
@@ -313,10 +366,12 @@ const avatarUrl = '/logo.png'
             ),
             100
           )
-          
+
           readingProgress.style.width = `${progress}%`
         })
       }
+
+      applyBookmarkCards()
 
       // 回到顶部按钮功能
       if (scrollToTopButton && footer) {
@@ -339,6 +394,35 @@ const avatarUrl = '/logo.png'
 </Layout>
 
 <style>
+  .blog-grid {
+    --toc-width: clamp(220px, 23vw, 280px);
+    --meta-width: clamp(240px, 25vw, 320px);
+    --article-width: clamp(700px, 70vw, 940px);
+    align-items: start;
+  }
+
+  @media (max-width: 1279px) {
+    .blog-grid {
+      --article-width: min(96vw, 960px);
+    }
+  }
+
+  .article-aside {
+    position: sticky;
+    top: 110px;
+    max-height: calc(100vh - 140px);
+    align-self: start;
+  }
+
+  .article-aside-card {
+    max-height: inherit;
+    overflow-y: auto;
+    border-radius: 18px;
+    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 80%, transparent);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(6px);
+  }
+
   .article-shell {
     background: color-mix(in srgb, var(--color-card, #0b1220) 92%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 85%, transparent);
@@ -346,6 +430,9 @@ const avatarUrl = '/logo.png'
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
     padding: 24px 24px;
     backdrop-filter: blur(4px);
+    width: 100%;
+    max-width: min(var(--article-width), 96ch);
+    margin-inline: auto;
   }
 
   .article-shell .prose {
@@ -415,12 +502,14 @@ const avatarUrl = '/logo.png'
   @media (min-width: 640px) {
     .article-shell {
       padding: 26px 28px;
+      border-radius: 20px;
     }
   }
 
   @media (min-width: 1024px) {
     .article-shell {
       padding: 30px 32px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
     }
   }
 
