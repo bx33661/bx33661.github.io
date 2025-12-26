@@ -1,0 +1,43 @@
+---
+import { Icon } from 'astro-icon/components'
+
+interface LinkItem {
+  name: string;
+  url: string;
+  icon: string;
+}
+
+const extraLinks: LinkItem[] = [
+  { name: 'RSS', url: '/rss.xml', icon: 'lucide:rss' },
+  { name: 'Github', url: 'https://github.com/bx33661', icon: 'lucide:github' },
+  { name: 'Email', url: 'mailto:bx33661@gmail.com', icon: 'lucide:mail' },
+]
+---
+
+<div class="fixed bottom-4 left-4 z-50 group">
+  <!-- Main Button -->
+  <div class="tooltip tooltip-right" data-tip="More links">
+    <button class="btn btn-lg btn-accent btn-circle shadow-lg transition-transform duration-300 group-hover:rotate-45" aria-label="More links">
+      <Icon name="lucide:link" class="size-6" />
+    </button>
+  </div>
+
+  <!-- Expanded Menu -->
+  <div class="absolute bottom-full left-0 mb-4 flex flex-col gap-2 transition-all duration-300 opacity-0 translate-y-4 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible">
+    {
+      extraLinks.map((link) => (
+        <div class="tooltip tooltip-right" data-tip={link.name}>
+          <a
+            href={link.url}
+            target={link.url.startsWith('http') ? '_blank' : '_self'}
+            rel={link.url.startsWith('http') ? 'noopener noreferrer' : ''}
+            class="btn btn-circle btn-neutral shadow-md"
+            aria-label={link.name}
+          >
+            <Icon name={link.icon} class="size-5" />
+          </a>
+        </div>
+      ))
+    }
+  </div>
+</div>

@@ -86,6 +86,7 @@
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.9",
+    "daisyui": "^5.5.14",
     "prettier": "^3.5.3",
     "terser": "^5.43.1"
   },

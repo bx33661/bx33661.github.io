@@ -1,0 +1,94 @@
+---
+import { SITE, SOCIAL_LINKS, ICON_MAP } from '@/consts'
+import Link from '@/components/Link.astro'
+import Logo from '@/components/ui/logo'
+import { buttonVariants } from '@/components/ui/button'
+import { Icon } from 'astro-icon/components'
+import { cn } from '@/lib/utils'
+
+const { title, description, location } = SITE
+---
+
+<section class="min-h-screen flex items-center justify-center p-6 lg:p-10 relative overflow-hidden bg-background text-foreground">
+  <div class="hero-content flex flex-col lg:flex-row-reverse items-center lg:justify-center max-w-7xl gap-8 lg:gap-16 z-10">
+    <!-- Avatar -->
+    <div class="shrink-0 animate-in fade-in zoom-in duration-1000">
+        <div class="w-48 h-48 rounded-full ring-2 ring-primary ring-offset-4 ring-offset-background overflow-hidden relative shadow-2xl">
+            <Logo className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
+        </div>
+    </div>
+
+    <!-- Text -->
+    <div class="max-w-2xl text-center lg:text-left flex flex-col gap-4 animate-in slide-in-from-bottom duration-1000 delay-300 fill-mode-backwards">
+      <h1 class="text-5xl font-bold tracking-tight sm:text-6xl mb-2">
+        Hi, I'm <span class="border-b-4 border-primary">{title}</span>
+      </h1>
+      <p class="text-xl text-muted-foreground/80 font-medium mb-1">
+         Security Researcher & Developer
+      </p>
+      
+      {location && (
+          <p class="text-muted-foreground/60 mb-2 flex items-center justify-center lg:justify-start gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 60 40"
+              class="h-4 w-6"
+              aria-hidden="true"
+              role="img"
+              focusable="false"
+              aria-labelledby="china-flag"
+            >
+              <title id="china-flag">中国国旗</title>
+              <rect width="60" height="40" fill="#de2910"/>
+              <polygon points="12,8 9.5,15.5 2,12 9.5,8.5" fill="#ffde00"/>
+              <polygon points="20,4 19,7 17,6 18.5,8 16.5,9 20,7" fill="#ffde00"/>
+              <polygon points="20,12 19,15 17,14 18.5,16 16.5,17 20,15" fill="#ffde00"/>
+              <polygon points="20,20 19,23 17,22 18.5,24 16.5,25 20,23" fill="#ffde00"/>
+              <polygon points="16,28 15,31 13,30 14.5,32 12.5,33 16,31" fill="#ffde00"/>
+            </svg>
+            {location}
+          </p>
+      )}
+      
+      <p class="text-lg leading-relaxed text-muted-foreground whitespace-pre-line mb-4">
+        {description}
+      </p>
+
+      <!-- Social Links -->
+      <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+        {SOCIAL_LINKS.map((link) => (
+             <Link
+                href={link.href}
+                class={cn(buttonVariants({ variant: "ghost", size: "icon" }), "rounded-full w-12 h-12 hover:bg-muted text-muted-foreground hover:text-primary transition-colors")}
+                aria-label={link.label}
+                title={link.label}
+                external
+             >
+                <Icon name={ICON_MAP[link.label as keyof typeof ICON_MAP] || "lucide:link"} class="size-6" />
+             </Link>
+        ))}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scroll Down Indicator (Optional but preserved for UX) -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <a href="#content-start" aria-label="Scroll down" class="text-muted-foreground/50 hover:text-primary transition-colors">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="h-8 w-8"
+      >
+        <path d="M12 5v14" />
+        <path d="m19 12-7 7-7-7" />
+      </svg>
+    </a>
+  </div>
+</section>

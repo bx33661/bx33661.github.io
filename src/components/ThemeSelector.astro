@@ -1,0 +1,80 @@
+---
+import { Icon } from 'astro-icon/components'
+
+const themes = [
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+  { value: "synthwave", label: "Synthwave" },
+  { value: "retro", label: "Retro" },
+  { value: "valentine", label: "Valentine" },
+  { value: "dim", label: "Dim" },
+];
+---
+
+<div class="dropdown dropdown-end">
+  <div tabindex="0" role="button" class="btn btn-ghost btn-circle" aria-label="Theme Selector">
+    <Icon name="lucide:palette" class="w-5 h-5" />
+  </div>
+  <ul
+    tabindex="0"
+    class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-lg"
+  >
+    {
+      themes.map((theme) => (
+        <li>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="theme"
+              class="theme-controller radio radio-sm"
+              value={theme.value}
+            />
+            <span>{theme.label}</span>
+          </label>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script is:inline>
+  // Set theme on page load based on localStorage or system preference
+  function setTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    let theme = savedTheme;
+
+    // If no saved theme, use system preference
+    if (!theme) {
+      theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    // Apply theme to document
+    document.documentElement.setAttribute("data-theme", theme);
+
+    // Set the correct radio button as checked
+    const radios = document.querySelectorAll('input[type="radio"][name="theme"]');
+    radios.forEach((radio) => {
+      if (radio.value === theme) {
+         radio.checked = true;
+      }
+    });
+  }
+
+  // Update theme when radio button is changed
+  document.addEventListener("change", (e) => {
+    const target = e.target;
+    if (target.type === "radio" && target.name === "theme") {
+      const theme = target.value;
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+    }
+  });
+
+  // Run on page load
+  setTheme();
+
+  // Run after view transitions
+  document.addEventListener("astro:after-swap", setTheme);
+</script>
