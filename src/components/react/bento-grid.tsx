@@ -7,10 +7,10 @@ interface BentoCardProps {
   gradient?: string;
 }
 
-export const BentoCard: React.FC<BentoCardProps> = ({ 
-  className, 
-  children, 
-  gradient 
+export const BentoCard: React.FC<BentoCardProps> = ({
+  className,
+  children,
+  gradient
 }) => {
   return (
     <motion.div
@@ -18,14 +18,16 @@ export const BentoCard: React.FC<BentoCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className={cn(
-        'rounded-3xl p-6 backdrop-blur-sm',
-        'border border-gray-200/50 dark:border-gray-700/50',
-        'shadow-lg hover:shadow-xl transition-all duration-300',
+        'rounded-3xl p-6 backdrop-blur-md',
+        'border border-white/20 dark:border-white/10',
+        'shadow-md hover:shadow-2xl transition-all duration-300 ease-out',
+        'hover:-translate-y-1',
         'group cursor-pointer',
-        gradient || 'bg-white/80 dark:bg-gray-800/80',
+        gradient || 'bg-white/40 dark:bg-black/20',
+        'overflow-hidden relative',
         className
       )}
-      whileHover={{ scale: 1.02, y: -5 }}
+      whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
       {children}
@@ -56,11 +58,11 @@ interface ProfileCardProps {
   avatar?: string;
 }
 
-export const ProfileCard: React.FC<ProfileCardProps> = ({ 
-  name, 
-  title, 
+export const ProfileCard: React.FC<ProfileCardProps> = ({
+  name,
+  title,
   description,
-  avatar 
+  avatar
 }) => {
   return (
     <BentoCard className="md:col-span-1 md:row-span-2">
@@ -100,15 +102,15 @@ interface ProjectCardProps {
   span?: string;
 }
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({ 
-  title, 
-  description, 
+export const ProjectCard: React.FC<ProjectCardProps> = ({
+  title,
+  description,
   icon,
   color = 'from-blue-500 to-cyan-500',
   span = 'md:col-span-1'
 }) => {
   return (
-    <BentoCard 
+    <BentoCard
       className={`${span} bg-gradient-to-br ${color}`}
     >
       <div className="flex flex-col h-full justify-between text-white">
@@ -136,9 +138,9 @@ interface InfoCardProps {
   span?: string;
 }
 
-export const InfoCard: React.FC<InfoCardProps> = ({ 
-  title, 
-  subtitle, 
+export const InfoCard: React.FC<InfoCardProps> = ({
+  title,
+  subtitle,
   content,
   gradient = 'bg-gradient-to-br from-pink-100 to-orange-100 dark:from-pink-900/30 dark:to-orange-900/30',
   icon,
@@ -154,8 +156,8 @@ export const InfoCard: React.FC<InfoCardProps> = ({
           </div>
         ) : icon ? (
           <div className="mb-3">
-            <div className="w-8 h-8 rounded-lg bg-white/50 dark:bg-black/30 flex items-center justify-center">
-              <span className="text-xl">{icon}</span>
+            <div className="w-10 h-10 rounded-xl bg-white/80 dark:bg-black/40 flex items-center justify-center shadow-sm backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
+              <span className="text-2xl">{icon}</span>
             </div>
           </div>
         ) : null}
@@ -186,8 +188,8 @@ interface QuickActionCardProps {
   gradient?: string;
 }
 
-export const QuickActionCard: React.FC<QuickActionCardProps> = ({ 
-  title, 
+export const QuickActionCard: React.FC<QuickActionCardProps> = ({
+  title,
   action,
   icon,
   gradient = 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700'
@@ -217,8 +219,8 @@ interface StatusCardProps {
   gradient?: string;
 }
 
-export const StatusCard: React.FC<StatusCardProps> = ({ 
-  status, 
+export const StatusCard: React.FC<StatusCardProps> = ({
+  status,
   label,
   icon,
   gradient = 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800'
