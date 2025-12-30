@@ -13,14 +13,26 @@ import FabFlower from '@/components/FabFlower.astro'
 import { SITE } from '@/consts'
 import { cn } from '@/lib/utils'
 
+interface Props {
+  isWide?: boolean
+  title?: string
+  description?: string
+  image?: string
+  canonicalUrl?: URL | string
+}
+
 const {
-  isWide = false
+  isWide = false,
+  title,
+  description,
+  image,
+  canonicalUrl
 } = Astro.props
 ---
 
 <!doctype html>
 <html lang={SITE.locale}>
-  <Head>
+  <Head title={title} description={description} image={image} canonicalUrl={canonicalUrl}>
     <slot name="head" />
     <!-- 优化分析脚本加载：延迟加载，减少对性能的影响 -->
     <script is:inline>

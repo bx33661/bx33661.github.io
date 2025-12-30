@@ -1,9 +1,17 @@
 ---
-import { SITE } from '@/consts'
+import { SITE, SEO_KEYWORDS } from '@/consts'
 import Favicons from './Favicons.astro'
 import Analytics from './Analytics.astro'
 import { ENABLE_ANALYTICS, POSTHOG_HOST } from '@/config/env'
 
+interface Props {
+  title?: string
+  description?: string
+  image?: string
+  canonicalUrl?: URL | string
+}
+
+const { title, description, image, canonicalUrl } = Astro.props
 const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.com') : null
 ---
 
@@ -25,9 +33,29 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
   <meta name="googlebot" content="index, follow" />
   <meta name="google" content="notranslate" />
   <meta name="revisit-after" content="1 days" />
-  
-  <!-- 默认标题（如果 slot 中没有提供标题，则使用此默认值） -->
-  <title>{SITE.title}</title>
+
+  <!-- Title & Description & Keywords -->
+  <title>{title || SITE.title}</title>
+  <meta name="description" content={description || SITE.description.replace(/\n/g, ' ')} />
+  <meta name="keywords" content={SEO_KEYWORDS.join(', ')} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={title || SITE.title} />
+  <meta property="og:description" content={description || SITE.description.replace(/\n/g, ' ')} />
+  <meta property="og:url" content={canonicalUrl || Astro.url} />
+  <meta property="og:site_name" content={SITE.title} />
+  <meta property="og:locale" content={SITE.locale} />
+  <meta property="og:image" content={new URL(image || '/logo.ico', Astro.site)} />
+  <meta property="og:type" content="website" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href={canonicalUrl || Astro.url} />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title || SITE.title} />
+  <meta name="twitter:description" content={description || SITE.description.replace(/\n/g, ' ')} />
+  <meta name="twitter:image" content={new URL(image || '/logo.ico', Astro.site)} />
 
   <!-- Core Web Vitals 优化 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />

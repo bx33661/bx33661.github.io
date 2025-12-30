@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef, type TouchEvent } from 'react'
+import { useState, useEffect, useCallback, useRef, type TouchEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from './link'
 
@@ -11,7 +11,6 @@ import { Menu, X } from 'lucide-react'
 import { Separator } from '../ui/separator'
 
 const Navbar = () => {
-  const [scrollLevel, setScrollLevel] = useState(0)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -53,11 +52,8 @@ const Navbar = () => {
   const handleScroll = useCallback(
     debounce(() => {
       const scrollY = window.scrollY
-      setScrollLevel(
-        scrollY > 400 ? 4 : scrollY > 250 ? 3 : scrollY > 100 ? 2 : scrollY > 20 ? 1 : 0
-      )
       setIsScrolled(scrollY > 20)
-    }, 30),
+    }, 10),
     []
   )
 
@@ -91,25 +87,20 @@ const Navbar = () => {
     touchStartY.current = null
   }
 
-  const sizeVariants = useMemo(() => ({
-    0: { width: '100%' },
-    1: { width: '98%' },
-    2: { width: '90%' },
-    3: { width: '80%' },
-    4: { width: '70%' },
-  } as Record<number, { width: string }>), [])
-
   return (
     <>
       <motion.header
         aria-label="Navigation"
         role="navigation"
         layout={!isMobile}
-        initial={sizeVariants[0]}
-        animate={isMobile ? sizeVariants[0] : sizeVariants[scrollLevel]}
+        initial={{ width: '100%', y: 0 }}
+        animate={{
+          width: isMobile ? '100%' : (isScrolled ? '70%' : '100%'),
+          y: 0
+        }}
         transition={{
-          width: { duration: 0.4, ease: "easeInOut" },
-          layout: { duration: 0.3, ease: "easeInOut" }
+          width: { duration: 0.3, ease: 'easeInOut' },
+          layout: { duration: 0.3, ease: 'easeInOut' }
         }}
         className={cn(
           'z-30 transition-all duration-400 ease-in-out w-full',
