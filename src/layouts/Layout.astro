@@ -8,17 +8,31 @@ import '@/styles/code-highlight-enhancement.css'
 import Footer from '@/components/Footer.astro'
 import Head from '@/components/Head.astro'
 import Navbar from '@/components/react/navbar'
+import ThemeSelector from '@/components/ThemeSelector.astro'
+import FabFlower from '@/components/FabFlower.astro'
 import { SITE } from '@/consts'
 import { cn } from '@/lib/utils'
 
+interface Props {
+  isWide?: boolean
+  title?: string
+  description?: string
+  image?: string
+  canonicalUrl?: URL | string
+}
+
 const {
-  isWide = false
+  isWide = false,
+  title,
+  description,
+  image,
+  canonicalUrl
 } = Astro.props
 ---
 
 <!doctype html>
 <html lang={SITE.locale}>
-  <Head>
+  <Head title={title} description={description} image={image} canonicalUrl={canonicalUrl}>
     <slot name="head" />
     <!-- 优化分析脚本加载：延迟加载，减少对性能的影响 -->
     <script is:inline>
@@ -33,121 +47,32 @@ const {
         }, 2000);
       });
     </script>
-    <script is:inline data-astro-rerun>
-      ;(() => {
-        const STORAGE_KEY = 'theme'
-        const THEME_EVENT = 'bx-theme-change'
-        const MEDIA_QUERY = '(prefers-color-scheme: dark)'
-        const BACKGROUND_FALLBACK = {
-          light: '#f8fafc',
-          dark: '#1a1b26',
+    <!-- Smooth Scroll & Animations -->
+    <style is:global>
+      html {
+        scroll-behavior: smooth;
+        animation: pageLoadBlurFade 0.3s ease-in-out;
+        animation-fill-mode: both;
+      }
+
+      @keyframes pageLoadBlurFade {
+        0% {
+          opacity: 0;
+          filter: blur(8px);
         }
-
-        const html = document.documentElement
-        const prefersDark = window.matchMedia(MEDIA_QUERY)
-
-        const safeStorage = {
-          get() {
-            try {
-              return localStorage.getItem(STORAGE_KEY)
-            } catch (error) {
-              return null
-            }
-          },
-          set(value) {
-            try {
-              localStorage.setItem(STORAGE_KEY, value)
-            } catch (error) {
-              /* 忽略 */
-            }
-          },
-          clear() {
-            try {
-              localStorage.removeItem(STORAGE_KEY)
-            } catch (error) {
-              /* 忽略 */
-            }
-          },
+        100% {
+          opacity: 1;
+          filter: blur(0px);
         }
-
-        const emitThemeChange = (theme) => {
-          window.dispatchEvent(new CustomEvent(THEME_EVENT, { detail: { theme } }))
-        }
-
-        const applyTheme = (theme, { persist = false, animate = false } = {}) => {
-          const isDark = theme === 'dark'
-
-          if (animate) {
-            html.classList.add('disable-transitions')
-            html.style.transition = 'background-color 0.3s ease, color 0.3s ease'
-          }
-
-          html.classList.toggle('dark', isDark)
-          html.dataset.theme = isDark ? 'dark' : 'light'
-          html.style.colorScheme = isDark ? 'dark' : 'light'
-          html.style.backgroundColor = BACKGROUND_FALLBACK[isDark ? 'dark' : 'light']
-
-          if (persist) {
-            safeStorage.set(isDark ? 'dark' : 'light')
-          }
-
-          emitThemeChange(isDark ? 'dark' : 'light')
-
-          if (animate) {
-            requestAnimationFrame(() => {
-              html.classList.remove('disable-transitions')
-              html.style.transition = ''
-            })
-          }
-        }
-
-        const readInitialTheme = () => {
-          const stored = safeStorage.get()
-          if (stored === 'light' || stored === 'dark') {
-            return stored
-          }
-          return prefersDark.matches ? 'dark' : 'light'
-        }
-
-        const applyInitialTheme = () => {
-          applyTheme(readInitialTheme(), { persist: false, animate: false })
-        }
-
-        applyInitialTheme()
-
-        const handleMediaChange = (event) => {
-          const stored = safeStorage.get()
-          if (stored !== 'light' && stored !== 'dark') {
-            applyTheme(event.matches ? 'dark' : 'light', { persist: false, animate: false })
-          }
-        }
-
-        prefersDark.addEventListener?.('change', handleMediaChange)
-
-        window.__BX_THEME__ = {
-          get() {
-            return html.classList.contains('dark') ? 'dark' : 'light'
-          },
-          set(nextTheme) {
-            const normalized = nextTheme === 'dark' ? 'dark' : 'light'
-            applyTheme(normalized, { persist: true, animate: true })
-            return normalized
-          },
-          toggle() {
-            const next = html.classList.contains('dark') ? 'light' : 'dark'
-            applyTheme(next, { persist: true, animate: true })
-            return next
-          },
-          resetToSystem() {
-            safeStorage.clear()
-            applyInitialTheme()
-          },
-        }
-      })()
-    </script>
+      }
+    </style>
     <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
   </Head>
   <body>
+
+    <div class="fixed top-4 right-4 z-50">
+      <ThemeSelector />
+    </div>
 
     <div class="flex h-fit min-h-screen w-full flex-col gap-y-4 sm:gap-y-6 font-sans">
       <Navbar client:load />
@@ -163,6 +88,7 @@ const {
       </main>
       <Footer />
     </div>
+    <FabFlower />
     <!-- PWA Service Worker 注册 -->
     <script is:inline>
       // 注册 Service Worker

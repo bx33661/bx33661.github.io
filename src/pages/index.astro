@@ -3,15 +3,16 @@ import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
 import Skills from '@/components/react/skills'
 import { buttonVariants } from '@/components/ui/button'
-import Logo from '@/components/ui/logo'
+
 import Layout from '@/layouts/Layout.astro'
 import { getAllPosts, getAllPostSlugs } from '@/lib/data-utils'
-import { SITE } from '@/consts'
-import AnimatedElement from "@/components/react/optimized-animated-element"
+
+
 import { OptimizedScrollProgress as ScrollProgress } from "@/components/react/optimized-scroll-progress"
 import { OptimizedScrollReveal as ScrollReveal } from '@/components/react/optimized-scroll-reveal'
 import Card3D from '@/components/react/card-3d'
 import RippleButton from '@/components/react/ripple-button'
+import Hero from '@/components/Hero.astro'
 
 const allPosts = await getAllPosts()
 const recentPosts = allPosts.slice(0, 5)
@@ -29,57 +30,9 @@ const currentUrl = Astro.url;
 <Layout canonicalUrl={currentUrl}>
     <ScrollProgress client:visible />
   <PageHead slot="head" title="BX/bpple -安全研究-中国" />
-  <section class="flex flex-col gap-y-8 px-4 py-6 sm:gap-y-12 sm:px-8 sm:py-8 lg:px-16">
-    <div
-      class="flex flex-col items-center text-center gap-6 sm:flex-row sm:items-start sm:gap-8 sm:text-left"
-    >
-      <AnimatedElement client:visible animation="scaleIn" delay={0.2}>
-        <div class="relative overflow-hidden rounded-xl shadow-lg sm:shrink-0 sm:overflow-hidden sm:rounded-lg">
-          <Logo
-            className="hero-avatar h-auto w-20 object-cover transition-transform duration-300 hover:scale-105 sm:w-32 md:w-40 lg:w-48"
-          />
-        </div>
-      </AnimatedElement>
-      <AnimatedElement client:visible animation="slideRight" delay={0.4}>
-        <div class="mt-4 sm:mt-0 sm:max-w-xl">
-        <h1
-          class="hero-title font-custom text-foreground text-center text-3xl font-extrabold sm:text-start sm:text-5xl"
-        >
-          {SITE.title}
-        </h1>
-        <div class="mt-4 flex items-center justify-center gap-2 sm:justify-start" aria-label="location">
-          <span
-            class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1 touch-target"
-          >
-            来自
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="text-foreground text-sm font-medium"> {SITE.location}</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 60 40"
-              class="h-5 w-7 transition-transform duration-500 hover:rotate-12 sm:h-6 sm:w-8"
-              aria-hidden="true"
-              role="img"
-              focusable="false"
-              aria-labelledby="china-flag"
-            >
-              <title id="china-flag">中国国旗</title>
-              <rect width="60" height="40" fill="#de2910"/>
-              <polygon points="12,8 9.5,15.5 2,12 9.5,8.5" fill="#ffde00"/>
-              <polygon points="20,4 19,7 17,6 18.5,8 16.5,9 20,7" fill="#ffde00"/>
-              <polygon points="20,12 19,15 17,14 18.5,16 16.5,17 20,15" fill="#ffde00"/>
-              <polygon points="20,20 19,23 17,22 18.5,24 16.5,25 20,23" fill="#ffde00"/>
-              <polygon points="16,28 15,31 13,30 14.5,32 12.5,33 16,31" fill="#ffde00"/>
-            </svg>
-          </span>
-        </div>
-        <p class="hero-desc text-sm text-foreground mt-4 text-center font-sans whitespace-pre-line leading-relaxed sm:text-base sm:text-start" title="description" aria-label="description">
-          {SITE.description}
-        </p>
-        </div>
-      </AnimatedElement>
-    </div>
+<Hero />
+    <div id="content-start"></div>
+    <div class="flex flex-col gap-y-8 px-4 py-6 sm:gap-y-12 sm:px-8 sm:py-8 lg:px-16">
 
     <ScrollReveal client:visible>
       <section class="relative" aria-labelledby="skills-title">
@@ -194,5 +147,5 @@ const currentUrl = Astro.url;
       </ScrollReveal>
       </section>
     </ScrollReveal>
-  </section>
+  </div>
 </Layout>

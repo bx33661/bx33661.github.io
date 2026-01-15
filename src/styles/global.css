@@ -1,4 +1,8 @@
 ﻿@import 'tailwindcss';
+
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, synthwave, retro, valentine, dim;
+}
 @import './card-links.css';
 @import './mobile-base.css'; /* 鏂扮Щ鍔ㄧ鍩虹嚎锛岀嫭绔嬩簬妗岄潰鏍峰紡 */
 
