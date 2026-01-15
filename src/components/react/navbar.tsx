@@ -17,20 +17,20 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activePath, setActivePath] = useState("/")
   const touchStartY = useRef<number | null>(null)
-  
+
   useEffect(() => {
     setActivePath(window.location.pathname)
-    
+
     const handleRouteChange = () => {
       setActivePath(window.location.pathname)
     }
-    
+
     window.addEventListener('popstate', handleRouteChange)
     return () => {
       window.removeEventListener('popstate', handleRouteChange)
     }
   }, [])
-  
+
   const handleResize = useCallback(
     debounce(() => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches
@@ -107,7 +107,7 @@ const Navbar = () => {
         layout={!isMobile}
         initial={sizeVariants[0]}
         animate={isMobile ? sizeVariants[0] : sizeVariants[scrollLevel]}
-        transition={{ 
+        transition={{
           width: { duration: 0.4, ease: "easeInOut" },
           layout: { duration: 0.3, ease: "easeInOut" }
         }}
@@ -148,11 +148,11 @@ const Navbar = () => {
                 return (
                   <motion.div
                     key={item.href}
-                    whileHover={{ 
+                    whileHover={{
                       scale: 1.05,
                       y: -2
                     }}
-                    whileTap={{ 
+                    whileTap={{
                       scale: 0.95,
                       y: 0
                     }}
@@ -173,8 +173,8 @@ const Navbar = () => {
                         "after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300",
                         "hover:after:w-[calc(100%-0.5rem)] hover:text-foreground",
                         "hover:shadow-lg hover:shadow-primary/20",
-                        isActive 
-                          ? "text-foreground after:w-[calc(100%-0.5rem)] after:bg-primary before:scale-100 shadow-md shadow-primary/20" 
+                        isActive
+                          ? "text-foreground after:w-[calc(100%-0.5rem)] after:bg-primary before:scale-100 shadow-md shadow-primary/20"
                           : "text-foreground/70"
                       )}
                       onClick={() => setActivePath(item.href)}
@@ -187,7 +187,7 @@ const Navbar = () => {
             </nav>
 
             <ThemeToggle />
-            
+
             {isMobile && (
               <Button
                 variant="ghost"
@@ -208,7 +208,7 @@ const Navbar = () => {
           </div>
         </div>
       </motion.header>
-      
+
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -217,7 +217,7 @@ const Navbar = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="mobile-menu-overlay fixed inset-0 z-10 bg-black/40 backdrop-blur-sm"
+              className="mobile-menu-overlay fixed inset-0 z-10 bg-black/60 backdrop-blur-md"
               onClick={() => setMobileMenuOpen(false)}
             />
             <motion.div
@@ -226,90 +226,74 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 12 }}
               transition={{ duration: 0.22, ease: 'easeOut' }}
-              className="mobile-menu-sheet fixed inset-0 z-20 flex flex-col items-center justify-start bg-background/95 border-0 shadow-none"
+              className="mobile-menu-sheet fixed inset-0 z-20 flex flex-col items-center justify-start bg-background border-0 shadow-2xl"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
-            <div className="mobile-menu-panel flex flex-col items-center justify-start h-full w-full p-6 pb-8">
-              <nav className="flex flex-col items-center justify-start gap-1 w-full">
-                {NAV_LINKS.map((item, i) => {
-                  const isActive = activePath.startsWith(item.href) && item.href !== "/";
-                  return (
-                    <motion.div
-                      key={item.href}
-                      custom={i}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ 
-                        delay: i * 0.1,
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 20
-                      }}
-                      whileHover={{ 
-                        scale: 1.02,
-                        x: 8
-                      }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full text-start"
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => {
-                          setActivePath(item.href);
-                          setMobileMenuOpen(false);
+              <div className="mobile-menu-panel flex flex-col items-center justify-start h-full w-full px-8 pt-24 pb-12">
+                <nav className="flex flex-col items-center justify-start gap-3 w-full max-w-xs">
+                  {NAV_LINKS.map((item, i) => {
+                    const isActive = item.href === "/"
+                      ? activePath === "/"
+                      : activePath.startsWith(item.href);
+                    const icons: Record<string, string> = {
+                      '/': '🏠',
+                      '/about/': '👤',
+                      '/blog/': '📝',
+                      '/notes/': '📒',
+                      '/archive': '📦',
+                      '/friends/': '🤝',
+                    };
+                    return (
+                      <motion.div
+                        key={item.href}
+                        custom={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          delay: i * 0.08,
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 25
                         }}
-                        className={cn(
-                          "block px-4 py-3 text-lg font-bold font-custom capitalize transition-all duration-300 rounded-lg mx-2",
-                          "relative overflow-hidden",
-                          "before:absolute before:inset-0 before:bg-primary/10 before:scale-x-0 before:origin-left before:transition-transform before:duration-300",
-                          "hover:before:scale-x-100",
-                          "after:absolute after:left-2 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-0 after:bg-primary after:transition-all after:duration-300",
-                          "hover:after:h-6",
-                          isActive 
-                            ? "text-primary before:scale-x-100 after:h-6 bg-primary/5" 
-                            : "dark:text-white text-foreground dark:hover:text-white/80 hover:text-foreground"
-                        )}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full"
                       >
-                        <span className="relative z-10 ml-3">{item.label}</span>
-                        <span className={cn(
-                          "absolute left-0 bottom-0 h-0.5 bg-neutral-900 dark:bg-white transition-all duration-300 ease-in-out",
-                          isActive ? "w-full" : "w-0 group-hover:w-full"
-                        )}></span>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </nav>
-              
-              <motion.div
-                custom={NAV_LINKS.length + 1}
-                className="mt-auto flex flex-col items-center gap-6"
-              >
-                <Button
-                  variant="ghost"
-                  className="w-full max-w-sm rounded-xl border text-base py-3"
-                  onClick={() => setMobileMenuOpen(false)}
+                        <Link
+                          href={item.href}
+                          onClick={() => {
+                            setActivePath(item.href);
+                            setMobileMenuOpen(false);
+                          }}
+                          className={cn(
+                            "flex items-center justify-center gap-3 px-6 py-4 text-lg font-semibold transition-all duration-300 rounded-2xl",
+                            "border border-transparent",
+                            isActive
+                              ? "bg-primary/15 text-primary border-primary/30 shadow-lg shadow-primary/10"
+                              : "text-foreground hover:bg-muted/80 hover:border-border/50"
+                          )}
+                        >
+                          <span className="text-xl">{icons[item.href] || '📄'}</span>
+                          <span>{item.label}</span>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </nav>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-auto pt-8 text-center"
                 >
-                  关闭菜单
-                </Button>
-                <div className="flex flex-wrap items-center justify-center gap-x-2 text-center">
-                  <span className="text-muted-foreground text-sm" aria-label="copyright">
-                    2020 - {new Date().getFullYear()} &copy; All rights reserved.
-                  </span>
-                  <Separator orientation="vertical" className="hidden h-4! sm:block" />
-                  <p className="text-muted-foreground text-sm" aria-label="open-source description">
-                    <Link
-                      href="https://github.com/bx33661/bx33661.github.io"
-                      class="text-foreground"
-                      external
-                      underline>Open-source</Link
-                    > under MIT license
+                  <p className="text-muted-foreground text-xs">
+                    2020 - {new Date().getFullYear()} © bx33661
                   </p>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
+                </motion.div>
+              </div>
+            </motion.div>
           </>
         )}
       </AnimatePresence>

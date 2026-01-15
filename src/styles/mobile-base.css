@@ -51,7 +51,7 @@
     background: var(--background);
   }
 
-  main > div,
+  main>div,
   section {
     width: 100%;
     max-width: 100% !important;
@@ -358,7 +358,7 @@
     padding-inline: var(--mobile-gutter) !important;
   }
 
-  .blog-layout-mobile > * {
+  .blog-layout-mobile>* {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
@@ -374,6 +374,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 768px) {
+
   *,
   *::before,
   *::after {
@@ -382,4 +383,189 @@
   }
 }
 
+/* =====================================================
+   移动端全面整改 - 2026年1月
+   ===================================================== */
 
+@media (max-width: 768px) {
+
+  /* Skills 技术栈区域：全宽滚动 */
+  .tech-scroll-container {
+    width: 100vw !important;
+    margin-left: calc(-1 * var(--mobile-gutter)) !important;
+    padding-left: var(--mobile-gutter) !important;
+    padding-right: var(--mobile-gutter) !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+  }
+
+  .tech-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 文章容器：全宽显示 */
+  .article-shell {
+    padding: 16px 16px !important;
+    margin-inline: 0 !important;
+    border-radius: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 代码块：全宽展示，易于阅读 */
+  .expressive-code,
+  .article-shell .expressive-code,
+  .prose pre,
+  .article-shell pre {
+    margin-inline: calc(-1 * 16px) !important;
+    border-radius: 0 !important;
+    width: calc(100% + 32px) !important;
+    max-width: calc(100% + 32px) !important;
+  }
+
+  .expressive-code pre,
+  .article-shell .expressive-code pre,
+  .prose pre code,
+  .article-shell pre code {
+    font-size: 0.82rem !important;
+    line-height: 1.5 !important;
+    padding: 1rem 1rem !important;
+    tab-size: 2 !important;
+  }
+
+  /* 触摸目标：确保 44px 最小尺寸 */
+  button:not(.copy),
+  .button,
+  [role="button"],
+  a.badge,
+  .tag:not(.prose .tag),
+  .badge {
+    min-height: 40px !important;
+    padding-block: 8px !important;
+  }
+
+  /* 导航菜单：完全不透明背景 - 使用硬编码颜色确保有效 */
+  .mobile-menu-sheet {
+    /* Light mode fallback: #f8fafc, Dark mode uses --background */
+    background-color: #f8fafc !important;
+    background: #f8fafc !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 1 !important;
+  }
+
+  .dark .mobile-menu-sheet,
+  [data-theme="dark"] .mobile-menu-sheet {
+    background-color: #1a1b26 !important;
+    background: #1a1b26 !important;
+  }
+
+  .mobile-menu-panel {
+    background-color: inherit !important;
+    background: inherit !important;
+    padding-top: 80px !important;
+  }
+
+  /* 移动端菜单遮罩层 */
+  .mobile-menu-overlay {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+  }
+
+  /* 图片：优化显示 */
+  .prose img,
+  .article-shell img {
+    width: calc(100% + 32px) !important;
+    max-width: calc(100% + 32px) !important;
+    margin-inline: -16px !important;
+    border-radius: 0 !important;
+    height: auto !important;
+  }
+
+  /* 面包屑导航优化 */
+  .breadcrumbs,
+  nav[aria-label="breadcrumb"] {
+    font-size: 0.85rem !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    padding-block: 8px !important;
+    scrollbar-width: none;
+  }
+
+  .breadcrumbs::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 文章标题优化 */
+  .article-shell h1,
+  .prose h1 {
+    font-size: 1.5rem !important;
+    line-height: 1.3 !important;
+    word-break: break-word !important;
+  }
+
+  /* 文章元信息优化 */
+  .article-shell .flex.items-center.gap-2,
+  .text-muted-foreground.flex.items-center {
+    flex-wrap: wrap !important;
+    gap: 4px 8px !important;
+  }
+
+  /* 标签列表优化 */
+  .flex.flex-wrap.gap-2,
+  .flex.flex-wrap.gap-1 {
+    gap: 6px !important;
+  }
+
+  /* 卡片优化 */
+  article.group,
+  .bg-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  /* 阅读进度条优化 */
+  #reading-progress {
+    height: 3px !important;
+  }
+
+  /* 表格：水平滚动支持 */
+  .prose table,
+  .article-shell table,
+  article table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  .prose table tbody,
+  .prose table thead,
+  .article-shell table tbody,
+  .article-shell table thead {
+    display: table;
+    width: 100%;
+    min-width: max-content;
+  }
+
+  .prose th,
+  .prose td,
+  .article-shell th,
+  .article-shell td {
+    padding: 0.6rem 0.8rem !important;
+    font-size: 0.85rem !important;
+    white-space: normal !important;
+    min-width: 80px;
+  }
+
+  /* 表格容器包装 */
+  .table-wrapper,
+  .prose>table {
+    margin-inline: calc(-1 * 16px) !important;
+    padding-inline: 16px !important;
+    width: calc(100% + 32px) !important;
+  }
+}
