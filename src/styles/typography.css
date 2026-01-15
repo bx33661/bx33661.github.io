@@ -106,7 +106,11 @@
     }
 
     .expressive-code {
-      @apply my-8 [&_.title]:font-semibold !;
+      @apply my-8;
+
+      .title {
+        font-weight: 600 !important;
+      }
 
       /* 移动端优化 */
       @apply mx-0 rounded-lg overflow-hidden;

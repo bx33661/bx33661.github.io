@@ -1,0 +1,107 @@
+---
+/**
+ * RelatedPosts.astro
+ * Shows related posts based on tag matching
+ */
+import { getAllPosts, getAllPostSlugs } from '@/lib/data-utils'
+
+interface Props {
+  currentSlug: string
+  currentTags: string[]
+  limit?: number
+}
+
+const { currentSlug, currentTags = [], limit = 4 } = Astro.props
+
+// Get all posts and find related ones
+const allPosts = await getAllPosts()
+const allSlugs = await getAllPostSlugs()
+
+// Filter out current post and drafts
+const otherPosts = allPosts.filter(post => {
+  const slugData = allSlugs.find(({ post: p }) => p.id === post.id)
+  const slug = slugData?.slug || post.data.slug || ''
+  return slug !== currentSlug && !post.data.draft
+})
+
+// Calculate relevance score based on tag overlap
+const scoredPosts = otherPosts.map(post => {
+  const postTags = post.data.tags || []
+  const commonTags = currentTags.filter(tag => postTags.includes(tag))
+  const slugData = allSlugs.find(({ post: p }) => p.id === post.id)
+  
+  return {
+    post,
+    slug: slugData?.slug || post.data.slug || 'unknown',
+    score: commonTags.length,
+    commonTags,
+  }
+})
+  .filter(item => item.score > 0) // Only posts with at least one common tag
+  .sort((a, b) => {
+    // Sort by score first, then by date
+    if (b.score !== a.score) return b.score - a.score
+    return new Date(b.post.data.date).getTime() - new Date(a.post.data.date).getTime()
+  })
+  .slice(0, limit)
+
+// If not enough related posts, fill with recent posts
+const recentPosts = otherPosts
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, limit - scoredPosts.length)
+  .map(post => {
+    const slugData = allSlugs.find(({ post: p }) => p.id === post.id)
+    return {
+      post,
+      slug: slugData?.slug || post.data.slug || 'unknown',
+      score: 0,
+      commonTags: [],
+    }
+  })
+
+const relatedPosts = [...scoredPosts, ...recentPosts].slice(0, limit)
+---
+
+{relatedPosts.length > 0 && (
+  <section class="mt-12 pt-8 border-t border-border" aria-labelledby="related-posts-title">
+    <h2 id="related-posts-title" class="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+      <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+      </svg>
+      相关文章
+    </h2>
+    
+    <div class="grid gap-4 sm:grid-cols-2">
+      {relatedPosts.map(({ post, slug, score, commonTags }) => (
+        <a
+          href={`/blog/${slug}`}
+          class="group block p-4 rounded-xl border border-border bg-card/50 hover:bg-card hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+        >
+          <h3 class="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
+            {post.data.title}
+          </h3>
+          <p class="text-sm text-muted-foreground line-clamp-2 mb-3">
+            {post.data.description}
+          </p>
+          <div class="flex items-center justify-between text-xs text-muted-foreground">
+            <time datetime={post.data.date.toISOString()}>
+              {new Intl.DateTimeFormat('zh-CN', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              }).format(post.data.date)}
+            </time>
+            {commonTags.length > 0 && (
+              <span class="flex items-center gap-1 text-primary/80">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                </svg>
+                {commonTags.slice(0, 2).join(', ')}
+              </span>
+            )}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+)}

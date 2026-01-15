@@ -2,6 +2,7 @@
 import { SITE, SEO_KEYWORDS } from '@/consts'
 import Favicons from './Favicons.astro'
 import Analytics from './Analytics.astro'
+import StructuredData from './StructuredData.astro'
 import { ENABLE_ANALYTICS, POSTHOG_HOST } from '@/config/env'
 
 interface Props {
@@ -18,6 +19,9 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
 <head>
   <!-- Slot 内容优先（包括 title、meta 等 SEO 标签） -->
   <slot name="head" />
+  
+  <!-- 结构化数据 (JSON-LD) -->
+  <StructuredData />
   
   <!-- 分析工具（统一入口，受开关控制） -->
   <Analytics />
@@ -64,11 +68,15 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
   <link rel="preconnect" href="https://analytics.ahrefs.com" crossorigin />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   
-  <!-- Google Fonts: Inter字体 + 中文字体支持 -->
+  <!-- Font Preload - Non-blocking -->
   <link 
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" 
-    rel="stylesheet" 
+    rel="preload"
+    href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
   />
+  <!-- Fonts loaded via CSS with font-display: swap -->
   
   <!-- DNS 预解析 - 减少连接延迟 -->
   <link rel="dns-prefetch" href="//res.cloudinary.com" />

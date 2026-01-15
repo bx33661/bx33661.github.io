@@ -1,0 +1,56 @@
+---
+/**
+ * StructuredData.astro
+ * Provides WebSite and Person schema for SEO
+ * @see https://schema.org/WebSite
+ * @see https://schema.org/Person
+ */
+import { SITE, SOCIAL_PROFILES } from '@/consts'
+
+interface Props {
+  type?: 'website' | 'article'
+}
+
+const { type = 'website' } = Astro.props
+
+// WebSite Schema
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.title,
+  description: SITE.description.replace(/\n/g, ' '),
+  url: SITE.href,
+  author: {
+    '@type': 'Person',
+    name: SITE.author,
+    url: SOCIAL_PROFILES.github,
+  },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${SITE.href}/search?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+  inLanguage: SITE.locale,
+}
+
+// Person Schema (Author)
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.author,
+  url: SITE.href,
+  sameAs: [
+    SOCIAL_PROFILES.github,
+  ],
+  jobTitle: '安全研究员',
+  knowsAbout: ['网络安全', 'CTF', 'Web安全', 'Python'],
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+{type === 'website' && (
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+)}

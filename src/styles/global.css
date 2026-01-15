@@ -1,19 +1,37 @@
-﻿@import 'tailwindcss';
+@import 'tailwindcss';
 
-@plugin "daisyui" {
-  themes: light --default, dark --prefersdark, synthwave, retro, valentine, dim;
-}
+@plugin "daisyui";
+
+@import './fonts.css';
 @import './card-links.css';
-@import './mobile-base.css'; /* 鏂扮Щ鍔ㄧ鍩虹嚎锛岀嫭绔嬩簬妗岄潰鏍峰紡 */
+@import './mobile-base.css';
+/* 新移动端基线，独立于桌面样式 */
 
-/* 瀵嗙爜閿欒闇囧姩鍔ㄧ敾 */
+/* 密码错误震动动画 */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
-  20%, 40%, 60%, 80% { transform: translateX(8px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-8px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(8px);
+  }
 }
 
-/* 浠ｇ爜鍐呭鍙鎬э細纭繚娴呰壊鑳屾櫙涓嬬殑鏂囧瓧涓嶈鈥滈殣褰⑩€?*/
+/* 代码内容可见性：确保浅色背景下的文字不被“隐形” */
 .expressive-code,
 .expressive-code pre,
 .expressive-code code,
@@ -27,12 +45,35 @@
 }
 
 @custom-variant dark (&:is(.dark *));
+
 .font-custom {
   font-family: var(--font-sans);
   font-weight: 600;
 }
 
-/* LXGW WenKai v1.521 鑷墭绠″瓧浣擄紙涓枃鏄剧ず鏇村弸濂斤級 */
+/* LXGW WenKai v1.521 自托管字体（中文显示更友好） */
+@font-face {
+  font-family: 'LXGW WenKai';
+  src:
+    local('LXGW WenKai'),
+    url('/fonts/LXGWWenKai-Medium.ttf') format('truetype');
+  /* 统一使用 Medium 粗细 */
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'LXGW WenKai';
+  src:
+    local('LXGW WenKai Medium'),
+    url('/fonts/LXGWWenKai-Medium.ttf') format('truetype');
+  font-weight: 500;
+  /* Medium 对应 500 权重 */
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: oklch(0.98 0.01 106);
   --foreground: oklch(0.15 0.02 106);
@@ -69,12 +110,12 @@
   --radius: 0.5rem;
 
   --font-sans:
-    'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 
-    'Hiragino Sans GB', 'Microsoft YaHei', '寰蒋闆呴粦', 'Helvetica Neue', Helvetica, Arial, sans-serif, 
+    'LXGW WenKai', 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   --font-mono:
     'Lucida Console', 'Consolas', 'Courier New', 'SF Mono', Monaco, 'Menlo', monospace;
-  
+
   --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);
   --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.05);
   --shadow-sm: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 1px 2px -1px oklch(0.00 0 0 / 0.10);
@@ -83,11 +124,11 @@
   --shadow-lg: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 4px 6px -1px oklch(0.00 0 0 / 0.10);
   --shadow-xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.10), 0 8px 10px -1px oklch(0.00 0 0 / 0.10);
   --shadow-2xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.25);
-  
+
 }
 
 .dark {
-  /* 鍙傝€冪粓绔晫闈㈢殑浼橀泤閰嶈壊 - 娣辫摑榛戣壊涓婚 */
+  /* 参考终端界面的优雅配色 - 深蓝黑色主题 */
   --background: #1a1b26;
   --foreground: #a9b1d6;
   --card: #1f2335;
@@ -119,7 +160,7 @@
   --sidebar-accent-foreground: #a9b1d6;
   --sidebar-border: #292e42;
   --sidebar-ring: #7aa2f7;
-  
+
   --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.15);
   --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.15);
   --shadow-sm: 0 1px 3px 0px oklch(0.00 0 0 / 0.20), 0 1px 2px -1px oklch(0.00 0 0 / 0.20);
@@ -183,6 +224,7 @@
 }
 
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -205,20 +247,20 @@
   }
 
   .disable-transitions * {
-    @apply transition-none!;
+    transition: none !important;
   }
 
   body {
     @apply font-sans text-base leading-normal;
-    /* 鏆楀妯″紡body浼樺寲 - Geek椋庢牸 */
+    /* 暗夜模式body优化 - Geek风格 */
     @apply dark:text-foreground/95 dark:leading-relaxed;
   }
 
   .dark body {
-    background: linear-gradient(135deg, 
-      oklch(0.04 0.02 264) 0%, 
-      oklch(0.02 0.03 280) 50%, 
-      oklch(0.04 0.02 300) 100%);
+    background: linear-gradient(135deg,
+        oklch(0.04 0.02 264) 0%,
+        oklch(0.02 0.03 280) 50%,
+        oklch(0.04 0.02 300) 100%);
     text-shadow: none;
   }
 
@@ -229,7 +271,7 @@
   h5,
   h6 {
     @apply text-foreground font-bold;
-    /* 鏆楀妯″紡鏍囬浼樺寲 - 闇撹櫣鏁堟灉 */
+    /* 暗夜模式标题优化 - 霓虹效果 */
     @apply dark:text-foreground dark:font-bold dark:tracking-tight;
   }
 
@@ -249,10 +291,10 @@
     left: 0;
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, 
-      #7aa2f7, 
-      #bb9af7, 
-      transparent);
+    background: linear-gradient(90deg,
+        #7aa2f7,
+        #bb9af7,
+        transparent);
     box-shadow: none;
   }
 
@@ -267,378 +309,381 @@
   pre {
     @apply bg-muted/60 overflow-x-auto rounded-md p-4 relative;
   }
-  
+
   code {
     @apply font-mono text-sm;
   }
-  
+
   /* Enhanced code block styles */
   .enhanced-code-block {
     @apply relative border border-border/50 bg-card/50 backdrop-blur-sm;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
-  
+
   .enhanced-code-block:hover {
     @apply border-border/80;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
-  
+
   /* Code block copy button enhancement */
   .enhanced-code-block .copy {
     @apply transition-all duration-200 hover:scale-105;
   }
-  
+
   /* Line numbers styling */
   .enhanced-code-block .line-numbers {
     @apply text-muted-foreground/60 select-none;
   }
-  
-/* 鏆楄壊妯″紡涓嬩唬鐮佽娉曢珮浜寮?- Tokyo Night閰嶈壊 */
-.dark .enhanced-code-block .token.comment {
-  color: #565f89;
-  font-style: italic;
-  text-shadow: none;
-}
 
-.dark .enhanced-code-block .token.string {
-  color: #9ece6a;
-  font-weight: 500;
-  text-shadow: none;
-}
-
-.dark .enhanced-code-block .token.keyword {
-  color: #7aa2f7;
-  font-weight: 600;
-  text-shadow: none;
-}
-
-.dark .enhanced-code-block .token.function {
-  color: #bb9af7;
-  font-weight: 500;
-  text-shadow: none;
-}
-
-.dark .enhanced-code-block .token.number {
-  color: oklch(0.80 0.20 60);
-  text-shadow: 0 0 2px oklch(0.80 0.20 60 / 0.3);
-}
-
-.dark .enhanced-code-block .token.operator {
-  color: oklch(0.85 0.18 180);
-  font-weight: 500;
-  text-shadow: 0 0 2px oklch(0.85 0.18 180 / 0.3);
-}
-
-.dark .enhanced-code-block .token.variable {
-  color: oklch(0.82 0.20 80);
-  text-shadow: 0 0 2px oklch(0.82 0.20 80 / 0.3);
-}
-
-/* 鏆楄壊妯″紡涓嬬殑閾炬帴澧炲己 - 闇撹櫣閾炬帴 */
-.dark a {
-  color: oklch(0.75 0.25 120);
-  text-decoration: none;
-  position: relative;
-  transition: all 0.3s ease;
-  text-shadow: 0 0 2px oklch(0.75 0.25 120 / 0.2);
-}
-
-.dark a:hover {
-  color: oklch(0.85 0.28 120);
-  text-shadow: 
-    0 0 5px oklch(0.75 0.25 120),
-    0 0 10px oklch(0.75 0.25 120 / 0.5),
-    0 0 15px oklch(0.75 0.25 120 / 0.3);
-  transform: translateY(-1px);
-}
-
-.dark a::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: oklch(0.75 0.25 120);
-  transition: width 0.3s ease;
-  box-shadow: 0 0 3px oklch(0.75 0.25 120);
-}
-
-.dark a:hover::after {
-  width: 100%;
-}
-
-/* 鏆楄壊妯″紡涓嬬殑琛ㄦ牸澧炲己 - 鏁版嵁鐭╅樀椋庢牸 */
-.dark table {
-  background: linear-gradient(135deg, 
-    oklch(0.06 0.03 264) 0%, 
-    oklch(0.04 0.04 280) 100%);
-  border: 1px solid oklch(0.70 0.25 120 / 0.2);
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 
-    0 0 15px oklch(0.70 0.25 120 / 0.1),
-    inset 0 1px 0 oklch(0.70 0.25 120 / 0.1);
-}
-
-.dark th {
-  background: linear-gradient(135deg, 
-    oklch(0.08 0.04 264) 0%, 
-    oklch(0.06 0.05 280) 100%);
-  color: oklch(0.88 0.15 120);
-  border-color: oklch(0.70 0.25 120 / 0.2);
-  font-weight: 600;
-  text-shadow: 0 0 2px oklch(0.75 0.25 120 / 0.2);
-  position: relative;
-}
-
-.dark th::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: oklch(0.70 0.25 120);
-  box-shadow: 0 0 3px oklch(0.70 0.25 120);
-}
-
-.dark td {
-  background: oklch(0.04 0.03 264);
-  color: oklch(0.86 0.08 120);
-  border-color: oklch(0.70 0.25 120 / 0.1);
-  transition: all 0.3s ease;
-}
-
-.dark tr:hover td {
-  background: oklch(0.06 0.04 264);
-  color: oklch(0.90 0.12 120);
-  text-shadow: 0 0 1px oklch(0.75 0.25 120 / 0.1);
-}
-
-/* 鏆楄壊妯″紡涓嬬殑寮曠敤鍧楀寮?- 鏁版嵁娴侀鏍?*/
-.dark blockquote {
-  background: linear-gradient(135deg, 
-    oklch(0.04 0.02 264) 0%, 
-    oklch(0.02 0.03 280) 50%,
-    oklch(0.04 0.02 300) 100%);
-  border: none;
-  border-left: 3px solid oklch(0.70 0.25 180);
-  color: oklch(0.88 0.12 180);
-  padding: 16px 20px;
-  margin: 20px 0;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 
-    inset 0 1px 3px oklch(0.00 0 0 / 0.3),
-    0 0 15px oklch(0.70 0.25 180 / 0.1),
-    0 4px 12px oklch(0.00 0 0 / 0.2);
-}
-
-.dark blockquote::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
-  background: linear-gradient(180deg, 
-    oklch(0.70 0.25 180),
-    oklch(0.70 0.25 120),
-    oklch(0.70 0.25 300));
-  animation: quote-flow 2s ease-in-out infinite;
-}
-
-@keyframes quote-flow {
-  0%, 100% {
-    background: linear-gradient(180deg, 
-      oklch(0.70 0.25 180),
-      oklch(0.70 0.25 120),
-      oklch(0.70 0.25 300));
+  /* 暗色模式下代码语法高亮增强 - Tokyo Night配色 */
+  .dark .enhanced-code-block .token.comment {
+    color: #565f89;
+    font-style: italic;
+    text-shadow: none;
   }
-  50% {
-    background: linear-gradient(180deg, 
-      oklch(0.80 0.25 300),
-      oklch(0.80 0.25 180),
-      oklch(0.80 0.25 120));
+
+  .dark .enhanced-code-block .token.string {
+    color: #9ece6a;
+    font-weight: 500;
+    text-shadow: none;
   }
-}
 
-/* 鏆楄壊妯″紡涓嬬殑琛ㄥ崟鍏冪礌澧炲己 - 绉戞妧鎰熻緭鍏ユ */
-.dark input,
-.dark textarea,
-.dark select {
-  background: linear-gradient(135deg, 
-    oklch(0.06 0.03 264) 0%, 
-    oklch(0.04 0.04 280) 100%);
-  border: 1px solid oklch(0.70 0.25 120 / 0.3);
-  color: oklch(0.90 0.10 120);
-  backdrop-filter: blur(12px);
-  transition: all 0.3s ease;
-  text-shadow: 0 0 1px oklch(0.70 0.15 120 / 0.1);
-}
+  .dark .enhanced-code-block .token.keyword {
+    color: #7aa2f7;
+    font-weight: 600;
+    text-shadow: none;
+  }
 
-.dark input:focus,
-.dark textarea:focus,
-.dark select:focus {
-  border-color: oklch(0.75 0.25 120);
-  box-shadow: 
-    0 0 0 2px oklch(0.75 0.25 120 / 0.2),
-    0 0 10px oklch(0.75 0.25 120 / 0.1);
-  text-shadow: 0 0 2px oklch(0.70 0.15 120 / 0.2);
-}
+  .dark .enhanced-code-block .token.function {
+    color: #bb9af7;
+    font-weight: 500;
+    text-shadow: none;
+  }
 
-.dark input::placeholder,
-.dark textarea::placeholder {
-  color: oklch(0.60 0.08 120);
-  text-shadow: none;
-}
+  .dark .enhanced-code-block .token.number {
+    color: oklch(0.80 0.20 60);
+    text-shadow: 0 0 2px oklch(0.80 0.20 60 / 0.3);
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑鎸夐挳澧炲己 - 闇撹櫣鎸夐挳 */
-.dark .btn-primary {
-  background: linear-gradient(135deg, 
-    oklch(0.70 0.25 120) 0%, 
-    oklch(0.65 0.22 140) 100%);
-  color: oklch(0.04 0.02 264);
-  border: 1px solid oklch(0.75 0.25 120);
-  font-weight: 600;
-  text-shadow: 0 0 2px oklch(0.04 0.02 264);
-  box-shadow: 
-    0 4px 14px oklch(0.70 0.25 120 / 0.3),
-    0 0 20px oklch(0.70 0.25 120 / 0.1),
-    inset 0 1px 0 oklch(0.80 0.25 120 / 0.3);
-  transition: all 0.3s ease;
-}
+  .dark .enhanced-code-block .token.operator {
+    color: oklch(0.85 0.18 180);
+    font-weight: 500;
+    text-shadow: 0 0 2px oklch(0.85 0.18 180 / 0.3);
+  }
 
-.dark .btn-primary:hover {
-  background: linear-gradient(135deg, 
-    oklch(0.75 0.28 120) 0%, 
-    oklch(0.70 0.25 140) 100%);
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 
-    0 6px 20px oklch(0.70 0.25 120 / 0.4),
-    0 0 30px oklch(0.70 0.25 120 / 0.2),
-    inset 0 1px 0 oklch(0.85 0.28 120 / 0.4);
-}
+  .dark .enhanced-code-block .token.variable {
+    color: oklch(0.82 0.20 80);
+    text-shadow: 0 0 2px oklch(0.82 0.20 80 / 0.3);
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑瀵艰埅鏍忓寮?*/
-.dark nav {
-  backdrop-filter: blur(20px);
-  background: oklch(0.11 0.01 264 / 0.8);
-  border-bottom: 1px solid oklch(0.25 0.02 264 / 0.3);
-}
+  /* 暗色模式下的链接增强 - 霓虹链接 */
+  .dark a {
+    color: oklch(0.75 0.25 120);
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 2px oklch(0.75 0.25 120 / 0.2);
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑鎼滅储妗嗗寮?*/
-.dark .search-input {
-  @apply bg-background/60 border-border/40 text-foreground;
-  backdrop-filter: blur(12px);
-}
+  .dark a:hover {
+    color: oklch(0.85 0.28 120);
+    text-shadow:
+      0 0 5px oklch(0.75 0.25 120),
+      0 0 10px oklch(0.75 0.25 120 / 0.5),
+      0 0 15px oklch(0.75 0.25 120 / 0.3);
+    transform: translateY(-1px);
+  }
 
-.dark .search-input:focus {
-  @apply border-primary/60;
-  box-shadow: 0 0 0 2px oklch(0.70 0.18 264 / 0.3);
-}
+  .dark a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: oklch(0.75 0.25 120);
+    transition: width 0.3s ease;
+    box-shadow: 0 0 3px oklch(0.75 0.25 120);
+  }
 
-/* 鏆楄壊妯″紡鍒囨崲鏃剁殑骞虫粦杩囨浮 */
-html {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+  .dark a:hover::after {
+    width: 100%;
+  }
 
-.dark * {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
+  /* 暗色模式下的表格增强 - 数据矩阵风格 */
+  .dark table {
+    background: linear-gradient(135deg,
+        oklch(0.06 0.03 264) 0%,
+        oklch(0.04 0.04 280) 100%);
+    border: 1px solid oklch(0.70 0.25 120 / 0.2);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow:
+      0 0 15px oklch(0.70 0.25 120 / 0.1),
+      inset 0 1px 0 oklch(0.70 0.25 120 / 0.1);
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑椤甸潰鍔犺浇鍔ㄧ敾澧炲己 */
-.dark .loading-spinner {
-  border-color: oklch(0.25 0.02 264);
-  border-top-color: oklch(0.70 0.18 264);
-  box-shadow: 0 0 20px oklch(0.70 0.18 264 / 0.3);
-}
+  .dark th {
+    background: linear-gradient(135deg,
+        oklch(0.08 0.04 264) 0%,
+        oklch(0.06 0.05 280) 100%);
+    color: oklch(0.88 0.15 120);
+    border-color: oklch(0.70 0.25 120 / 0.2);
+    font-weight: 600;
+    text-shadow: 0 0 2px oklch(0.75 0.25 120 / 0.2);
+    position: relative;
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑宸ュ叿鎻愮ず澧炲己 */
-.dark .tooltip {
-  @apply bg-background/90 border-border/50 text-foreground shadow-2xl;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 8px 32px oklch(0.00 0 0 / 0.4);
-}
+  .dark th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: oklch(0.70 0.25 120);
+    box-shadow: 0 0 3px oklch(0.70 0.25 120);
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑妯℃€佹澧炲己 */
-.dark .modal {
-  @apply bg-background/95 border-border/30;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 25px 50px oklch(0.00 0 0 / 0.5);
-}
+  .dark td {
+    background: oklch(0.04 0.03 264);
+    color: oklch(0.86 0.08 120);
+    border-color: oklch(0.70 0.25 120 / 0.1);
+    transition: all 0.3s ease;
+  }
 
-.dark .modal-backdrop {
-  background: oklch(0.00 0 0 / 0.7);
-  backdrop-filter: blur(4px);
-}
+  .dark tr:hover td {
+    background: oklch(0.06 0.04 264);
+    color: oklch(0.90 0.12 120);
+    text-shadow: 0 0 1px oklch(0.75 0.25 120 / 0.1);
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑鎮诞鍔ㄤ綔鎸夐挳澧炲己 */
-.dark .floating-action-button {
-  background: linear-gradient(135deg, oklch(0.70 0.18 264) 0%, oklch(0.60 0.15 280) 100%);
-  box-shadow: 
-    0 8px 32px oklch(0.70 0.18 264 / 0.3),
-    0 0 0 1px oklch(0.70 0.18 264 / 0.2);
-}
+  /* 暗色模式下的引用块增强 - 数据流风格 */
+  .dark blockquote {
+    background: linear-gradient(135deg,
+        oklch(0.04 0.02 264) 0%,
+        oklch(0.02 0.03 280) 50%,
+        oklch(0.04 0.02 300) 100%);
+    border: none;
+    border-left: 3px solid oklch(0.70 0.25 180);
+    color: oklch(0.88 0.12 180);
+    padding: 16px 20px;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      inset 0 1px 3px oklch(0.00 0 0 / 0.3),
+      0 0 15px oklch(0.70 0.25 180 / 0.1),
+      0 4px 12px oklch(0.00 0 0 / 0.2);
+  }
 
-.dark .floating-action-button:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 
-    0 12px 40px oklch(0.70 0.18 264 / 0.4),
-    0 0 0 1px oklch(0.70 0.18 264 / 0.3);
-}
+  .dark blockquote::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg,
+        oklch(0.70 0.25 180),
+        oklch(0.70 0.25 120),
+        oklch(0.70 0.25 300));
+    animation: quote-flow 2s ease-in-out infinite;
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑杩涘害鏉″寮?*/
-.dark .progress-bar {
-  background: oklch(0.20 0.02 264);
-  box-shadow: inset 0 1px 3px oklch(0.00 0 0 / 0.3);
-}
+  @keyframes quote-flow {
 
-.dark .progress-bar-fill {
-  background: linear-gradient(90deg, oklch(0.70 0.18 264) 0%, oklch(0.75 0.20 250) 100%);
-  box-shadow: 0 0 20px oklch(0.70 0.18 264 / 0.5);
-}
+    0%,
+    100% {
+      background: linear-gradient(180deg,
+          oklch(0.70 0.25 180),
+          oklch(0.70 0.25 120),
+          oklch(0.70 0.25 300));
+    }
 
-/* 鏆楄壊妯″紡涓嬬殑鏍囩澧炲己 */
-.dark .tag,
-.dark .badge {
-  @apply bg-secondary/60 text-secondary-foreground border-border/30;
-  backdrop-filter: blur(8px);
-}
+    50% {
+      background: linear-gradient(180deg,
+          oklch(0.80 0.25 300),
+          oklch(0.80 0.25 180),
+          oklch(0.80 0.25 120));
+    }
+  }
 
-.dark .tag:hover,
-.dark .badge:hover {
-  @apply bg-primary/20 text-primary border-primary/30;
-  box-shadow: 0 0 16px oklch(0.70 0.18 264 / 0.2);
-}
+  /* 暗色模式下的表单元素增强 - 科技感输入框 */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    background: linear-gradient(135deg,
+        oklch(0.06 0.03 264) 0%,
+        oklch(0.04 0.04 280) 100%);
+    border: 1px solid oklch(0.70 0.25 120 / 0.3);
+    color: oklch(0.90 0.10 120);
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+    text-shadow: 0 0 1px oklch(0.70 0.15 120 / 0.1);
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑鍒嗛殧绾垮寮?*/
-.dark hr {
-  border-color: oklch(0.25 0.02 264);
-  box-shadow: 0 1px 3px oklch(0.00 0 0 / 0.1);
-}
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    border-color: oklch(0.75 0.25 120);
+    box-shadow:
+      0 0 0 2px oklch(0.75 0.25 120 / 0.2),
+      0 0 10px oklch(0.75 0.25 120 / 0.1);
+    text-shadow: 0 0 2px oklch(0.70 0.15 120 / 0.2);
+  }
 
-/* 鏆楄壊妯″紡涓嬬殑閫氱煡/璀﹀憡澧炲己 */
-.dark .alert {
-  @apply bg-card/60 border-border/40 text-foreground;
-  backdrop-filter: blur(12px);
-}
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: oklch(0.60 0.08 120);
+    text-shadow: none;
+  }
 
-.dark .alert-success {
-  @apply border-green-400/30 bg-green-400/10;
-  box-shadow: 0 0 20px oklch(0.70 0.15 150 / 0.1);
-}
+  /* 暗色模式下的按钮增强 - 霓虹按钮 */
+  .dark .btn-primary {
+    background: linear-gradient(135deg,
+        oklch(0.70 0.25 120) 0%,
+        oklch(0.65 0.22 140) 100%);
+    color: oklch(0.04 0.02 264);
+    border: 1px solid oklch(0.75 0.25 120);
+    font-weight: 600;
+    text-shadow: 0 0 2px oklch(0.04 0.02 264);
+    box-shadow:
+      0 4px 14px oklch(0.70 0.25 120 / 0.3),
+      0 0 20px oklch(0.70 0.25 120 / 0.1),
+      inset 0 1px 0 oklch(0.80 0.25 120 / 0.3);
+    transition: all 0.3s ease;
+  }
 
-.dark .alert-warning {
-  @apply border-yellow-400/30 bg-yellow-400/10;
-  box-shadow: 0 0 20px oklch(0.80 0.15 80 / 0.1);
-}
+  .dark .btn-primary:hover {
+    background: linear-gradient(135deg,
+        oklch(0.75 0.28 120) 0%,
+        oklch(0.70 0.25 140) 100%);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:
+      0 6px 20px oklch(0.70 0.25 120 / 0.4),
+      0 0 30px oklch(0.70 0.25 120 / 0.2),
+      inset 0 1px 0 oklch(0.85 0.28 120 / 0.4);
+  }
 
-.dark .alert-error {
-  @apply border-red-400/30 bg-red-400/10;
-  box-shadow: 0 0 20px oklch(0.65 0.20 30 / 0.1);
-}
+  /* 暗色模式下的导航栏增强 */
+  .dark nav {
+    backdrop-filter: blur(20px);
+    background: oklch(0.11 0.01 264 / 0.8);
+    border-bottom: 1px solid oklch(0.25 0.02 264 / 0.3);
+  }
+
+  /* 暗色模式下的搜索框增强 */
+  .dark .search-input {
+    @apply bg-background/60 border-border/40 text-foreground;
+    backdrop-filter: blur(12px);
+  }
+
+  .dark .search-input:focus {
+    @apply border-primary/60;
+    box-shadow: 0 0 0 2px oklch(0.70 0.18 264 / 0.3);
+  }
+
+  /* 暗色模式切换时的平滑过渡 */
+  html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* 暗色模式下的页面加载动画增强 */
+  .dark .loading-spinner {
+    border-color: oklch(0.25 0.02 264);
+    border-top-color: oklch(0.70 0.18 264);
+    box-shadow: 0 0 20px oklch(0.70 0.18 264 / 0.3);
+  }
+
+  /* 暗色模式下的工具提示增强 */
+  .dark .tooltip {
+    @apply bg-background/90 border-border/50 text-foreground shadow-2xl;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px oklch(0.00 0 0 / 0.4);
+  }
+
+  /* 暗色模式下的模态框增强 */
+  .dark .modal {
+    @apply bg-background/95 border-border/30;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 25px 50px oklch(0.00 0 0 / 0.5);
+  }
+
+  .dark .modal-backdrop {
+    background: oklch(0.00 0 0 / 0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  /* 暗色模式下的悬浮动作按钮增强 */
+  .dark .floating-action-button {
+    background: linear-gradient(135deg, oklch(0.70 0.18 264) 0%, oklch(0.60 0.15 280) 100%);
+    box-shadow:
+      0 8px 32px oklch(0.70 0.18 264 / 0.3),
+      0 0 0 1px oklch(0.70 0.18 264 / 0.2);
+  }
+
+  .dark .floating-action-button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow:
+      0 12px 40px oklch(0.70 0.18 264 / 0.4),
+      0 0 0 1px oklch(0.70 0.18 264 / 0.3);
+  }
+
+  /* 暗色模式下的进度条增强 */
+  .dark .progress-bar {
+    background: oklch(0.20 0.02 264);
+    box-shadow: inset 0 1px 3px oklch(0.00 0 0 / 0.3);
+  }
+
+  .dark .progress-bar-fill {
+    background: linear-gradient(90deg, oklch(0.70 0.18 264) 0%, oklch(0.75 0.20 250) 100%);
+    box-shadow: 0 0 20px oklch(0.70 0.18 264 / 0.5);
+  }
+
+  /* 暗色模式下的标签增强 */
+  .dark .tag,
+  .dark .badge {
+    @apply bg-secondary/60 text-secondary-foreground border-border/30;
+    backdrop-filter: blur(8px);
+  }
+
+  .dark .tag:hover,
+  .dark .badge:hover {
+    @apply bg-primary/20 text-primary border-primary/30;
+    box-shadow: 0 0 16px oklch(0.70 0.18 264 / 0.2);
+  }
+
+  /* 暗色模式下的分隔线增强 */
+  .dark hr {
+    border-color: oklch(0.25 0.02 264);
+    box-shadow: 0 1px 3px oklch(0.00 0 0 / 0.1);
+  }
+
+  /* 暗色模式下的通知/警告增强 */
+  .dark .alert {
+    @apply bg-card/60 border-border/40 text-foreground;
+    backdrop-filter: blur(12px);
+  }
+
+  .dark .alert-success {
+    @apply border-green-400/30 bg-green-400/10;
+    box-shadow: 0 0 20px oklch(0.70 0.15 150 / 0.1);
+  }
+
+  .dark .alert-warning {
+    @apply border-yellow-400/30 bg-yellow-400/10;
+    box-shadow: 0 0 20px oklch(0.80 0.15 80 / 0.1);
+  }
+
+  .dark .alert-error {
+    @apply border-red-400/30 bg-red-400/10;
+    box-shadow: 0 0 20px oklch(0.65 0.20 30 / 0.1);
+  }
 
   blockquote {
     @apply text-muted-foreground border-l-2 pl-4 italic;
@@ -655,7 +700,7 @@ html {
   }
 }
 
-/* 鎶€鑳藉窘绔犲姩鐢绘晥鏋?*/
+/* 技能徽章动画效果 */
 .tech-badge {
   opacity: 0;
   transform: translateY(20px) scale(0.9);
@@ -704,27 +749,32 @@ html {
   text-shadow: 0 0 10px currentColor;
 }
 
-/* 娓愯繘寮忓嚭鐜板姩鐢?*/
+/* 渐进式出现动画 */
 @keyframes fadeInUp {
   0% {
     opacity: 0;
     transform: translateY(30px) scale(0.8);
   }
+
   50% {
     opacity: 0.8;
     transform: translateY(-5px) scale(1.02);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
 
-/* 寰鐨勬诞鍔ㄦ晥鏋?*/
+/* 微妙的浮动效果 */
 @keyframes subtleFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-2px);
   }
@@ -738,24 +788,20 @@ html {
   animation-delay: 0.2s;
 }
 
-/* 涓烘妧鑳芥粴鍔ㄥ尯鍩熸坊鍔犳笎鍙樻晥鏋?*/
+/* 为技能滚动区域添加渐变效果 */
 .tech-scroll-container {
   position: relative;
   overflow: hidden;
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 10%,
-    black 90%,
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 10%,
-    black 90%,
-    transparent 100%
-  );
+  mask-image: linear-gradient(to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%);
+  -webkit-mask-image: linear-gradient(to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%);
 }
 
 .tech-scroll-container::before,
@@ -779,53 +825,53 @@ html {
   background: linear-gradient(to left, rgba(var(--background), 1), rgba(var(--background), 0));
 }
 
-/* 浼樺寲鎶€鑳界粍浠跺湪绉诲姩绔殑鏄剧ず */
+/* 优化技能组件在移动端的显示 */
 @media (max-width: 768px) {
   .tech-badge {
     margin-right: 0.75rem !important;
     padding: 0.5rem !important;
     gap: 0.5rem !important;
   }
-  
+
   .tech-badge span:first-child {
     width: 2rem !important;
     height: 2rem !important;
   }
-  
+
   .tech-badge span:last-child {
     font-size: 0.75rem !important;
   }
-  
-  /* 绉诲姩绔唬鐮佸潡浼樺寲 */
+
+  /* 移动端代码块优化 */
   .prose pre,
   .enhanced-code-block {
     @apply mx-[-1rem] rounded-none text-xs;
     font-size: 0.75rem;
     line-height: 1.4;
   }
-  
+
   .enhanced-code-block .copy {
     @apply scale-90;
   }
-  
+
   .enhanced-code-block .line-numbers {
     @apply text-xs;
   }
-  
-  /* 绉诲姩绔浘鐗囦紭鍖?*/
+
+  /* 移动端图片优化 */
   .prose img {
     @apply mx-[-1rem] rounded-none;
   }
-  
-  /* 鍥剧墖缂╂斁缁勪欢绉诲姩绔紭鍖?*/
+
+  /* 图片缩放组件移动端优化 */
   .image-zoom-container {
     @apply mx-[-1rem];
   }
-  
+
   .image-zoom-modal {
     @apply p-2;
   }
-  
+
   .image-zoom-modal img {
     @apply max-h-[80vh] w-auto;
   }
@@ -843,12 +889,10 @@ html {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent);
   transition: left 0.8s ease-in-out;
 }
 
@@ -856,30 +900,28 @@ html {
   left: 100%;
 }
 
-/* 鏆楄壊妯″紡涓嬬殑鍏夋晥 */
+/* 暗色模式下的光效 */
 .dark .friend-link-card::before {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.05),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent);
 }
 
-/* 榛戝椋庢牸鏆楄壊妯″紡澧炲己鏁堟灉 */
+/* 黑客风格暗色模式增强效果 */
 .dark {
-  /* 鍔ㄦ€佽儗鏅煩闃垫晥鏋?*/
-  background-image: 
+  /* 动态背景矩阵效果 */
+  background-image:
     radial-gradient(circle at 20% 30%, oklch(0.12 0.15 120 / 0.1) 0%, transparent 40%),
     radial-gradient(circle at 80% 20%, oklch(0.12 0.15 180 / 0.08) 0%, transparent 40%),
     radial-gradient(circle at 40% 80%, oklch(0.12 0.15 300 / 0.06) 0%, transparent 40%),
-    linear-gradient(135deg, 
-      oklch(0.08 0.02 264) 0%, 
-      oklch(0.06 0.03 280) 25%, 
-      oklch(0.08 0.02 264) 50%, 
+    linear-gradient(135deg,
+      oklch(0.08 0.02 264) 0%,
+      oklch(0.06 0.03 280) 25%,
+      oklch(0.08 0.02 264) 50%,
       oklch(0.05 0.04 300) 100%);
-  
-  /* 娣诲姞鎵弿绾挎晥鏋?*/
+
+  /* 添加扫描线效果 */
   position: relative;
 }
 
@@ -890,25 +932,28 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    repeating-linear-gradient(
-      90deg,
+  background:
+    repeating-linear-gradient(90deg,
       transparent,
       transparent 2px,
       oklch(0.75 0.25 120 / 0.02) 2px,
-      oklch(0.75 0.25 120 / 0.02) 4px
-    );
+      oklch(0.75 0.25 120 / 0.02) 4px);
   pointer-events: none;
   z-index: 1;
   animation: matrix-scan 8s linear infinite;
 }
 
 @keyframes matrix-scan {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100vw); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100vw);
+  }
 }
 
-/* 鐭╅樀浠ｇ爜闆ㄦ晥鏋滐紙鍙€夛級 */
+/* 矩阵代码雨效果（可选） */
 .dark::after {
   content: '';
   position: fixed;
@@ -916,7 +961,7 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
+  background:
     radial-gradient(circle at 10% 20%, oklch(0.75 0.25 120 / 0.03) 1px, transparent 1px),
     radial-gradient(circle at 80% 80%, oklch(0.70 0.20 300 / 0.02) 1px, transparent 1px),
     radial-gradient(circle at 40% 40%, oklch(0.80 0.22 180 / 0.02) 1px, transparent 1px);
@@ -927,30 +972,40 @@ html {
 }
 
 @keyframes matrix-rain {
-  0% { background-position: 0 0, 0 0, 0 0; }
-  100% { background-position: 0 100vh, 0 100vh, 0 100vh; }
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+
+  100% {
+    background-position: 0 100vh, 0 100vh, 0 100vh;
+  }
 }
 
-/* 闇撹櫣鍙戝厜鍏冪礌 */
+/* 霓虹发光元素 */
 .dark .group:hover {
   filter: drop-shadow(0 0 20px oklch(0.75 0.25 120 / 0.4));
   animation: neon-pulse 2s ease-in-out infinite alternate;
 }
 
 @keyframes neon-pulse {
-  from { filter: drop-shadow(0 0 15px oklch(0.75 0.25 120 / 0.3)); }
-  to { filter: drop-shadow(0 0 25px oklch(0.75 0.25 120 / 0.5)); }
+  from {
+    filter: drop-shadow(0 0 15px oklch(0.75 0.25 120 / 0.3));
+  }
+
+  to {
+    filter: drop-shadow(0 0 25px oklch(0.75 0.25 120 / 0.5));
+  }
 }
 
-/* 鎸夐挳闇撹櫣鏁堟灉 */
+/* 按钮霓虹效果 */
 .dark button:hover,
 .dark [role="button"]:hover {
-  background: linear-gradient(45deg, 
-    oklch(0.75 0.25 120 / 0.2) 0%, 
-    oklch(0.70 0.20 300 / 0.2) 50%, 
-    oklch(0.80 0.22 180 / 0.2) 100%);
+  background: linear-gradient(45deg,
+      oklch(0.75 0.25 120 / 0.2) 0%,
+      oklch(0.70 0.20 300 / 0.2) 50%,
+      oklch(0.80 0.22 180 / 0.2) 100%);
   border: 1px solid oklch(0.75 0.25 120);
-  box-shadow: 
+  box-shadow:
     0 0 10px oklch(0.75 0.25 120 / 0.5),
     0 0 20px oklch(0.75 0.25 120 / 0.3),
     0 0 40px oklch(0.75 0.25 120 / 0.1),
@@ -959,40 +1014,41 @@ html {
 }
 
 @keyframes cyber-glow {
-  from { 
-    box-shadow: 
+  from {
+    box-shadow:
       0 0 8px oklch(0.75 0.25 120 / 0.4),
       0 0 16px oklch(0.75 0.25 120 / 0.2),
       0 0 32px oklch(0.75 0.25 120 / 0.1);
   }
-  to { 
-    box-shadow: 
+
+  to {
+    box-shadow:
       0 0 12px oklch(0.75 0.25 120 / 0.6),
       0 0 24px oklch(0.75 0.25 120 / 0.4),
       0 0 48px oklch(0.75 0.25 120 / 0.2);
   }
 }
 
-/* 杈撳叆妗嗚禌鍗氭湅鍏嬮鏍?*/
+/* 输入框赛博朋克风格 */
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  background: linear-gradient(135deg, 
-    oklch(0.10 0.02 264) 0%, 
-    oklch(0.08 0.03 280) 100%);
+  background: linear-gradient(135deg,
+      oklch(0.10 0.02 264) 0%,
+      oklch(0.08 0.03 280) 100%);
   border: 2px solid oklch(0.75 0.25 120);
-  box-shadow: 
+  box-shadow:
     0 0 15px oklch(0.75 0.25 120 / 0.4),
     inset 0 0 15px oklch(0.75 0.25 120 / 0.1);
   color: oklch(0.90 0.15 120);
 }
 
-/* 鍗＄墖璧涘崥鏈嬪厠澧炲己 */
+/* 卡片赛博朋克增强 */
 .dark .bg-card {
-  background: linear-gradient(135deg, 
-    oklch(0.10 0.02 264) 0%, 
-    oklch(0.08 0.03 280) 50%, 
-    oklch(0.10 0.02 264) 100%);
+  background: linear-gradient(135deg,
+      oklch(0.10 0.02 264) 0%,
+      oklch(0.08 0.03 280) 50%,
+      oklch(0.10 0.02 264) 100%);
   border: 1px solid oklch(0.20 0.05 264);
   position: relative;
   overflow: hidden;
@@ -1005,11 +1061,11 @@ html {
   left: -2px;
   right: -2px;
   bottom: -2px;
-  background: linear-gradient(45deg, 
-    oklch(0.75 0.25 120), 
-    oklch(0.70 0.20 300), 
-    oklch(0.80 0.22 180), 
-    oklch(0.75 0.25 120));
+  background: linear-gradient(45deg,
+      oklch(0.75 0.25 120),
+      oklch(0.70 0.20 300),
+      oklch(0.80 0.22 180),
+      oklch(0.75 0.25 120));
   background-size: 400% 400%;
   animation: rainbow-border 4s ease infinite;
   border-radius: inherit;
@@ -1023,29 +1079,36 @@ html {
 }
 
 @keyframes rainbow-border {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .dark .bg-card:hover {
-  background: linear-gradient(135deg, 
-    oklch(0.12 0.04 264) 0%, 
-    oklch(0.10 0.05 280) 50%, 
-    oklch(0.12 0.04 264) 100%);
-  box-shadow: 
+  background: linear-gradient(135deg,
+      oklch(0.12 0.04 264) 0%,
+      oklch(0.10 0.05 280) 50%,
+      oklch(0.12 0.04 264) 100%);
+  box-shadow:
     0 8px 32px oklch(0.00 0 0 / 0.5),
     0 0 20px oklch(0.75 0.25 120 / 0.2);
   transform: translateY(-2px);
 }
 
-/* 榛戝椋庢牸浠ｇ爜鍧楀寮?*/
+/* 黑客风格代码块增强 */
 .dark pre {
-  background: linear-gradient(135deg, 
-    oklch(0.06 0.02 264) 0%, 
-    oklch(0.04 0.03 280) 50%, 
-    oklch(0.06 0.02 264) 100%);
+  background: linear-gradient(135deg,
+      oklch(0.06 0.02 264) 0%,
+      oklch(0.04 0.03 280) 50%,
+      oklch(0.06 0.02 264) 100%);
   border: 1px solid oklch(0.75 0.25 120 / 0.3);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 3px oklch(0.00 0 0 / 0.4),
     0 0 20px oklch(0.75 0.25 120 / 0.1);
   position: relative;
@@ -1059,19 +1122,24 @@ html {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, 
-    oklch(0.75 0.25 120), 
-    oklch(0.70 0.20 300), 
-    oklch(0.80 0.22 180));
+  background: linear-gradient(90deg,
+      oklch(0.75 0.25 120),
+      oklch(0.70 0.20 300),
+      oklch(0.80 0.22 180));
   animation: code-scan 3s ease-in-out infinite alternate;
 }
 
 @keyframes code-scan {
-  0% { transform: scaleX(0); }
-  100% { transform: scaleX(1); }
+  0% {
+    transform: scaleX(0);
+  }
+
+  100% {
+    transform: scaleX(1);
+  }
 }
 
-/* 榛戝椋庢牸浠ｇ爜璇硶楂樹寒 */
+/* 黑客风格代码语法高亮 */
 .dark .enhanced-code-block .token.comment {
   color: oklch(0.60 0.10 120 / 0.8);
   font-style: italic;
@@ -1117,7 +1185,7 @@ html {
   text-shadow: 0 0 8px currentColor;
 }
 
-/* 榛戝椋庢牸婊氬姩鏉?*/
+/* 黑客风格滚动条 */
 .dark ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -1130,29 +1198,29 @@ html {
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, 
-    oklch(0.75 0.25 120), 
-    oklch(0.70 0.20 300));
+  background: linear-gradient(45deg,
+      oklch(0.75 0.25 120),
+      oklch(0.70 0.20 300));
   border-radius: 5px;
   border: 1px solid oklch(0.75 0.25 120 / 0.5);
   box-shadow: 0 0 10px oklch(0.75 0.25 120 / 0.3);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, 
-    oklch(0.80 0.30 120), 
-    oklch(0.75 0.25 300));
+  background: linear-gradient(45deg,
+      oklch(0.80 0.30 120),
+      oklch(0.75 0.25 300));
   box-shadow: 0 0 15px oklch(0.75 0.25 120 / 0.5);
 }
 
-/* 榛戝椋庢牸閫変腑鏂囨湰 */
+/* 黑客风格选中文本 */
 .dark ::selection {
   background: oklch(0.75 0.25 120 / 0.4);
   color: oklch(0.95 0.05 120);
   text-shadow: 0 0 10px oklch(0.75 0.25 120 / 0.8);
 }
 
-/* 榛戝椋庢牸閾炬帴 */
+/* 黑客风格链接 */
 .dark a {
   color: oklch(0.80 0.22 180);
   text-decoration: none;
@@ -1181,7 +1249,7 @@ html {
   width: 100%;
 }
 
-/* 榛戝椋庢牸琛ㄦ牸 */
+/* 黑客风格表格 */
 .dark table {
   background: oklch(0.08 0.02 264);
   border: 1px solid oklch(0.20 0.05 264);
@@ -1198,22 +1266,27 @@ html {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    oklch(0.75 0.25 120 / 0.1), 
-    transparent);
+  background: linear-gradient(90deg,
+      transparent,
+      oklch(0.75 0.25 120 / 0.1),
+      transparent);
   animation: table-scan 4s linear infinite;
 }
 
 @keyframes table-scan {
-  0% { left: -100%; }
-  100% { left: 100%; }
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 100%;
+  }
 }
 
 .dark th {
-  background: linear-gradient(135deg, 
-    oklch(0.12 0.03 264) 0%, 
-    oklch(0.10 0.04 280) 100%);
+  background: linear-gradient(135deg,
+      oklch(0.12 0.03 264) 0%,
+      oklch(0.10 0.04 280) 100%);
   border: 1px solid oklch(0.75 0.25 120 / 0.3);
   color: oklch(0.90 0.15 120);
   font-weight: 600;
@@ -1232,17 +1305,17 @@ html {
   box-shadow: inset 0 0 10px oklch(0.75 0.25 120 / 0.1);
 }
 
-/* 榛戝椋庢牸寮曠敤鍧?*/
+/* 黑客风格引用块 */
 .dark blockquote {
-  background: linear-gradient(135deg, 
-    oklch(0.08 0.02 264) 0%, 
-    oklch(0.06 0.03 280) 100%);
+  background: linear-gradient(135deg,
+      oklch(0.08 0.02 264) 0%,
+      oklch(0.06 0.03 280) 100%);
   border-left: 4px solid oklch(0.75 0.25 120);
   color: oklch(0.85 0.12 180);
   padding: 1rem 1.5rem;
   margin: 1rem 0;
   position: relative;
-  box-shadow: 
+  box-shadow:
     0 0 20px oklch(0.75 0.25 120 / 0.1),
     inset 4px 0 0 oklch(0.75 0.25 120);
 }
@@ -1260,16 +1333,21 @@ html {
 }
 
 @keyframes quote-pulse {
-  from { box-shadow: 0 0 10px oklch(0.75 0.25 120 / 0.5); }
-  to { box-shadow: 0 0 20px oklch(0.75 0.25 120 / 0.8); }
+  from {
+    box-shadow: 0 0 10px oklch(0.75 0.25 120 / 0.5);
+  }
+
+  to {
+    box-shadow: 0 0 20px oklch(0.75 0.25 120 / 0.8);
+  }
 }
 
-/* 鍗＄墖闃村奖澧炲己 */
+/* 卡片阴影增强 */
 .friend-link-card:hover {
   transform: translateY(-2px);
 }
 
-/* 鍥炬爣瀹瑰櫒鍙戝厜鏁堟灉 */
+/* 图标容器发光效果 */
 .friend-icon-glow {
   position: relative;
 }
@@ -1294,11 +1372,14 @@ html {
   opacity: 0.3;
 }
 
-/* 娓愬彉鏂囧瓧鍔ㄧ敾 */
+/* 渐变文字动画 */
 @keyframes gradient-text {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
@@ -1317,52 +1398,59 @@ html {
   overflow: hidden;
 }
 
-/* 绉诲姩绔崥瀹㈡枃绔犲叏灞忎紭鍖?+ 瑙︽懜浜や簰澧炲己 */
+/* 移动端博客文章全屏优化 + 触摸交互增强 */
 @media (max-width: 768px) {
-  /* 鍗氬鏂囩珷椤甸潰鏁翠綋甯冨眬 */
+
+  /* 博客文章页面整体布局 */
   .blog-layout-mobile {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
-  
-  /* 鏂囩珷鍐呭鍖哄煙 - 淇濈暀杈硅窛鎻愬崌闃呰浣撻獙 */
+
+  /* 文章内容区域 - 保留边距提升阅读体验 */
   .prose {
     max-width: 100% !important;
-    padding-left: 1.25rem !important; /* 20px */
-    padding-right: 1.25rem !important; /* 20px */
+    padding-left: 1.25rem !important;
+    /* 20px */
+    padding-right: 1.25rem !important;
+    /* 20px */
     width: 100% !important;
   }
-  
-  /* 鏂囩珷鏍囬绉诲姩绔紭鍖?*/
+
+  /* 文章标题移动端优化 */
   .prose h1 {
-    font-size: 1.875rem !important; /* 30px */
+    font-size: 1.875rem !important;
+    /* 30px */
     line-height: 1.25 !important;
     margin-top: 1.5rem !important;
     margin-bottom: 1rem !important;
   }
-  
+
   .prose h2 {
-    font-size: 1.5rem !important; /* 24px */
+    font-size: 1.5rem !important;
+    /* 24px */
     line-height: 1.35 !important;
     margin-top: 2rem !important;
     margin-bottom: 0.875rem !important;
   }
-  
+
   .prose h3 {
-    font-size: 1.25rem !important; /* 20px */
+    font-size: 1.25rem !important;
+    /* 20px */
     line-height: 1.4 !important;
     margin-top: 1.5rem !important;
     margin-bottom: 0.75rem !important;
   }
-  
-  /* 鏂囩珷娈佃惤绉诲姩绔紭鍖?*/
+
+  /* 文章段落移动端优化 */
   .prose p {
-    font-size: 1rem !important; /* 16px */
+    font-size: 1rem !important;
+    /* 16px */
     line-height: 1.8 !important;
     margin-bottom: 1.25rem !important;
   }
-  
-  /* 浠ｇ爜鍧楃Щ鍔ㄧ浼樺寲 - 淇濈暀杈硅窛 */
+
+  /* 代码块移动端优化 - 保留边距 */
   .prose pre {
     margin-left: 0 !important;
     margin-right: 0 !important;
@@ -1370,8 +1458,8 @@ html {
     padding: 1rem !important;
     overflow-x: auto !important;
   }
-  
-  /* 鍥剧墖绉诲姩绔紭鍖?- 淇濈暀杈硅窛鍜屽渾瑙?*/
+
+  /* 图片移动端优化 - 保留边距和圆角 */
   .prose img {
     width: 100% !important;
     margin-left: 0 !important;
@@ -1380,28 +1468,29 @@ html {
     margin-top: 1.5rem !important;
     margin-bottom: 1.5rem !important;
   }
-  
-  /* 寮曠敤鍧楃Щ鍔ㄧ浼樺寲 */
+
+  /* 引用块移动端优化 */
   .prose blockquote {
     margin-left: 0 !important;
     margin-right: 0 !important;
     padding-left: 1rem !important;
     border-left-width: 4px !important;
   }
-  
-  /* 鍒楄〃绉诲姩绔紭鍖?*/
-  .prose ul, .prose ol {
+
+  /* 列表移动端优化 */
+  .prose ul,
+  .prose ol {
     padding-left: 1.75rem !important;
   }
-  
-  /* 琛ㄦ牸绉诲姩绔紭鍖?*/
+
+  /* 表格移动端优化 */
   .prose table {
     font-size: 0.875rem !important;
     overflow-x: auto !important;
     display: block !important;
   }
 
-  /* 瑙︽懜浼樺寲 */
+  /* 触摸优化 */
   .touch-target {
     min-height: 44px;
     min-width: 44px;
@@ -1410,7 +1499,7 @@ html {
     justify-content: center;
   }
 
-  /* 瑙︽懜鍙嶉 */
+  /* 触摸反馈 */
   .touch-feedback {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
     transition: background-color 0.15s ease;
@@ -1421,24 +1510,25 @@ html {
     transform: scale(0.98);
   }
 
-  /* 绉诲姩绔崱鐗囦紭鍖?*/
+  /* 移动端卡片优化 */
   .mobile-card {
     margin-bottom: 0.75rem;
     border-radius: 0.75rem;
   }
 
-  /* 绉诲姩绔鑸紭鍖?*/
+  /* 移动端导航优化 */
   .mobile-nav {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
 
-  /* 绉诲姩绔悳绱㈡浼樺寲 */
+  /* 移动端搜索框优化 */
   .mobile-search {
-    font-size: 16px !important; /* 闃叉iOS缂╂斁 */
+    font-size: 16px !important;
+    /* 防止iOS缩放 */
   }
 
-  /* 婊戝姩鎵嬪娍鏀寔 */
+  /* 滑动手势支持 */
   .swipe-container {
     touch-action: pan-x;
     overflow-x: auto;
@@ -1450,7 +1540,7 @@ html {
     display: none;
   }
 
-  /* 绉诲姩绔寜閽紭鍖?*/
+  /* 移动端按钮优化 */
   .mobile-button {
     min-height: 44px;
     padding: 12px 16px;
@@ -1458,15 +1548,16 @@ html {
     border-radius: 12px;
   }
 
-  /* 绉诲姩绔緭鍏ユ浼樺寲 */
+  /* 移动端输入框优化 */
   .mobile-input {
-    font-size: 16px !important; /* 闃叉iOS缂╂斁 */
+    font-size: 16px !important;
+    /* 防止iOS缩放 */
     min-height: 44px;
     padding: 12px 16px;
     border-radius: 12px;
   }
 
-  /* 绉诲姩绔ā鎬佹浼樺寲 */
+  /* 移动端模态框优化 */
   .mobile-modal {
     margin: 0;
     border-radius: 16px 16px 0 0;
@@ -1474,7 +1565,7 @@ html {
     overflow-y: auto;
   }
 
-  /* 瀹夊叏鍖哄煙閫傞厤 */
+  /* 安全区域适配 */
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
   }
@@ -1491,21 +1582,21 @@ html {
     padding-right: env(safe-area-inset-right);
   }
 
-  /* 绉诲姩绔綉鏍煎竷灞€浼樺寲 */
+  /* 移动端网格布局优化 */
   .mobile-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  /* 绉诲姩绔枃瀛楅€夋嫨浼樺寲 */
+  /* 移动端文字选择优化 */
   .mobile-text {
     -webkit-user-select: text;
     user-select: text;
     -webkit-touch-callout: default;
   }
 
-  /* 绉诲姩绔摼鎺ヤ紭鍖?*/
+  /* 移动端链接优化 */
   .mobile-link {
     color: var(--color-primary);
     text-decoration: underline;
@@ -1513,7 +1604,7 @@ html {
     text-underline-offset: 4px;
   }
 
-  /* 绉诲姩绔浘鐗囩敾寤婁紭鍖?*/
+  /* 移动端图片画廊优化 */
   .mobile-gallery {
     display: flex;
     gap: 0.5rem;
@@ -1533,7 +1624,7 @@ html {
     flex-shrink: 0;
   }
 
-  /* 绉诲姩绔爣绛句簯浼樺寲 */
+  /* 移动端标签云优化 */
   .mobile-tags {
     display: flex;
     flex-wrap: wrap;
@@ -1542,7 +1633,7 @@ html {
     overflow-y: auto;
   }
 
-  /* 绉诲姩绔唬鐮佸鍒舵寜閽紭鍖?*/
+  /* 移动端代码复制按钮优化 */
   .mobile-code-copy {
     position: absolute;
     top: 0.5rem;
@@ -1552,7 +1643,7 @@ html {
     font-size: 14px;
   }
 
-  /* 绉诲姩绔偓娴寜閽?*/
+  /* 移动端悬浮按钮 */
   .mobile-fab {
     position: fixed;
     bottom: calc(20px + env(safe-area-inset-bottom));
@@ -1564,19 +1655,19 @@ html {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  /* 绉诲姩绔鑸爮楂樺害 */
+  /* 移动端导航栏高度 */
   .mobile-nav-height {
     height: calc(60px + env(safe-area-inset-top));
   }
 
-  /* 绉诲姩绔唴瀹瑰尯鍩?*/
+  /* 移动端内容区域 */
   .mobile-content {
     padding-top: calc(60px + env(safe-area-inset-top));
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
   }
 }
 
-/* 鍙闂€т紭鍖?*/
+/* 可访问性优化 */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1600,7 +1691,7 @@ html {
   white-space: normal;
 }
 
-/* 璺宠繃閾炬帴 */
+/* 跳过链接 */
 .skip-link {
   position: absolute;
   top: -40px;
@@ -1617,8 +1708,9 @@ html {
   top: 0;
 }
 
-/* 鍑忓皯鍔ㄧ敾鍋忓ソ璁剧疆 */
+/* 减少动画偏好设置 */
 @media (prefers-reduced-motion: reduce) {
+
   .reduce-motion *,
   .reduce-motion *::before,
   .reduce-motion *::after {
@@ -1629,39 +1721,41 @@ html {
   }
 }
 
-/* 楂樺姣斿害鏀寔 */
+/* 高对比度支持 */
 @media (prefers-contrast: high) {
   :root {
     --color-border: #000000;
     --color-ring: #000000;
   }
-  
+
   .dark {
     --color-border: #ffffff;
     --color-ring: #ffffff;
   }
 }
 
-/* 鐒︾偣鎸囩ず鍣ㄥ寮?*/
+/* 焦点指示器增强 */
 :focus-visible {
   outline: 2px solid var(--color-ring);
   outline-offset: 2px;
 }
 
-/* 瑙︽懜璁惧鐨勭劍鐐规牱寮?*/
+/* 触摸设备的焦点样式 */
 @media (hover: none) {
   :focus {
     outline: 2px solid var(--color-primary);
   }
 }
 
-/* 鏃犻檺婊氬姩鍔ㄧ敾 - 浼樺寲鐗堟湰锛岀‘淇濇棤缂濆惊鐜?*/
+/* 无限滚动动画 - 优化版本，确保无缝循环 */
 @keyframes scroll-smooth {
   0% {
     transform: translateX(0);
   }
+
   100% {
-    transform: translateX(-20%); /* 绉诲姩20%锛屼笌澶氶噸鍏嬮殕鍐呭鍖归厤 */
+    transform: translateX(-20%);
+    /* 移动20%，与多重克隆内容匹配 */
   }
 }
 
@@ -1669,26 +1763,33 @@ html {
   0% {
     transform: translateX(-20%);
   }
+
   100% {
     transform: translateX(0);
   }
 }
 
-/* 寰鐨勬诞鍔ㄥ姩鐢?*/
+/* 微妙的浮动动画 */
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-2px);
   }
 }
 
-/* 鍙戝厜鏁堟灉 */
+/* 发光效果 */
 @keyframes glow-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 5px rgba(var(--primary), 0.3);
   }
+
   50% {
     box-shadow: 0 0 20px rgba(var(--primary), 0.6), 0 0 30px rgba(var(--primary), 0.4);
   }
@@ -1697,14 +1798,14 @@ html {
 .animate-scroll-smooth {
   animation: scroll-smooth linear infinite;
   will-change: transform;
-  /* 纭繚鍔ㄧ敾杩炵画鎬?*/
+  /* 确保动画连续性 */
   animation-fill-mode: both;
 }
 
 .animate-scroll-reverse-smooth {
   animation: scroll-reverse-smooth linear infinite;
   will-change: transform;
-  /* 纭繚鍔ㄧ敾杩炵画鎬?*/
+  /* 确保动画连续性 */
   animation-fill-mode: both;
 }
 
@@ -1712,13 +1813,14 @@ html {
   animation-play-state: paused;
 }
 
-/* Hover鐘舵€佸寮?*/
+/* Hover状态增强 */
 .hover-glow {
   filter: brightness(1.05);
 }
 
-/* 鍝嶅簲寮忓姩鐢绘€ц兘浼樺寲 */
+/* 响应式动画性能优化 */
 @media (prefers-reduced-motion: reduce) {
+
   .animate-scroll-smooth,
   .animate-scroll-reverse-smooth,
   .animate-float,
@@ -1726,44 +1828,44 @@ html {
   .tech-badge-visible {
     animation: none !important;
   }
-  
+
   .tech-badge {
     transition: none !important;
     opacity: 1;
     transform: none;
   }
-  
+
   .tech-icon {
     transition: none !important;
   }
 }
 
-/* 绉诲姩璁惧浼樺寲 */
+/* 移动设备优化 */
 @media (max-width: 768px) {
   .animate-scroll-smooth {
     animation-duration: 35s;
   }
-  
+
   .animate-scroll-reverse-smooth {
     animation-duration: 40s;
   }
-  
+
   .tech-badge:hover {
     transform: translateY(-2px) scale(1.05);
     animation: none;
   }
-  
+
   .tech-badge:hover .tech-icon {
     transform: scale(1.1) rotate(5deg);
   }
-  
+
   .tech-scroll-container::before,
   .tech-scroll-container::after {
     width: 50px;
   }
 }
 
-/* 缁熶竴鏆楄壊妯″紡涓庢€ц兘浼樺寲鐨勭畝鍖栬鍐?*/
+/* 统一暗色模式与性能优化的简化覆写 */
 :root {
   --background: var(--background);
   --foreground: var(--foreground);
@@ -1837,4 +1939,3 @@ html {
     transition: none !important;
   }
 }
-
