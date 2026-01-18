@@ -10,13 +10,9 @@ const { bvid, page = 1 } = Astro.props
 <div class="bilibili-embed relative w-full overflow-hidden rounded-lg shadow-lg" style="padding-top: 56.25%;">
   <iframe
     src={`https://player.bilibili.com/player.html?bvid=${bvid}&page=${page}&high_quality=1&danmaku=0`}
-    scrolling="no"
-    border="0"
-    frameborder="no"
-    framespacing="0"
     allowfullscreen="true"
     referrerpolicy="origin"
-    class="absolute top-0 left-0 h-full w-full"
+    class="absolute top-0 left-0 h-full w-full border-0"
   >
   </iframe>
 </div>

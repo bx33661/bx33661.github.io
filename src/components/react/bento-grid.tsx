@@ -191,7 +191,6 @@ interface QuickActionCardProps {
 export const QuickActionCard: React.FC<QuickActionCardProps> = ({
   title,
   action,
-  icon,
   gradient = 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700'
 }) => {
   return (

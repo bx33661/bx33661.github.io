@@ -72,7 +72,7 @@ const relatedPosts = [...scoredPosts, ...recentPosts].slice(0, limit)
     </h2>
     
     <div class="grid gap-4 sm:grid-cols-2">
-      {relatedPosts.map(({ post, slug, score, commonTags }) => (
+      {relatedPosts.map(({ post, slug, commonTags }) => (
         <a
           href={`/blog/${slug}`}
           class="group block p-4 rounded-xl border border-border bg-card/50 hover:bg-card hover:border-primary/30 hover:shadow-lg transition-all duration-300"
