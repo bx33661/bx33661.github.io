@@ -12,6 +12,10 @@ import { Icon } from 'astro-icon/components'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import { getAllProjects } from '@/lib/data-utils'
 import { BASE_URL } from '@/config/env'
+import { ExperienceGrid, type ExperienceItem } from '@/components/react/ExperienceGrid' // Import ExperienceGrid
+import { TypewriterEffect } from '@/components/react/TypewriterEffect' // Import Typewriter
+import { ParticleBackground } from '@/components/react/background-effects' // Import Background
+import Skills from '@/components/react/skills' // Import Skills
 
 const currentUrl = Astro.url;
 const allProjects = await getAllProjects();
@@ -75,6 +79,50 @@ const galleryImages = [
   },
 ];
 
+const experienceItems: ExperienceItem[] = [
+  {
+    id: 1,
+    title: '海南大学',
+    subtitle: '网络空间安全学院 · 信息安全专业',
+    description: '在这里开始了我对计算机科学和网络安全的探索之旅。学习了计算机基础、密码学、网络攻防等核心课程，并获得了扎实的理论基础。',
+    date: '2021 - 2025',
+    location: '海口, 中国',
+    type: 'education',
+    tags: ['本科', '信息安全', 'GPA 3.8/4.0'],
+    span: 'md:col-span-2'
+  },
+  {
+    id: 2,
+    title: 'HnuSec',
+    subtitle: '核心成员 & CTF选手',
+    description: '加入海南大学网络安全战队，专注于 Web 安全方向。参与多场 CTF 比赛，与团队成员共同成长，积累了丰富的实战经验。',
+    date: '2022 - 至今',
+    type: 'experience',
+    tags: ['CTF', 'Web Security', 'Teamwork'],
+    span: 'md:col-span-1'
+  },
+  {
+    id: 3,
+    title: 'XMCVE',
+    subtitle: '漏洞研究员',
+    description: '专注于通用漏洞挖掘与安全研究。致力于发现软件中的安全缺陷，并提交给相关组织进行修复。',
+    date: '2023 - 至今',
+    type: 'experience',
+    tags: ['Vuln Research', 'CVE', 'Security Audit'],
+    span: 'md:col-span-1'
+  },
+  {
+    id: 4,
+    title: 'Fruit-Guardians',
+    subtitle: '开源贡献者',
+    description: '参与 Fruit-Guardians 开源社区，开发和维护自动化安全工具，如 PuraAutoCodeQL，旨在提高代码审计效率，贡献社区。',
+    date: '2023 - 至今',
+    type: 'project',
+    tags: ['Open Source', 'CodeQL', 'Automation'],
+    span: 'md:col-span-2'
+  }
+];
+
 const getIcon = (project: any) => {
   const tags = project.data.tags || [];
   if (tags.includes('python')) return '🐍';
@@ -87,114 +135,137 @@ const getIcon = (project: any) => {
 ---
 
 <Layout canonicalUrl={currentUrl.toString()}>
-  <PageHead slot="head" title="个人简历 - BX" description="BX 的个人介绍、项目与安全研究经历。" canonicalURL={currentUrl.toString()} />
+  <PageHead slot="head" title="关于我 - BX" description="BX 的个人介绍、项目与安全研究经历。" canonicalURL={currentUrl.toString()} />
   
-  <div class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16 max-w-7xl mx-auto">
-    <Breadcrumbs items={[{ label: '个人简历', icon: 'lucide:user' }]} />
+  <!-- Dynamic Background -->
+  <div class="fixed inset-0 z-0 pointer-events-none">
+    <ParticleBackground client:visible particleColor="rgba(120, 119, 198, 0.3)" particleCount={30} />
+  </div>
+
+  <div class="relative z-10 flex flex-col gap-y-16 px-4 py-8 sm:px-8 lg:px-16 max-w-7xl mx-auto">
+    <Breadcrumbs items={[{ label: '关于我', icon: 'lucide:user' }]} />
     
-    <!-- Hero Section with 3D Card -->
+    <!-- Hero Section with 3D Card & Typing Effect -->
     <AnimatedElement client:load animation="scaleIn" duration={0.8}>
-      <Card3D client:load className="w-full" intensity={14}>
-        <div class="bg-card/70 dark:bg-card/80 backdrop-blur-md p-8 md:p-12 rounded-3xl border border-border/60 shadow-xl flex flex-col md:flex-row items-center gap-8 md:gap-12 text-center md:text-left relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/10 pointer-events-none"></div>
+      <Card3D client:load className="w-full" intensity={15}>
+        <div class="bg-card/40 dark:bg-card/40 backdrop-blur-xl p-8 md:p-12 rounded-[2rem] border border-white/10 dark:border-white/5 shadow-2xl flex flex-col md:flex-row items-center gap-10 md:gap-16 text-center md:text-left relative overflow-hidden group">
+          
+          {/* Hero Decorative Gradients */}
+          <div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[100px] pointer-events-none opacity-50 animate-pulse"></div>
+          <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary/20 rounded-full blur-[100px] pointer-events-none opacity-50 animate-pulse delay-1000"></div>
+
           <div class="relative group shrink-0" aria-label="个人头像">
-            <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border border-border/70 shadow-lg group-hover:scale-105 transition-transform duration-400 ease-out">
-              <img src="/static/blogo.jpg" alt="BX 头像" class="w-full h-full object-cover" loading="lazy" decoding="async" width="160" height="160" />
+            <div class="w-36 h-36 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-background/50 shadow-xl group-hover:scale-105 transition-transform duration-500 ease-out relative z-10">
+              <img src="/static/blogo.jpg" alt="BX 头像" class="w-full h-full object-cover" loading="lazy" decoding="async" width="192" height="192" />
             </div>
-            <div class="absolute -inset-1 rounded-2xl ring-1 ring-primary/20 blur-md"></div>
+            {/* Spinning Ring */}
+            <div class="absolute -inset-4 rounded-full border border-dashed border-primary/30 animate-[spin_10s_linear_infinite] pointer-events-none"></div>
+            <div class="absolute -inset-4 rounded-full border border-dashed border-secondary/30 animate-[spin_15s_linear_infinite_reverse] pointer-events-none opacity-50"></div>
           </div>
           
-          <div class="flex-1 space-y-4 relative z-10">
-            <div class="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-sm font-medium">
-              <Icon name="lucide:sparkles" class="size-4" /> 安全研究 · 分享 · 构建
+          <div class="flex-1 space-y-5 relative z-10">
+            <div class="inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 text-primary px-4 py-1.5 text-sm font-semibold tracking-wide uppercase">
+              <Icon name="lucide:sparkles" class="size-4" /> 探索无穷 · 创造未来
             </div>
-            <h1 class="text-4xl md:text-6xl font-black tracking-tight text-foreground">
+            
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground via-foreground/80 to-foreground/50">
               BX
             </h1>
-            <p class="text-lg md:text-xl font-medium text-muted-foreground">
-              网络安全研究员 ｜ Web 安全 ｜ AI 应用
-            </p>
+            
+            <div class="text-xl md:text-2xl font-medium text-muted-foreground h-8">
+              <TypewriterEffect 
+                client:visible 
+                words={["网络安全研究员", "Web 安全专家", "AI 应用探索者", "开源贡献者"]} 
+                className="text-primary font-bold"
+                cursorClassName="text-primary animate-pulse"
+              />
+            </div>
+            
             <p class="text-base md:text-lg text-muted-foreground/90 max-w-2xl leading-relaxed">
-              专注 Web 安全、AI 应用与攻防研究，追求「好用、可解释、易维护」的解决方案，并乐于将经验输出为文章与工具。
+              专注于 <span class="text-foreground font-medium">Web 安全</span> 与 <span class="text-foreground font-medium">AI 智能化应用</span>。
+              <br/>
+              致力于挖掘代码深处的秘密，构建「安全、智能、高效」的数字防线。
             </p>
-            <div class="flex flex-wrap gap-3 pt-4 justify-center md:justify-start">
-              <a href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 shadow-sm">
-                <Icon name="lucide:github" class="size-4" />
-                <span class="font-medium">GitHub</span>
+            
+            <div class="flex flex-wrap gap-4 pt-6 justify-center md:justify-start">
+              <a href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer" class="group relative inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-200 bg-gray-900 rounded-full hover:bg-gray-800 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 shadow-lg hover:shadow-xl">
+                <Icon name="lucide:github" class="size-5" />
+                GitHub
               </a>
-              <a href="mailto:bx33661@gmail.com" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/70 bg-background/70 text-foreground hover:border-primary/60 hover:text-primary transition-all duration-200">
-                <Icon name="lucide:mail" class="size-4" />
-                <span class="font-medium">邮件联系</span>
+              <a href="mailto:bx33661@gmail.com" class="group relative inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-foreground transition-all duration-200 bg-background/50 border border-border/60 rounded-full hover:bg-background hover:border-primary/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-sm hover:shadow-md backdrop-blur-md">
+                <Icon name="lucide:mail" class="size-5 text-primary" />
+                Email Me
               </a>
-              <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/70 bg-background/70 text-foreground relative group hover:border-primary/60 transition-all duration-200 cursor-pointer">
-                <Icon name="lucide:message-circle" class="size-4" />
-                <span class="font-medium">WeChat</span>
-                <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 text-xs bg-foreground text-background rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none translate-y-2 group-hover:translate-y-0">bx33661</span>
-              </div>
             </div>
           </div>
         </div>
       </Card3D>
     </AnimatedElement>
 
-    <!-- Bento Grid Section -->
+    <!-- Tech Stack (Skills) Section -->
     <section class="space-y-8">
-       <AnimatedElement client:load animation="slideUp" delay={0.2}>
-        <div class="flex items-center justify-between mb-8">
-          <h2 class="text-3xl font-bold flex items-center gap-3">
-            <Icon name="lucide:grid" class="size-8" />
-            全景概览
+      <AnimatedElement client:visible animation="slideUp" delay={0.1}>
+        <div class="text-center space-y-3">
+          <h2 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+            技术栈
           </h2>
-          <span class="text-muted-foreground text-sm font-medium px-3 py-1 rounded-full bg-muted">Welcome to my world</span>
+          <p class="text-muted-foreground">My Tech Arsenal</p>
+        </div>
+        <div class="mt-8 mask-linear-fade">
+          <Skills client:visible />
+        </div>
+      </AnimatedElement>
+    </section>
+
+    <!-- Journey Grid (Formerly Timeline) -->
+    <section class="space-y-12">
+      <AnimatedElement client:visible animation="slideUp" delay={0.2}>
+        <div class="text-center space-y-3 mb-10">
+          <h2 class="text-3xl md:text-4xl font-bold flex items-center justify-center gap-3">
+            <Icon name="lucide:layers" class="size-8 text-primary" />
+            成长的足迹
+          </h2>
+          <p class="text-muted-foreground">Education & Experience</p>
+        </div>
+        
+        <ExperienceGrid client:visible items={experienceItems} className="max-w-7xl mx-auto" />
+      </AnimatedElement>
+    </section>
+
+    <!-- Bento Grid Section (Highlights) -->
+    <section class="space-y-8">
+       <AnimatedElement client:visible animation="slideUp" delay={0.3}>
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl font-bold flex items-center gap-3">
+            <Icon name="lucide:star" class="size-6 text-yellow-500" />
+            高光时刻
+          </h2>
         </div>
         
         <BentoGrid className="auto-rows-[minmax(180px,auto)] gap-6">
-          
-          <!-- Education - Pastel Green/Emerald -->
-          <InfoCard 
-            client:visible
-            title="教育经历" 
-            subtitle="海南大学" 
-            content="网络空间安全学院 · 信息安全专业"
-            icon="🎓"
-            span="md:col-span-2"
-            gradient="bg-gradient-to-br from-emerald-50 to-teal-100/50 dark:from-emerald-900/40 dark:to-teal-900/20"
-          />
+          <!-- Research Focus - Premium Gradient -->
+           <BentoCard client:visible className="md:col-span-2 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 border-indigo-500/20">
+             <div class="flex flex-col h-full justify-center p-6">
+               <div class="flex items-center gap-3 mb-4">
+                 <div class="p-3 rounded-xl bg-primary/20 backdrop-blur-md">
+                   <Icon name="lucide:microscope" class="size-6 text-primary" />
+                 </div>
+                 <h3 class="text-xl font-bold">研究方向</h3>
+               </div>
+               <div class="flex flex-wrap gap-2 mb-4">
+                 {['Web 安全', 'AI 安全应用', '网络攻防', '漏洞挖掘'].map(tag => (
+                   <span class="px-3 py-1 rounded-lg bg-background/40 border border-white/10 text-sm font-medium shadow-sm backdrop-blur-sm">
+                     {tag}
+                   </span>
+                 ))}
+               </div>
+               <p class="text-sm font-medium text-muted-foreground/80 leading-relaxed">
+                 致力于研究 Web 安全和探索新兴 AI-LLM 技术的应用与发展，以及前沿网络攻防技术的研究。
+               </p>
+             </div>
+           </BentoCard>
 
-          <!-- HnuSec - Pastel Red/Rose -->
-          <InfoCard 
-            client:visible
-            title="HnuSec" 
-            subtitle="核心成员" 
-            content="海南大学网络安全战队，专注于CTF竞赛与实战攻防技术研究。"
-            image="/static/HnuSec.jpg"
-            span="md:col-span-1"
-            gradient="bg-gradient-to-br from-rose-50 to-red-100/50 dark:from-rose-900/40 dark:to-red-900/20"
-          />
-
-          <!-- XMCVE - Pastel Purple -->
-          <InfoCard 
-            client:visible
-            title="XMCVE" 
-            subtitle="漏洞研究" 
-            content="专注于通用漏洞挖掘与安全研究，致力于提升软件安全性。"
-            icon="🐛"
-            span="md:col-span-1"
-            gradient="bg-gradient-to-br from-violet-50 to-purple-100/50 dark:from-violet-900/40 dark:to-purple-900/20"
-          />
-
-          <!-- Fruit-Guardians - Pastel Indigo -->
-          <InfoCard 
-            client:visible
-            title="Fruit-Guardians" 
-            subtitle="开源社区" 
-            content="专注于安全工具开发与自动化审计的开源组织，维护多个安全项目。"
-            image="/static/fruit.png"
-            span="md:col-span-1"
-            gradient="bg-gradient-to-br from-blue-50 to-indigo-100/50 dark:from-blue-900/40 dark:to-indigo-900/20"
-          />
-
-          <!-- Project - Pastel Orange/Peach -->
+           <!-- Project Highlight -->
            <a href="https://github.com/Fruit-Guardians/PureAutoCodeql" target="_blank" class="contents md:col-span-1 group">
              <div class="h-full w-full md:col-span-1">
                <ProjectCard
@@ -202,43 +273,19 @@ const getIcon = (project: any) => {
                  title="PuraAutoCodeQL"
                  description="自动化 CodeQL 分析工具"
                  icon="🚀"
-                  color="from-amber-100 to-orange-100 dark:from-amber-900/40 dark:to-orange-900/20 text-orange-900 dark:text-orange-100"
+                  color="from-orange-500/20 to-red-500/20 text-orange-600 dark:text-orange-400"
                  span="h-full w-full"
                />
              </div>
            </a>
-           
-           <!-- Research Focus - Pastel Blue -->
-           <BentoCard client:visible className="md:col-span-2 bg-gradient-to-br from-sky-50 to-blue-100/50 dark:from-sky-900/40 dark:to-blue-900/20">
-             <div class="flex flex-col h-full">
-               <div class="flex items-center gap-3 mb-4">
-                 <div class="p-2 rounded-lg bg-white/50 dark:bg-black/20 backdrop-blur-sm">
-                   <span class="text-2xl">🔬</span>
-                 </div>
-                 <h3 class="text-xl font-bold text-gray-800 dark:text-white">研究方向</h3>
-               </div>
-               <div class="flex flex-wrap gap-2">
-                 {['Web 安全', 'AI 安全应用', '网络攻防', '漏洞挖掘'].map(tag => (
-                   <span class="px-4 py-1.5 rounded-full bg-white/60 dark:bg-white/10 border border-white/20 text-sm font-semibold text-gray-700 dark:text-gray-200 shadow-sm">
-                     {tag}
-                   </span>
-                 ))}
-               </div>
-               <p class="mt-6 text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed">
-                 致力于研究 Web 安全和探索新兴 AI-LLM 技术的应用与发展，以及前沿网络攻防技术的研究。
-               </p>
-             </div>
-           </BentoCard>
 
-           <!-- Bio / Motto - Modern Dark -->
-           <BentoCard client:visible className="lg:col-span-4 md:col-span-2 flex items-center justify-center bg-[#263238] text-white min-h-[180px] relative overflow-hidden group">
-              <!-- Decorative elements -->
-              <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4 blur-3xl group-hover:bg-white/10 transition-colors duration-500"></div>
-              <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4 blur-2xl group-hover:bg-white/10 transition-colors duration-500"></div>
+           <!-- Motto - Dark Aesthetic -->
+           <BentoCard client:visible className="lg:col-span-3 md:col-span-3 flex items-center justify-center bg-zinc-900 border-zinc-800 text-white min-h-[160px] relative overflow-hidden group">
+              <div class="absolute inset-0 bg-[url('/static/grid.svg')] opacity-20"></div>
+              <div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] group-hover:bg-primary/30 transition-colors duration-500"></div>
               
               <div class="flex flex-col items-center text-center p-8 relative z-10">
-                <Icon name="lucide:quote" class="size-10 text-white/20 mb-6" />
-                <p class="text-3xl md:text-4xl font-serif italic tracking-wider text-white/90 leading-relaxed">
+                <p class="text-2xl md:text-3xl font-serif italic tracking-wider text-white/90 leading-relaxed glow-text">
                   "一起见证星辰大海"
                 </p>
               </div>
@@ -249,121 +296,105 @@ const getIcon = (project: any) => {
     </section>
 
     <!-- Other Projects Section -->
-    <section class="space-y-6">
+    <section class="space-y-8">
       <div class="flex items-center gap-3 mb-6">
         <h2 class="text-2xl font-bold flex items-center gap-2">
           <Icon name="lucide:folder-git-2" class="size-6" />
           更多项目
         </h2>
-        <div class="h-px flex-1 bg-border/60"></div>
+        <div class="h-px flex-1 bg-gradient-to-r from-border/80 to-transparent"></div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {allProjects.map((project) => (
-          <a 
-            href={project.data.link || '#'} 
-            target="_blank" 
-            class="group relative flex flex-col p-5 rounded-xl border border-border/50 bg-card/50 hover:bg-card hover:border-border transition-all duration-300 hover:shadow-sm overflow-hidden"
-          >
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-4xl grayscale group-hover:grayscale-0">
-              {getIcon(project)}
-            </div>
-            
-            <div class="flex items-start justify-between mb-3 z-10">
-              <div class="p-2 rounded-lg bg-primary/5 text-primary group-hover:bg-primary/10 transition-colors">
-                <span class="text-xl">{getIcon(project)}</span>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {allProjects.map((project, index) => (
+          <ScrollReveal client:visible direction="up" delay={index * 0.05}>
+            <a 
+              href={project.data.link || '#'} 
+              target="_blank" 
+              class="group relative flex flex-col p-6 rounded-2xl border border-border/40 bg-card/30 hover:bg-card/60 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg backdrop-blur-sm overflow-hidden"
+            >
+              <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              <div class="flex items-start justify-between mb-4 z-10">
+                <div class="p-2.5 rounded-xl bg-muted/50 text-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-300">
+                  <span class="text-2xl">{getIcon(project)}</span>
+                </div>
+                {project.data.tags && (
+                   <div class="flex gap-1.5 flex-wrap justify-end max-w-[60%]">
+                    {project.data.tags.slice(0, 2).map(tag => (
+                      <span class="text-[10px] px-2 py-1 rounded-md bg-muted/60 text-muted-foreground/80 font-medium uppercase tracking-wide border border-transparent group-hover:border-primary/10 transition-colors">
+                        {tag}
+                      </span>
+                    ))}
+                   </div>
+                )}
               </div>
-              {project.data.tags && (
-                 <div class="flex gap-1 flex-wrap justify-end max-w-[50%]">
-                  {project.data.tags.slice(0, 2).map(tag => (
-                    <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground uppercase tracking-wider">
-                      {tag}
-                    </span>
-                  ))}
-                 </div>
-              )}
-            </div>
 
-            <h3 class="font-bold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-1 z-10">
-              {project.data.name}
-            </h3>
-            
-            <p class="text-sm text-muted-foreground line-clamp-2 mb-4 z-10">
-              {project.data.description}
-            </p>
+              <h3 class="font-bold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-1 z-10">
+                {project.data.name}
+              </h3>
+              
+              <p class="text-sm text-muted-foreground/80 line-clamp-2 mb-4 z-10 leading-relaxed">
+                {project.data.description}
+              </p>
 
-            <div class="mt-auto flex items-center text-xs text-muted-foreground font-medium pt-3 border-t border-border/50 group-hover:border-border/80 transition-colors z-10">
-              <span class="flex items-center gap-1 group-hover:text-foreground transition-colors">
-                View Project <Icon name="lucide:arrow-up-right" class="size-3" />
-              </span>
-            </div>
-          </a>
+              <div class="mt-auto flex items-center text-xs font-semibold text-primary/80 pt-4 border-t border-dashed border-border/40 group-hover:border-primary/20 transition-colors z-10">
+                <span class="flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-300">
+                  View Project <Icon name="lucide:arrow-right" class="size-3.5" />
+                </span>
+              </div>
+            </a>
+          </ScrollReveal>
         ))}
       </div>
     </section>
 
     <!-- Gallery Section -->
-    <section class="space-y-8">
+    <section class="space-y-8 pb-12">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="size-9 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
-            <Icon name="lucide:image" class="size-5" />
+          <div class="size-10 rounded-xl bg-gradient-to-br from-pink-500/20 to-rose-500/20 text-pink-500 flex items-center justify-center shadow-inner">
+            <Icon name="lucide:camera" class="size-5" />
           </div>
           <div>
             <h2 class="text-2xl font-bold">生活相册</h2>
-            <p class="text-sm text-muted-foreground">日常与旅途的片段，集中放在这里。</p>
+            <p class="text-sm text-muted-foreground">碎片 · 记忆 · 瞬间</p>
           </div>
         </div>
-        <span class="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">
-          共 {galleryImages.length} 张
-        </span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {galleryImages.map((image, index) => (
-          <ScrollReveal client:load direction="up" delay={index * 0.04} threshold={0.15}>
-            <div class="group relative overflow-hidden rounded-2xl bg-secondary/15 border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300" data-index={index} aria-label={`相册图片 ${image.title}`}>
-              <div class="aspect-square relative overflow-hidden">
+          <ScrollReveal client:visible direction="up" delay={index * 0.05} threshold={0.1}>
+            <div class="group relative overflow-hidden rounded-2xl bg-muted/10 border border-border/30 hover:border-primary/40 hover:shadow-xl transition-all duration-500" data-index={index} aria-label={`相册图片 ${image.title}`}>
+              <div class="aspect-[4/3] relative overflow-hidden">
                 <ImageZoom
                   client:load
                   src={image.src}
                   alt={image.alt || image.title || '生活相册图片'}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   loading={index < 6 ? 'eager' : 'lazy'}
                   priority={index < 6}
                   sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                   width={400}
-                  height={400}
+                  height={300}
                 />
-              </div>
-              <div class="p-4 space-y-2">
-                <h3 class="font-semibold text-foreground text-base group-hover:text-primary transition-colors line-clamp-1">
-                  {image.title}
-                </h3>
-                <p class="text-sm text-muted-foreground line-clamp-2">{image.description}</p>
-                <div class="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Icon name="lucide:calendar" class="w-3 h-3" />
-                  <time datetime={image.date}>
-                    {new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(image.date))}
-                  </time>
+                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                   <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                      <h3 class="text-white font-bold text-lg mb-1">{image.title}</h3>
+                      <p class="text-white/80 text-xs line-clamp-1">{image.description}</p>
+                   </div>
                 </div>
               </div>
             </div>
           </ScrollReveal>
         ))}
       </div>
-
-      {galleryImages.length === 0 && (
-        <div class="text-center py-12 border border-dashed border-border/60 rounded-2xl">
-          <Icon name="lucide:image" class="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-          <p class="text-muted-foreground">暂无照片，敬请期待。</p>
-        </div>
-      )}
     </section>
 
     <!-- Footer Links -->
-    <div class="flex justify-center pt-12 pb-8">
-      <Link href="/" class={buttonVariants({ variant: 'ghost' }) + ' group text-muted-foreground hover:text-foreground transition-colors'}>
+    <div class="flex justify-center pt-8 pb-12">
+      <Link href="/" class={buttonVariants({ variant: 'outline', size: 'lg' }) + ' group rounded-full px-8 hover:bg-primary hover:text-primary-foreground border-primary/20 shadow-sm transition-all duration-300'}>
         <Icon name="lucide:arrow-left" class="mr-2 size-4 transition-transform group-hover:-translate-x-1" />
         返回首页
       </Link>
@@ -371,3 +402,15 @@ const getIcon = (project: any) => {
 
   </div>
 </Layout>
+
+<style>
+  /* Custom global styles for this page */
+  .glow-text {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+  
+  .mask-linear-fade {
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+</style>
