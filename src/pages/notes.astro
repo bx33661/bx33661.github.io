@@ -4,6 +4,7 @@ import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
 import { getAllNotes, getAllNoteCategories, getAllNoteTags, getNoteSlug } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
+import { ScrollReveal } from "@/components/react/scroll-animations"
 import type { CollectionEntry } from 'astro:content'
 
 const allNotes = await getAllNotes()
@@ -24,137 +25,114 @@ const currentUrl = Astro.url
 ---
 
 <Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="其他 - 学习笔记" />
+  <PageHead slot="head" title="学习笔记 - BX" description="记录技术学习历程与经验总结" />
   
-  <Breadcrumbs
-    items={[
-      { label: '其他', href: '/notes', icon: 'lucide:book-open' },
-    ]}
-  />
-  
-  <section class="max-screen mt-12 px-4 md:px-6">
-    <div class="flex w-fit items-center gap-2 text-primary">
-      <Icon class="h-4 w-4 text-secondary-foreground animate-pulse" name="lucide:book-open" />
-      <p class="shimmer word-spacing font-mono text-sm uppercase leading-none text-secondary-foreground">
-        Learning Notes
-      </p>
-    </div>
-    <h2
-      id="notes-title"
-      class="font-custom text-foreground text-4xl font-bold mt-2"
-    >
-      学习笔记
-    </h2>
-    <p class="text-muted-foreground text-md max-w-2xl mt-3">
-      这里记录了我的学习历程和知识积累。包含各种技术学习笔记、日常思考和经验总结。希望这些内容能够帮助到有需要的朋友，也欢迎大家一起交流学习！
-    </p>
-
-    <!-- 统计信息 -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
-      <div class="bg-card border rounded-lg p-4">
-        <div class="flex items-center gap-2">
-          <Icon class="h-5 w-5 text-primary" name="lucide:file-text" />
-          <h3 class="font-semibold">总笔记数</h3>
-        </div>
-        <p class="text-2xl font-bold text-primary mt-2">{allNotes.length}</p>
-      </div>
-      <div class="bg-card border rounded-lg p-4">
-        <div class="flex items-center gap-2">
-          <Icon class="h-5 w-5 text-primary" name="lucide:folder" />
-          <h3 class="font-semibold">分类数</h3>
-        </div>
-        <p class="text-2xl font-bold text-primary mt-2">{categories.size}</p>
-      </div>
-      <div class="bg-card border rounded-lg p-4">
-        <div class="flex items-center gap-2">
-          <Icon class="h-5 w-5 text-primary" name="lucide:tag" />
-          <h3 class="font-semibold">标签数</h3>
-        </div>
-        <p class="text-2xl font-bold text-primary mt-2">{tags.size}</p>
-      </div>
+  <div class="relative min-h-screen">
+    <!-- 背景装饰 (Consistent with Friends page) -->
+    <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
+      <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
     </div>
 
-    <!-- 分类展示 -->
-    <div class="space-y-8">
-      {Array.from(notesByCategory.entries()).map(([category, notes]) => (
-        <div class="bg-card border rounded-lg p-6">
-          <div class="flex items-center gap-2 mb-4">
-            <Icon class="h-5 w-5 text-primary" name="lucide:folder-open" />
-            <h3 class="text-xl font-bold">{category}</h3>
-            <span class="bg-primary/10 text-primary px-2 py-1 rounded-full text-sm">
-              {notes.length} 篇
-            </span>
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:px-8">
+      <Breadcrumbs items={[{ label: '笔记', icon: 'lucide:book-open' }]} />
+      
+      <!-- Header -->
+      <ScrollReveal client:load direction="up" threshold={0.2}>
+        <section class="text-center py-16 lg:py-24">
+           <div class="inline-flex items-center gap-2 rounded-full bg-primary/5 text-primary px-4 py-1.5 text-sm font-medium border border-primary/10 mb-8 backdrop-blur-md shadow-sm">
+            <Icon name="lucide:book-open" class="size-4 animate-pulse" /> 
+            <span>Knowledge Base</span>
           </div>
+          <h1 class="font-custom text-4xl font-extrabold tracking-tight sm:text-6xl mb-6 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60">
+            学习笔记
+          </h1>
+          <p class="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8">
+            温故而知新，可以为师矣。<br class="hidden sm:block" />
+            记录技术探索的点滴，构建个人的知识网络。
+          </p>
           
-          <div class="grid gap-4">
-            {notes.map((note: CollectionEntry<'notes'>) => (
-              <article class="border-l-4 border-primary/20 pl-4 hover:border-primary/50 transition-colors">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <div class="flex-1">
-                    <h4 class="font-semibold text-lg hover:text-primary transition-colors">
-                      <a href={`/notes/${getNoteSlug(note)}`}>
-                        {note.data.title}
-                      </a>
-                    </h4>
-                    <p class="text-muted-foreground text-sm mt-1">
-                      {note.data.description}
-                    </p>
-                    {note.data.tags && note.data.tags.length > 0 && (
-                      <div class="flex flex-wrap gap-1 mt-2">
-                        {note.data.tags.map((tag: string) => (
-                          <span class="bg-secondary text-secondary-foreground px-2 py-1 rounded text-xs">
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div class="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Icon class="h-4 w-4" name="lucide:calendar" />
-                    <time datetime={note.data.date.toISOString()}>
-                      {note.data.date.toLocaleDateString('zh-CN')}
-                    </time>
-                  </div>
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+             <div class="bg-card/40 backdrop-blur-md border border-white/10 rounded-xl p-4 shadow-sm hover:border-primary/20 transition-colors">
+                <div class="flex items-center justify-center gap-2 text-primary mb-1">
+                   <Icon name="lucide:file-text" class="size-5" />
+                   <span class="font-bold text-2xl">{allNotes.length}</span>
                 </div>
-              </article>
-            ))}
+                <div class="text-sm text-muted-foreground">总笔记数</div>
+             </div>
+             <div class="bg-card/40 backdrop-blur-md border border-white/10 rounded-xl p-4 shadow-sm hover:border-primary/20 transition-colors">
+                <div class="flex items-center justify-center gap-2 text-blue-500 mb-1">
+                   <Icon name="lucide:folder" class="size-5" />
+                   <span class="font-bold text-2xl">{categories.size}</span>
+                </div>
+                <div class="text-sm text-muted-foreground">分类归档</div>
+             </div>
+             <div class="bg-card/40 backdrop-blur-md border border-white/10 rounded-xl p-4 shadow-sm hover:border-primary/20 transition-colors">
+                <div class="flex items-center justify-center gap-2 text-green-500 mb-1">
+                   <Icon name="lucide:tag" class="size-5" />
+                   <span class="font-bold text-2xl">{tags.size}</span>
+                </div>
+                <div class="text-sm text-muted-foreground">涉及标签</div>
+             </div>
           </div>
-        </div>
-      ))}
+        </section>
+      </ScrollReveal>
+
+      <!-- Content Grid (Masonry-like) -->
+      <section class="mb-20">
+         {allNotes.length > 0 ? (
+           <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+             {Array.from(notesByCategory.entries()).map(([category, notes], index) => (
+                <div class="break-inside-avoid mb-6"> <!-- Wrapper for masonry spacing -->
+                  <ScrollReveal client:load direction="up" delay={index * 0.05} threshold={0.1}>
+                    <div class="bg-card/40 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/20 group">
+                       <div class="p-4 bg-muted/30 border-b border-white/5 flex justify-between items-center">
+                          <div class="flex items-center gap-2">
+                             <Icon name="lucide:folder-open" class="size-5 text-primary/80" />
+                             <h3 class="font-bold text-lg">{category}</h3>
+                          </div>
+                          <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">{notes.length}</span>
+                       </div>
+                       
+                       <div class="divide-y divide-white/5">
+                          {notes.map((note) => (
+                             <a href={`/notes/${getNoteSlug(note)}`} class="block p-4 hover:bg-white/5 transition-colors group/item">
+                                <h4 class="font-medium text-foreground group-hover/item:text-primary transition-colors mb-1 line-clamp-1">
+                                   {note.data.title}
+                                </h4>
+                                <div class="flex items-center justify-between text-xs text-muted-foreground mt-2">
+                                   <div class="flex gap-2 items-center">
+                                      <span class="flex items-center gap-1">
+                                         <Icon name="lucide:calendar" class="size-3" />
+                                         {note.data.date.toLocaleDateString('zh-CN')}
+                                      </span>
+                                   </div>
+                                </div>
+                                {note.data.tags && (
+                                   <div class="flex flex-wrap gap-1 mt-2 opacity-60 group-hover/item:opacity-100 transition-opacity">
+                                      {note.data.tags.slice(0, 3).map(tag => (
+                                         <span class="px-1.5 py-0.5 rounded bg-muted text-[10px]">#{tag}</span>
+                                      ))}
+                                   </div>
+                                )}
+                             </a>
+                          ))}
+                       </div>
+                    </div>
+                  </ScrollReveal>
+                </div>
+             ))}
+           </div>
+         ) : (
+            <div class="text-center py-24">
+              <div class="inline-flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mb-6">
+                <Icon class="h-10 w-10 text-muted-foreground/50" name="lucide:book-open" />
+              </div>
+              <h3 class="text-xl font-semibold mb-2">暂无笔记</h3>
+              <p class="text-muted-foreground">内容正在酝酿中...</p>
+            </div>
+         )}
+      </section>
     </div>
-
-    <!-- 如果没有笔记 -->
-    {allNotes.length === 0 && (
-      <div class="text-center py-12">
-        <Icon class="h-16 w-16 text-muted-foreground mx-auto mb-4" name="lucide:book-open" />
-        <h3 class="text-xl font-semibold mb-2">暂无学习笔记</h3>
-        <p class="text-muted-foreground">
-          还没有发布任何学习笔记，敬请期待！
-        </p>
-      </div>
-    )}
-  </section>
+  </div>
 </Layout>
-
-<style>
-  .shimmer {
-    background: linear-gradient(90deg, 
-      hsl(var(--muted-foreground)) 0%, 
-      hsl(var(--primary)) 50%, 
-      hsl(var(--muted-foreground)) 100%);
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmer 2s ease-in-out infinite;
-  }
-
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-
-  .word-spacing {
-    letter-spacing: 0.1em;
-  }
-</style>
