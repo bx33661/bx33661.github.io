@@ -21,9 +21,9 @@ export function formatDate(date: Date, locale: string = 'zh-CN') {
 export function formatRelativeTime(date: Date, locale: string = 'zh-CN'): string {
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-  
+
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
-  
+
   if (diffInSeconds < 60) {
     return rtf.format(-diffInSeconds, 'second')
   } else if (diffInSeconds < 3600) {
@@ -41,8 +41,11 @@ export function formatRelativeTime(date: Date, locale: string = 'zh-CN'): string
 
 export function readingTime(html: string) {
   const textOnly = html.replace(/<[^>]+>/g, '')
-  const wordCount = textOnly.split(/\s+/).length
-  const readingTimeMinutes = (wordCount / 200 + 1).toFixed()
+  const cjkCount = (textOnly.match(/[\u4e00-\u9fa5]/g) || []).length
+  const nonCjkText = textOnly.replace(/[\u4e00-\u9fa5]/g, ' ')
+  const nonCjkCount = nonCjkText.split(/\s+/).filter(Boolean).length
+  const totalCount = cjkCount + nonCjkCount
+  const readingTimeMinutes = Math.ceil(totalCount / 300) || 1
   return `${readingTimeMinutes} 分钟阅读`
 }
 
@@ -89,15 +92,15 @@ export function deepClone<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') {
     return obj
   }
-  
+
   if (obj instanceof Date) {
     return new Date(obj.getTime()) as T
   }
-  
+
   if (obj instanceof Array) {
     return obj.map(item => deepClone(item)) as T
   }
-  
+
   if (typeof obj === 'object') {
     const cloned = {} as T
     for (const key in obj) {
@@ -107,7 +110,7 @@ export function deepClone<T>(obj: T): T {
     }
     return cloned
   }
-  
+
   return obj
 }
 
@@ -126,13 +129,13 @@ export function generateId(prefix: string = 'id'): string {
  */
 export function formatFileSize(bytes: number, decimals: number = 2): string {
   if (bytes === 0) return '0 Bytes'
-  
+
   const k = 1024
   const dm = decimals < 0 ? 0 : decimals
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-  
+
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 
@@ -162,7 +165,7 @@ export function isMobile(): boolean {
  */
 export function getUrlParam(name: string, url?: string): string | null {
   if (typeof window === 'undefined') return null
-  
+
   const urlObj = new URL(url || window.location.href)
   return urlObj.searchParams.get(name)
 }
@@ -213,7 +216,7 @@ export function generateUniqueSlug(existingSlugs: string[], length: number = 8):
   let slug: string
   let attempts = 0
   const maxAttempts = 100
-  
+
   do {
     slug = generateRandomSlug(length)
     attempts++
@@ -223,6 +226,6 @@ export function generateUniqueSlug(existingSlugs: string[], length: number = 8):
       attempts = 0
     }
   } while (!isSlugUnique(slug, existingSlugs))
-  
+
   return slug
 }

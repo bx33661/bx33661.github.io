@@ -51,28 +51,15 @@
   font-weight: 600;
 }
 
-/* LXGW WenKai v1.521 自托管字体（中文显示更友好） */
+/* LXGW WenKai v1.521 自托管字体（中文显示更友好） - 失效暂注销
 @font-face {
   font-family: 'LXGW WenKai';
-  src:
-    local('LXGW WenKai'),
-    url('/fonts/LXGWWenKai-Medium.ttf') format('truetype');
-  /* 统一使用 Medium 粗细 */
+  src: local('LXGW WenKai');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
-
-@font-face {
-  font-family: 'LXGW WenKai';
-  src:
-    local('LXGW WenKai Medium'),
-    url('/fonts/LXGWWenKai-Medium.ttf') format('truetype');
-  font-weight: 500;
-  /* Medium 对应 500 权重 */
-  font-style: normal;
-  font-display: swap;
-}
+*/
 
 :root {
   --background: oklch(0.98 0.01 106);

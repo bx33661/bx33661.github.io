@@ -63,7 +63,7 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
 
   <!-- Core Web Vitals 优化 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
   <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
   <link rel="preconnect" href="https://analytics.ahrefs.com" crossorigin />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -71,7 +71,7 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
   <!-- Font Preload - Non-blocking -->
   <link 
     rel="preload"
-    href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff2"
+    href="https://gstatic.loli.net/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff2"
     as="font"
     type="font/woff2"
     crossorigin
@@ -123,7 +123,7 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
   <meta 
     http-equiv="Content-Security-Policy" 
-    content={`default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com${posthogConnect ? ' ' + posthogConnect : ''};`} 
+    content={`default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://gstatic.loli.net; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com${posthogConnect ? ' ' + posthogConnect : ''};`} 
   />
 
   <!-- 关键文件链接 -->

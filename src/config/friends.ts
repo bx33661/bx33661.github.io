@@ -21,8 +21,8 @@ export const ORGANIZATION_LINKS: OrganizationLink[] = [
     name: "HnuSec",
     url: "https://www.hnusec.com/",
     description: "海南大学网络空间安全校队",
-    avatar: "https://www.hnusec.com/favicon.ico",
-    tags: ["网络安全", "CTF","海南大学"]
+    avatar: "/static/HnuSec.jpg",
+    tags: ["网络安全", "CTF", "海南大学"]
   },
   {
     name: "XMCVE",
