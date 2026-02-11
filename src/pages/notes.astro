@@ -11,6 +11,8 @@ const allNotes = await getAllNotes()
 const categories = await getAllNoteCategories()
 const tags = await getAllNoteTags()
 
+type Note = CollectionEntry<'notes'>
+
 // 按分类组织笔记
 const notesByCategory = new Map()
 for (const note of allNotes) {
@@ -95,7 +97,7 @@ const currentUrl = Astro.url
                        </div>
                        
                        <div class="divide-y divide-white/5">
-                          {notes.map((note) => (
+                          {notes.map((note: Note) => (
                              <a href={`/notes/${getNoteSlug(note)}`} class="block p-4 hover:bg-white/5 transition-colors group/item">
                                 <h4 class="font-medium text-foreground group-hover/item:text-primary transition-colors mb-1 line-clamp-1">
                                    {note.data.title}
@@ -110,7 +112,7 @@ const currentUrl = Astro.url
                                 </div>
                                 {note.data.tags && (
                                    <div class="flex flex-wrap gap-1 mt-2 opacity-60 group-hover/item:opacity-100 transition-opacity">
-                                      {note.data.tags.slice(0, 3).map(tag => (
+                                      {note.data.tags.slice(0, 3).map((tag: string) => (
                                          <span class="px-1.5 py-0.5 rounded bg-muted text-[10px]">#{tag}</span>
                                       ))}
                                    </div>
