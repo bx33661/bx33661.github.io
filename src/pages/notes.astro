@@ -1,148 +1,102 @@
 ---
+import '@/styles/unified-pages.css'
+
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
 import { getAllNotes, getAllNoteCategories, getAllNoteTags, getNoteSlug } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
-import { ScrollReveal } from "@/components/react/scroll-animations"
 import type { CollectionEntry } from 'astro:content'
 
 const allNotes = await getAllNotes()
 const categories = await getAllNoteCategories()
 const tags = await getAllNoteTags()
+const currentUrl = Astro.url.toString()
 
 type Note = CollectionEntry<'notes'>
 
-// 按分类组织笔记
-const notesByCategory = new Map()
+const notesByCategory = new Map<string, Note[]>()
 for (const note of allNotes) {
   const category = note.data.category || '未分类'
   if (!notesByCategory.has(category)) {
     notesByCategory.set(category, [])
   }
-  notesByCategory.get(category).push(note)
+  notesByCategory.get(category)!.push(note)
 }
-
-const currentUrl = Astro.url
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="学习笔记 - BX" description="记录技术学习历程与经验总结" />
-  
-  <div class="relative min-h-screen">
-    <!-- 背景装饰 (Consistent with Friends page) -->
-    <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-      <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
-    </div>
+<Layout canonicalUrl={currentUrl} isWide={true}>
+  <PageHead slot="head" title="学习笔记" description="记录技术学习与实践总结。" canonicalURL={currentUrl} />
 
-    <div class="container max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:px-8">
+  <div class="uipage">
+    <div class="uishell">
       <Breadcrumbs items={[{ label: '笔记', icon: 'lucide:book-open' }]} />
-      
-      <!-- Header -->
-      <ScrollReveal client:load direction="up" threshold={0.2}>
-        <section class="text-center py-16 lg:py-24">
-           <div class="inline-flex items-center gap-2 rounded-full bg-primary/5 text-primary px-4 py-1.5 text-sm font-medium border border-primary/10 mb-8 backdrop-blur-md shadow-sm">
-            <Icon name="lucide:book-open" class="size-4 animate-pulse" /> 
-            <span>Knowledge Base</span>
-          </div>
-          <h1 class="font-custom text-4xl font-extrabold tracking-tight sm:text-6xl mb-6 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60">
-            学习笔记
-          </h1>
-          <p class="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8">
-            温故而知新，可以为师矣。<br class="hidden sm:block" />
-            记录技术探索的点滴，构建个人的知识网络。
-          </p>
-          
-          <!-- Stats Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-             <div class="bg-card/40 backdrop-blur-md border border-white/10 rounded-xl p-4 shadow-sm hover:border-primary/20 transition-colors">
-                <div class="flex items-center justify-center gap-2 text-primary mb-1">
-                   <Icon name="lucide:file-text" class="size-5" />
-                   <span class="font-bold text-2xl">{allNotes.length}</span>
-                </div>
-                <div class="text-sm text-muted-foreground">总笔记数</div>
-             </div>
-             <div class="bg-card/40 backdrop-blur-md border border-white/10 rounded-xl p-4 shadow-sm hover:border-primary/20 transition-colors">
-                <div class="flex items-center justify-center gap-2 text-blue-500 mb-1">
-                   <Icon name="lucide:folder" class="size-5" />
-                   <span class="font-bold text-2xl">{categories.size}</span>
-                </div>
-                <div class="text-sm text-muted-foreground">分类归档</div>
-             </div>
-             <div class="bg-card/40 backdrop-blur-md border border-white/10 rounded-xl p-4 shadow-sm hover:border-primary/20 transition-colors">
-                <div class="flex items-center justify-center gap-2 text-green-500 mb-1">
-                   <Icon name="lucide:tag" class="size-5" />
-                   <span class="font-bold text-2xl">{tags.size}</span>
-                </div>
-                <div class="text-sm text-muted-foreground">涉及标签</div>
-             </div>
-          </div>
-        </section>
-      </ScrollReveal>
 
-      <!-- Content Grid (Masonry-like) -->
-      <section class="mb-20">
-         <div class="mb-6">
-           <a
-             href="/notes/list/"
-             class="inline-flex items-center gap-2 text-sm text-primary hover:underline"
-           >
-             <Icon name="lucide:list" class="size-4" />
-             查看按时间排序的分页列表
-           </a>
-         </div>
-         {allNotes.length > 0 ? (
-           <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-             {Array.from(notesByCategory.entries()).map(([category, notes], index) => (
-                <div class="break-inside-avoid mb-6"> <!-- Wrapper for masonry spacing -->
-                  <ScrollReveal client:load direction="up" delay={index * 0.05} threshold={0.1}>
-                    <div class="bg-card/40 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/20 group">
-                       <div class="p-4 bg-muted/30 border-b border-white/5 flex justify-between items-center">
-                          <div class="flex items-center gap-2">
-                             <Icon name="lucide:folder-open" class="size-5 text-primary/80" />
-                             <h3 class="font-bold text-lg">{category}</h3>
-                          </div>
-                          <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">{notes.length}</span>
-                       </div>
-                       
-                       <div class="divide-y divide-white/5">
-                          {notes.map((note: Note) => (
-                             <a href={`/notes/${getNoteSlug(note)}`} class="block p-4 hover:bg-white/5 transition-colors group/item">
-                                <h4 class="font-medium text-foreground group-hover/item:text-primary transition-colors mb-1 line-clamp-1">
-                                   {note.data.title}
-                                </h4>
-                                <div class="flex items-center justify-between text-xs text-muted-foreground mt-2">
-                                   <div class="flex gap-2 items-center">
-                                      <span class="flex items-center gap-1">
-                                         <Icon name="lucide:calendar" class="size-3" />
-                                         {note.data.date.toLocaleDateString('zh-CN')}
-                                      </span>
-                                   </div>
-                                </div>
-                                {note.data.tags && (
-                                   <div class="flex flex-wrap gap-1 mt-2 opacity-60 group-hover/item:opacity-100 transition-opacity">
-                                      {note.data.tags.slice(0, 3).map((tag: string) => (
-                                         <span class="px-1.5 py-0.5 rounded bg-muted text-[10px]">#{tag}</span>
-                                      ))}
-                                   </div>
-                                )}
-                             </a>
-                          ))}
-                       </div>
-                    </div>
-                  </ScrollReveal>
-                </div>
-             ))}
-           </div>
-         ) : (
-            <div class="text-center py-24">
-              <div class="inline-flex h-20 w-20 items-center justify-center rounded-full bg-muted/30 mb-6">
-                <Icon class="h-10 w-10 text-muted-foreground/50" name="lucide:book-open" />
-              </div>
-              <h3 class="text-xl font-semibold mb-2">暂无笔记</h3>
-              <p class="text-muted-foreground">内容正在酝酿中...</p>
+      <section class="uipanel uihero">
+        <p class="uihero__eyebrow">Knowledge Base</p>
+        <h1>学习笔记</h1>
+        <p>记录日常学习与项目过程中的技术要点，按分类整理，便于回顾和查阅。</p>
+        <div class="uikpi-grid">
+          <article class="uikpi-card">
+            <p class="uikpi-card__label">总笔记</p>
+            <p class="uikpi-card__value">{allNotes.length}</p>
+          </article>
+          <article class="uikpi-card">
+            <p class="uikpi-card__label">分类数</p>
+            <p class="uikpi-card__value">{categories.size}</p>
+          </article>
+          <article class="uikpi-card">
+            <p class="uikpi-card__label">标签数</p>
+            <p class="uikpi-card__value">{tags.size}</p>
+          </article>
+          <a href="/notes/list/" class="uikpi-card no-underline">
+            <p class="uikpi-card__label">浏览方式</p>
+            <p class="uikpi-card__value text-base inline-flex items-center gap-1">
+              时间分页
+              <Icon name="lucide:arrow-right" class="size-4" />
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <section class="uisection">
+        <div class="uisection-head">
+          <div>
+            <h2>分类笔记</h2>
+            <p>按主题整理的学习记录</p>
+          </div>
+        </div>
+
+        {
+          allNotes.length > 0 ? (
+            <div class="uicard-grid uicard-grid--3">
+              {Array.from(notesByCategory.entries()).map(([category, items]) => (
+                <article class="uipanel uicard">
+                  <h3 class="inline-flex items-center gap-2">
+                    <Icon name="lucide:folder-open" class="size-4 text-primary" />
+                    {category}
+                  </h3>
+                  <p>{items.length} 篇笔记</p>
+                  <ul class="uiitem-list">
+                    {items.map((note: Note) => (
+                      <li>
+                        <a href={`/notes/${getNoteSlug(note)}`}>
+                          <span class="truncate text-foreground">{note.data.title}</span>
+                          <span class="uiitem-list__meta">{note.data.date.toLocaleDateString('zh-CN')}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
             </div>
-         )}
+          ) : (
+            <article class="uipanel uicard">
+              <h3>暂无笔记</h3>
+              <p>内容正在整理中。</p>
+            </article>
+          )
+        }
       </section>
     </div>
   </div>

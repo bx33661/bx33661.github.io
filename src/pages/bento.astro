@@ -1,16 +1,78 @@
 ---
-import BentoHomepage from '@/components/react/bento-homepage';
+import '@/styles/bento-gallery.css'
+
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+import { BASE_URL } from '@/config/env'
+import { GALLERY_IMAGES } from '@/data/gallery'
+
+const currentUrl = Astro.url.toString()
+
+const getGalleryShape = (index: number) => {
+  if (index === 0) return 'gallery-item--wide'
+  if (index % 7 === 0) return 'gallery-item--tall'
+  if (index % 5 === 0) return 'gallery-item--wide'
+  return ''
+}
+
+const galleryImages = GALLERY_IMAGES.map((item, index) => ({
+  ...item,
+  src: `${BASE_URL}gallery/${item.file}`,
+  shape: getGalleryShape(index),
+}))
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bento 风格个人主页</title>
-    <meta name="description" content="现代化的 Bento 卡片式个人主页" />
-  </head>
-  <body>
-    <BentoHomepage client:load />
-  </body>
-</html>
+<Layout canonicalUrl={currentUrl} isWide={true}>
+  <PageHead
+    slot="head"
+    title="相册"
+    description="记录生活与旅途中的一些片段。"
+    canonicalURL={currentUrl}
+  />
+
+  <div class="gallery-page">
+    <div class="gallery-shell">
+      <Breadcrumbs items={[{ label: '相册', icon: 'lucide:image' }]} />
+
+      <section class="gallery-panel gallery-hero">
+        <p class="gallery-hero__kicker">Gallery</p>
+        <h1>博客相册</h1>
+        <p>所有照片统一在这里维护，和关于页相册使用同一数据源，更新后会同步展示。</p>
+        <div class="gallery-meta">
+          <span>{galleryImages.length} 张照片</span>
+          <span>最新更新：{galleryImages[0]?.date || 'N/A'}</span>
+        </div>
+      </section>
+
+      <section class="gallery-panel gallery-grid-panel">
+        <div class="gallery-grid">
+          {
+            galleryImages.map((image) => (
+              <figure class={`gallery-item ${image.shape}`.trim()}>
+                <a
+                  href={image.src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="gallery-item__link"
+                  aria-label={`查看原图：${image.title}`}
+                >
+                  <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+                </a>
+                <figcaption>
+                  <strong>{image.title}</strong>
+                  <span>
+                    <time>{image.date}</time>
+                    <a href={image.src} target="_blank" rel="noopener noreferrer" class="gallery-item__open">
+                      原图
+                    </a>
+                  </span>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+</Layout>

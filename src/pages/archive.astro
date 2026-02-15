@@ -1,206 +1,105 @@
 ---
+import '@/styles/unified-pages.css'
+
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
-import { Badge } from '@/components/ui/badge'
 import Layout from '@/layouts/Layout.astro'
 import { getAllPosts, getAllPostSlugs } from '@/lib/data-utils'
-import { Icon } from 'astro-icon/components'
 import { formatDate } from '@/lib/utils'
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import { Icon } from 'astro-icon/components'
 
 const allPosts = await getAllPosts()
 const allPostSlugs = await getAllPostSlugs()
 
-// 为文章添加slug信息
-const postsWithSlug = allPosts.map(post => {
+const postsWithSlug = allPosts.map((post) => {
   const postSlugData = allPostSlugs.find(({ post: p }) => p.id === post.id)
   return { ...post, slug: postSlugData?.slug || post.data.slug || 'unknown' }
 })
 
-// 按年份分组文章
-const postsByYear = postsWithSlug.reduce((acc, post) => {
-  const year = post.data.date.getFullYear()
-  if (!acc[year]) {
-    acc[year] = []
-  }
-  acc[year].push(post)
-  return acc
-}, {} as Record<number, typeof postsWithSlug>)
+const postsByYear = postsWithSlug.reduce(
+  (acc, post) => {
+    const year = post.data.date.getFullYear()
+    if (!acc[year]) acc[year] = []
+    acc[year].push(post)
+    return acc
+  },
+  {} as Record<number, typeof postsWithSlug>,
+)
 
-// 按年份降序排列
-const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a)
+const years = Object.keys(postsByYear)
+  .map(Number)
+  .sort((a, b) => b - a)
 
-const currentUrl = Astro.url;
+const currentUrl = Astro.url.toString()
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="文章归档 - BX/bpple" />
-  
-  <div class="flex flex-col gap-y-8 px-4 py-8 sm:px-8 lg:px-16">
-    <Breadcrumbs items={[{ label: '归档', icon: 'lucide:archive' }]} />
-    <!-- 页面标题 -->
-    <section class="text-center relative">
-      <!-- 装饰性背景 -->
-      <div class="absolute inset-0 -z-10">
-        <div class="absolute top-10 left-1/4 w-32 h-32 bg-primary/5 rounded-full blur-3xl"></div>
-        <div class="absolute top-20 right-1/3 w-24 h-24 bg-secondary/20 rounded-full blur-2xl"></div>
-      </div>
-      
-      <div class="flex items-center justify-center gap-3 mb-4">
-        <div class="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-xl">
-          <Icon name="lucide:archive" class="w-6 h-6 text-primary" />
-        </div>
-        <h1 class="font-custom text-foreground text-4xl font-extrabold sm:text-5xl">
-          文章归档
-        </h1>
-      </div>
-      
-      <p class="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
-        我发布的所有文章，按年份归档整理
-      </p>
-      
-      <!-- 统计信息卡片 -->
-      <div class="flex items-center justify-center gap-4 mb-2">
-        <div class="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm border border-primary/20 rounded-xl px-4 py-2 flex items-center gap-2">
-          <Icon name="lucide:file-text" class="w-4 h-4 text-primary" />
-          <span class="text-sm font-medium text-foreground">
-            共 {allPosts.length} 篇文章
-          </span>
-        </div>
-        <div class="bg-gradient-to-r from-secondary/20 to-secondary/10 backdrop-blur-sm border border-secondary/30 rounded-xl px-4 py-2 flex items-center gap-2">
-          <Icon name="lucide:calendar-days" class="w-4 h-4 text-secondary-foreground" />
-          <span class="text-sm font-medium text-foreground">
-            {years.length} 个年份
-          </span>
-        </div>
-      </div>
-    </section>
+<Layout canonicalUrl={currentUrl} isWide={true}>
+  <PageHead slot="head" title="文章归档" description="按年份整理的全部博客文章。" canonicalURL={currentUrl} />
 
-    <!-- 文章列表 -->
-    <section class="space-y-12">
-      {years.map(year => (
-        <div class="space-y-6 relative">
-          <!-- 年份标题 -->
-          <div class="relative">
-            <!-- 年份背景装饰 -->
-            <div class="absolute -inset-4 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 rounded-2xl blur-xl"></div>
-            
-            <div class="relative flex items-center gap-4 bg-background/80 backdrop-blur-sm border border-border/50 rounded-xl p-4 shadow-sm">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center shadow-lg">
-                  <span class="text-white font-bold text-sm">{year.toString().slice(-2)}</span>
-                </div>
-                <h2 class="text-3xl font-bold text-foreground">{year}</h2>
-              </div>
-              
-              <div class="flex-1 h-px bg-gradient-to-r from-border via-border/50 to-transparent"></div>
-              
-              <div class="flex items-center gap-2">
-                <div class="bg-secondary/20 backdrop-blur-sm border border-secondary/30 rounded-lg px-3 py-1.5 flex items-center gap-2">
-                  <Icon name="lucide:layers" class="w-3 h-3 text-secondary-foreground" />
-                  <span class="text-sm font-medium text-foreground">
-                    {postsByYear[year].length} 篇
-                  </span>
-                </div>
-              </div>
-            </div>
+  <div class="uipage">
+    <div class="uishell">
+      <Breadcrumbs items={[{ label: '归档', icon: 'lucide:archive' }]} />
+
+      <section class="uipanel uihero">
+        <p class="uihero__eyebrow">Archive</p>
+        <h1>文章归档</h1>
+        <p>全部文章按年份整理，便于快速定位历史内容与持续追踪主题变化。</p>
+        <div class="uikpi-grid">
+          <article class="uikpi-card">
+            <p class="uikpi-card__label">文章总数</p>
+            <p class="uikpi-card__value">{allPosts.length}</p>
+          </article>
+          <article class="uikpi-card">
+            <p class="uikpi-card__label">年份覆盖</p>
+            <p class="uikpi-card__value">{years.length}</p>
+          </article>
+          <article class="uikpi-card">
+            <p class="uikpi-card__label">最新年份</p>
+            <p class="uikpi-card__value">{years[0] || '-'}</p>
+          </article>
+          <a href="/blog/" class="uikpi-card no-underline">
+            <p class="uikpi-card__label">继续浏览</p>
+            <p class="uikpi-card__value text-base inline-flex items-center gap-1">
+              博客列表
+              <Icon name="lucide:arrow-right" class="size-4" />
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <section class="uisection">
+        <div class="uisection-head">
+          <div>
+            <h2>按年份查看</h2>
+            <p>Yearly Timeline</p>
           </div>
+        </div>
 
-          <!-- 该年份的文章 -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {postsByYear[year].map((post, index) => (
-              <article class="group relative overflow-hidden rounded-xl border border-border/50 bg-gradient-to-br from-background to-background/50 hover:from-secondary/20 hover:to-secondary/10 p-4 transition-all duration-300 ease-in-out hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 hover:-translate-y-0.5">
-                <!-- 装饰性渐变 -->
-                <div class="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-secondary/3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                <!-- 左侧装饰条 -->
-                <div class="absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-primary/50 to-secondary/50 transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top"></div>
-                
-                <a href={`/blog/${post.slug}`} class="block relative z-10">
-                  <div class="flex flex-col gap-2">
-                    <div class="space-y-1">
-                      <div class="flex items-start justify-between gap-2">
-                        <div class="flex items-start gap-2 flex-1">
-                          <!-- 文章序号 -->
-                          <div class="flex items-center justify-center w-6 h-6 bg-primary/10 text-primary text-xs font-bold rounded-md shrink-0 mt-0.5 group-hover:bg-primary group-hover:text-white transition-colors duration-200">
-                            {String(index + 1).padStart(2, '0')}
-                          </div>
-                          
-                          <h3 class="text-base font-medium text-foreground group-hover:text-primary transition-colors duration-200 leading-snug">
-                            {post.data.title}
-                          </h3>
-                        </div>
-                        
-                        <time datetime={post.data.date.toISOString()} class="text-xs text-muted-foreground shrink-0 flex items-center gap-1 bg-secondary/20 px-2 py-1 rounded-md">
-                          <Icon name="lucide:clock" class="w-3 h-3" />
-                          {formatDate(post.data.date).split(' ')[0]}
-                        </time>
-                      </div>
-                      
-                      <p class="text-muted-foreground text-sm leading-tight line-clamp-2 ml-8">
-                        {post.data.description}
-                      </p>
-                      
-                      {post.data.tags && (
-                        <div class="flex flex-wrap gap-1 mt-2 ml-8">
-                          {post.data.tags.slice(0, 3).map((tag) => (
-                            <Badge variant="secondary" className="text-xs px-2 py-0.5 h-auto bg-gradient-to-r from-secondary/30 to-secondary/20 border-secondary/40">
-                              <Icon name="lucide:hash" class="w-2.5 h-2.5 mr-0.5" />
-                              {tag}
-                            </Badge>
-                          ))}
-                          {post.data.tags.length > 3 && (
-                            <span class="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">+{post.data.tags.length - 3}</span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div class="flex items-center justify-between mt-2">
-                      <div class="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Icon name="lucide:book-open" class="w-3 h-3" />
-                        <span>阅读全文</span>
-                      </div>
-                      <Icon name="lucide:arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 text-primary/70 group-hover:text-primary" />
-                    </div>
-                  </div>
-                </a>
+        <div class="uicard-grid">
+          {
+            years.map((year) => (
+              <article class="uipanel uicard">
+                <h3 class="inline-flex items-center gap-2">
+                  <Icon name="lucide:calendar-days" class="size-4 text-primary" />
+                  {year}
+                  <span class="text-sm text-muted-foreground">({postsByYear[year].length})</span>
+                </h3>
+                <ul class="uiitem-list">
+                  {postsByYear[year].map((post) => (
+                    <li>
+                      <Link href={`/blog/${post.slug}`}>
+                        <span class="truncate text-foreground">{post.data.title}</span>
+                        <span class="uiitem-list__meta">{formatDate(post.data.date).split(' ')[0]}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </article>
-            ))}
-          </div>
+            ))
+          }
         </div>
-      ))}
-    </section>
-
-    <!-- 页面底部 -->
-    <section class="text-center pt-12 relative">
-      <!-- 装饰性分割线 -->
-      <div class="flex items-center justify-center gap-4 mb-8">
-        <div class="w-16 h-px bg-gradient-to-r from-transparent to-border"></div>
-        <div class="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
-          <Icon name="lucide:sparkles" class="w-4 h-4 text-primary" />
-        </div>
-        <div class="w-16 h-px bg-gradient-to-l from-transparent to-border"></div>
-      </div>
-      
-      <!-- 返回链接卡片 -->
-      <div class="inline-block">
-        <Link 
-          href="/"
-          class="group inline-flex items-center gap-3 bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 border border-primary/20 rounded-xl px-6 py-3 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-0.5"
-        >
-          <Icon name="lucide:home" class="w-4 h-4 text-primary group-hover:scale-110 transition-transform duration-200" />
-          <span class="text-foreground font-medium group-hover:text-primary transition-colors">返回首页</span>
-          <Icon name="lucide:arrow-right" class="w-4 h-4 text-primary/70 group-hover:translate-x-1 transition-transform duration-200" />
-        </Link>
-      </div>
-      
-      <!-- 底部装饰 -->
-      <div class="mt-8 opacity-50">
-        <p class="text-xs text-muted-foreground">
-          感谢您的阅读 ✨
-        </p>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </Layout>

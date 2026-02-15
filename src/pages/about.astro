@@ -7,6 +7,7 @@ import PageHead from '@/components/PageHead.astro'
 import { Icon } from 'astro-icon/components'
 import Layout from '@/layouts/Layout.astro'
 import { BASE_URL } from '@/config/env'
+import { GALLERY_IMAGES } from '@/data/gallery'
 import { getAllProjects, getProjectSlug } from '@/lib/data-utils'
 
 const currentUrl = Astro.url.toString()
@@ -74,64 +75,11 @@ const focusItems = [
   },
 ]
 
-const galleryImages = [
-  {
-    src: `${BASE_URL}gallery/6C67AEDA-15B9-44A4-9493-B801382DB7EC.jpeg`,
-    alt: '经幡穹顶',
-    title: '经幡穹顶',
-    date: '2026-02-15',
-    shape: 'about-shot--wide',
-  },
-  {
-    src: `${BASE_URL}gallery/0228CA38-3A9D-4624-A6B8-0EDD2B1B5296.jpeg`,
-    alt: '日照金山',
-    title: '日照金山',
-    date: '2026-02-15',
-    shape: '',
-  },
-  {
-    src: `${BASE_URL}gallery/C0A851E2-DFC3-4E0B-B37E-3451E1DC3F24.jpeg`,
-    alt: '虎跳峡',
-    title: '虎跳峡',
-    date: '2026-02-15',
-    shape: '',
-  },
-  {
-    src: `${BASE_URL}gallery/79d35189354e2824167cfebb10876af4.jpg`,
-    alt: 'Labubu',
-    title: 'Labubu',
-    date: '2025-07-05',
-    shape: 'about-shot--tall',
-  },
-  {
-    src: `${BASE_URL}gallery/738eadca2488bd4f583bb071d15fc038.jpg`,
-    alt: '宝泉风景',
-    title: '宝泉',
-    date: '2025-07-05',
-    shape: 'about-shot--wide',
-  },
-  {
-    src: `${BASE_URL}gallery/c9531bcaeefed42bb36b974696149c7a.jpg`,
-    alt: '山间风景',
-    title: '山间',
-    date: '2025-07-05',
-    shape: '',
-  },
-  {
-    src: `${BASE_URL}gallery/3a05e267fc3eb4a6c146489836f5d50e.jpg`,
-    alt: '校园',
-    title: '校园',
-    date: '2025-05-05',
-    shape: '',
-  },
-  {
-    src: `${BASE_URL}gallery/cd3ca9f14be50495c1be8ed017c7b348.jpg`,
-    alt: '海南落日',
-    title: '落日',
-    date: '2024-07-05',
-    shape: 'about-shot--wide',
-  },
-]
+const galleryImages = GALLERY_IMAGES.slice(0, 8).map((item) => ({
+  ...item,
+  src: `${BASE_URL}gallery/${item.file}`,
+  shape: item.shape || '',
+}))
 
 const getProjectIcon = (tags: string[]) => {
   if (tags.includes('security') || tags.includes('ctf') || tags.includes('web')) return '🛡️'

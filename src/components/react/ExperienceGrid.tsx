@@ -51,7 +51,7 @@ const getDefaultGradient = (type: string) => {
     }
 };
 
-const ExperienceCard: React.FC<{ item: ExperienceItem; index: number }> = ({ item, index }) => {
+const ExperienceCard: React.FC<{ item: ExperienceItem }> = ({ item }) => {
     const isEducation = item.type === 'education';
 
     return (
@@ -140,7 +140,7 @@ export const ExperienceGrid: React.FC<ExperienceGridProps> = ({ items, className
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
                 >
-                    <ExperienceCard item={item} index={index} />
+                    <ExperienceCard item={item} />
                 </motion.div>
             ))}
         </BentoGrid>

@@ -1,0 +1,370 @@
+.uipage {
+  position: relative;
+  isolation: isolate;
+  padding-bottom: 4rem;
+}
+
+.uipage::before,
+.uipage::after {
+  content: '';
+  position: fixed;
+  width: 32vw;
+  height: 32vw;
+  border-radius: 999px;
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(74px);
+  opacity: 0.22;
+}
+
+.uipage::before {
+  top: 90px;
+  left: -14vw;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 24%, transparent), transparent 72%);
+}
+
+.uipage::after {
+  right: -12vw;
+  bottom: 70px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--chart-2) 26%, transparent), transparent 72%);
+}
+
+.uishell {
+  width: min(1240px, calc(100% - 2.6rem));
+  margin-inline: auto;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.uipanel {
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+}
+
+.uihero {
+  padding: 1.55rem;
+}
+
+.uihero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--primary) 36%, transparent);
+  background: color-mix(in srgb, var(--primary) 9%, transparent);
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
+  color: color-mix(in srgb, var(--foreground) 78%, transparent);
+  font-weight: 700;
+}
+
+.uihero h1 {
+  margin: 0.8rem 0 0;
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.uihero p {
+  margin: 0.76rem 0 0;
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  font-size: 0.96rem;
+  line-height: 1.7;
+  max-width: 72ch;
+}
+
+.uikpi-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.uikpi-card {
+  position: relative;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 11%, transparent);
+  background: color-mix(in srgb, var(--background) 96%, transparent);
+  padding: 0.72rem 0.82rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.uikpi-card p {
+  margin: 0;
+}
+
+.uikpi-card__label {
+  color: color-mix(in srgb, var(--foreground) 58%, transparent);
+  font-size: 0.78rem;
+}
+
+.uikpi-card__value {
+  margin-top: 0.2rem;
+  font-size: 1.22rem;
+  font-weight: 800;
+}
+
+.uisection {
+  padding: 0.22rem 0;
+}
+
+.uisection-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.uisection-head h2 {
+  margin: 0;
+  font-size: 1.24rem;
+  letter-spacing: -0.02em;
+}
+
+.uisection-head p {
+  margin: 0.22rem 0 0;
+  color: color-mix(in srgb, var(--foreground) 62%, transparent);
+  font-size: 0.84rem;
+}
+
+.uicard-grid {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.uicard-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.uicard-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.uicard {
+  padding: 1rem;
+}
+
+.uicard h3 {
+  margin: 0;
+  font-size: 1.06rem;
+}
+
+.uicard p {
+  margin: 0.45rem 0 0;
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  font-size: 0.87rem;
+  line-height: 1.55;
+}
+
+.uiitem-list {
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.uiitem-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  border-radius: 11px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 11%, transparent);
+  background: color-mix(in srgb, var(--background) 97%, transparent);
+  text-decoration: none;
+  color: inherit;
+  padding: 0.56rem 0.66rem;
+}
+
+.uiitem-list div {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  border-radius: 11px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 11%, transparent);
+  background: color-mix(in srgb, var(--background) 97%, transparent);
+  padding: 0.56rem 0.66rem;
+}
+
+.uiitem-list__meta {
+  color: color-mix(in srgb, var(--foreground) 62%, transparent);
+  font-size: 0.76rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.uiitem-list__desc {
+  color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  text-align: right;
+  max-width: 26ch;
+}
+
+.uiitem-list__primary {
+  font-size: 0.88rem;
+  color: inherit;
+  min-width: 0;
+}
+
+.uifriend-card {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: color-mix(in srgb, var(--background) 96%, transparent);
+  padding: 0.95rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.uifriend-card__top {
+  display: flex;
+  gap: 0.72rem;
+}
+
+.uifriend-card__top img {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+
+.uifriend-card__host {
+  color: color-mix(in srgb, var(--foreground) 62%, transparent);
+  font-size: 0.76rem;
+}
+
+.uifriend-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.uifriend-card__desc {
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.ui-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.ui-copy-list {
+  margin: 0.9rem 0 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.ui-copy-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  border-radius: 11px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: color-mix(in srgb, var(--background) 97%, transparent);
+  padding: 0.58rem 0.7rem;
+  font-size: 0.84rem;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+
+.ui-copy-item code {
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  font-size: 0.74rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .uikpi-card,
+  .uifriend-card,
+  .uiitem-list a,
+  .uiitem-list div,
+  .uicard,
+  .ui-copy-item {
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .uikpi-card:hover,
+  .uifriend-card:hover,
+  .uiitem-list a:hover,
+  .uiitem-list div:hover,
+  .uicard:hover,
+  .ui-copy-item:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--primary) 34%, transparent);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+  }
+}
+
+.uikpi-card:focus-visible,
+.uifriend-card:focus-visible,
+.uiitem-list a:focus-visible,
+.ui-copy-item:focus-visible,
+#copy-all-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--primary) 58%, transparent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uikpi-card,
+  .uifriend-card,
+  .uiitem-list a,
+  .uiitem-list div,
+  .uicard,
+  .ui-copy-item {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 1080px) {
+  .uikpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .uicard-grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .uishell {
+    width: calc(100% - 1rem);
+    gap: 0.72rem;
+  }
+
+  .uihero {
+    padding: 0.95rem;
+  }
+
+  .uikpi-grid,
+  .uicard-grid--2,
+  .uicard-grid--3 {
+    grid-template-columns: 1fr;
+  }
+
+  .uicard {
+    padding: 0.92rem;
+  }
+
+  .uiitem-list div {
+    gap: 0.55rem;
+  }
+
+  .uiitem-list__desc {
+    max-width: 20ch;
+    font-size: 0.74rem;
+  }
+}
