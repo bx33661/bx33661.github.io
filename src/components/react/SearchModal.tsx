@@ -24,15 +24,23 @@ export default function SearchModal({ isOpen: controlledOpen, onClose }: SearchM
     const [results, setResults] = useState<SearchResult[]>([])
     const [searchIndex, setSearchIndex] = useState<SearchResult[]>([])
     const [fuse, setFuse] = useState<Fuse<SearchResult> | null>(null)
+    const [isLoadingIndex, setIsLoadingIndex] = useState(false)
+    const [hasLoadedIndex, setHasLoadedIndex] = useState(false)
     const [selectedIndex, setSelectedIndex] = useState(0)
     const inputRef = useRef<HTMLInputElement>(null)
     const resultsRef = useRef<HTMLDivElement>(null)
 
-    // Load search index
+    // 按需加载搜索索引，避免首屏额外请求
     useEffect(() => {
+        if (!isOpen || hasLoadedIndex) return
+
+        let isCancelled = false
+        setIsLoadingIndex(true)
+
         fetch('/search.json')
             .then((res) => res.json())
             .then((data: SearchResult[]) => {
+                if (isCancelled) return
                 setSearchIndex(data)
                 const fuseInstance = new Fuse(data, {
                     keys: [
@@ -46,9 +54,19 @@ export default function SearchModal({ isOpen: controlledOpen, onClose }: SearchM
                     minMatchCharLength: 2,
                 })
                 setFuse(fuseInstance)
+                setHasLoadedIndex(true)
             })
             .catch(console.error)
-    }, [])
+            .finally(() => {
+                if (!isCancelled) {
+                    setIsLoadingIndex(false)
+                }
+            })
+
+        return () => {
+            isCancelled = true
+        }
+    }, [isOpen, hasLoadedIndex])
 
     // Keyboard shortcut (Cmd/Ctrl + K)
     useEffect(() => {
@@ -207,6 +225,10 @@ export default function SearchModal({ isOpen: controlledOpen, onClose }: SearchM
                                     </li>
                                 ))}
                             </ul>
+                        ) : isLoadingIndex ? (
+                            <div className="px-4 py-8 text-center text-muted-foreground">
+                                <p>正在加载搜索索引...</p>
+                            </div>
                         ) : query.length >= 2 ? (
                             <div className="px-4 py-8 text-center text-muted-foreground">
                                 <p>未找到相关文章</p>

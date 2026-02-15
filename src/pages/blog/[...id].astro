@@ -27,6 +27,8 @@ const currentSlug = Astro.params.id // 这里获取的是slug
 const { Content, headings } = await render(post)
 const { next, prev } = await getAdjacentPosts(currentSlug)
 const relatedPosts = await getRelatedPosts(post, 3)
+const allPostSlugs = await getAllPostSlugs()
+const relatedPostSlugMap = new Map(allPostSlugs.map(({ slug, post }) => [post.id, slug]))
 
 // 检查文章是否设置了密码保护
 const isPasswordProtected = !!post.data.password
@@ -229,7 +231,7 @@ const avatarUrl = '/logo.png'
             <div class="space-y-3">
               {relatedPosts.slice(0, 3).map((relatedPost) => (
                 <Link
-                  href={`/blog/${relatedPost.id}`}
+                  href={`/blog/${relatedPostSlugMap.get(relatedPost.id) || relatedPost.data.slug || relatedPost.id}`}
                   class="block p-3 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-primary/50 transition-colors"
                 >
                   <div class="font-medium text-neutral-900 dark:text-white line-clamp-2">

@@ -1,11 +1,11 @@
 import { SITE } from '@/consts'
 import type { APIContext } from 'astro'
-import { getAllPostSlugs, getAllProjects, getAllTags } from '@/lib/data-utils'
+import { getAllPostSlugs, getAllProjectSlugs, getAllTags } from '@/lib/data-utils'
 
 export async function GET(context: APIContext) {
   try {
     const postSlugs = await getAllPostSlugs()
-    const projects = await getAllProjects()
+    const projects = await getAllProjectSlugs()
     const tags = await getAllTags()
     const site = context.site ?? SITE.href
     const baseUrl = site.toString().endsWith('/') ? site.toString().slice(0, -1) : site.toString()
@@ -38,8 +38,8 @@ export async function GET(context: APIContext) {
       priority: '0.6'
     }))
 
-    const projectPosts = projects.map(project => ({
-      url: `${baseUrl}/projects/${project.id}/`,
+    const projectPosts = projects.map(({ slug, project }) => ({
+      url: `${baseUrl}/projects/${slug}/`,
       lastmod: (project.data.endDate ?? new Date()).toISOString(),
       changefreq: 'monthly',
       priority: '0.6'

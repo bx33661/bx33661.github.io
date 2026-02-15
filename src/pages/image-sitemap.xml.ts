@@ -1,11 +1,11 @@
 import { SITE } from '@/consts'
 import type { APIContext } from 'astro'
-import { getAllPostSlugs, getAllProjects } from '@/lib/data-utils'
+import { getAllPostSlugs, getAllProjectSlugs } from '@/lib/data-utils'
 
 export async function GET(context: APIContext) {
   try {
     const postSlugs = await getAllPostSlugs()
-    const projects = await getAllProjects()
+    const projects = await getAllProjectSlugs()
     const site = context.site ?? SITE.href
     const baseUrl = site.toString().endsWith('/') ? site.toString().slice(0, -1) : site.toString()
 
@@ -33,12 +33,12 @@ export async function GET(context: APIContext) {
     }
 
     // 项目图片
-    for (const project of projects) {
+    for (const { slug, project } of projects) {
       images.push({
-        loc: `${baseUrl}/projects/${project.id}/`,
+        loc: `${baseUrl}/projects/${slug}/`,
         image: [
           {
-            loc: `${baseUrl}/image/${project.id}.png`,
+            loc: `${baseUrl}/image/${slug}.png`,
             title: project.data.name,
             caption: project.data.description
           }
@@ -51,8 +51,8 @@ export async function GET(context: APIContext) {
       loc: `${baseUrl}/`,
       image: [
         {
-          loc: `${baseUrl}/ogImage.png`,
-          title: `${SITE.title} - Open Graph Image`,
+          loc: `${baseUrl}/logo.png`,
+          title: `${SITE.title} - Site Image`,
           caption: SITE.description
         },
         {

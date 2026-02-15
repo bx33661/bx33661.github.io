@@ -1,8 +1,8 @@
 ---
 import { ENABLE_ANALYTICS } from '@/config/env'
 
-// GTM ID - 可以通过环境变量配置
-const GTM_ID = import.meta.env.PUBLIC_GTM_ID || 'GTM-W7XSCCH7'
+// GTM ID 仅从环境变量读取，避免误上报到错误容器
+const GTM_ID = import.meta.env.PUBLIC_GTM_ID
 
 // 只在生产环境且启用分析时加载
 const shouldLoadGTM = import.meta.env.PROD && ENABLE_ANALYTICS && GTM_ID

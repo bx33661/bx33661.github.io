@@ -59,7 +59,13 @@ const currentUrl = Astro.url;
     </p>
 
     <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8 my-12">
-      <Search client:idle searchList={searchList} initialPosts={page.data} />
+      <Search
+        client:idle
+        searchList={searchList}
+        initialPosts={page.data}
+        basePath="/blog"
+        tagLinkBase="/tags"
+      />
     </div>
 
     <PaginationComponent
@@ -70,6 +76,5 @@ const currentUrl = Astro.url;
     />
   </section>
 </Layout>
-
 
 

@@ -16,8 +16,8 @@
       "purpose": "maskable"
     },
     {
-      "src": "/favicon-96x96.png",
-      "sizes": "96x96",
+      "src": "/logo.png",
+      "sizes": "512x512",
       "type": "image/png"
     },
     {
@@ -51,8 +51,8 @@
       "url": "/blog",
       "icons": [
         {
-          "src": "/favicon-96x96.png",
-          "sizes": "96x96"
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192"
         }
       ]
     },
@@ -63,8 +63,8 @@
       "url": "/projects",
       "icons": [
         {
-          "src": "/favicon-96x96.png",
-          "sizes": "96x96"
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192"
         }
       ]
     }

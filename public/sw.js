@@ -8,15 +8,16 @@ const STATIC_ASSETS = [
   '/',
   '/blog',
   '/about',
+  '/projects',
   '/offline',
-  '/manifest.json',
+  '/site.webmanifest',
   '/logo.svg',
   '/fonts/ClashDisplay-Semibold.woff2',
   '/fonts/GeistVF.woff2',
   '/fonts/GeistMonoVF.woff2',
   '/favicon.ico',
   '/logo.ico',
-  '/ogImage.png'
+  '/logo.png'
 ]
 
 // 安装 Service Worker

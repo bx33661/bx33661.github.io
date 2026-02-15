@@ -25,11 +25,15 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "lint": "npm run typecheck",
+    "test": "node test_reading_time.js",
+    "check": "npm run lint && npm run test",
+    "build": "npm run typecheck && ASTRO_TELEMETRY_DISABLED=1 astro build",
     "build:vercel": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "prettier": "prettier --write **/*.{ts,tsx,css,astro} --ignore-path .gitignore"
+    "prettier": "prettier --write **/*.{ts,tsx,js,jsx,css,md,mdx,json} --ignore-path .gitignore"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -92,19 +96,6 @@
   },
   "prettier": {
     "semi": false,
-    "singleQuote": true,
-    "plugins": [
-      "prettier-plugin-astro",
-      "prettier-plugin-tailwindcss",
-      "prettier-plugin-astro-organize-imports"
-    ],
-    "overrides": [
-      {
-        "files": "*.astro",
-        "options": {
-          "parser": "astro"
-        }
-      }
-    ]
+    "singleQuote": true
   }
 }

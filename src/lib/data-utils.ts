@@ -1,6 +1,44 @@
 import { getCollection, type CollectionEntry } from 'astro:content'
-import { generateUniqueSlug } from './utils'
 import { withCache } from './cache-utils'
+
+function stableHash(input: string): string {
+  let hash = 0
+  for (let i = 0; i < input.length; i++) {
+    hash = (hash << 5) - hash + input.charCodeAt(i)
+    hash |= 0
+  }
+  return Math.abs(hash).toString(36)
+}
+
+function createDeterministicSlug(source: string, prefix: 'post' | 'note' | 'project'): string {
+  const normalized = source
+    .replace(/\.(md|mdx)$/i, '')
+    .replace(/[\\/]/g, '-')
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/[^\p{Letter}\p{Number}]+/gu, '-')
+    .replace(/^-+|-+$/g, '')
+
+  return normalized || `${prefix}-${stableHash(source)}`
+}
+
+function ensureUniqueSlug<T extends { id: string }>(
+  desiredSlug: string,
+  entry: T,
+  slugMap: Map<string, T>,
+): string {
+  if (!slugMap.has(desiredSlug)) {
+    return desiredSlug
+  }
+
+  let suffix = 2
+  let candidate = `${desiredSlug}-${suffix}`
+  while (slugMap.has(candidate) && slugMap.get(candidate)?.id !== entry.id) {
+    suffix++
+    candidate = `${desiredSlug}-${suffix}`
+  }
+  return candidate
+}
 
 export async function getAllPosts(): Promise<CollectionEntry<'blog'>[]> {
   return withCache('all-posts', async () => {
@@ -12,19 +50,12 @@ export async function getAllPosts(): Promise<CollectionEntry<'blog'>[]> {
 }
 
 /**
- * 获取文章的slug，如果没有则生成一个随机的
+ * 获取文章的slug，如果没有则按文件id生成稳定slug
  * @param post 文章对象
- * @param existingSlugs 已存在的slug数组
  * @returns 文章的slug
  */
-export function getPostSlug(post: CollectionEntry<'blog'>, existingSlugs: string[] = []): string {
-  // 如果文章已经有slug，直接返回
-  if (post.data.slug) {
-    return post.data.slug
-  }
-  
-  // 否则生成一个唯一的随机slug
-  return generateUniqueSlug(existingSlugs)
+export function getPostSlug(post: CollectionEntry<'blog'>): string {
+  return post.data.slug || createDeterministicSlug(post.id, 'post')
 }
 
 /**
@@ -34,25 +65,13 @@ export function getPostSlug(post: CollectionEntry<'blog'>, existingSlugs: string
 export async function getPostSlugMap(): Promise<Map<string, CollectionEntry<'blog'>>> {
   const posts = await getAllPosts()
   const slugMap = new Map<string, CollectionEntry<'blog'>>()
-  const usedSlugs: string[] = []
-  
-  // 首先处理已有slug的文章
+
   for (const post of posts) {
-    if (post.data.slug) {
-      slugMap.set(post.data.slug, post)
-      usedSlugs.push(post.data.slug)
-    }
+    const desiredSlug = getPostSlug(post)
+    const uniqueSlug = ensureUniqueSlug(desiredSlug, post, slugMap)
+    slugMap.set(uniqueSlug, post)
   }
-  
-  // 然后为没有slug的文章生成随机slug
-  for (const post of posts) {
-    if (!post.data.slug) {
-      const slug = generateUniqueSlug(usedSlugs)
-      slugMap.set(slug, post)
-      usedSlugs.push(slug)
-    }
-  }
-  
+
   return slugMap
 }
 
@@ -180,6 +199,23 @@ export async function getAllProjects(): Promise<CollectionEntry<'projects'>[]> {
     .sort((a, b) => (b.data.startDate?.valueOf() ?? 0) - (a.data.startDate?.valueOf() ?? 0))
 } 
 
+export function getProjectSlug(project: CollectionEntry<'projects'>): string {
+  return createDeterministicSlug(project.id, 'project')
+}
+
+export async function getAllProjectSlugs(): Promise<Array<{ slug: string; project: CollectionEntry<'projects'> }>> {
+  const projects = await getAllProjects()
+  const slugMap = new Map<string, CollectionEntry<'projects'>>()
+
+  for (const project of projects) {
+    const desiredSlug = getProjectSlug(project)
+    const uniqueSlug = ensureUniqueSlug(desiredSlug, project, slugMap)
+    slugMap.set(uniqueSlug, project)
+  }
+
+  return Array.from(slugMap.entries()).map(([slug, project]) => ({ slug, project }))
+}
+
 export async function getProjectsFeaturedTags(maxCount: number): Promise<string[]> {
   const projects = await getAllProjects()
   const tags = new Set<string>()
@@ -237,16 +273,12 @@ export async function getAllNotes(): Promise<CollectionEntry<'notes'>[]> {
 }
 
 /**
- * 获取笔记的slug，如果没有则使用文件名
+ * 获取笔记的slug，如果没有则按文件id生成稳定slug
  * @param note 笔记对象
  * @returns 笔记的slug
  */
 export function getNoteSlug(note: CollectionEntry<'notes'>): string {
-  if (note.data.slug) {
-    return note.data.slug
-  }
-  // 使用文件名作为slug（去掉扩展名）
-  return note.id.replace(/\.(md|mdx)$/, '')
+  return note.data.slug || createDeterministicSlug(note.id, 'note')
 }
 
 /**
@@ -256,25 +288,13 @@ export function getNoteSlug(note: CollectionEntry<'notes'>): string {
 export async function getNoteSlugMap(): Promise<Map<string, CollectionEntry<'notes'>>> {
   const notes = await getAllNotes()
   const slugMap = new Map<string, CollectionEntry<'notes'>>()
-  const usedSlugs: string[] = []
-  
-  // 首先处理已有slug的笔记
+
   for (const note of notes) {
-    if (note.data.slug) {
-      slugMap.set(note.data.slug, note)
-      usedSlugs.push(note.data.slug)
-    }
+    const desiredSlug = getNoteSlug(note)
+    const uniqueSlug = ensureUniqueSlug(desiredSlug, note, slugMap)
+    slugMap.set(uniqueSlug, note)
   }
-  
-  // 然后为没有slug的笔记生成随机slug
-  for (const note of notes) {
-    if (!note.data.slug) {
-      const slug = generateUniqueSlug(usedSlugs)
-      slugMap.set(slug, note)
-      usedSlugs.push(slug)
-    }
-  }
-  
+
   return slugMap
 }
 
@@ -295,6 +315,26 @@ export async function getNoteBySlug(slug: string): Promise<CollectionEntry<'note
 export async function getAllNoteSlugs(): Promise<Array<{slug: string, note: CollectionEntry<'notes'>}>> {
   const slugMap = await getNoteSlugMap()
   return Array.from(slugMap.entries()).map(([slug, note]) => ({ slug, note }))
+}
+
+export async function getAdjacentNotes(currentSlug: string): Promise<{
+  prev: { post: CollectionEntry<'notes'>; slug: string } | null
+  next: { post: CollectionEntry<'notes'>; slug: string } | null
+}> {
+  const slugs = await getAllNoteSlugs()
+  const currentIndex = slugs.findIndex(({ slug }) => slug === currentSlug)
+
+  if (currentIndex === -1) {
+    return { prev: null, next: null }
+  }
+
+  const nextItem = currentIndex > 0 ? slugs[currentIndex - 1] : null
+  const prevItem = currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : null
+
+  return {
+    next: nextItem ? { post: nextItem.note, slug: nextItem.slug } : null,
+    prev: prevItem ? { post: prevItem.note, slug: prevItem.slug } : null,
+  }
 }
 
 /**

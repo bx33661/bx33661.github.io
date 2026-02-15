@@ -23,33 +23,35 @@ const searchOptions = {
   sortFn: (a, b) => a.score - b.score,
 }
 
-// 搜索历史管理
-const SEARCH_HISTORY_KEY = 'blog-search-history'
 const MAX_HISTORY = 10
 
-function getSearchHistory() {
+function getHistoryKey(basePath) {
+  return `search-history:${basePath || 'blog'}`
+}
+
+function getSearchHistory(historyKey) {
   try {
-    const history = localStorage.getItem(SEARCH_HISTORY_KEY)
+    const history = localStorage.getItem(historyKey)
     return history ? JSON.parse(history) : []
   } catch {
     return []
   }
 }
 
-function saveSearchQuery(query) {
+function saveSearchQuery(query, historyKey) {
   if (!query || query.length < 2) return
   
   try {
-    const history = getSearchHistory()
+    const history = getSearchHistory(historyKey)
     const filtered = history.filter(item => item !== query)
     const newHistory = [query, ...filtered].slice(0, MAX_HISTORY)
-    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory))
+    localStorage.setItem(historyKey, JSON.stringify(newHistory))
   } catch {
     // 静默处理存储错误
   }
 }
 
-function Search({ searchList, initialPosts }) {
+function Search({ searchList, initialPosts, basePath = '/blog', tagLinkBase = '/tags' }) {
   const [query, setQuery] = useState('')
   const [filteredPosts, setFilteredPosts] = useState(initialPosts)
   const [isSearching, setIsSearching] = useState(false)
@@ -59,6 +61,7 @@ function Search({ searchList, initialPosts }) {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [searchStats, setSearchStats] = useState({ total: 0, time: 0 })
   const searchInputRef = useRef(null)
+  const historyKey = useMemo(() => getHistoryKey(basePath), [basePath])
 
   // 获取所有标签
   const allTags = useMemo(() => {
@@ -73,8 +76,8 @@ function Search({ searchList, initialPosts }) {
 
   // 初始化搜索历史
   useEffect(() => {
-    setSearchHistory(getSearchHistory())
-  }, [])
+    setSearchHistory(getSearchHistory(historyKey))
+  }, [historyKey])
 
   // 预处理搜索列表
   const processedSearchList = useMemo(
@@ -149,8 +152,8 @@ function Search({ searchList, initialPosts }) {
 
         // 保存搜索历史
         if (searchQuery && searchQuery.length >= 2) {
-          saveSearchQuery(searchQuery)
-          setSearchHistory(getSearchHistory())
+          saveSearchQuery(searchQuery, historyKey)
+          setSearchHistory(getSearchHistory(historyKey))
         }
       } catch (error) {
         console.error('搜索出错:', error)
@@ -159,7 +162,7 @@ function Search({ searchList, initialPosts }) {
         setIsSearching(false)
       }
     },
-    [fuse, processedSearchList, initialPosts, sortBy, selectedTags]
+    [fuse, processedSearchList, initialPosts, sortBy, selectedTags, historyKey]
   )
 
   // 防抖搜索
@@ -169,6 +172,15 @@ function Search({ searchList, initialPosts }) {
     }, 300),
     [performSearch]
   )
+
+  // 从 URL 查询参数恢复搜索词，支持 SearchAction
+  useEffect(() => {
+    const urlQuery = new URLSearchParams(window.location.search).get('q')
+    if (urlQuery && urlQuery.length >= 2) {
+      setQuery(urlQuery)
+      performSearch(urlQuery)
+    }
+  }, [performSearch])
 
   const handleInputChange = (event) => {
     const searchQuery = event.target.value
@@ -363,6 +375,8 @@ function Search({ searchList, initialPosts }) {
                   slug={post.slug} 
                   index={index}
                   priority={index < 3}
+                  basePath={basePath}
+                  tagLinkBase={tagLinkBase}
                 />
               ))}
             </div>

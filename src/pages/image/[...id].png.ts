@@ -1,7 +1,7 @@
 import satori from 'satori'
 import { html } from 'satori-html'
 import { Resvg } from '@resvg/resvg-js'
-import { getAllPostSlugs } from '@/lib/data-utils'
+import { getAllPostSlugs, getAllProjectSlugs } from '@/lib/data-utils'
 import type { APIContext } from 'astro'
 import fs from 'fs'
 import path from 'path'
@@ -98,7 +98,9 @@ export async function GET(context: APIContext) {
         </div>
 
         <div style="display: flex; align-items: center; background: rgba(21,21,21, 0.8); border-radius: 18px; padding: 12px 22px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          <img src="https://res.cloudinary.com/dtkix7qix/image/upload/v1744410119/logo_wkn0ie.png" alt="Logo" style="width: 64px; height: 48px;" width="64" height="48" />
+          <div style="display: flex; width: 48px; height: 48px; border-radius: 12px; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); color: #fff; font-weight: 700; font-size: 18px;">
+            BX
+          </div>
           <div style="display: flex; flex-direction: column; margin-left: 18px; border-left: 1px solid rgba(255, 255, 255, 0.12); padding-left: 18px;">
             <span style="color: ${colors.text.primary}; font-weight: 600; font-size: 18px;">BX</span>
             <span style="color: ${colors.text.muted}; font-size: 14px;">bx</span>
@@ -179,15 +181,31 @@ export async function GET(context: APIContext) {
 
 export async function getStaticPaths() {
   const postSlugs = await getAllPostSlugs()
-  return postSlugs.map(({ slug, post }) => ({
+  const projectSlugs = await getAllProjectSlugs()
+
+  const postPaths = postSlugs.map(({ slug, post }) => ({
     params: {
-      id: slug, // 使用slug而不是post.id
+      id: slug,
     },
     props: {
       title: post.data.title,
       date: post.data.date,
       description: post.data.description,
-      tags: post.data.tags,
+      tags: post.data.tags || [],
     },
   }))
+
+  const projectPaths = projectSlugs.map(({ slug, project }) => ({
+    params: {
+      id: slug,
+    },
+    props: {
+      title: project.data.name,
+      date: project.data.endDate ?? project.data.startDate ?? new Date('2024-01-01'),
+      description: project.data.description,
+      tags: project.data.tags || [],
+    },
+  }))
+
+  return [...postPaths, ...projectPaths]
 }

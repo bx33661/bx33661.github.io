@@ -12,7 +12,7 @@ const blog = defineCollection({
       tags: z.array(z.string()).optional(),
       authors: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
-      slug: z.string().optional(), // 随机URL字符串，如果不提供会自动生成
+      slug: z.string().optional(), // 可选：不提供时会按文件名生成稳定slug
       password: z.string().optional(), // 文章密码保护，如果设置则需要输入密码才能阅读
     }),
 })
@@ -43,7 +43,7 @@ const notes = defineCollection({
       category: z.string().optional(), // 学习笔记分类
       authors: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
-      slug: z.string().optional(),
+      slug: z.string().optional(), // 可选：不提供时会按文件名生成稳定slug
     }),
 })
 

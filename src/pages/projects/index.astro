@@ -1,0 +1,56 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+import { getAllProjectSlugs } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
+
+const projects = await getAllProjectSlugs()
+const currentUrl = Astro.url
+---
+
+<Layout canonicalUrl={currentUrl}>
+  <PageHead slot="head" title="项目" description="项目实践与开源作品" />
+  <Breadcrumbs items={[{ label: '项目', icon: 'lucide:folder-kanban' }]} />
+
+  <section class="max-screen mt-8 px-4 md:px-6 space-y-6">
+    <div>
+      <h1 class="text-4xl font-bold">项目</h1>
+      <p class="text-muted-foreground mt-2">收录我做过的一些项目与实践。</p>
+    </div>
+
+    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {projects.map(({ slug, project }) => (
+        <li>
+          <a
+            href={`/projects/${slug}`}
+            class="block h-full rounded-xl border p-4 bg-card/60 hover:border-primary/40 hover:shadow-lg transition-all"
+          >
+            <div class="space-y-3">
+              <img
+                src={project.data.image.src}
+                alt={project.data.name}
+                class="w-full h-44 object-cover rounded-lg border"
+                loading="lazy"
+                decoding="async"
+              />
+              <h2 class="text-xl font-semibold">{project.data.name}</h2>
+              <p class="text-sm text-muted-foreground line-clamp-3">{project.data.description}</p>
+              <div class="flex flex-wrap gap-2">
+                {project.data.tags.slice(0, 4).map((tag) => (
+                  <span class="text-xs rounded-full px-2 py-1 bg-secondary text-secondary-foreground">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+              <div class="text-primary text-sm inline-flex items-center gap-1">
+                <Icon name="lucide:arrow-right" class="size-4" />
+                查看详情
+              </div>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
