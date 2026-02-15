@@ -1,416 +1,375 @@
 ---
+import '@/styles/about-desktop.css'
+
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
-import { BentoGrid, BentoCard, ProjectCard, InfoCard } from '@/components/react/bento-grid'
-import { Card3D } from '@/components/react/card-3d'
-import AnimatedElement from '@/components/react/animated-element'
-import { ScrollReveal } from '@/components/react/scroll-animations'
-import { ImageZoom } from '@/components/react/image-zoom'
-import { buttonVariants } from '@/components/ui/button'
-import Layout from '@/layouts/Layout.astro'
 import { Icon } from 'astro-icon/components'
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import { getAllProjects } from '@/lib/data-utils'
+import Layout from '@/layouts/Layout.astro'
 import { BASE_URL } from '@/config/env'
-import { ExperienceGrid, type ExperienceItem } from '@/components/react/ExperienceGrid' // Import ExperienceGrid
-import { TypewriterEffect } from '@/components/react/TypewriterEffect' // Import Typewriter
-import { ParticleBackground } from '@/components/react/background-effects' // Import Background
-import Skills from '@/components/react/skills' // Import Skills
+import { getAllProjects, getProjectSlug } from '@/lib/data-utils'
 
-const currentUrl = Astro.url;
-const allProjects = await getAllProjects();
+const currentUrl = Astro.url.toString()
+const featuredProjects = (await getAllProjects()).slice(0, 6)
+
+const milestones = [
+  {
+    period: '2023 - 至今',
+    title: '海南大学 · 信息安全',
+    subtitle: '网络空间安全学院',
+    summary:
+      '大学本科专业学习',
+    tags: ['信息安全', '工程基础', '安全研究'],
+  },
+  {
+    period: '2023 - 至今',
+    title: 'HnuSec 核心成员',
+    subtitle: 'CTF / Web Security',
+    summary:
+      '专注 Web 方向攻防与题目研究，持续输出复盘与技术沉淀，强化实战协作能力。',
+    tags: ['CTF', 'Web 安全', '团队协作'],
+  },
+]
+
+const expertise = [
+  {
+    icon: 'lucide:shield-check',
+    title: 'Security',
+    points: ['安全研究分析', '漏洞分析与复现', '持续学习'],
+  },
+  {
+    icon: 'lucide:cpu',
+    title: 'Engineering',
+    points: ['项目开发', '应用实践', '运维分析'],
+  },
+  {
+    icon: 'lucide:workflow',
+    title: 'AI Workflow',
+    points: ['LLM 应用集成', 'Agent应用', 'AI4Sec'],
+  },
+]
+
+const principles = [
+  '相信验证，而不是感觉。',
+  '正视时代，面向时代',
+  '立足现实约束，持续学习，持续突破！！',
+]
+
+
+const focusItems = [
+  {
+    icon: 'lucide:scan-search',
+    title: '漏洞研究',
+    detail: '持续跟进，持续关注',
+  },
+  {
+    icon: 'lucide:bot',
+    title: 'AI4Sec',
+    detail: '这个时代会何去何从',
+  },
+  {
+    icon: 'lucide:factory',
+    title: '开源',
+    detail: 'OpenSource',
+  },
+]
 
 const galleryImages = [
   {
-    src: `${BASE_URL}gallery/79d35189354e2824167cfebb10876af4.jpg`,
-    alt: '新乡',
-    title: 'labubu',
-    description: '记录生活中的美好瞬间',
-    date: '2025-07-05'
+    src: `${BASE_URL}gallery/6C67AEDA-15B9-44A4-9493-B801382DB7EC.jpeg`,
+    alt: '经幡穹顶',
+    title: '经幡穹顶',
+    date: '2026-02-15',
+    shape: 'about-shot--wide',
   },
   {
-    src: `${BASE_URL}gallery/738eadca2488bd4f583bb071d15fc038.jpg`, 
-    alt: '新乡',
+    src: `${BASE_URL}gallery/0228CA38-3A9D-4624-A6B8-0EDD2B1B5296.jpeg`,
+    alt: '日照金山',
+    title: '日照金山',
+    date: '2026-02-15',
+    shape: '',
+  },
+  {
+    src: `${BASE_URL}gallery/C0A851E2-DFC3-4E0B-B37E-3451E1DC3F24.jpeg`,
+    alt: '虎跳峡',
+    title: '虎跳峡',
+    date: '2026-02-15',
+    shape: '',
+  },
+  {
+    src: `${BASE_URL}gallery/79d35189354e2824167cfebb10876af4.jpg`,
+    alt: 'Labubu',
+    title: 'Labubu',
+    date: '2025-07-05',
+    shape: 'about-shot--tall',
+  },
+  {
+    src: `${BASE_URL}gallery/738eadca2488bd4f583bb071d15fc038.jpg`,
+    alt: '宝泉风景',
     title: '宝泉',
-    description: '记录生活中的美好瞬间',
-    date: '2025-07-05'
+    date: '2025-07-05',
+    shape: 'about-shot--wide',
   },
   {
     src: `${BASE_URL}gallery/c9531bcaeefed42bb36b974696149c7a.jpg`,
-    alt: '新乡', 
-    title: '宝泉',
-    description: '记录生活中的美好瞬间',
-    date: '2025-07-05'
+    alt: '山间风景',
+    title: '山间',
+    date: '2025-07-05',
+    shape: '',
   },
   {
     src: `${BASE_URL}gallery/3a05e267fc3eb4a6c146489836f5d50e.jpg`,
-    alt: '海大', 
-    title: '美丽校园',
-    description: '记录生活中的美好瞬间',
-    date: '2025-05-05'
+    alt: '校园',
+    title: '校园',
+    date: '2025-05-05',
+    shape: '',
   },
   {
     src: `${BASE_URL}gallery/cd3ca9f14be50495c1be8ed017c7b348.jpg`,
-    alt: '海南', 
-    title: '海南落日',
-    description: '记录生活中的美好瞬间',
-    date: '2024-07-05'
+    alt: '海南落日',
+    title: '落日',
+    date: '2024-07-05',
+    shape: 'about-shot--wide',
   },
-  {
-    src: `${BASE_URL}gallery/fb450aaf347e5d8e64d0341cf3b23b61.jpg`,
-    alt: '洛阳', 
-    title: '洛阳古都',
-    description: '记录生活中的美好瞬间',
-    date: '2024-09-05'
-  },
-  {
-    src: `${BASE_URL}gallery/b4fb8f48829b62de174d7b1e24a3b7ca.jpg`,
-    alt: '云朵', 
-    title: '云朵',
-    description: '记录生活中的美好瞬间',
-    date: '2024-10-05'
-  },
-  {
-    src: `${BASE_URL}gallery/2713625f33c9006f62b6e40783e27527.jpg`,
-    alt: '云朵', 
-    title: '云朵',
-    description: '记录生活中的美好瞬间',
-    date: '2024-11-05'
-  },
-];
+]
 
-const experienceItems: ExperienceItem[] = [
-  {
-    id: 1,
-    title: '海南大学',
-    subtitle: '网络空间安全学院 · 信息安全专业',
-    description: '在这里开始了我对计算机科学和网络安全的探索之旅。学习了计算机基础、密码学、网络攻防等核心课程，并获得了扎实的理论基础。',
-    date: '2021 - 2025',
-    location: '海口, 中国',
-    type: 'education',
-    tags: ['本科', '信息安全', 'GPA 3.8/4.0'],
-    span: 'md:col-span-2'
-  },
-  {
-    id: 2,
-    title: 'HnuSec',
-    subtitle: '核心成员 & CTF选手',
-    description: '加入海南大学网络安全战队，专注于 Web 安全方向。参与多场 CTF 比赛，与团队成员共同成长，积累了丰富的实战经验。',
-    date: '2022 - 至今',
-    type: 'experience',
-    tags: ['CTF', 'Web Security', 'Teamwork'],
-    span: 'md:col-span-1'
-  },
-  {
-    id: 3,
-    title: 'XMCVE',
-    subtitle: '漏洞研究员',
-    description: '专注于通用漏洞挖掘与安全研究。致力于发现软件中的安全缺陷，并提交给相关组织进行修复。',
-    date: '2023 - 至今',
-    type: 'experience',
-    tags: ['Vuln Research', 'CVE', 'Security Audit'],
-    span: 'md:col-span-1'
-  },
-  {
-    id: 4,
-    title: 'Fruit-Guardians',
-    subtitle: '开源贡献者',
-    description: '参与 Fruit-Guardians 开源社区，开发和维护自动化安全工具，如 PuraAutoCodeQL，旨在提高代码审计效率，贡献社区。',
-    date: '2023 - 至今',
-    type: 'project',
-    tags: ['Open Source', 'CodeQL', 'Automation'],
-    span: 'md:col-span-2'
-  }
-];
+const getProjectIcon = (tags: string[]) => {
+  if (tags.includes('security') || tags.includes('ctf') || tags.includes('web')) return '🛡️'
+  if (tags.includes('python')) return '🐍'
+  if (tags.includes('react') || tags.includes('typescript')) return '⚛️'
+  if (tags.includes('ai') || tags.includes('ml')) return '🤖'
+  return '💻'
+}
 
-const getIcon = (project: any) => {
-  const tags = project.data.tags || [];
-  if (tags.includes('python')) return '🐍';
-  if (tags.includes('react') || tags.includes('vue') || tags.includes('nextjs')) return '⚛️';
-  if (tags.includes('security') || tags.includes('web') || tags.includes('ctf')) return '🛡️';
-  if (tags.includes('ai') || tags.includes('ml')) return '🤖';
-  if (tags.includes('tool') || tags.includes('utils')) return '🛠️';
-  return '💻';
-};
+const getProjectHref = (project: (typeof featuredProjects)[number]) => {
+  return project.data.link || `/projects/${getProjectSlug(project)}/`
+}
+
+const isExternalHref = (href: string) => /^https?:\/\//.test(href)
 ---
 
-<Layout canonicalUrl={currentUrl.toString()}>
-  <PageHead slot="head" title="关于我 - BX" description="BX 的个人介绍、项目与安全研究经历。" canonicalURL={currentUrl.toString()} />
-  
-  <!-- Dynamic Background -->
-  <div class="fixed inset-0 z-0 pointer-events-none">
-    <ParticleBackground client:visible particleColor="rgba(120, 119, 198, 0.3)" particleCount={30} />
-  </div>
+<Layout canonicalUrl={currentUrl} isWide={true}>
+  <PageHead
+    slot="head"
+    title="关于我"
+    description="BX 的背景、研究方向与项目实践。"
+    canonicalURL={currentUrl}
+  />
 
-  <div class="relative z-10 flex flex-col gap-y-16 px-4 py-8 sm:px-8 lg:px-16 max-w-7xl mx-auto">
-    <Breadcrumbs items={[{ label: '关于我', icon: 'lucide:user' }]} />
-    
-    <!-- Hero Section with 3D Card & Typing Effect -->
-    <AnimatedElement client:load animation="scaleIn" duration={0.8}>
-      <Card3D client:load className="w-full" intensity={15}>
-        <div class="bg-card/40 dark:bg-card/40 backdrop-blur-xl p-8 md:p-12 rounded-[2rem] border border-white/10 dark:border-white/5 shadow-2xl flex flex-col md:flex-row items-center gap-10 md:gap-16 text-center md:text-left relative overflow-hidden group">
-          
-          {/* Hero Decorative Gradients */}
-          <div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[100px] pointer-events-none opacity-50 animate-pulse"></div>
-          <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary/20 rounded-full blur-[100px] pointer-events-none opacity-50 animate-pulse delay-1000"></div>
+  <div class="about-page">
+    <div class="about-shell">
+      <Breadcrumbs items={[{ label: '关于我', icon: 'lucide:user-round' }]} />
 
-          <div class="relative group shrink-0" aria-label="个人头像">
-            <div class="w-36 h-36 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-background/50 shadow-xl group-hover:scale-105 transition-transform duration-500 ease-out relative z-10">
-              <img src="/static/blogo.jpg" alt="BX 头像" class="w-full h-full object-cover" loading="lazy" decoding="async" width="192" height="192" />
-            </div>
-            {/* Spinning Ring */}
-            <div class="absolute -inset-4 rounded-full border border-dashed border-primary/30 animate-[spin_10s_linear_infinite] pointer-events-none"></div>
-            <div class="absolute -inset-4 rounded-full border border-dashed border-secondary/30 animate-[spin_15s_linear_infinite_reverse] pointer-events-none opacity-50"></div>
+      <section class="about-panel about-hero">
+        <div class="about-hero__copy">
+          <p class="about-kicker">Profile</p>
+          <h1>Bx/Bpple</h1>
+          <p class="about-lead">
+            我是Bx，欢迎关注，我们一起学习，一起进步。
+          </p>
+          <div class="about-focus-grid">
+            {
+              focusItems.map((item) => (
+                <article class="about-focus-card">
+                  <div class="about-focus-card__title">
+                    <Icon name={item.icon} class="size-4" />
+                    <h3>{item.title}</h3>
+                  </div>
+                  <p>{item.detail}</p>
+                </article>
+              ))
+            }
           </div>
-          
-          <div class="flex-1 space-y-5 relative z-10">
-            <div class="inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 text-primary px-4 py-1.5 text-sm font-semibold tracking-wide uppercase">
-              <Icon name="lucide:sparkles" class="size-4" /> 探索无穷 · 创造未来
-            </div>
-            
-            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-foreground via-foreground/80 to-foreground/50">
-              BX
-            </h1>
-            
-            <div class="text-xl md:text-2xl font-medium text-muted-foreground h-8">
-              <TypewriterEffect 
-                client:visible 
-                words={["网络安全研究员", "Web 安全专家", "AI 应用探索者", "开源贡献者"]} 
-                className="text-primary font-bold"
-                cursorClassName="text-primary animate-pulse"
-              />
-            </div>
-            
-            <p class="text-base md:text-lg text-muted-foreground/90 max-w-2xl leading-relaxed">
-              专注于 <span class="text-foreground font-medium">Web 安全</span> 与 <span class="text-foreground font-medium">AI 智能化应用</span>。
-              <br/>
-              致力于挖掘代码深处的秘密，构建「安全、智能、高效」的数字防线。
-            </p>
-            
-            <div class="flex flex-wrap gap-4 pt-6 justify-center md:justify-start">
-              <a href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer" class="group relative inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-white transition-all duration-200 bg-gray-900 rounded-full hover:bg-gray-800 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 shadow-lg hover:shadow-xl">
-                <Icon name="lucide:github" class="size-5" />
-                GitHub
-              </a>
-              <a href="mailto:bx33661@gmail.com" class="group relative inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-foreground transition-all duration-200 bg-background/50 border border-border/60 rounded-full hover:bg-background hover:border-primary/50 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-sm hover:shadow-md backdrop-blur-md">
-                <Icon name="lucide:mail" class="size-5 text-primary" />
-                Email Me
-              </a>
-            </div>
-          </div>
-        </div>
-      </Card3D>
-    </AnimatedElement>
-
-    <!-- Tech Stack (Skills) Section -->
-    <section class="space-y-8">
-      <AnimatedElement client:visible animation="slideUp" delay={0.1}>
-        <div class="text-center space-y-3">
-          <h2 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-            技术栈
-          </h2>
-          <p class="text-muted-foreground">My Tech Arsenal</p>
-        </div>
-        <div class="mt-8 mask-linear-fade">
-          <Skills client:visible />
-        </div>
-      </AnimatedElement>
-    </section>
-
-    <!-- Journey Grid (Formerly Timeline) -->
-    <section class="space-y-12">
-      <AnimatedElement client:visible animation="slideUp" delay={0.2}>
-        <div class="text-center space-y-3 mb-10">
-          <h2 class="text-3xl md:text-4xl font-bold flex items-center justify-center gap-3">
-            <Icon name="lucide:layers" class="size-8 text-primary" />
-            成长的足迹
-          </h2>
-          <p class="text-muted-foreground">Education & Experience</p>
-        </div>
-        
-        <ExperienceGrid client:visible items={experienceItems} className="max-w-7xl mx-auto" />
-      </AnimatedElement>
-    </section>
-
-    <!-- Bento Grid Section (Highlights) -->
-    <section class="space-y-8">
-       <AnimatedElement client:visible animation="slideUp" delay={0.3}>
-        <div class="flex items-center justify-between mb-8">
-          <h2 class="text-2xl font-bold flex items-center gap-3">
-            <Icon name="lucide:star" class="size-6 text-yellow-500" />
-            高光时刻
-          </h2>
-        </div>
-        
-        <BentoGrid className="auto-rows-[minmax(180px,auto)] gap-6">
-          <!-- Research Focus - Premium Gradient -->
-           <BentoCard client:visible className="md:col-span-2 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 border-indigo-500/20">
-             <div class="flex flex-col h-full justify-center p-6">
-               <div class="flex items-center gap-3 mb-4">
-                 <div class="p-3 rounded-xl bg-primary/20 backdrop-blur-md">
-                   <Icon name="lucide:microscope" class="size-6 text-primary" />
-                 </div>
-                 <h3 class="text-xl font-bold">研究方向</h3>
-               </div>
-               <div class="flex flex-wrap gap-2 mb-4">
-                 {['Web 安全', 'AI 安全应用', '网络攻防', '漏洞挖掘'].map(tag => (
-                   <span class="px-3 py-1 rounded-lg bg-background/40 border border-white/10 text-sm font-medium shadow-sm backdrop-blur-sm">
-                     {tag}
-                   </span>
-                 ))}
-               </div>
-               <p class="text-sm font-medium text-muted-foreground/80 leading-relaxed">
-                 致力于研究 Web 安全和探索新兴 AI-LLM 技术的应用与发展，以及前沿网络攻防技术的研究。
-               </p>
-             </div>
-           </BentoCard>
-
-           <!-- Project Highlight -->
-           <a href="https://github.com/Fruit-Guardians/PureAutoCodeql" target="_blank" class="contents md:col-span-1 group">
-             <div class="h-full w-full md:col-span-1">
-               <ProjectCard
-                 client:visible
-                 title="PuraAutoCodeQL"
-                 description="自动化 CodeQL 分析工具"
-                 icon="🚀"
-                  color="from-orange-500/20 to-red-500/20 text-orange-600 dark:text-orange-400"
-                 span="h-full w-full"
-               />
-             </div>
-           </a>
-
-           <!-- Motto - Dark Aesthetic -->
-           <BentoCard client:visible className="lg:col-span-3 md:col-span-3 flex items-center justify-center bg-zinc-900 border-zinc-800 text-white min-h-[160px] relative overflow-hidden group">
-              <div class="absolute inset-0 bg-[url('/static/grid.svg')] opacity-20"></div>
-              <div class="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] group-hover:bg-primary/30 transition-colors duration-500"></div>
-              
-              <div class="flex flex-col items-center text-center p-8 relative z-10">
-                <p class="text-2xl md:text-3xl font-serif italic tracking-wider text-white/90 leading-relaxed glow-text">
-                  "一起见证星辰大海"
-                </p>
-              </div>
-           </BentoCard>
-
-        </BentoGrid>
-      </AnimatedElement>
-    </section>
-
-    <!-- Other Projects Section -->
-    <section class="space-y-8">
-      <div class="flex items-center gap-3 mb-6">
-        <h2 class="text-2xl font-bold flex items-center gap-2">
-          <Icon name="lucide:folder-git-2" class="size-6" />
-          更多项目
-        </h2>
-        <div class="h-px flex-1 bg-gradient-to-r from-border/80 to-transparent"></div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {allProjects.map((project, index) => (
-          <ScrollReveal client:visible direction="up" delay={index * 0.05}>
-            <a 
-              href={project.data.link || '#'} 
-              target="_blank" 
-              class="group relative flex flex-col p-6 rounded-2xl border border-border/40 bg-card/30 hover:bg-card/60 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg backdrop-blur-sm overflow-hidden"
-            >
-              <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              
-              <div class="flex items-start justify-between mb-4 z-10">
-                <div class="p-2.5 rounded-xl bg-muted/50 text-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-300">
-                  <span class="text-2xl">{getIcon(project)}</span>
-                </div>
-                {project.data.tags && (
-                   <div class="flex gap-1.5 flex-wrap justify-end max-w-[60%]">
-                    {project.data.tags.slice(0, 2).map(tag => (
-                      <span class="text-[10px] px-2 py-1 rounded-md bg-muted/60 text-muted-foreground/80 font-medium uppercase tracking-wide border border-transparent group-hover:border-primary/10 transition-colors">
-                        {tag}
-                      </span>
-                    ))}
-                   </div>
-                )}
-              </div>
-
-              <h3 class="font-bold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-1 z-10">
-                {project.data.name}
-              </h3>
-              
-              <p class="text-sm text-muted-foreground/80 line-clamp-2 mb-4 z-10 leading-relaxed">
-                {project.data.description}
-              </p>
-
-              <div class="mt-auto flex items-center text-xs font-semibold text-primary/80 pt-4 border-t border-dashed border-border/40 group-hover:border-primary/20 transition-colors z-10">
-                <span class="flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-300">
-                  View Project <Icon name="lucide:arrow-right" class="size-3.5" />
-                </span>
-              </div>
+          <div class="about-hero__actions">
+            <a href="mailto:bx33661@gmail.com" class="about-btn about-btn--primary">
+              <Icon name="lucide:mail" class="size-4" />
+              邮件联系
             </a>
-          </ScrollReveal>
-        ))}
-      </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section class="space-y-8 pb-12">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="size-10 rounded-xl bg-gradient-to-br from-pink-500/20 to-rose-500/20 text-pink-500 flex items-center justify-center shadow-inner">
-            <Icon name="lucide:camera" class="size-5" />
-          </div>
-          <div>
-            <h2 class="text-2xl font-bold">生活相册</h2>
-            <p class="text-sm text-muted-foreground">碎片 · 记忆 · 瞬间</p>
+            <a
+              href="https://github.com/bx33661"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="about-btn"
+            >
+              <Icon name="lucide:github" class="size-4" />
+              GitHub 仓库
+            </a>
           </div>
         </div>
-      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {galleryImages.map((image, index) => (
-          <ScrollReveal client:visible direction="up" delay={index * 0.05} threshold={0.1}>
-            <div class="group relative overflow-hidden rounded-2xl bg-muted/10 border border-border/30 hover:border-primary/40 hover:shadow-xl transition-all duration-500" data-index={index} aria-label={`相册图片 ${image.title}`}>
-              <div class="aspect-[4/3] relative overflow-hidden">
-                <ImageZoom
-                  client:load
-                  src={image.src}
-                  alt={image.alt || image.title || '生活相册图片'}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading={index < 6 ? 'eager' : 'lazy'}
-                  priority={index < 6}
-                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                  width={400}
-                  height={300}
-                />
-                <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                   <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                      <h3 class="text-white font-bold text-lg mb-1">{image.title}</h3>
-                      <p class="text-white/80 text-xs line-clamp-1">{image.description}</p>
-                   </div>
-                </div>
-              </div>
+        <aside class="about-profile">
+          <p class="about-profile__status">
+            <span aria-hidden="true"></span>
+            可接受合作咨询
+          </p>
+          <div class="about-profile__avatar-wrap">
+            <img
+              src="/static/blogo.jpg"
+              alt="BX 头像"
+              class="about-profile__avatar"
+              loading="lazy"
+              decoding="async"
+              width="220"
+              height="220"
+            />
+          </div>
+          <h2>BX</h2>
+          <p>网络安全研究 / 工程开发</p>
+          <ul>
+            <li>
+              <Icon name="lucide:map-pin" class="size-4" />
+              中国
+            </li>
+            <li>
+              <Icon name="lucide:briefcase-business" class="size-4" />
+              一起见证星辰大海
+            </li>
+            <li>
+              <Icon name="lucide:clock-3" class="size-4" />
+              欢迎大家交流学习
+            </li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="about-main-grid">
+        <div class="about-panel about-timeline">
+          <div class="about-section-head">
+            <h2>成长路径</h2>
+            <p>Education / Experience</p>
+          </div>
+
+          <ol class="about-timeline-list">
+            {
+              milestones.map((item) => (
+                <li class="about-step">
+                  <span class="about-step__period">{item.period}</span>
+                  <h3>{item.title}</h3>
+                  <p class="about-step__subtitle">{item.subtitle}</p>
+                  <p class="about-step__summary">{item.summary}</p>
+                  <div class="about-step__tags">
+                    {item.tags.map((tag) => <span>{tag}</span>)}
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+
+        <div class="about-side-stack">
+          <section class="about-panel about-expertise">
+            <div class="about-section-head">
+              <h2>能力矩阵</h2>
+              <p>Core Capabilities</p>
             </div>
-          </ScrollReveal>
-        ))}
-      </div>
-    </section>
 
-    <!-- Footer Links -->
-    <div class="flex justify-center pt-8 pb-12">
-      <Link href="/" class={buttonVariants({ variant: 'outline', size: 'lg' }) + ' group rounded-full px-8 hover:bg-primary hover:text-primary-foreground border-primary/20 shadow-sm transition-all duration-300'}>
-        <Icon name="lucide:arrow-left" class="mr-2 size-4 transition-transform group-hover:-translate-x-1" />
-        返回首页
-      </Link>
+            <div class="about-expertise-grid">
+              {
+                expertise.map((group) => (
+                  <article class="about-expertise-card">
+                    <div class="about-expertise-card__title">
+                      <Icon name={group.icon} class="size-4" />
+                      <h3>{group.title}</h3>
+                    </div>
+                    <ul>
+                      {group.points.map((point) => <li>{point}</li>)}
+                    </ul>
+                  </article>
+                ))
+              }
+            </div>
+          </section>
+
+          <section class="about-panel about-principles">
+            <div class="about-section-head">
+              <h2>协作原则</h2>
+              <p>How I Work</p>
+            </div>
+            <ul>
+              {principles.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <section class="about-panel about-projects">
+        <div class="about-section-head about-section-head--row">
+          <div>
+            <h2>项目与实践</h2>
+            <p>Selected Work</p>
+          </div>
+          <Link href="/projects/" class="about-inline-link">查看全部项目</Link>
+        </div>
+
+        <div class="about-project-grid">
+          {
+            featuredProjects.map((project) => {
+              const projectHref = getProjectHref(project)
+              const isExternal = isExternalHref(projectHref)
+
+              return (
+                <a
+                  href={projectHref}
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
+                  class="about-project-card"
+                >
+                  <div class="about-project-card__top">
+                    <span class="about-project-card__icon">{getProjectIcon(project.data.tags)}</span>
+                    <span class="about-project-card__year">
+                      {(project.data.endDate || project.data.startDate)?.getFullYear() || 'Now'}
+                    </span>
+                  </div>
+                  <h3>{project.data.name}</h3>
+                  <p>{project.data.description}</p>
+                  <div class="about-project-card__tags">
+                    {project.data.tags.slice(0, 3).map((tag) => <span>{tag}</span>)}
+                  </div>
+                  <span class="about-project-card__more">
+                    {isExternal ? '查看项目' : '查看详情'}
+                    <Icon name="lucide:arrow-up-right" class="size-3.5" />
+                  </span>
+                </a>
+              )
+            })
+          }
+        </div>
+      </section>
+
+      <section class="about-panel about-gallery">
+        <div class="about-section-head about-section-head--row">
+          <div>
+            <h2>生活片段</h2>
+            <p>Personal Moments</p>
+          </div>
+          <Link href="/bento/" class="about-inline-link">查看更多</Link>
+        </div>
+
+        <div class="about-gallery-grid">
+          {
+            galleryImages.map((image) => (
+              <figure class={`about-shot ${image.shape}`.trim()}>
+                <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+                <figcaption>
+                  <span>{image.title}</span>
+                  <time>{image.date}</time>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="about-panel about-cta">
+        <div>
+          <h2>如需安全研究或者日常交流</h2>
+          <p>欢迎邮件沟通，我会及时回复😄。</p>
+        </div>
+        <div class="about-hero__actions">
+          <a href="mailto:bx33661@gmail.com" class="about-btn about-btn--primary">发送邮件</a>
+          <Link href="/blog/" class="about-btn">查看博客文章</Link>
+        </div>
+      </section>
     </div>
-
   </div>
 </Layout>
-
-<style>
-  /* Custom global styles for this page */
-  .glow-text {
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-  }
-  
-  .mask-linear-fade {
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  }
-</style>
