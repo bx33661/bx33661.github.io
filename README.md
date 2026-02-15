@@ -28,6 +28,13 @@ npm run check
 
 # 生产构建
 npm run build
+
+# 部署后 SEO 自检（Search Console 向）
+# 默认读取 src/config/site.ts 的 href
+npm run seo:check
+
+# 指定目标站点
+npm run seo:check -- --site https://www.bx33661.com
 ```
 
 ## 环境变量

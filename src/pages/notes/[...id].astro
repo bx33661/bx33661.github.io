@@ -21,6 +21,8 @@ const { Content, headings } = await render(note)
 const { prev, next } = await getAdjacentNotes(slug)
 
 const currentUrl = Astro.url
+const encodedSlug = slug.split('/').map((segment: string) => encodeURIComponent(segment)).join('/')
+const ogImagePath = `/image/${encodedSlug}.png`
 ---
 
 <Layout canonicalUrl={currentUrl}>
@@ -28,6 +30,11 @@ const currentUrl = Astro.url
     slot="head" 
     title={note.data.title}
     description={note.data.description}
+    image={ogImagePath}
+    article={true}
+    tags={note.data.tags || []}
+    publishedTime={note.data.date.toISOString()}
+    modifiedTime={note.data.date.toISOString()}
   />
   
   <Breadcrumbs

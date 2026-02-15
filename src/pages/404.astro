@@ -9,7 +9,7 @@ const currentUrl = Astro.url;
 ---
 
 <Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="404" />
+  <PageHead slot="head" title="404" noindex={true} />
 
   <section
     class="flex w-full flex-col items-center justify-center gap-y-4 text-center"

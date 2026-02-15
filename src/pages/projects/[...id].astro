@@ -14,9 +14,11 @@ export async function getStaticPaths() {
   }))
 }
 
-const { project } = Astro.props
+const { project, slug } = Astro.props
 const { Content } = await render(project)
 const currentUrl = Astro.url
+const encodedSlug = slug.split('/').map((segment: string) => encodeURIComponent(segment)).join('/')
+const ogImagePath = `/image/${encodedSlug}.png`
 ---
 
 <Layout canonicalUrl={currentUrl}>
@@ -24,7 +26,8 @@ const currentUrl = Astro.url
     slot="head"
     title={project.data.name}
     description={project.data.description}
-    image={project.data.image.src}
+    image={ogImagePath}
+    tags={project.data.tags}
   />
 
   <Breadcrumbs

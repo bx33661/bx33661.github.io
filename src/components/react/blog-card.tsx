@@ -147,7 +147,7 @@ const BlogCardJSX = memo(
                           tagLinkBase
                             ? (e) => {
                                 e.preventDefault()
-                                window.location.href = `${normalizeBasePath(tagLinkBase)}/${tag}`
+                                window.location.href = `${normalizeBasePath(tagLinkBase)}/${encodeURIComponent(tag)}`
                               }
                             : undefined
                         }

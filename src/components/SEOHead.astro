@@ -48,7 +48,7 @@ const schemaData: any = {
         '@type': 'SearchAction',
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: `${SITE.href}/blog?search={search_term_string}`
+          urlTemplate: `${SITE.href}/blog/?q={search_term_string}`
         },
         'query-input': 'required name=search_term_string'
       }

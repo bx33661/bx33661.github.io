@@ -32,34 +32,13 @@ const relatedPostSlugMap = new Map(allPostSlugs.map(({ slug, post }) => [post.id
 
 // 检查文章是否设置了密码保护
 const isPasswordProtected = !!post.data.password
-
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'BlogPosting',
-  headline: post.data.title,
-  datePublished: post.data.date,
-  dateModified: post.data.date,
-  author: {
-    '@type': 'Person',
-    name: post.data.authors ? post.data.authors[0] : 'Author',
-  },
-  image: new URL(`/image/${post.id}.png`, Astro.site).toString(),
-  keywords: post.data.tags ? post.data.tags.join(', ') : '',
-  description: post.data.description || '',
-}
 const currentUrl = Astro.url;
 const shareUrl = Astro.site + 'blog/' + currentSlug
 const avatarUrl = '/logo.png'
 ---
 
 <Layout canonicalUrl={currentUrl} isWide={true}>
-  <PostHead slot="head" post={post} />
-  
-  <script
-    type="application/ld+json"
-    is:inline
-    set:html={JSON.stringify(structuredData)}
-  />
+  <PostHead slot="head" post={post} slug={currentSlug} noindex={isPasswordProtected} />
   <section
     class="px-0 sm:px-6 grid grid-cols-1 gap-y-3 sm:gap-y-6 xl:grid-cols-[var(--toc-width)_minmax(0,var(--article-width))_var(--meta-width)] xl:gap-x-12 blog-layout-mobile blog-grid"
   >
@@ -84,7 +63,7 @@ const avatarUrl = '/logo.png'
             post.data.tags && post.data.tags.length > 0 ? (
               post.data.tags.map((tag) => (
                 <a
-                  href={`/tags/${tag}`}
+                  href={`/tags/${encodeURIComponent(tag)}`}
                   class={badgeVariants({ variant: 'secondary' })}
                 >
                   <Icon name="lucide:hash" class="size-3" />

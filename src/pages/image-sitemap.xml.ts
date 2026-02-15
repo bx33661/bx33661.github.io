@@ -1,11 +1,12 @@
 import { SITE } from '@/consts'
 import type { APIContext } from 'astro'
-import { getAllPostSlugs, getAllProjectSlugs } from '@/lib/data-utils'
+import { getAllNoteSlugs, getAllPostSlugs, getAllProjectSlugs } from '@/lib/data-utils'
 
 export async function GET(context: APIContext) {
   try {
     const postSlugs = await getAllPostSlugs()
     const projects = await getAllProjectSlugs()
+    const notes = await getAllNoteSlugs()
     const site = context.site ?? SITE.href
     const baseUrl = site.toString().endsWith('/') ? site.toString().slice(0, -1) : site.toString()
 
@@ -20,11 +21,12 @@ export async function GET(context: APIContext) {
 
     // 博客文章图片
     for (const { slug, post } of postSlugs) {
+      const encodedSlug = encodeURIComponent(slug)
       images.push({
-        loc: `${baseUrl}/blog/${slug}/`,
+        loc: `${baseUrl}/blog/${encodedSlug}/`,
         image: [
           {
-            loc: `${baseUrl}/image/${post.id}.png`,
+            loc: `${baseUrl}/image/${encodedSlug}.png`,
             title: post.data.title,
             caption: post.data.description || post.data.title
           }
@@ -34,13 +36,29 @@ export async function GET(context: APIContext) {
 
     // 项目图片
     for (const { slug, project } of projects) {
+      const encodedSlug = encodeURIComponent(slug)
       images.push({
-        loc: `${baseUrl}/projects/${slug}/`,
+        loc: `${baseUrl}/projects/${encodedSlug}/`,
         image: [
           {
-            loc: `${baseUrl}/image/${slug}.png`,
+            loc: `${baseUrl}/image/${encodedSlug}.png`,
             title: project.data.name,
             caption: project.data.description
+          }
+        ]
+      })
+    }
+
+    // 笔记图片
+    for (const { slug, note } of notes) {
+      const encodedSlug = encodeURIComponent(slug)
+      images.push({
+        loc: `${baseUrl}/notes/${encodedSlug}/`,
+        image: [
+          {
+            loc: `${baseUrl}/image/${encodedSlug}.png`,
+            title: note.data.title,
+            caption: note.data.description || note.data.title
           }
         ]
       })

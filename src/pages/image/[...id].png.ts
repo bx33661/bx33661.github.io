@@ -1,7 +1,8 @@
 import satori from 'satori'
 import { html } from 'satori-html'
 import { Resvg } from '@resvg/resvg-js'
-import { getAllPostSlugs, getAllProjectSlugs } from '@/lib/data-utils'
+import { SITE } from '@/consts'
+import { getAllNoteSlugs, getAllPostSlugs, getAllProjectSlugs } from '@/lib/data-utils'
 import type { APIContext } from 'astro'
 import fs from 'fs'
 import path from 'path'
@@ -18,97 +19,97 @@ const dimensions = {
   height: 630,
 }
 
-const colors = {
-  background: {
-    from: '#2c2c2c',
-    via: '#181818',
-    to: '#000000',
-  },
-  text: {
-    primary: '#ffffff',
-    secondary: '#b8b8b8',
-    muted: '#7a7a7a',
-  },
-  accent: {
-    primary: 'rgba(112, 112, 112, 0.5)',
-    secondary: 'rgba(21, 21, 21, 0.8)',
-    highlight: 'rgba(255, 255, 255, 0.05)',
-  },
-}
-
 interface Props {
   title: string
   date: Date
   description: string
   tags: string[]
+  contentType?: string
+}
+
+const MAX_TITLE_LENGTH = 78
+const MAX_DESCRIPTION_LENGTH = 160
+const MAX_TAGS = 5
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+
+const truncate = (value: string, maxLength: number) =>
+  value.length > maxLength ? `${value.slice(0, maxLength - 1)}...` : value
+
+const formatDate = (input: Date) => {
+  const parsedDate = input instanceof Date ? input : new Date(input)
+  if (Number.isNaN(parsedDate.getTime())) {
+    return new Date().toLocaleDateString('en-US', { dateStyle: 'medium' })
+  }
+
+  return parsedDate.toLocaleDateString('en-US', { dateStyle: 'long' })
 }
 
 export async function GET(context: APIContext) {
-  const { title, date, description, tags } = context.props as Props
+  const { title, date, description, tags, contentType = 'Article' } = context.props as Props
 
-  const formattedDate = date.toLocaleDateString('en-US', { dateStyle: 'full' })
+  const safeTitle = escapeHtml(truncate(title || SITE.title, MAX_TITLE_LENGTH))
+  const safeDescription = escapeHtml(
+    truncate(description || SITE.description, MAX_DESCRIPTION_LENGTH),
+  )
+  const safeContentType = escapeHtml(contentType)
+  const safeSiteName = escapeHtml(SITE.title)
+  const formattedDate = formatDate(date)
 
   const tagElements = tags
+    .slice(0, MAX_TAGS)
     .map(
-      (tag) =>
-        `<div style="background: rgba(21, 21, 21, 0.5); color: #e0e0e0; font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 18px; margin: 4px; display: flex; border: 1px solid rgba(255, 255, 255, 0.1);">#${tag}</div>`,
+      (tag) => `<div
+        style="display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; padding: 8px 16px; margin-right: 12px; margin-bottom: 10px; color: #e6ecff; font-size: 19px; font-weight: 500; background: rgba(22, 29, 49, 0.56);"
+      >#${escapeHtml(tag)}</div>`,
     )
     .join('')
 
   const markup = html(
-    `<div
-      style="display: flex; flex-direction: column; width: 100%; height: 100%; border-radius: 24px; overflow: hidden; color: white; border: 1px solid rgba(255, 255, 255, 0.12); position: relative;background: #171717;"
-    >
-      
-      <div style="position: absolute;display: flex; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.01); opacity: 0.6;"></div>
+    `<div style="display: flex; width: 1200px; height: 630px; position: relative; overflow: hidden; background: linear-gradient(140deg, #0a1020 0%, #132248 44%, #3d1832 100%);">
+      <div style="display: flex; position: absolute; width: 760px; height: 760px; top: -260px; left: -220px; border-radius: 999px; background: radial-gradient(circle, rgba(80, 155, 255, 0.34) 0%, rgba(80, 155, 255, 0.03) 72%, transparent 100%);"></div>
+      <div style="display: flex; position: absolute; width: 540px; height: 540px; bottom: -220px; right: -150px; border-radius: 999px; background: radial-gradient(circle, rgba(255, 100, 180, 0.24) 0%, rgba(255, 100, 180, 0.03) 68%, transparent 100%);"></div>
 
-      
-      <div style="position: absolute; width: 350px; height: 350px;display: flex; background: radial-gradient(circle, rgba(250, 255, 100, 0.12) 0%, transparent 70%); top: -100px; right: -50px; border-radius: 50%;"></div>
-
-      
-      <div style="flex: 4; padding: 48px 50px; display: flex; flex-direction: column; justify-content: center; position: relative;">
-        <div style="color: ${colors.text.secondary}; font-size: 16px; display: flex; font-weight: 400; letter-spacing: 0.05em; text-transform: uppercase;">
-          ${formattedDate}
+      <div style="display: flex; flex-direction: column; width: 100%; margin: 28px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.15); background: linear-gradient(180deg, rgba(8, 11, 20, 0.70) 0%, rgba(9, 12, 26, 0.86) 100%); padding: 40px 48px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 20px; color: #afc2f6; letter-spacing: 0.03em;">
+          <div style="display: flex; align-items: center; border-radius: 999px; padding: 8px 16px; color: #e2ebff; font-weight: 700; border: 1px solid rgba(147, 197, 253, 0.35); background: rgba(59, 130, 246, 0.22);">
+            ${safeContentType}
+          </div>
+          <div style="display: flex; color: #b8c3e4; font-weight: 500;">${formattedDate}</div>
         </div>
 
-        <div
-          style="font-size: 60px; display: flex; font-weight: 800; color: ${colors.text.primary}; line-height: 1.15; margin-top: 18px; letter-spacing: -0.01em; width: 95%;"
-        >
-          ${title}
+        <div style="display: flex; margin-top: 28px; color: #ffffff; font-size: 72px; font-weight: 700; line-height: 1.08; letter-spacing: -0.02em;">
+          ${safeTitle}
         </div>
 
-        <div style="width: 70px; height: 4px; display: flex; background: linear-gradient(90deg, rgba(255,255,255,0.7), rgba(255,255,255,0.2)); margin: 20px 0; border-radius: 2px;"></div>
+        <div style="display: flex; margin-top: 20px; width: 126px; height: 4px; border-radius: 999px; background: linear-gradient(90deg, #60a5fa 0%, #f9a8d4 100%);"></div>
 
-        <div style="color: ${colors.text.secondary}; font-size: 20px;display: flex; margin-top: 16px; line-height: 1.6; width: 90%;">
-          ${description}
+        <div style="display: flex; margin-top: 22px; width: 90%; color: #d8e0f8; font-size: 28px; line-height: 1.4;">
+          ${safeDescription}
         </div>
 
-        <div style="display: flex; margin-top: 28px; flex-wrap: wrap;">
+        <div style="display: flex; flex-wrap: wrap; margin-top: 30px; min-height: 56px;">
           ${tagElements}
         </div>
-      </div>
 
-      
-      <div
-        style="flex: 1; border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; padding: 32px 50px; align-items: center; justify-content: space-between; font-size: 20px; background: rgba(0,0,0,0.3); position: relative;"
-      >
-        <div style="display: flex; align-items: center;">
-          <div style="width: 6px; height: 28px;display: flex; background: rgb(27,27,27); margin-right: 16px; border-radius: 3px;"></div>
-          <span style="color: ${colors.text.secondary}; font-weight: 500; letter-spacing: 0.02em;">bx.me</span>
-        </div>
-
-        <div style="display: flex; align-items: center; background: rgba(21,21,21, 0.8); border-radius: 18px; padding: 12px 22px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          <div style="display: flex; width: 48px; height: 48px; border-radius: 12px; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); color: #fff; font-weight: 700; font-size: 18px;">
-            BX
+        <div style="display: flex; margin-top: auto; padding-top: 28px; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.14);">
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; color: #ffffff; font-size: 32px; font-weight: 700;">${safeSiteName}</div>
+            <div style="display: flex; margin-top: 6px; color: #aab9e0; font-size: 20px;">${escapeHtml(new URL(SITE.href).hostname)}</div>
           </div>
-          <div style="display: flex; flex-direction: column; margin-left: 18px; border-left: 1px solid rgba(255, 255, 255, 0.12); padding-left: 18px;">
-            <span style="color: ${colors.text.primary}; font-weight: 600; font-size: 18px;">BX</span>
-            <span style="color: ${colors.text.muted}; font-size: 14px;">bx</span>
+          <div style="display: flex; align-items: center; color: #dde7ff; font-size: 22px; border-radius: 14px; padding: 12px 18px; border: 1px solid rgba(167, 189, 255, 0.30); background: rgba(20, 30, 52, 0.66);">
+            Open Graph Card
           </div>
         </div>
       </div>
     </div>`,
-  ) as unknown as React.ReactNode
+  ) as unknown as any
 
   const svg = await satori(markup, {
     fonts: [
@@ -127,7 +128,7 @@ export async function GET(context: APIContext) {
     ],
     height: dimensions.height,
     width: dimensions.width,
-    debug: false,
+    debug: false
   })
 
   const image = new Resvg(svg, {
@@ -148,17 +149,10 @@ export async function GET(context: APIContext) {
     imageRendering: 1,
     shapeRendering: 2,
     textRendering: 1,
-    dpi: 144,
+    dpi: 144
   }).render()
 
   const pngData = image.asPng()
-
-  // 确保 header 值只包含 ASCII 字符
-  const asciiTags = tags.map(tag => 
-    tag.replace(/[^\x00-\x7F]/g, "").replace(/\s+/g, '-') || 'tag'
-  ).filter(tag => tag.length > 0).join(' ') || 'general'
-  
-  const asciiTitle = title.replace(/[^\x00-\x7F]/g, "").toLowerCase().replace(/\s+/g, '-') || 'post'
 
   return new Response(new Uint8Array(pngData), {
     headers: {
@@ -166,22 +160,15 @@ export async function GET(context: APIContext) {
       'Content-Disposition': 'inline; filename="social-card.png"',
       'Cache-Control': 'public, max-age=31536000, immutable',
       'Content-Length': pngData.length.toString(),
-      'Surrogate-Key': asciiTags,
-      'Query-String-Hash': asciiTitle,
-      'Cache-Tag': 'social-image',
-      'X-Content-Type-Options': 'nosniff',
-      'Last-Modified': new Date().toUTCString(),
-      Expires: new Date(Date.now() + 31536000000).toUTCString(),
-      ETag: `"${pngData.length}-${Date.now()}"`,
-      'Access-Control-Allow-Origin': '*',
-      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    },
+      'X-Content-Type-Options': 'nosniff'
+    }
   })
 }
 
 export async function getStaticPaths() {
   const postSlugs = await getAllPostSlugs()
   const projectSlugs = await getAllProjectSlugs()
+  const noteSlugs = await getAllNoteSlugs()
 
   const postPaths = postSlugs.map(({ slug, post }) => ({
     params: {
@@ -192,6 +179,7 @@ export async function getStaticPaths() {
       date: post.data.date,
       description: post.data.description,
       tags: post.data.tags || [],
+      contentType: 'Blog Post'
     },
   }))
 
@@ -204,8 +192,22 @@ export async function getStaticPaths() {
       date: project.data.endDate ?? project.data.startDate ?? new Date('2024-01-01'),
       description: project.data.description,
       tags: project.data.tags || [],
+      contentType: 'Project'
     },
   }))
 
-  return [...postPaths, ...projectPaths]
+  const notePaths = noteSlugs.map(({ slug, note }) => ({
+    params: {
+      id: slug,
+    },
+    props: {
+      title: note.data.title,
+      date: note.data.date,
+      description: note.data.description,
+      tags: note.data.tags || [],
+      contentType: 'Note'
+    },
+  }))
+
+  return [...postPaths, ...projectPaths, ...notePaths]
 }

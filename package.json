@@ -32,6 +32,7 @@
     "build": "npm run typecheck && ASTRO_TELEMETRY_DISABLED=1 astro build",
     "build:vercel": "astro build",
     "preview": "astro preview",
+    "seo:check": "node scripts/seo-check.mjs",
     "astro": "astro",
     "prettier": "prettier --write **/*.{ts,tsx,js,jsx,css,md,mdx,json} --ignore-path .gitignore"
   },

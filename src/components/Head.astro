@@ -14,6 +14,9 @@ interface Props {
 
 const { title, description, image, canonicalUrl } = Astro.props
 const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.com') : null
+const hasCustomHead = Astro.slots.has('head')
+const defaultImage = new URL(image || '/ogImage.png', Astro.site).toString()
+const defaultCanonical = canonicalUrl || Astro.url
 ---
 
 <head>
@@ -33,33 +36,37 @@ const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.
     content="width=device-width, initial-scale=1.0, user-scalable=yes"
   />
   <meta name="generator" content={Astro.generator} />
-  <meta name="robots" content="index, follow" />
-  <meta name="googlebot" content="index, follow" />
-  <meta name="google" content="notranslate" />
-  <meta name="revisit-after" content="1 days" />
+  {!hasCustomHead && (
+    <>
+      <meta name="robots" content="index, follow" />
+      <meta name="googlebot" content="index, follow" />
+      <meta name="google" content="notranslate" />
+      <meta name="revisit-after" content="1 days" />
 
-  <!-- Title & Description & Keywords -->
-  <title>{title || SITE.title}</title>
-  <meta name="description" content={description || SITE.description.replace(/\n/g, ' ')} />
-  <meta name="keywords" content={SEO_KEYWORDS.join(', ')} />
+      <!-- Title & Description & Keywords -->
+      <title>{title || SITE.title}</title>
+      <meta name="description" content={description || SITE.description.replace(/\n/g, ' ')} />
+      <meta name="keywords" content={SEO_KEYWORDS.join(', ')} />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content={title || SITE.title} />
-  <meta property="og:description" content={description || SITE.description.replace(/\n/g, ' ')} />
-  <meta property="og:url" content={canonicalUrl || Astro.url} />
-  <meta property="og:site_name" content={SITE.title} />
-  <meta property="og:locale" content={SITE.locale} />
-  <meta property="og:image" content={new URL(image || '/logo.ico', Astro.site)} />
-  <meta property="og:type" content="website" />
+      <!-- Open Graph -->
+      <meta property="og:title" content={title || SITE.title} />
+      <meta property="og:description" content={description || SITE.description.replace(/\n/g, ' ')} />
+      <meta property="og:url" content={defaultCanonical} />
+      <meta property="og:site_name" content={SITE.title} />
+      <meta property="og:locale" content={SITE.locale} />
+      <meta property="og:image" content={defaultImage} />
+      <meta property="og:type" content="website" />
 
-  <!-- Canonical URL -->
-  <link rel="canonical" href={canonicalUrl || Astro.url} />
+      <!-- Canonical URL -->
+      <link rel="canonical" href={defaultCanonical} />
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={title || SITE.title} />
-  <meta name="twitter:description" content={description || SITE.description.replace(/\n/g, ' ')} />
-  <meta name="twitter:image" content={new URL(image || '/logo.ico', Astro.site)} />
+      <!-- Twitter Card -->
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title || SITE.title} />
+      <meta name="twitter:description" content={description || SITE.description.replace(/\n/g, ' ')} />
+      <meta name="twitter:image" content={defaultImage} />
+    </>
+  )}
 
   <!-- Core Web Vitals 优化 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />

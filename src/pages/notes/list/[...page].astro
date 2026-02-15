@@ -21,31 +21,27 @@ export async function getStaticPaths({
 const { page } = Astro.props
 const allNoteSlugs = await getAllNoteSlugs()
 const searchList = allNoteSlugs.map(({ slug, note }) => ({ ...note, slug }))
-const currentUrl = Astro.url;
+const currentUrl = Astro.url
 ---
 
 <Layout canonicalUrl={currentUrl}>
   <PageHead slot="head" title="其他 - 学习笔记" />
-  
+
   <Breadcrumbs
     items={[
       { label: '其他', href: '/notes', icon: 'lucide:book-open' },
+      { label: '列表', href: '/notes/list', icon: 'lucide:list' },
       { label: `Page ${page.currentPage}`, icon: 'lucide:folder-open' },
     ]}
   />
   <section class="max-screen mt-12 px-4 md:px-6">
     <div class="flex w-fit items-center gap-2 text-primary">
-        <Icon class="h-4 w-4 text-secondary-foreground animate-pulse" name="lucide:book-open" />
-        <p class="shimmer word-spacing font-mono text-sm uppercase leading-none text-secondary-foreground">
-          Learning Notes
-        </p>
+      <Icon class="h-4 w-4 text-secondary-foreground animate-pulse" name="lucide:book-open" />
+      <p class="shimmer word-spacing font-mono text-sm uppercase leading-none text-secondary-foreground">
+        Learning Notes
+      </p>
     </div>
-    <h2
-    id="notes-title"
-    class="font-custom text-foreground text-4xl font-bold mt-2"
-    >
-      学习笔记
-    </h2>
+    <h2 id="notes-title" class="font-custom text-foreground text-4xl font-bold mt-2">学习笔记</h2>
     <p class="text-muted-foreground text-md max-w-2xl mt-3">
       这里记录了我的学习历程和知识积累。包含各种技术学习笔记、日常思考和经验总结。希望这些内容能够帮助到有需要的朋友，也欢迎大家一起交流学习！
     </p>
@@ -63,7 +59,7 @@ const currentUrl = Astro.url;
     <PaginationComponent
       currentPage={page.currentPage}
       totalPages={page.lastPage}
-      baseUrl="/notes/"
+      baseUrl="/notes/list/"
       client:idle
     />
   </section>
@@ -71,10 +67,12 @@ const currentUrl = Astro.url;
 
 <style>
   .shimmer {
-    background: linear-gradient(90deg, 
-      hsl(var(--muted-foreground)) 0%, 
-      hsl(var(--primary)) 50%, 
-      hsl(var(--muted-foreground)) 100%);
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted-foreground)) 0%,
+      hsl(var(--primary)) 50%,
+      hsl(var(--muted-foreground)) 100%
+    );
     background-size: 200% 100%;
     background-clip: text;
     -webkit-background-clip: text;
@@ -83,8 +81,12 @@ const currentUrl = Astro.url;
   }
 
   @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 
   .word-spacing {
