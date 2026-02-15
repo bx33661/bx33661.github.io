@@ -29,6 +29,7 @@ const fallbackImage = new URL('/ogImage.png', Astro.site).toString()
 const finalImage = image ? new URL(image, Astro.site).toString() : fallbackImage
 const canonicalUrl = canonicalURL ?? new URL(Astro.url?.pathname ?? '/', Astro.site).toString()
 const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
+const ogLocale = SITE.locale.replace('-', '_')
 ---
 
 <title>{fullTitle}</title>
@@ -52,7 +53,7 @@ const fullTitle = title === SITE.title ? title : `${title} - ${SITE.title}`
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={fullTitle} />
 <meta property="og:type" content={article ? 'article' : 'website'} />
-<meta property="og:locale" content={SITE.locale} />
+<meta property="og:locale" content={ogLocale} />
 <meta property="og:site_name" content={SITE.title} />
 <meta property="og:url" content={canonicalUrl} />
 {publishedTime && <meta property="article:published_time" content={publishedTime} />}

@@ -294,6 +294,7 @@ const avatarUrl = '/logo.png'
       const readingProgress = document.getElementById('reading-progress')
       const article = document.querySelector('article')
       const proseBlocks = document.querySelectorAll('.article-shell .prose')
+      const isMobileViewport = window.matchMedia('(max-width: 767px)').matches
 
       // 将纯链接段落转换为书签卡片（Notion 风格）
       const applyBookmarkCards = () => {
@@ -349,6 +350,262 @@ const avatarUrl = '/logo.png'
         })
       }
 
+      const setupMobileImageViewer = () => {
+        if (!isMobileViewport) return
+
+        const articleImages = Array.from(
+          document.querySelectorAll<HTMLImageElement>('.article-shell .prose img'),
+        )
+        if (articleImages.length === 0) return
+
+        const viewerId = 'neo-mobile-image-viewer'
+        let viewer = document.getElementById(viewerId) as HTMLDivElement | null
+
+        if (!viewer) {
+          viewer = document.createElement('div')
+          viewer.id = viewerId
+          viewer.className = 'neo-mobile-image-viewer'
+          viewer.innerHTML = `
+            <div class="neo-mobile-image-viewer-inner">
+              <div class="neo-mobile-image-viewer-toolbar">
+                <span class="neo-mobile-image-viewer-counter">1 / 1</span>
+                <button type="button" class="neo-mobile-image-viewer-close" aria-label="关闭图片预览">关闭</button>
+              </div>
+              <div class="neo-mobile-image-viewer-stage">
+                <button type="button" class="neo-mobile-image-viewer-nav is-prev" aria-label="上一张">‹</button>
+                <img src="" alt="" />
+                <button type="button" class="neo-mobile-image-viewer-nav is-next" aria-label="下一张">›</button>
+              </div>
+              <p class="neo-mobile-image-viewer-caption"></p>
+              <p class="neo-mobile-image-viewer-hint">左右滑动切换图片</p>
+            </div>
+          `
+          document.body.appendChild(viewer)
+        }
+
+        const viewerImg = viewer.querySelector('img')
+        const viewerCaption = viewer.querySelector('.neo-mobile-image-viewer-caption')
+        const viewerCounter = viewer.querySelector('.neo-mobile-image-viewer-counter')
+        const closeButton = viewer.querySelector<HTMLButtonElement>('.neo-mobile-image-viewer-close')
+        const prevButton = viewer.querySelector<HTMLButtonElement>('.neo-mobile-image-viewer-nav.is-prev')
+        const nextButton = viewer.querySelector<HTMLButtonElement>('.neo-mobile-image-viewer-nav.is-next')
+
+        let currentIndex = 0
+        let touchStartX = 0
+        let touchDeltaX = 0
+
+        const renderViewerImage = () => {
+          if (!viewerImg || !viewerCaption || !viewerCounter || !prevButton || !nextButton) return
+          const currentImage = articleImages[currentIndex]
+          if (!currentImage) return
+          const source = currentImage.currentSrc || currentImage.src
+          if (!source) return
+
+          viewerImg.src = source
+          viewerImg.alt = currentImage.alt || '文章图片预览'
+          viewerCaption.textContent = currentImage.alt || '点击空白处关闭'
+          viewerCounter.textContent = `${currentIndex + 1} / ${articleImages.length}`
+          prevButton.disabled = articleImages.length <= 1
+          nextButton.disabled = articleImages.length <= 1
+        }
+
+        const openViewer = (index: number) => {
+          if (!viewer) return
+          currentIndex = Math.max(0, Math.min(index, articleImages.length - 1))
+          renderViewerImage()
+          viewer.classList.add('is-open')
+          document.body.style.overflow = 'hidden'
+        }
+
+        const showPrevImage = () => {
+          if (articleImages.length <= 1) return
+          currentIndex =
+            currentIndex === 0 ? articleImages.length - 1 : currentIndex - 1
+          renderViewerImage()
+        }
+
+        const showNextImage = () => {
+          if (articleImages.length <= 1) return
+          currentIndex =
+            currentIndex === articleImages.length - 1 ? 0 : currentIndex + 1
+          renderViewerImage()
+        }
+
+        const closeViewer = () => {
+          if (!viewer || !viewerImg) return
+          viewer.classList.remove('is-open')
+          viewerImg.removeAttribute('src')
+          viewerImg.removeAttribute('alt')
+          document.body.style.overflow = ''
+        }
+
+        if (viewer.dataset.neoViewerBound !== 'true') {
+          viewer.dataset.neoViewerBound = 'true'
+          closeButton?.addEventListener('click', closeViewer)
+          prevButton?.addEventListener('click', (event) => {
+            event.stopPropagation()
+            showPrevImage()
+          })
+          nextButton?.addEventListener('click', (event) => {
+            event.stopPropagation()
+            showNextImage()
+          })
+
+          viewer.addEventListener('click', (event) => {
+            if (event.target === viewer) {
+              closeViewer()
+            }
+          })
+
+          viewerImg?.addEventListener('touchstart', (event) => {
+            touchStartX = event.touches[0]?.clientX || 0
+            touchDeltaX = 0
+          })
+          viewerImg?.addEventListener('touchmove', (event) => {
+            const currentX = event.touches[0]?.clientX || 0
+            touchDeltaX = currentX - touchStartX
+          })
+          viewerImg?.addEventListener('touchend', () => {
+            const swipeThreshold = 46
+            if (Math.abs(touchDeltaX) < swipeThreshold) return
+            if (touchDeltaX > 0) {
+              showPrevImage()
+            } else {
+              showNextImage()
+            }
+          })
+
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+              closeViewer()
+            }
+            if (event.key === 'ArrowLeft') {
+              showPrevImage()
+            }
+            if (event.key === 'ArrowRight') {
+              showNextImage()
+            }
+          })
+        }
+
+        articleImages.forEach((img, index) => {
+          if (img.dataset.neoZoomBound === 'true') return
+          img.dataset.neoZoomBound = 'true'
+          img.classList.add('neo-zoomable-image')
+
+          img.addEventListener('click', () => {
+            openViewer(index)
+          })
+        })
+      }
+
+      const enhanceMobileCodeCopyButtons = () => {
+        if (!isMobileViewport) return
+        const copyButtons = document.querySelectorAll<HTMLButtonElement>(
+          '.article-shell .expressive-code .copy button',
+        )
+
+        copyButtons.forEach((button) => {
+          if (button.dataset.neoCopyBound === 'true') return
+          button.dataset.neoCopyBound = 'true'
+          button.classList.add('neo-code-copy-btn')
+
+          if (!button.querySelector('.neo-copy-label')) {
+            const label = document.createElement('span')
+            label.className = 'neo-copy-label'
+            label.textContent = '复制'
+            button.appendChild(label)
+          }
+
+          button.addEventListener('click', () => {
+            const label = button.querySelector('.neo-copy-label')
+            if (!label) return
+            button.classList.add('is-copied')
+            label.textContent = '已复制'
+            window.setTimeout(() => {
+              button.classList.remove('is-copied')
+              label.textContent = '复制'
+            }, 1400)
+          })
+        })
+      }
+
+      const setupMobileTocSpy = () => {
+        if (!isMobileViewport) return
+        const toc = document.querySelector<HTMLDetailsElement>('.neo-mobile-toc')
+        if (!toc || toc.dataset.neoSpyBound === 'true') return
+
+        const tocLinks = Array.from(
+          toc.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'),
+        )
+        if (tocLinks.length === 0) return
+
+        const headingPairs = tocLinks
+          .map((link) => {
+            const hash = link.getAttribute('href')?.slice(1) || ''
+            const targetId = decodeURIComponent(hash)
+            const target = document.getElementById(targetId)
+            if (!target) return null
+            return { link, target }
+          })
+          .filter(Boolean) as Array<{ link: HTMLAnchorElement; target: HTMLElement }>
+
+        if (headingPairs.length === 0) return
+        toc.dataset.neoSpyBound = 'true'
+
+        const setActiveTocLink = (targetId: string) => {
+          headingPairs.forEach(({ link, target }) => {
+            const shouldActivate = target.id === targetId
+            link.classList.toggle('is-active', shouldActivate)
+            link.setAttribute('aria-current', shouldActivate ? 'true' : 'false')
+          })
+        }
+
+        const getCurrentHeadingId = () => {
+          const triggerLine = window.innerHeight * 0.34
+          let candidate = headingPairs[0]?.target
+
+          for (const { target } of headingPairs) {
+            const top = target.getBoundingClientRect().top
+            if (top <= triggerLine) {
+              candidate = target
+            } else {
+              break
+            }
+          }
+
+          return candidate?.id
+        }
+
+        const updateActiveByScroll = () => {
+          const currentId = getCurrentHeadingId()
+          if (currentId) {
+            setActiveTocLink(currentId)
+          }
+        }
+
+        let ticking = false
+        const onScroll = () => {
+          if (ticking) return
+          ticking = true
+          requestAnimationFrame(() => {
+            updateActiveByScroll()
+            ticking = false
+          })
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true })
+        window.addEventListener('resize', onScroll)
+        tocLinks.forEach((link) => {
+          link.addEventListener('click', () => {
+            toc.open = false
+            window.setTimeout(updateActiveByScroll, 220)
+          })
+        })
+
+        updateActiveByScroll()
+      }
+
       // 阅读进度条功能
       if (readingProgress && article) {
         window.addEventListener('scroll', () => {
@@ -371,6 +628,9 @@ const avatarUrl = '/logo.png'
       }
 
       applyBookmarkCards()
+      setupMobileImageViewer()
+      enhanceMobileCodeCopyButtons()
+      setupMobileTocSpy()
 
       // 回到顶部按钮功能
       if (scrollToTopButton && footer) {

@@ -14,14 +14,17 @@ interface Props {
 
 const { title, description, image, canonicalUrl } = Astro.props
 const posthogConnect = ENABLE_ANALYTICS ? (POSTHOG_HOST || 'https://app.posthog.com') : null
-const hasCustomHead = Astro.slots.has('head')
+const hasNamedHeadSlot = Astro.slots.has('head')
+const hasDefaultHeadSlot = Astro.slots.has('default')
+const hasCustomHead = hasNamedHeadSlot || hasDefaultHeadSlot
+const ogLocale = SITE.locale.replace('-', '_')
 const defaultImage = new URL(image || '/ogImage.png', Astro.site).toString()
 const defaultCanonical = canonicalUrl || Astro.url
 ---
 
 <head>
   <!-- Slot 内容优先（包括 title、meta 等 SEO 标签） -->
-  <slot name="head" />
+  {hasNamedHeadSlot ? <slot name="head" /> : <slot />}
   
   <!-- 结构化数据 (JSON-LD) -->
   <StructuredData />
@@ -53,7 +56,7 @@ const defaultCanonical = canonicalUrl || Astro.url
       <meta property="og:description" content={description || SITE.description.replace(/\n/g, ' ')} />
       <meta property="og:url" content={defaultCanonical} />
       <meta property="og:site_name" content={SITE.title} />
-      <meta property="og:locale" content={SITE.locale} />
+      <meta property="og:locale" content={ogLocale} />
       <meta property="og:image" content={defaultImage} />
       <meta property="og:type" content="website" />
 

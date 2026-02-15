@@ -418,6 +418,13 @@
     text-decoration: none;
   }
 
+  .neo-mobile-toc li a.is-active {
+    border-color: color-mix(in srgb, var(--primary) 58%, transparent);
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: var(--foreground);
+    box-shadow: 2px 2px 0 rgba(15, 23, 42, 0.14);
+  }
+
   .neo-mobile-toc li.depth-3 a {
     padding-left: 18px;
     font-size: 0.8rem;
@@ -444,6 +451,46 @@
     padding: 14px;
   }
 
+  .neo-article-body .prose {
+    font-size: 1rem !important;
+    line-height: 1.84 !important;
+  }
+
+  .neo-article-body .prose > p:first-of-type,
+  .neo-article-body .prose section > p:first-of-type {
+    font-size: 1.04rem !important;
+    line-height: 1.9 !important;
+    color: color-mix(in srgb, var(--foreground) 90%, transparent);
+  }
+
+  .neo-article-body .prose p {
+    margin-bottom: 1rem !important;
+    line-height: 1.84 !important;
+    letter-spacing: 0.008em;
+  }
+
+  .neo-article-body .prose h2 {
+    margin-top: 1.9rem !important;
+    margin-bottom: 0.78rem !important;
+    font-size: 1.35rem !important;
+  }
+
+  .neo-article-body .prose h3 {
+    margin-top: 1.45rem !important;
+    margin-bottom: 0.6rem !important;
+    font-size: 1.15rem !important;
+  }
+
+  .neo-article-body .prose h4 {
+    margin-top: 1.2rem !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 1.02rem !important;
+  }
+
+  .neo-article-body .prose blockquote {
+    margin: 1.05rem 0 !important;
+  }
+
   .neo-article-body .prose h2,
   .neo-article-body .prose h3,
   .neo-article-body .prose h4 {
@@ -466,6 +513,17 @@
     word-break: break-word;
   }
 
+  .neo-article-body .prose code:not(pre code) {
+    display: inline;
+    padding: 0.17rem 0.34rem !important;
+    border-radius: 6px !important;
+    border: 1px solid color-mix(in srgb, var(--foreground) 16%, transparent);
+    background: color-mix(in srgb, var(--secondary) 84%, transparent) !important;
+    font-size: 0.84rem !important;
+    line-height: 1.45 !important;
+    word-break: break-word;
+  }
+
   .neo-article-body .prose table {
     display: block;
     width: 100%;
@@ -478,6 +536,166 @@
 
   .neo-article-body .prose pre code {
     font-size: 0.82rem !important;
+    line-height: 1.58 !important;
+  }
+
+  .neo-article-body .expressive-code {
+    margin: 1rem 0 !important;
+    position: relative;
+  }
+
+  .neo-article-body .expressive-code .copy {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    z-index: 8 !important;
+    opacity: 1 !important;
+  }
+
+  .neo-article-body .expressive-code .copy button {
+    min-height: 32px !important;
+    min-width: 68px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 10px !important;
+    border-radius: 10px !important;
+    border: var(--neo-mobile-border) solid color-mix(in srgb, var(--foreground) 20%, transparent) !important;
+    background: color-mix(in srgb, var(--background) 92%, transparent) !important;
+    color: color-mix(in srgb, var(--foreground) 82%, transparent) !important;
+    box-shadow: var(--neo-mobile-shadow) !important;
+  }
+
+  .neo-article-body .expressive-code .copy button .neo-copy-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .neo-article-body .expressive-code .copy button.is-copied {
+    background: color-mix(in srgb, var(--primary) 18%, var(--background) 82%) !important;
+    border-color: color-mix(in srgb, var(--primary) 56%, transparent) !important;
+    color: var(--foreground) !important;
+  }
+
+  .neo-article-body .expressive-code .ec-line {
+    min-height: 1.45rem !important;
+  }
+
+  .neo-article-body .expressive-code .ec-line .code,
+  .neo-article-body .expressive-code .gutter,
+  .neo-article-body .expressive-code .ln {
+    line-height: 1.58 !important;
+  }
+
+  .neo-article-body .prose img.neo-zoomable-image {
+    cursor: zoom-in;
+    touch-action: manipulation;
+  }
+
+  .neo-mobile-image-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 115;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: max(env(safe-area-inset-top), 12px) 12px calc(env(safe-area-inset-bottom) + 14px);
+    background: rgba(2, 6, 23, 0.88);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .neo-mobile-image-viewer.is-open {
+    display: flex;
+  }
+
+  .neo-mobile-image-viewer-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .neo-mobile-image-viewer-toolbar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .neo-mobile-image-viewer-counter {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: color-mix(in srgb, white 84%, transparent);
+    border: var(--neo-mobile-border) solid rgba(255, 255, 255, 0.3);
+    background: rgba(15, 23, 42, 0.45);
+    border-radius: 10px;
+    padding: 5px 9px;
+  }
+
+  .neo-mobile-image-viewer-close {
+    min-height: 34px;
+    border-radius: 10px;
+    border: var(--neo-mobile-border) solid rgba(255, 255, 255, 0.38);
+    background: rgba(15, 23, 42, 0.58);
+    color: #f8fafc;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 11px;
+  }
+
+  .neo-mobile-image-viewer-stage {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 32px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .neo-mobile-image-viewer-nav {
+    min-height: 34px;
+    border-radius: 10px;
+    border: var(--neo-mobile-border) solid rgba(255, 255, 255, 0.38);
+    background: rgba(15, 23, 42, 0.58);
+    color: #f8fafc;
+    font-size: 22px;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .neo-mobile-image-viewer-nav:disabled {
+    opacity: 0.45;
+  }
+
+  .neo-mobile-image-viewer img {
+    width: 100%;
+    max-height: 72dvh;
+    object-fit: contain;
+    border-radius: 14px;
+    border: var(--neo-mobile-border) solid rgba(255, 255, 255, 0.32);
+    box-shadow: 0 20px 42px rgba(2, 6, 23, 0.44);
+    background: rgba(15, 23, 42, 0.48);
+  }
+
+  .neo-mobile-image-viewer-caption {
+    margin: 0;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    text-align: center;
+    color: color-mix(in srgb, white 82%, transparent);
+  }
+
+  .neo-mobile-image-viewer-hint {
+    margin: 0;
+    font-size: 0.7rem;
+    line-height: 1.35;
+    text-align: center;
+    color: color-mix(in srgb, white 62%, transparent);
   }
 
   .neo-article-body .prose iframe {
