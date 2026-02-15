@@ -6,8 +6,7 @@ import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
 import { Icon } from 'astro-icon/components'
 import Layout from '@/layouts/Layout.astro'
-import { BASE_URL } from '@/config/env'
-import { GALLERY_IMAGES } from '@/data/gallery'
+import { GALLERY_IMAGES, buildGalleryImageSources } from '@/data/gallery'
 import { getAllProjects, getProjectSlug } from '@/lib/data-utils'
 
 const currentUrl = Astro.url.toString()
@@ -75,9 +74,10 @@ const focusItems = [
   },
 ]
 
+const ABOUT_GALLERY_SIZES = '(max-width: 767px) 94vw, (max-width: 1190px) 48vw, 32vw'
+
 const galleryImages = GALLERY_IMAGES.slice(0, 8).map((item) => ({
-  ...item,
-  src: `${BASE_URL}gallery/${item.file}`,
+  ...buildGalleryImageSources(item),
   shape: item.shape || '',
 }))
 
@@ -297,7 +297,20 @@ const isExternalHref = (href: string) => /^https?:\/\//.test(href)
           {
             galleryImages.map((image) => (
               <figure class={`about-shot ${image.shape}`.trim()}>
-                <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/avif" srcset={image.avifSrcSet} sizes={ABOUT_GALLERY_SIZES} />
+                  <source type="image/webp" srcset={image.webpSrcSet} sizes={ABOUT_GALLERY_SIZES} />
+                  <img
+                    src={image.optimizedSrc}
+                    srcset={image.jpgSrcSet}
+                    sizes={ABOUT_GALLERY_SIZES}
+                    alt={image.alt}
+                    loading="lazy"
+                    decoding="async"
+                    width={image.width}
+                    height={image.height}
+                  />
+                </picture>
                 <figcaption>
                   <span>{image.title}</span>
                   <time>{image.date}</time>

@@ -114,48 +114,125 @@
 
 }
 
-.dark {
-  /* 参考终端界面的优雅配色 - 深蓝黑色主题 */
-  --background: #1a1b26;
-  --foreground: #a9b1d6;
-  --card: #1f2335;
-  --card-foreground: #a9b1d6;
-  --popover: #1f2335;
-  --popover-foreground: #a9b1d6;
-  --primary: #7aa2f7;
-  --primary-foreground: #1a1b26;
-  --secondary: #24283b;
-  --secondary-foreground: #a9b1d6;
-  --muted: #24283b;
-  --muted-foreground: #565f89;
-  --accent: #292e42;
-  --accent-foreground: #7aa2f7;
-  --destructive: #f7768e;
-  --border: #292e42;
-  --input: #24283b;
-  --ring: #7aa2f7;
-  --chart-1: #7aa2f7;
-  --chart-2: #bb9af7;
-  --chart-3: #9ece6a;
-  --chart-4: #e0af68;
-  --chart-5: #f7768e;
-  --sidebar: #1a1b26;
-  --sidebar-foreground: #a9b1d6;
-  --sidebar-primary: #7aa2f7;
-  --sidebar-primary-foreground: #1a1b26;
-  --sidebar-accent: #24283b;
-  --sidebar-accent-foreground: #a9b1d6;
-  --sidebar-border: #292e42;
-  --sidebar-ring: #7aa2f7;
+html.dark:not([data-color-mode]) {
+  /* 旧 dark 兜底：统一映射到 midnight 变量 */
+  --background: #0b1120;
+  --foreground: #d6deff;
+  --card: #111b2e;
+  --card-foreground: #d6deff;
+  --popover: #111b2e;
+  --popover-foreground: #d6deff;
+  --primary: #8fb4ff;
+  --primary-foreground: #0b1120;
+  --secondary: #152238;
+  --secondary-foreground: #d6deff;
+  --muted: #17263f;
+  --muted-foreground: #8da0c2;
+  --accent: #1d2e4a;
+  --accent-foreground: #b7cbff;
+  --destructive: #ff8fa3;
+  --border: #223552;
+  --input: #16253d;
+  --ring: #8fb4ff;
+  --chart-1: #8fb4ff;
+  --chart-2: #74d3ae;
+  --chart-3: #f7cc7d;
+  --chart-4: #f0a3ff;
+  --chart-5: #9ac6ff;
+  --sidebar: #0f192d;
+  --sidebar-foreground: #d6deff;
+  --sidebar-primary: #8fb4ff;
+  --sidebar-primary-foreground: #0b1120;
+  --sidebar-accent: #1a2942;
+  --sidebar-accent-foreground: #d6deff;
+  --sidebar-border: #223552;
+  --sidebar-ring: #8fb4ff;
 
-  --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.15);
-  --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.15);
-  --shadow-sm: 0 1px 3px 0px oklch(0.00 0 0 / 0.20), 0 1px 2px -1px oklch(0.00 0 0 / 0.20);
-  --shadow: 0 1px 3px 0px oklch(0.00 0 0 / 0.20), 0 1px 2px -1px oklch(0.00 0 0 / 0.20);
-  --shadow-md: 0 1px 3px 0px oklch(0.00 0 0 / 0.20), 0 2px 4px -1px oklch(0.00 0 0 / 0.20);
-  --shadow-lg: 0 1px 3px 0px oklch(0.00 0 0 / 0.25), 0 4px 6px -1px oklch(0.00 0 0 / 0.25);
-  --shadow-xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.30), 0 8px 10px -1px oklch(0.00 0 0 / 0.30);
-  --shadow-2xl: 0 1px 3px 0px oklch(0.00 0 0 / 0.40);
+  --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.20);
+  --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.20);
+  --shadow-sm: 0 3px 8px 0px oklch(0.00 0 0 / 0.22);
+  --shadow: 0 5px 14px 0px oklch(0.00 0 0 / 0.22);
+  --shadow-md: 0 8px 20px 0px oklch(0.00 0 0 / 0.24);
+  --shadow-lg: 0 12px 28px 0px oklch(0.00 0 0 / 0.27);
+  --shadow-xl: 0 18px 42px 0px oklch(0.00 0 0 / 0.30);
+  --shadow-2xl: 0 24px 56px 0px oklch(0.00 0 0 / 0.34);
+}
+
+html[data-color-mode='midnight'] {
+  --background: #0b1120;
+  --foreground: #d6deff;
+  --card: #111b2e;
+  --card-foreground: #d6deff;
+  --popover: #111b2e;
+  --popover-foreground: #d6deff;
+  --primary: #8fb4ff;
+  --primary-foreground: #0b1120;
+  --secondary: #152238;
+  --secondary-foreground: #d6deff;
+  --muted: #17263f;
+  --muted-foreground: #8da0c2;
+  --accent: #1d2e4a;
+  --accent-foreground: #b7cbff;
+  --destructive: #ff8fa3;
+  --border: #223552;
+  --input: #16253d;
+  --ring: #8fb4ff;
+  --chart-1: #8fb4ff;
+  --chart-2: #74d3ae;
+  --chart-3: #f7cc7d;
+  --chart-4: #f0a3ff;
+  --chart-5: #9ac6ff;
+  --sidebar: #0f192d;
+  --sidebar-foreground: #d6deff;
+  --sidebar-primary: #8fb4ff;
+  --sidebar-primary-foreground: #0b1120;
+  --sidebar-accent: #1a2942;
+  --sidebar-accent-foreground: #d6deff;
+  --sidebar-border: #223552;
+  --sidebar-ring: #8fb4ff;
+
+  --shadow-2xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.20);
+  --shadow-xs: 0 1px 3px 0px oklch(0.00 0 0 / 0.20);
+  --shadow-sm: 0 3px 8px 0px oklch(0.00 0 0 / 0.22);
+  --shadow: 0 5px 14px 0px oklch(0.00 0 0 / 0.22);
+  --shadow-md: 0 8px 20px 0px oklch(0.00 0 0 / 0.24);
+  --shadow-lg: 0 12px 28px 0px oklch(0.00 0 0 / 0.27);
+  --shadow-xl: 0 18px 42px 0px oklch(0.00 0 0 / 0.30);
+  --shadow-2xl: 0 24px 56px 0px oklch(0.00 0 0 / 0.34);
+}
+
+html[data-color-mode='retro'] {
+  --background: #f2e9d8;
+  --foreground: #3f2f1f;
+  --card: #f8f1e2;
+  --card-foreground: #3f2f1f;
+  --popover: #f8f1e2;
+  --popover-foreground: #3f2f1f;
+  --primary: #8c5a2b;
+  --primary-foreground: #fff7ea;
+  --secondary: #e9dcc5;
+  --secondary-foreground: #3f2f1f;
+  --muted: #ede2cc;
+  --muted-foreground: #7a6042;
+  --accent: #dfcfb2;
+  --accent-foreground: #4f3a23;
+  --destructive: #b84f3f;
+  --border: #cfb997;
+  --input: #f4ead8;
+  --ring: #8c5a2b;
+  --chart-1: #8c5a2b;
+  --chart-2: #b67238;
+  --chart-3: #d09254;
+  --chart-4: #a07a4c;
+  --chart-5: #6f5235;
+  --sidebar: #efe2ca;
+  --sidebar-foreground: #3f2f1f;
+  --sidebar-primary: #8c5a2b;
+  --sidebar-primary-foreground: #fff7ea;
+  --sidebar-accent: #e2d2b8;
+  --sidebar-accent-foreground: #4a3621;
+  --sidebar-border: #c9b390;
+  --sidebar-ring: #8c5a2b;
 }
 
 @theme inline {
@@ -224,7 +301,8 @@
     @apply bg-background text-foreground scheme-light;
 
     &.dark,
-    &[data-theme='dark'] {
+    &[data-theme='dark'],
+    &[data-color-mode='midnight'] {
       @apply scheme-dark;
     }
 
@@ -1925,4 +2003,658 @@
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* Midnight 深夜模式：沉稳、低噪音、高可读 */
+html[data-color-mode='midnight'] {
+  background:
+    radial-gradient(circle at 20% -10%, rgb(56 90 164 / 18%) 0%, transparent 48%),
+    radial-gradient(circle at 85% -5%, rgb(102 57 151 / 12%) 0%, transparent 42%),
+    #0b1120;
+  color: #d6deff;
+}
+
+html[data-color-mode='midnight'] body {
+  background: transparent;
+  text-shadow: none;
+  color: #d6deff;
+}
+
+html[data-color-mode='midnight']::before,
+html[data-color-mode='midnight']::after {
+  content: none !important;
+  display: none !important;
+}
+
+html[data-color-mode='midnight'] h1,
+html[data-color-mode='midnight'] h2,
+html[data-color-mode='midnight'] h3 {
+  color: #e5ecff;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] h1::after,
+html[data-color-mode='midnight'] h2::after {
+  background: linear-gradient(90deg, rgb(143 180 255 / 70%), transparent);
+  box-shadow: none;
+}
+
+html[data-color-mode='midnight'] a {
+  color: #9cc4ff;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] a::after {
+  background: #7ea8ef;
+  box-shadow: none;
+}
+
+html[data-color-mode='midnight'] a:hover {
+  color: #b5d2ff;
+  text-shadow: none;
+  transform: none;
+}
+
+html[data-color-mode='midnight'] button:hover,
+html[data-color-mode='midnight'] [role='button']:hover {
+  background: rgb(31 49 82 / 75%);
+  border-color: rgb(126 168 239 / 45%);
+  box-shadow: 0 8px 20px rgb(3 8 20 / 32%);
+  animation: none !important;
+}
+
+html[data-color-mode='midnight'] input,
+html[data-color-mode='midnight'] textarea,
+html[data-color-mode='midnight'] select {
+  background: #152238;
+  color: #d6deff;
+  border-color: #2a4168;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] input:focus,
+html[data-color-mode='midnight'] textarea:focus,
+html[data-color-mode='midnight'] select:focus {
+  background: #1a2a46;
+  border-color: #82adf5;
+  box-shadow: 0 0 0 2px rgb(130 173 245 / 28%);
+}
+
+html[data-color-mode='midnight'] pre,
+html[data-color-mode='midnight'] .enhanced-code-block {
+  background: #0f1a2e;
+  border: 1px solid #223552;
+  box-shadow: 0 14px 30px rgb(2 6 19 / 34%);
+}
+
+html[data-color-mode='midnight'] .enhanced-code-block .token.comment {
+  color: #7d8ead;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] .enhanced-code-block .token.string {
+  color: #8fe0c2;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] .enhanced-code-block .token.keyword {
+  color: #9dbdff;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] .enhanced-code-block .token.function {
+  color: #c6b0ff;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] table {
+  background: #101d33;
+  border-color: #233a5b;
+  box-shadow: 0 12px 26px rgb(2 7 22 / 25%);
+}
+
+html[data-color-mode='midnight'] th {
+  background: #172744;
+  color: #dce7ff;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] td {
+  color: #c5d3ef;
+}
+
+html[data-color-mode='midnight'] tr:hover td {
+  background: #162740;
+}
+
+html[data-color-mode='midnight'] blockquote {
+  background: #111f35;
+  border-left: 3px solid #8fb4ff;
+  color: #c7d7f8;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] .bg-card {
+  background: #111b2f;
+  border-color: #243858;
+  box-shadow: 0 12px 26px rgb(2 7 22 / 24%);
+}
+
+html[data-color-mode='midnight'] .bg-card:hover {
+  background: #16253f;
+  box-shadow: 0 16px 32px rgb(3 8 25 / 30%);
+}
+
+html[data-color-mode='midnight'] .friend-link-card::before,
+html[data-color-mode='midnight'] .bg-card::before,
+html[data-color-mode='midnight'] .floating-action-button,
+html[data-color-mode='midnight'] .loading-spinner {
+  animation: none !important;
+  box-shadow: none;
+}
+
+/* Midnight 桌面导航精修 */
+html[data-color-mode='midnight'] .neo-desktop-navbar {
+  background:
+    linear-gradient(135deg, rgb(15 24 40 / 88%) 0%, rgb(13 21 37 / 84%) 100%) !important;
+  border-color: rgb(139 174 242 / 18%) !important;
+  box-shadow:
+    0 14px 34px rgb(2 7 20 / 36%),
+    inset 0 1px 0 rgb(170 196 245 / 14%);
+}
+
+html[data-color-mode='midnight'] .neo-desktop-navbar nav a {
+  color: rgb(198 214 245 / 92%) !important;
+  text-shadow: none !important;
+}
+
+html[data-color-mode='midnight'] .neo-desktop-navbar nav a::before {
+  background: linear-gradient(
+      135deg,
+      rgb(95 135 209 / 18%),
+      rgb(106 86 170 / 12%)
+    ) !important;
+}
+
+html[data-color-mode='midnight'] .neo-desktop-navbar nav a::after {
+  background: linear-gradient(
+      90deg,
+      rgb(143 180 255 / 90%),
+      rgb(124 207 187 / 72%)
+    ) !important;
+}
+
+html[data-color-mode='midnight'] .neo-desktop-navbar nav a:hover {
+  color: #e4edff !important;
+  box-shadow: 0 10px 22px rgb(4 12 30 / 30%) !important;
+}
+
+html[data-color-mode='midnight'] .neo-desktop-navbar nav a:hover::after {
+  box-shadow: none !important;
+}
+
+/* Midnight 内容节奏与层次微调 */
+html[data-color-mode='midnight'] .neo-main {
+  background:
+    radial-gradient(circle at 14% -12%, rgb(58 91 168 / 17%) 0%, transparent 44%),
+    radial-gradient(circle at 88% -8%, rgb(112 72 170 / 12%) 0%, transparent 42%),
+    linear-gradient(180deg, rgb(11 17 31) 0%, rgb(9 15 28) 100%);
+}
+
+html[data-color-mode='midnight'] .uipanel,
+html[data-color-mode='midnight'] .neo-section,
+html[data-color-mode='midnight'] .neo-post-card {
+  border-color: rgb(132 165 230 / 20%) !important;
+  background: linear-gradient(145deg, rgb(16 27 45 / 96%), rgb(14 23 39 / 96%)) !important;
+  box-shadow:
+    0 16px 34px rgb(2 7 21 / 28%),
+    inset 0 1px 0 rgb(171 198 249 / 10%) !important;
+}
+
+html[data-color-mode='midnight'] .uipanel h1,
+html[data-color-mode='midnight'] .uipanel h2,
+html[data-color-mode='midnight'] .uipanel h3 {
+  color: #e7efff;
+}
+
+/* Midnight 代码复制与滚动体验 */
+html[data-color-mode='midnight'] .expressive-code .copy button,
+html[data-color-mode='midnight'] .enhanced-code-block .copy button {
+  border-color: rgb(129 166 237 / 34%) !important;
+  background: rgb(18 32 55 / 86%) !important;
+  color: #c9dbff !important;
+  box-shadow: 0 6px 16px rgb(2 7 20 / 24%) !important;
+}
+
+html[data-color-mode='midnight'] .expressive-code .copy button:hover,
+html[data-color-mode='midnight'] .enhanced-code-block .copy button:hover {
+  background: rgb(27 45 74 / 92%) !important;
+  border-color: rgb(148 184 248 / 52%) !important;
+}
+
+html[data-color-mode='midnight'] ::selection {
+  background: rgb(116 162 246 / 34%);
+  color: #eef4ff;
+  text-shadow: none;
+}
+
+html[data-color-mode='midnight'] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-color-mode='midnight'] ::-webkit-scrollbar-track {
+  background: rgb(10 17 29);
+  border-radius: 6px;
+}
+
+html[data-color-mode='midnight'] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgb(99 144 225), rgb(84 117 189));
+  border-radius: 6px;
+  border: 1px solid rgb(19 33 56);
+}
+
+html[data-color-mode='midnight'] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgb(119 162 240), rgb(95 130 204));
+}
+
+/* Light 主题精修：清爽、通透、专业 */
+html[data-color-mode='light'] {
+  background:
+    radial-gradient(circle at 14% -14%, rgb(93 144 241 / 10%) 0%, transparent 44%),
+    radial-gradient(circle at 86% -12%, rgb(139 168 223 / 10%) 0%, transparent 42%),
+    #f8fafc;
+}
+
+html[data-color-mode='light'] .neo-main {
+  background:
+    radial-gradient(circle at 16% -16%, rgb(125 160 230 / 9%) 0%, transparent 48%),
+    linear-gradient(180deg, #f8fafc 0%, #f4f7fb 100%);
+}
+
+html[data-color-mode='light'] .neo-desktop-navbar {
+  background: rgb(248 251 255 / 88%) !important;
+  border-color: rgb(131 157 202 / 20%) !important;
+  box-shadow:
+    0 12px 28px rgb(15 23 42 / 8%),
+    inset 0 1px 0 rgb(255 255 255 / 82%);
+}
+
+html[data-color-mode='light'] .neo-desktop-navbar nav a {
+  color: rgb(51 72 102 / 90%) !important;
+}
+
+html[data-color-mode='light'] .neo-desktop-navbar nav a:hover {
+  color: #1f3655 !important;
+}
+
+html[data-color-mode='light'] .uipanel,
+html[data-color-mode='light'] .neo-section,
+html[data-color-mode='light'] .neo-post-card {
+  border-color: rgb(124 149 192 / 18%) !important;
+  background: linear-gradient(150deg, rgb(255 255 255 / 98%), rgb(246 250 255 / 97%)) !important;
+  box-shadow:
+    0 14px 26px rgb(15 23 42 / 7%),
+    inset 0 1px 0 rgb(255 255 255 / 88%) !important;
+}
+
+html[data-color-mode='light'] ::selection {
+  background: rgb(124 162 233 / 26%);
+  color: #0f2745;
+}
+
+/* Retro 主题精修：纸感、复古墨色、暖调对比 */
+html[data-color-mode='retro'] {
+  background:
+    radial-gradient(circle at 12% -10%, rgb(178 132 80 / 16%) 0%, transparent 42%),
+    radial-gradient(circle at 88% -8%, rgb(144 109 74 / 14%) 0%, transparent 44%),
+    #efe4cf;
+  color: #3b2d1e;
+}
+
+html[data-color-mode='retro'] body {
+  background: transparent;
+  color: #3b2d1e;
+}
+
+html[data-color-mode='retro'] .neo-main {
+  background:
+    radial-gradient(circle at 14% -12%, rgb(184 142 95 / 17%) 0%, transparent 44%),
+    linear-gradient(180deg, #efe4cf 0%, #eadfc8 100%);
+}
+
+html[data-color-mode='retro'] .neo-desktop-navbar {
+  background: rgb(242 232 212 / 90%) !important;
+  border-color: rgb(145 110 71 / 30%) !important;
+  box-shadow:
+    0 12px 28px rgb(70 46 24 / 15%),
+    inset 0 1px 0 rgb(255 248 236 / 90%);
+}
+
+html[data-color-mode='retro'] .neo-desktop-navbar nav a {
+  color: rgb(78 53 29 / 88%) !important;
+}
+
+html[data-color-mode='retro'] .neo-desktop-navbar nav a::after {
+  background: linear-gradient(90deg, rgb(153 93 45 / 90%), rgb(196 137 78 / 72%)) !important;
+}
+
+html[data-color-mode='retro'] .neo-desktop-navbar nav a:hover {
+  color: #5b3a1f !important;
+  box-shadow: 0 10px 22px rgb(95 64 35 / 18%) !important;
+}
+
+html[data-color-mode='retro'] h1,
+html[data-color-mode='retro'] h2,
+html[data-color-mode='retro'] h3 {
+  color: #4a3119;
+  text-shadow: none;
+}
+
+html[data-color-mode='retro'] a {
+  color: #875123;
+}
+
+html[data-color-mode='retro'] a:hover {
+  color: #a1612b;
+}
+
+html[data-color-mode='retro'] .uipanel,
+html[data-color-mode='retro'] .neo-section,
+html[data-color-mode='retro'] .neo-post-card,
+html[data-color-mode='retro'] .bg-card {
+  border-color: rgb(153 119 79 / 30%) !important;
+  background: linear-gradient(150deg, rgb(248 239 223 / 96%), rgb(239 227 204 / 96%)) !important;
+  box-shadow:
+    0 16px 30px rgb(92 62 34 / 13%),
+    inset 0 1px 0 rgb(255 249 238 / 86%) !important;
+}
+
+html[data-color-mode='retro'] pre,
+html[data-color-mode='retro'] .enhanced-code-block {
+  background: #f2e6cf;
+  border: 1px solid #c9ab7f;
+  box-shadow: 0 10px 20px rgb(87 57 31 / 12%);
+}
+
+html[data-color-mode='retro'] .expressive-code .copy button,
+html[data-color-mode='retro'] .enhanced-code-block .copy button {
+  background: #f7ebd5 !important;
+  color: #5c3a1f !important;
+  border-color: #c39a67 !important;
+  box-shadow: 0 6px 14px rgb(90 60 32 / 12%) !important;
+}
+
+html[data-color-mode='retro'] blockquote {
+  background: #f4e7d1;
+  border-left: 3px solid #a26836;
+  color: #5f4428;
+}
+
+html[data-color-mode='retro'] table {
+  background: #f8edda;
+  border-color: #ccb089;
+  box-shadow: none;
+}
+
+html[data-color-mode='retro'] th {
+  background: #e8d5b6;
+  color: #56381f;
+}
+
+html[data-color-mode='retro'] td {
+  color: #6a4d2f;
+}
+
+html[data-color-mode='retro'] ::selection {
+  background: rgb(174 122 69 / 28%);
+  color: #3d2413;
+}
+
+html[data-color-mode='retro'] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-color-mode='retro'] ::-webkit-scrollbar-track {
+  background: #eadcc2;
+  border-radius: 6px;
+}
+
+html[data-color-mode='retro'] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c79561, #ae7842);
+  border-radius: 6px;
+  border: 1px solid #9e6f40;
+}
+
+html[data-color-mode='retro'] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #d8a36b, #bc8348);
+}
+
+/* 首页 Hero 三主题精修 */
+.neo-hero-copy {
+  max-width: 38rem;
+}
+
+.neo-hero-title {
+  font-size: clamp(2.25rem, 5vw, 4.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.35rem;
+}
+
+.neo-hero-name {
+  border: 0;
+  display: inline-block;
+  padding-bottom: 0.12em;
+  border-bottom: 0.12em solid color-mix(in srgb, var(--primary) 54%, transparent);
+}
+
+.neo-hero-subtitle {
+  font-size: clamp(1.06rem, 1.6vw, 1.28rem);
+  margin-top: 0.1rem;
+  margin-bottom: 0.1rem;
+  letter-spacing: 0.01em;
+}
+
+.neo-hero-location {
+  font-size: 0.94rem;
+}
+
+.neo-hero-description {
+  font-size: clamp(1rem, 1.28vw, 1.12rem);
+  line-height: 1.76;
+  max-width: 56ch;
+}
+
+.neo-hero-ctas {
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+
+.neo-hero-cta {
+  min-height: 44px;
+  border-radius: 999px !important;
+  padding-inline: 1.05rem !important;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease,
+    background-color 0.2s ease, color 0.2s ease;
+}
+
+.neo-hero-cta::after,
+.neo-hero-social::after {
+  content: none !important;
+}
+
+.neo-hero-cta:hover {
+  transform: translateY(-1px) !important;
+}
+
+.neo-hero-socials {
+  margin-top: 0.15rem;
+}
+
+.neo-hero-social {
+  border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  box-shadow: 0 8px 20px rgb(15 23 42 / 10%);
+}
+
+.neo-hero-scroll {
+  opacity: 0.72;
+}
+
+@media (min-width: 768px) {
+  .neo-hero {
+    min-height: clamp(520px, 70vh, 680px);
+    border-radius: 26px;
+    border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+    box-shadow: 0 24px 46px rgb(15 23 42 / 12%);
+    padding-inline: clamp(1.8rem, 4vw, 3.2rem);
+    padding-block: clamp(1.5rem, 2.8vw, 2.3rem);
+  }
+
+  .neo-hero .hero-content {
+    gap: clamp(2.4rem, 4vw, 4rem);
+  }
+
+  .neo-hero-scroll {
+    display: none;
+  }
+}
+
+html[data-color-mode='light'] .neo-hero {
+  background:
+    radial-gradient(circle at 12% 12%, rgb(112 165 240 / 12%) 0%, transparent 40%),
+    radial-gradient(circle at 86% 16%, rgb(144 172 221 / 10%) 0%, transparent 42%),
+    linear-gradient(135deg, rgb(253 255 255 / 92%), rgb(246 250 255 / 92%));
+}
+
+html[data-color-mode='light'] .neo-hero-name {
+  color: #183e6a;
+  border-bottom-color: rgb(89 141 223 / 65%);
+}
+
+html[data-color-mode='light'] .neo-hero-subtitle {
+  color: rgb(58 90 127 / 86%);
+}
+
+html[data-color-mode='light'] .neo-hero-cta--primary {
+  background: linear-gradient(135deg, #4b7fca, #3f6fb8);
+  border: 1px solid #3b67aa;
+  color: #f5f9ff;
+  box-shadow: 0 12px 24px rgb(56 103 172 / 24%);
+}
+
+html[data-color-mode='light'] .neo-hero-cta--primary:hover {
+  background: linear-gradient(135deg, #578edc, #4479c5);
+}
+
+html[data-color-mode='light'] .neo-hero-cta--secondary {
+  border-color: rgb(111 144 193 / 44%);
+  background: rgb(248 251 255 / 88%);
+  color: #1f3b60;
+}
+
+html[data-color-mode='light'] .neo-hero-social {
+  background: rgb(248 251 255 / 86%);
+  border-color: rgb(116 146 194 / 24%);
+}
+
+html[data-color-mode='midnight'] .neo-hero {
+  background:
+    radial-gradient(circle at 15% 14%, rgb(92 128 200 / 18%) 0%, transparent 42%),
+    radial-gradient(circle at 84% 12%, rgb(108 93 178 / 14%) 0%, transparent 40%),
+    linear-gradient(145deg, rgb(13 23 39 / 96%), rgb(10 18 32 / 96%));
+  border-color: rgb(131 163 230 / 20%);
+  box-shadow:
+    0 26px 46px rgb(2 8 22 / 34%),
+    inset 0 1px 0 rgb(163 191 243 / 14%);
+}
+
+html[data-color-mode='midnight'] .neo-hero-name {
+  color: #e6efff;
+  border-bottom-color: rgb(136 176 247 / 74%);
+}
+
+html[data-color-mode='midnight'] .neo-hero-subtitle {
+  color: rgb(173 194 233 / 90%);
+}
+
+html[data-color-mode='midnight'] .neo-hero-location {
+  color: rgb(160 179 214 / 78%);
+}
+
+html[data-color-mode='midnight'] .neo-hero-cta--primary {
+  background: linear-gradient(135deg, #527dc7, #476ab0);
+  border: 1px solid #5f86ce;
+  color: #eff5ff;
+  box-shadow: 0 12px 28px rgb(41 83 154 / 34%);
+}
+
+html[data-color-mode='midnight'] .neo-hero-cta--primary:hover {
+  background: linear-gradient(135deg, #6390da, #4f77c3);
+}
+
+html[data-color-mode='midnight'] .neo-hero-cta--secondary {
+  border-color: rgb(127 162 229 / 42%);
+  background: rgb(18 33 56 / 84%);
+  color: #d7e5ff;
+}
+
+html[data-color-mode='midnight'] .neo-hero-social {
+  background: rgb(17 32 54 / 78%);
+  border-color: rgb(126 160 228 / 34%);
+  color: #c8d9fb;
+}
+
+html[data-color-mode='retro'] .neo-hero {
+  background:
+    radial-gradient(circle at 14% 12%, rgb(181 138 89 / 20%) 0%, transparent 42%),
+    radial-gradient(circle at 86% 14%, rgb(148 106 67 / 18%) 0%, transparent 42%),
+    linear-gradient(145deg, rgb(246 236 217 / 95%), rgb(238 225 199 / 96%));
+  border-color: rgb(150 112 71 / 34%);
+  box-shadow:
+    0 24px 42px rgb(83 56 30 / 16%),
+    inset 0 1px 0 rgb(255 248 237 / 90%);
+}
+
+html[data-color-mode='retro'] .neo-hero-name {
+  color: #59371d;
+  border-bottom-color: rgb(169 111 53 / 70%);
+}
+
+html[data-color-mode='retro'] .neo-hero-subtitle {
+  color: rgb(108 76 47 / 88%);
+}
+
+html[data-color-mode='retro'] .neo-hero-location {
+  color: rgb(124 93 61 / 80%);
+}
+
+html[data-color-mode='retro'] .neo-hero-cta--primary {
+  background: linear-gradient(135deg, #a96f3a, #915c2d);
+  border: 1px solid #885225;
+  color: #fff6ea;
+  box-shadow: 0 12px 24px rgb(125 79 39 / 28%);
+}
+
+html[data-color-mode='retro'] .neo-hero-cta--primary:hover {
+  background: linear-gradient(135deg, #bb7f46, #a76734);
+}
+
+html[data-color-mode='retro'] .neo-hero-cta--secondary {
+  border-color: rgb(151 109 66 / 44%);
+  background: rgb(248 238 220 / 84%);
+  color: #5d3d21;
+}
+
+html[data-color-mode='retro'] .neo-hero-social {
+  background: rgb(246 235 216 / 82%);
+  border-color: rgb(156 115 71 / 34%);
+  color: #6a4524;
+  box-shadow: 0 8px 18px rgb(89 58 31 / 12%);
 }

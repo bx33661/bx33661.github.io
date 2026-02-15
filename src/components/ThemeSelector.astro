@@ -3,11 +3,8 @@ import { Icon } from 'astro-icon/components'
 
 const themes = [
   { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-  { value: "synthwave", label: "Synthwave" },
+  { value: "midnight", label: "Midnight" },
   { value: "retro", label: "Retro" },
-  { value: "valentine", label: "Valentine" },
-  { value: "dim", label: "Dim" },
 ];
 ---
 
@@ -38,43 +35,85 @@ const themes = [
 </div>
 
 <script is:inline>
-  // Set theme on page load based on localStorage or system preference
-  function setTheme() {
-    const savedTheme = localStorage.getItem("theme");
-    let theme = savedTheme;
+  const EVENT_NAME = "bx-theme-change"
+  const SUPPORTED_THEMES = new Set(["light", "midnight", "retro"])
+  const DARK_THEMES = new Set(["midnight"])
 
-    // If no saved theme, use system preference
-    if (!theme) {
-      theme = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    }
-
-    // Apply theme to document
-    document.documentElement.setAttribute("data-theme", theme);
-
-    // Set the correct radio button as checked
-    const radios = document.querySelectorAll('input[type="radio"][name="theme"]');
-    radios.forEach((radio) => {
-      if (radio.value === theme) {
-         radio.checked = true;
-      }
-    });
+  const getFallbackTheme = () => {
+    const root = document.documentElement
+    const mode = root.dataset.colorMode
+    if (mode && SUPPORTED_THEMES.has(mode)) return mode
+    if (root.dataset.theme === "retro") return "retro"
+    return root.dataset.theme === "dark" || root.classList.contains("dark")
+      ? "midnight"
+      : "light"
   }
 
-  // Update theme when radio button is changed
-  document.addEventListener("change", (e) => {
-    const target = e.target;
-    if (target.type === "radio" && target.name === "theme") {
-      const theme = target.value;
-      document.documentElement.setAttribute("data-theme", theme);
-      localStorage.setItem("theme", theme);
+  const getActiveTheme = () => {
+    const api = window.__BX_THEME__
+    if (api && typeof api.get === "function") {
+      return api.get()
     }
-  });
+    return getFallbackTheme()
+  }
 
-  // Run on page load
-  setTheme();
+  const updateThemeRadios = () => {
+    const activeTheme = getActiveTheme()
+    const radios = document.querySelectorAll('input[type="radio"][name="theme"]')
+    radios.forEach((radio) => {
+      radio.checked = radio.value === activeTheme
+    })
+  }
 
-  // Run after view transitions
-  document.addEventListener("astro:after-swap", setTheme);
+  const handleThemeChangeEvent = (event) => {
+    const theme = event?.detail?.theme
+    if (typeof theme !== "string" || !SUPPORTED_THEMES.has(theme)) return
+    const radios = document.querySelectorAll('input[type="radio"][name="theme"]')
+    radios.forEach((radio) => {
+      radio.checked = radio.value === theme
+    })
+  }
+
+  const handleThemeRadioChange = (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLInputElement)) return
+    if (target.type !== "radio" || target.name !== "theme") return
+
+    const nextTheme = target.value
+    if (!SUPPORTED_THEMES.has(nextTheme)) return
+    const api = window.__BX_THEME__
+
+    if (api && typeof api.set === "function") {
+      api.set(nextTheme)
+      return
+    }
+
+    const root = document.documentElement
+    const darkTheme = DARK_THEMES.has(nextTheme)
+    root.dataset.theme = nextTheme === "midnight" ? "dark" : nextTheme
+    root.dataset.colorMode = nextTheme
+    root.classList.toggle("dark", darkTheme)
+    root.style.colorScheme = darkTheme ? "dark" : "light"
+
+    try {
+      localStorage.setItem("theme", nextTheme)
+    } catch {
+      // ignore
+    }
+  }
+
+  const bindThemeSelector = () => {
+    if (!window.__BX_THEME_SELECTOR_BOUND__) {
+      document.addEventListener("change", handleThemeRadioChange)
+      window.addEventListener(EVENT_NAME, handleThemeChangeEvent)
+      window.__BX_THEME_SELECTOR_BOUND__ = true
+    }
+    updateThemeRadios()
+  }
+
+  bindThemeSelector()
+  if (!window.__BX_THEME_SELECTOR_SWAP_BOUND__) {
+    document.addEventListener("astro:after-swap", bindThemeSelector)
+    window.__BX_THEME_SELECTOR_SWAP_BOUND__ = true
+  }
 </script>

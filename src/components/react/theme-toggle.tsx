@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 export const prerender = true
 export const dynamic = 'force-dynamic'
 
+const DARK_THEMES: ThemeName[] = ['midnight']
+
+const isDarkTheme = (theme: ThemeName): boolean => DARK_THEMES.includes(theme)
+
 const ThemeToggle: React.FC = () => {
   const [isDark, setIsDark] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -13,18 +17,19 @@ const ThemeToggle: React.FC = () => {
     const api = window.__BX_THEME__
     if (api && typeof api.toggle === 'function') {
       const nextTheme = api.toggle()
-      setIsDark(nextTheme === 'dark')
+      setIsDark(isDarkTheme(nextTheme))
       return
     }
 
     const element = document.documentElement
     const nextIsDark = !element.classList.contains('dark')
-    const nextTheme = nextIsDark ? 'dark' : 'light'
+    const nextTheme: ThemeName = nextIsDark ? 'midnight' : 'light'
 
     element.classList.toggle('dark', nextIsDark)
-    element.dataset.theme = nextTheme
+    element.dataset.theme = nextIsDark ? 'dark' : 'light'
+    element.dataset.colorMode = nextTheme
     element.style.colorScheme = nextIsDark ? 'dark' : 'light'
-    element.style.backgroundColor = nextIsDark ? '#1a1b26' : '#f8fafc'
+    element.style.backgroundColor = nextIsDark ? '#0b1120' : '#f8fafc'
 
     setIsDark(nextIsDark)
   }
@@ -34,14 +39,14 @@ const ThemeToggle: React.FC = () => {
     const api = window.__BX_THEME__
     const initialTheme = api && typeof api.get === 'function'
       ? api.get()
-      : document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+      : document.documentElement.classList.contains('dark') ? 'midnight' : 'light'
 
-    setIsDark(initialTheme === 'dark')
+    setIsDark(isDarkTheme(initialTheme))
 
     const handleThemeChange = (event: Event) => {
-      const detail = (event as CustomEvent<{ theme?: 'light' | 'dark' }>).detail
-      if (detail?.theme === 'light' || detail?.theme === 'dark') {
-        setIsDark(detail.theme === 'dark')
+      const detail = (event as CustomEvent<{ theme?: ThemeName }>).detail
+      if (detail?.theme) {
+        setIsDark(isDarkTheme(detail.theme))
       }
     }
 

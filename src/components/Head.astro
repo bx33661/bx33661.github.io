@@ -39,6 +39,175 @@ const defaultCanonical = canonicalUrl || Astro.url
     content="width=device-width, initial-scale=1.0, user-scalable=yes"
   />
   <meta name="generator" content={Astro.generator} />
+  <script is:inline>
+    (() => {
+      if (window.__BX_THEME__) {
+        return
+      }
+
+      const STORAGE_KEY = 'theme'
+      const DARK_PREFERENCE_KEY = 'theme-dark-preference'
+      const EVENT_NAME = 'bx-theme-change'
+      const SUPPORTED_THEMES = new Set(['light', 'midnight', 'retro'])
+      const LEGACY_THEME_MAP = {
+        dark: 'midnight',
+        dim: 'midnight',
+        synthwave: 'midnight',
+        valentine: 'retro'
+      }
+      const DARK_CLASS_THEMES = new Set(['midnight'])
+      const THEME_COLORS = {
+        light: '#f8fafc',
+        midnight: '#0b1120',
+        retro: '#ede4d3'
+      }
+
+      const root = document.documentElement
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+      const sanitizeTheme = (theme) => {
+        if (typeof theme !== 'string') return null
+        if (SUPPORTED_THEMES.has(theme)) return theme
+        return LEGACY_THEME_MAP[theme] || null
+      }
+
+      const readStoredTheme = () => {
+        try {
+          return sanitizeTheme(localStorage.getItem(STORAGE_KEY))
+        } catch {
+          return null
+        }
+      }
+
+      const writeStoredTheme = (theme) => {
+        try {
+          localStorage.setItem(STORAGE_KEY, theme)
+        } catch {
+          // ignore
+        }
+      }
+
+      const readDarkPreference = () => {
+        try {
+          const value = localStorage.getItem(DARK_PREFERENCE_KEY)
+          if (!value || !DARK_CLASS_THEMES.has(value)) return null
+          return value
+        } catch {
+          return null
+        }
+      }
+
+      const writeDarkPreference = (theme) => {
+        if (!DARK_CLASS_THEMES.has(theme)) return
+        try {
+          localStorage.setItem(DARK_PREFERENCE_KEY, theme)
+        } catch {
+          // ignore
+        }
+      }
+
+      const clearStoredTheme = () => {
+        try {
+          localStorage.removeItem(STORAGE_KEY)
+        } catch {
+          // ignore
+        }
+      }
+
+      const getSystemTheme = () => (mediaQuery.matches ? 'midnight' : 'light')
+      const getPreferredDarkTheme = () => readDarkPreference() || 'midnight'
+      const resolveDaisyTheme = (theme) => (theme === 'midnight' ? 'dark' : theme)
+      const isDarkTheme = (theme) => DARK_CLASS_THEMES.has(theme)
+
+      const syncThemeColorMeta = (theme) => {
+        const color = THEME_COLORS[theme] || THEME_COLORS.light
+        const runtimeMeta = document.querySelector(
+          'meta[name="theme-color"][data-runtime-theme-color]'
+        )
+        runtimeMeta?.setAttribute('content', color)
+      }
+
+      const dispatchThemeChange = (theme) => {
+        window.dispatchEvent(
+          new CustomEvent(EVENT_NAME, {
+            detail: {
+              theme,
+              daisyTheme: resolveDaisyTheme(theme),
+              isDark: isDarkTheme(theme)
+            }
+          })
+        )
+      }
+
+      const applyTheme = (inputTheme, { persist = true, emit = true } = {}) => {
+        const theme = sanitizeTheme(inputTheme) || getSystemTheme()
+        const daisyTheme = resolveDaisyTheme(theme)
+        const darkTheme = isDarkTheme(theme)
+
+        root.dataset.colorMode = theme
+        root.dataset.theme = daisyTheme
+        root.classList.toggle('dark', darkTheme)
+        root.style.colorScheme = darkTheme ? 'dark' : 'light'
+        root.style.backgroundColor = THEME_COLORS[theme] || THEME_COLORS.light
+        syncThemeColorMeta(theme)
+
+        if (persist) {
+          writeStoredTheme(theme)
+          if (darkTheme) {
+            writeDarkPreference(theme)
+          }
+        } else {
+          clearStoredTheme()
+        }
+
+        if (emit) {
+          dispatchThemeChange(theme)
+        }
+
+        return theme
+      }
+
+      const getCurrentTheme = () => {
+        const dataTheme = root.dataset.theme === 'dark' ? 'midnight' : root.dataset.theme
+        return (
+          sanitizeTheme(root.dataset.colorMode) ||
+          sanitizeTheme(dataTheme) ||
+          readStoredTheme() ||
+          (root.classList.contains('dark') ? 'midnight' : 'light')
+        )
+      }
+
+      window.__BX_THEME__ = {
+        get: () => getCurrentTheme(),
+        set: (theme) => applyTheme(theme),
+        toggle: () => {
+          const current = getCurrentTheme()
+          return applyTheme(isDarkTheme(current) ? 'light' : getPreferredDarkTheme())
+        },
+        resetToSystem: () => {
+          applyTheme(getSystemTheme(), { persist: false })
+        }
+      }
+
+      const storedTheme = readStoredTheme()
+      applyTheme(storedTheme || getSystemTheme(), { persist: Boolean(storedTheme), emit: false })
+
+      const handleSystemThemeChange = () => {
+        if (!readStoredTheme()) {
+          applyTheme(getSystemTheme(), { persist: false })
+        }
+      }
+
+      if (typeof mediaQuery.addEventListener === 'function') {
+        mediaQuery.addEventListener('change', handleSystemThemeChange)
+      } else {
+        const legacyAddListener = Reflect.get(mediaQuery, 'addListener')
+        if (typeof legacyAddListener === 'function') {
+          legacyAddListener.call(mediaQuery, handleSystemThemeChange)
+        }
+      }
+    })()
+  </script>
   {!hasCustomHead && (
     <>
       <meta name="robots" content="index, follow" />
@@ -114,6 +283,7 @@ const defaultCanonical = canonicalUrl || Astro.url
     content="#ffffff"
     media="(prefers-color-scheme: light)"
   />
+  <meta name="theme-color" content="#f8fafc" data-runtime-theme-color />
   <meta name="msapplication-TileColor" content="#121212" />
   <meta name="color-scheme" content="light dark" />
 
@@ -124,6 +294,9 @@ const defaultCanonical = canonicalUrl || Astro.url
     }
     html.dark,
     html[data-theme='dark'] { background-color: #1a1b26; }
+    html[data-color-mode='midnight'] { background-color: #0b1120; }
+    html[data-theme='retro'],
+    html[data-color-mode='retro'] { background-color: #ede4d3; }
   </style>
 
   <!-- 安全性增强 -->

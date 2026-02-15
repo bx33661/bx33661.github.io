@@ -307,6 +307,16 @@
     color: color-mix(in srgb, var(--foreground) 78%, transparent);
   }
 
+  .neo-hero-ctas a {
+    min-height: 42px;
+    border-radius: 12px !important;
+    border: var(--neo-mobile-border) solid color-mix(in srgb, var(--foreground) 20%, transparent) !important;
+    box-shadow: var(--neo-mobile-shadow);
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding-inline: 0.9rem !important;
+  }
+
   .neo-hero-actions a {
     min-height: 44px;
     border-radius: 12px !important;

@@ -3,7 +3,51 @@ export interface GalleryImageItem {
   alt: string
   title: string
   date: string
+  width: number
+  height: number
   shape?: 'about-shot--wide' | 'about-shot--tall' | ''
+}
+
+export interface GalleryImageWithSources extends GalleryImageItem {
+  originalSrc: string
+  optimizedSrc: string
+  avifSrcSet: string
+  webpSrcSet: string
+  jpgSrcSet: string
+  renditionWidths: number[]
+}
+
+const GALLERY_RENDITION_WIDTHS = [640, 960, 1280, 1600] as const
+
+const stripExtension = (fileName: string) => fileName.replace(/\.[^.]+$/, '')
+
+const getRenditionWidths = (sourceWidth: number) => {
+  const maxWidth = GALLERY_RENDITION_WIDTHS[GALLERY_RENDITION_WIDTHS.length - 1]
+  const widths: number[] = GALLERY_RENDITION_WIDTHS.filter((step) => step <= sourceWidth)
+  if (sourceWidth <= maxWidth && !widths.includes(sourceWidth)) {
+    widths.push(sourceWidth)
+  }
+  if (widths.length === 0) widths.push(sourceWidth)
+  return widths.sort((a, b) => a - b)
+}
+
+const buildSrcSet = (baseName: string, widths: number[], format: 'avif' | 'webp' | 'jpg') =>
+  widths.map((width) => `/gallery/optimized/${baseName}-w${width}.${format} ${width}w`).join(', ')
+
+export const buildGalleryImageSources = (item: GalleryImageItem): GalleryImageWithSources => {
+  const baseName = stripExtension(item.file)
+  const renditionWidths = getRenditionWidths(item.width)
+  const largestWidth = renditionWidths[renditionWidths.length - 1]
+
+  return {
+    ...item,
+    originalSrc: `/gallery/${item.file}`,
+    optimizedSrc: `/gallery/optimized/${baseName}-w${largestWidth}.jpg`,
+    avifSrcSet: buildSrcSet(baseName, renditionWidths, 'avif'),
+    webpSrcSet: buildSrcSet(baseName, renditionWidths, 'webp'),
+    jpgSrcSet: buildSrcSet(baseName, renditionWidths, 'jpg'),
+    renditionWidths,
+  }
 }
 
 export const GALLERY_IMAGES: GalleryImageItem[] = [
@@ -12,6 +56,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '经幡穹顶',
     title: '经幡穹顶',
     date: '2026-02-15',
+    width: 4096,
+    height: 3072,
     shape: 'about-shot--wide',
   },
   {
@@ -19,6 +65,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '雪山晚霞',
     title: '雪山晚霞',
     date: '2026-02-15',
+    width: 8192,
+    height: 6144,
     shape: '',
   },
   {
@@ -26,6 +74,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '峡谷双桥',
     title: '峡谷双桥',
     date: '2026-02-15',
+    width: 4096,
+    height: 1844,
     shape: '',
   },
   {
@@ -33,6 +83,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: 'Labubu',
     title: 'Labubu',
     date: '2025-07-05',
+    width: 1279,
+    height: 1706,
     shape: 'about-shot--tall',
   },
   {
@@ -40,6 +92,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '宝泉风景',
     title: '宝泉',
     date: '2025-07-05',
+    width: 1820,
+    height: 1024,
     shape: 'about-shot--wide',
   },
   {
@@ -47,6 +101,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '山间风景',
     title: '山间',
     date: '2025-07-05',
+    width: 1820,
+    height: 1024,
     shape: '',
   },
   {
@@ -54,6 +110,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '校园',
     title: '校园',
     date: '2025-05-05',
+    width: 3024,
+    height: 4032,
     shape: '',
   },
   {
@@ -61,6 +119,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '海南落日',
     title: '落日',
     date: '2024-07-05',
+    width: 1896,
+    height: 1280,
     shape: 'about-shot--wide',
   },
   {
@@ -68,6 +128,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '古都风景',
     title: '古都',
     date: '2024-09-05',
+    width: 3264,
+    height: 2448,
     shape: '',
   },
   {
@@ -75,6 +137,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '云层光影',
     title: '云层',
     date: '2024-10-05',
+    width: 2448,
+    height: 3264,
     shape: '',
   },
   {
@@ -82,6 +146,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
     alt: '天际云影',
     title: '云影',
     date: '2024-11-05',
+    width: 3072,
+    height: 4096,
     shape: '',
   },
 ]

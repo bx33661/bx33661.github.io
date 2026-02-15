@@ -23,25 +23,28 @@ import { Icon } from 'astro-icon/components'
 
 <script>
   const EVENT_NAME = 'bx-theme-change'
+  const DARK_THEMES: ThemeName[] = ['midnight']
   let toggleButton: HTMLButtonElement | null = null
+
+  const isDarkTheme = (theme: ThemeName) => DARK_THEMES.includes(theme)
 
   const getActiveTheme = () => {
     const api = window.__BX_THEME__
     if (api && typeof api.get === 'function') {
       return api.get()
     }
-    return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+    return document.documentElement.classList.contains('dark') ? 'midnight' : 'light'
   }
 
   const updateAriaState = (theme: ThemeName) => {
     if (!toggleButton) return
-    toggleButton.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false')
+    toggleButton.setAttribute('aria-pressed', isDarkTheme(theme) ? 'true' : 'false')
   }
 
   const handleThemeChange = (event: Event) => {
     const detail = (event as CustomEvent<{ theme?: ThemeName }>).detail
     const theme = detail?.theme
-    if (theme === 'light' || theme === 'dark') {
+    if (theme) {
       updateAriaState(theme)
     }
   }
@@ -53,13 +56,14 @@ import { Icon } from 'astro-icon/components'
       updateAriaState(next)
     } else {
       const nextIsDark = !document.documentElement.classList.contains('dark')
-      const nextTheme = nextIsDark ? 'dark' : 'light'
+      const nextTheme: ThemeName = nextIsDark ? 'midnight' : 'light'
       const element = document.documentElement
 
       element.classList.toggle('dark', nextIsDark)
-      element.dataset.theme = nextTheme
+      element.dataset.theme = nextIsDark ? 'dark' : 'light'
+      element.dataset.colorMode = nextTheme
       element.style.colorScheme = nextIsDark ? 'dark' : 'light'
-      element.style.backgroundColor = nextIsDark ? '#1a1b26' : '#f8fafc'
+      element.style.backgroundColor = nextIsDark ? '#0b1120' : '#f8fafc'
 
       updateAriaState(nextTheme)
     }

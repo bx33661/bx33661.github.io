@@ -120,7 +120,7 @@ const Navbar = () => {
           layout: { duration: 0.3, ease: 'easeInOut' },
         }}
         className={cn(
-          'hidden md:block z-30 transition-all duration-400 ease-in-out w-full fixed left-1/2 -translate-x-1/2 transform top-2 lg:top-4 xl:top-6 backdrop-blur-lg bg-background/90 border border-transparent',
+          'neo-desktop-navbar hidden md:block z-30 transition-all duration-400 ease-in-out w-full fixed left-1/2 -translate-x-1/2 transform top-2 lg:top-4 xl:top-6 backdrop-blur-lg bg-background/90 border border-transparent',
           isScrolled &&
             'rounded-full backdrop-blur-md border-foreground/10 border bg-background/80 max-w-[calc(100vw-5rem)]',
         )}

@@ -9,8 +9,8 @@ import { cn } from '@/lib/utils'
 const { title, description, location } = SITE
 ---
 
-<section class="neo-hero min-h-screen flex items-center justify-center p-6 lg:p-10 relative overflow-hidden bg-background text-foreground">
-  <div class="hero-content flex flex-col lg:flex-row-reverse items-center lg:justify-center max-w-7xl gap-8 lg:gap-16 z-10">
+<section class="neo-hero neo-hero-shell min-h-[62vh] lg:min-h-[68vh] flex items-center justify-center p-6 lg:p-10 relative overflow-hidden bg-background text-foreground">
+  <div class="hero-content w-full flex flex-col lg:flex-row-reverse items-center lg:justify-between max-w-6xl gap-8 lg:gap-14 z-10">
     <!-- Avatar -->
     <div class="shrink-0 animate-in fade-in zoom-in duration-1000">
         <div class="neo-hero-avatar w-48 h-48 rounded-full ring-2 ring-primary ring-offset-4 ring-offset-background overflow-hidden relative shadow-2xl">
@@ -19,16 +19,16 @@ const { title, description, location } = SITE
     </div>
 
     <!-- Text -->
-    <div class="max-w-2xl text-center lg:text-left flex flex-col gap-4 animate-in slide-in-from-bottom duration-1000 delay-300 fill-mode-backwards">
+    <div class="neo-hero-copy max-w-2xl text-center lg:text-left flex flex-col gap-4 animate-in slide-in-from-bottom duration-1000 delay-300 fill-mode-backwards">
       <h1 class="neo-hero-title text-5xl font-bold tracking-tight sm:text-6xl mb-2">
-        Hi, I'm <span class="border-b-4 border-primary">{title}</span>
+        Hi, I'm <span class="neo-hero-name">{title}</span>
       </h1>
-      <p class="text-xl text-muted-foreground/80 font-medium mb-1">
+      <p class="neo-hero-subtitle text-xl text-muted-foreground/80 font-medium mb-1">
          Security Researcher & Developer
       </p>
       
       {location && (
-          <p class="text-muted-foreground/60 mb-2 flex items-center justify-center lg:justify-start gap-1">
+          <p class="neo-hero-location text-muted-foreground/60 mb-2 flex items-center justify-center lg:justify-start gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 60 40"
@@ -54,12 +54,29 @@ const { title, description, location } = SITE
         {description}
       </p>
 
+      <div class="neo-hero-ctas flex flex-wrap items-center gap-3 justify-center lg:justify-start">
+        <Link
+          href="/blog/"
+          class={cn(buttonVariants({ variant: "default" }), "neo-hero-cta neo-hero-cta--primary")}
+          aria-label="查看博客文章"
+        >
+          查看博客
+        </Link>
+        <Link
+          href="/about/"
+          class={cn(buttonVariants({ variant: "outline" }), "neo-hero-cta neo-hero-cta--secondary")}
+          aria-label="查看关于页面"
+        >
+          关于我
+        </Link>
+      </div>
+
       <!-- Social Links -->
-      <div class="neo-hero-actions flex flex-wrap gap-4 justify-center lg:justify-start">
+      <div class="neo-hero-actions neo-hero-socials flex flex-wrap gap-4 justify-center lg:justify-start">
         {SOCIAL_LINKS.map((link) => (
              <Link
                 href={link.href}
-                class={cn(buttonVariants({ variant: "ghost", size: "icon" }), "rounded-full w-12 h-12 hover:bg-muted text-muted-foreground hover:text-primary transition-colors")}
+                class={cn(buttonVariants({ variant: "ghost", size: "icon" }), "neo-hero-social rounded-full w-12 h-12 hover:bg-muted text-muted-foreground hover:text-primary transition-colors")}
                 aria-label={link.label}
                 title={link.label}
                 external
@@ -72,7 +89,7 @@ const { title, description, location } = SITE
   </div>
   
   <!-- Scroll Down Indicator (Optional but preserved for UX) -->
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+  <div class="neo-hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
     <a href="#content-start" aria-label="Scroll down" class="text-muted-foreground/50 hover:text-primary transition-colors">
       <svg
         xmlns="http://www.w3.org/2000/svg"
