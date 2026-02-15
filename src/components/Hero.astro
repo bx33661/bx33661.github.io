@@ -9,18 +9,18 @@ import { cn } from '@/lib/utils'
 const { title, description, location } = SITE
 ---
 
-<section class="min-h-screen flex items-center justify-center p-6 lg:p-10 relative overflow-hidden bg-background text-foreground">
+<section class="neo-hero min-h-screen flex items-center justify-center p-6 lg:p-10 relative overflow-hidden bg-background text-foreground">
   <div class="hero-content flex flex-col lg:flex-row-reverse items-center lg:justify-center max-w-7xl gap-8 lg:gap-16 z-10">
     <!-- Avatar -->
     <div class="shrink-0 animate-in fade-in zoom-in duration-1000">
-        <div class="w-48 h-48 rounded-full ring-2 ring-primary ring-offset-4 ring-offset-background overflow-hidden relative shadow-2xl">
+        <div class="neo-hero-avatar w-48 h-48 rounded-full ring-2 ring-primary ring-offset-4 ring-offset-background overflow-hidden relative shadow-2xl">
             <Logo className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
         </div>
     </div>
 
     <!-- Text -->
     <div class="max-w-2xl text-center lg:text-left flex flex-col gap-4 animate-in slide-in-from-bottom duration-1000 delay-300 fill-mode-backwards">
-      <h1 class="text-5xl font-bold tracking-tight sm:text-6xl mb-2">
+      <h1 class="neo-hero-title text-5xl font-bold tracking-tight sm:text-6xl mb-2">
         Hi, I'm <span class="border-b-4 border-primary">{title}</span>
       </h1>
       <p class="text-xl text-muted-foreground/80 font-medium mb-1">
@@ -50,12 +50,12 @@ const { title, description, location } = SITE
           </p>
       )}
       
-      <p class="text-lg leading-relaxed text-muted-foreground whitespace-pre-line mb-4">
+      <p class="neo-hero-description text-lg leading-relaxed text-muted-foreground whitespace-pre-line mb-4">
         {description}
       </p>
 
       <!-- Social Links -->
-      <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+      <div class="neo-hero-actions flex flex-wrap gap-4 justify-center lg:justify-start">
         {SOCIAL_LINKS.map((link) => (
              <Link
                 href={link.href}

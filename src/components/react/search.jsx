@@ -51,11 +51,20 @@ function saveSearchQuery(query, historyKey) {
   }
 }
 
+function clearSearchHistory(historyKey) {
+  try {
+    localStorage.removeItem(historyKey)
+  } catch {
+    // 静默处理存储错误
+  }
+}
+
 function Search({ searchList, initialPosts, basePath = '/blog', tagLinkBase = '/tags' }) {
   const [query, setQuery] = useState('')
   const [filteredPosts, setFilteredPosts] = useState(initialPosts)
   const [isSearching, setIsSearching] = useState(false)
   const [selectedTags, setSelectedTags] = useState(new Set())
+  const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [sortBy, setSortBy] = useState('relevance') // relevance, date, title
   const [searchHistory, setSearchHistory] = useState([])
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -212,6 +221,7 @@ function Search({ searchList, initialPosts, basePath = '/blog', tagLinkBase = '/
     setFilteredPosts(initialPosts)
     setSearchStats({ total: 0, time: 0 })
     setShowSuggestions(false)
+    setShowMobileFilters(false)
     searchInputRef.current?.focus()
   }
 
@@ -219,6 +229,12 @@ function Search({ searchList, initialPosts, basePath = '/blog', tagLinkBase = '/
   const useHistoryQuery = (historyQuery) => {
     setQuery(historyQuery)
     performSearch(historyQuery)
+    setShowSuggestions(false)
+  }
+
+  const clearHistory = () => {
+    clearSearchHistory(historyKey)
+    setSearchHistory([])
     setShowSuggestions(false)
   }
 
@@ -271,18 +287,29 @@ function Search({ searchList, initialPosts, basePath = '/blog', tagLinkBase = '/
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-card border rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto"
+              className="absolute top-full left-0 right-0 mt-2 z-50 max-h-[min(45vh,18rem)] overflow-y-auto rounded-2xl border border-border bg-card/95 shadow-xl backdrop-blur-sm md:max-h-48 md:rounded-lg md:bg-card md:shadow-lg md:backdrop-blur-none"
             >
               <div className="p-2">
-                <div className="flex items-center gap-2 px-2 py-1 text-xs text-muted-foreground">
-                  <Clock className="w-3 h-3" />
-                  <span>搜索历史</span>
+                <div className="flex items-center justify-between gap-2 px-2 py-1 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-2">
+                    <Clock className="w-3 h-3" />
+                    <span>搜索历史</span>
+                  </span>
+                  <button
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={clearHistory}
+                    className="rounded px-1.5 py-0.5 hover:bg-muted"
+                    aria-label="清除搜索历史"
+                  >
+                    清除
+                  </button>
                 </div>
                 {searchHistory.map((historyQuery, index) => (
                   <button
                     key={index}
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => useHistoryQuery(historyQuery)}
-                    className="w-full text-left px-2 py-1 text-sm hover:bg-muted rounded transition-colors"
+                    className="w-full rounded-lg px-2 py-2 text-left text-sm transition-colors hover:bg-muted md:rounded md:py-1"
                   >
                     {historyQuery}
                   </button>
@@ -294,38 +321,96 @@ function Search({ searchList, initialPosts, basePath = '/blog', tagLinkBase = '/
       </div>
 
       {/* 过滤器和排序 */}
-      <div className="flex flex-wrap items-center gap-4">
-        {/* 标签过滤 */}
-        <div className="flex flex-wrap gap-2">
-          {allTags.slice(0, 8).map(tag => (
-            <Badge
-              key={tag}
-              variant={selectedTags.has(tag) ? "default" : "outline"}
-              className="cursor-pointer transition-all duration-200 hover:scale-105"
-              onClick={() => toggleTag(tag)}
-            >
-              <Tag className="w-3 h-3 mr-1" />
-              {tag}
-            </Badge>
-          ))}
+      <div className="flex flex-col gap-3">
+        <div className="md:hidden">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowMobileFilters((prev) => !prev)}
+            className="w-full justify-between border-border/80 bg-card/80"
+          >
+            <span className="inline-flex items-center gap-2">
+              <Filter className="w-4 h-4" />
+              筛选与排序
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {selectedTags.size > 0 ? `${selectedTags.size} 个标签` : '未筛选'}
+            </span>
+          </Button>
         </div>
 
-        {/* 排序 */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">排序:</span>
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value)
-              performSearch(query)
-            }}
-            className="text-sm border rounded px-2 py-1 bg-background"
-          >
-            <option value="relevance">相关性</option>
-            <option value="date">发布时间</option>
-            <option value="title">标题</option>
-          </select>
+        <div className="hidden md:flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap gap-2">
+            {allTags.slice(0, 8).map(tag => (
+              <Badge
+                key={tag}
+                variant={selectedTags.has(tag) ? "default" : "outline"}
+                className="cursor-pointer transition-all duration-200 hover:scale-105"
+                onClick={() => toggleTag(tag)}
+              >
+                <Tag className="w-3 h-3 mr-1" />
+                {tag}
+              </Badge>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">排序:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value)
+                performSearch(query)
+              }}
+              className="text-sm border rounded px-2 py-1 bg-background"
+            >
+              <option value="relevance">相关性</option>
+              <option value="date">发布时间</option>
+              <option value="title">标题</option>
+            </select>
+          </div>
         </div>
+
+        <AnimatePresence>
+          {showMobileFilters && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="md:hidden rounded-xl border border-border bg-card p-3 shadow-sm space-y-3"
+            >
+              <div className="flex flex-wrap gap-2">
+                {allTags.slice(0, 10).map(tag => (
+                  <Badge
+                    key={tag}
+                    variant={selectedTags.has(tag) ? "default" : "outline"}
+                    className="cursor-pointer transition-all duration-200"
+                    onClick={() => toggleTag(tag)}
+                  >
+                    <Tag className="w-3 h-3 mr-1" />
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">排序:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => {
+                    setSortBy(e.target.value)
+                    performSearch(query)
+                  }}
+                  className="h-9 flex-1 text-sm border rounded px-2 py-1 bg-background"
+                >
+                  <option value="relevance">相关性</option>
+                  <option value="date">发布时间</option>
+                  <option value="title">标题</option>
+                </select>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* 搜索统计 */}

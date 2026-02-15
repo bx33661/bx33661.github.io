@@ -67,13 +67,12 @@ const BlogCardJSX = memo(
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         className={cn(
-          'group relative overflow-hidden rounded-xl border transition-all duration-300 ease-out',
+          'neo-post-card group relative overflow-hidden rounded-xl border transition-all duration-300 ease-out',
           'hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20',
           'bg-card/50 backdrop-blur-sm',
           'dark:bg-gradient-to-br dark:from-card dark:to-background/50',
           'dark:border-border/30 dark:hover:border-primary/50',
           'dark:hover:shadow-2xl dark:hover:shadow-primary/20',
-          'dark:hover:animate-pulse',
         )}
       >
         <div
@@ -126,7 +125,7 @@ const BlogCardJSX = memo(
               </p>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               {entry.data.tags && (
                 <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {entry.data.tags.slice(0, 3).map((tag, tagIndex) => (

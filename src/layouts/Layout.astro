@@ -69,17 +69,20 @@ const {
     <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
   </Head>
   <body>
-
-    <div class="fixed top-4 right-4 z-50">
+    <div class="fixed top-4 right-4 z-50 hidden md:block">
       <ThemeSelector />
     </div>
 
-    <div class="flex h-fit min-h-screen w-full flex-col gap-y-4 sm:gap-y-6 font-sans">
+    <div class="neo-layout flex h-fit min-h-screen w-full flex-col gap-y-4 sm:gap-y-6 font-sans">
       <Navbar client:idle />
-      <main class="flex grow flex-col bg-background mt-0 lg:mt-6 mobile-scroll" aria-label="Main content" role="main">
+      <main
+        class="neo-main flex grow flex-col bg-background mt-0 lg:mt-6 mobile-scroll"
+        aria-label="Main content"
+        role="main"
+      >
         <div
           class={cn(
-            'mx-auto flex grow flex-col gap-y-4 px-4 py-4 sm:gap-y-6 sm:px-6 sm:py-16 md:py-20 lg:py-24 lg:px-8',
+            'neo-shell mx-auto flex grow flex-col gap-y-4 px-4 py-4 sm:gap-y-6 sm:px-6 sm:py-16 md:py-20 lg:py-24 lg:px-8',
             !isWide && 'max-w-5xl'
           )}
         >

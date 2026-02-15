@@ -41,7 +41,7 @@ const currentUrl = Astro.url;
       { label: `Page ${page.currentPage}`, icon: 'lucide:folder-open' },
     ]}
   />
-  <section class="max-screen mt-12 px-4 md:px-6">
+  <section class="neo-section max-screen mt-4 md:mt-12 px-4 md:px-6">
     <div class="flex w-fit items-center gap-2 text-primary">
         <Icon class="h-4 w-4 text-secondary-foreground animate-pulse" name="lucide:brain" />
         <p class="shimmer word-spacing font-mono text-sm uppercase leading-none text-secondary-foreground">
@@ -50,15 +50,15 @@ const currentUrl = Astro.url;
     </div>
     <h2
     id="skills-title"
-    class="font-custom text-foreground text-4xl font-bold mt-2"
+    class="neo-section-title font-custom text-foreground text-4xl font-bold mt-2"
     >
       博客
     </h2>
-    <p class="text-muted-foreground text-md max-w-2xl mt-3">
+    <p class="neo-section-desc text-md max-w-2xl mt-3">
       欢迎来到我的博客，这里主要记录安全研究、开发实践和日常折腾笔记。会分享学习总结、项目经验以及对各种技术话题的看法，希望这些内容对你有帮助，如果有问题或建议也欢迎留言交流。
     </p>
 
-    <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8 my-12">
+    <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8 my-8 md:my-12">
       <Search
         client:idle
         searchList={searchList}
@@ -76,5 +76,4 @@ const currentUrl = Astro.url;
     />
   </section>
 </Layout>
-
 

@@ -35,7 +35,7 @@ const currentUrl = Astro.url;
     <div class="flex flex-col gap-y-8 px-4 py-6 sm:gap-y-12 sm:px-8 sm:py-8 lg:px-16">
 
     <ScrollReveal client:visible>
-      <section class="relative" aria-labelledby="skills-title">
+      <section class="neo-section relative" aria-labelledby="skills-title">
         <h2
           id="skills-title"
           class="font-custom text-foreground text-2xl font-bold"
@@ -55,7 +55,7 @@ const currentUrl = Astro.url;
     </ScrollReveal>
 
     <ScrollReveal client:visible>
-      <section class="flex flex-col gap-y-4" aria-labelledby="latest-posts-title" role="region">
+      <section class="neo-section flex flex-col gap-y-4" aria-labelledby="latest-posts-title" role="region">
         <div class="relative" aria-labelledby="latest-posts-title">
           <h2
             id="latest-posts-title"
@@ -75,7 +75,7 @@ const currentUrl = Astro.url;
             <ScrollReveal client:visible direction="up" delay={index * 0.1} threshold={0.2}>
               <li>
                 <Card3D client:visible>
-                <article class="group relative overflow-hidden rounded-xl border transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 bg-card/50 backdrop-blur-sm dark:bg-gradient-to-br dark:from-card dark:to-background/50 dark:border-border/30 dark:hover:border-primary/40 dark:hover:shadow-2xl dark:hover:shadow-primary/10 p-4 sm:p-6">
+                <article class="neo-post-card group relative overflow-hidden rounded-xl border transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 bg-card/50 backdrop-blur-sm dark:bg-gradient-to-br dark:from-card dark:to-background/50 dark:border-border/30 dark:hover:border-primary/40 dark:hover:shadow-2xl dark:hover:shadow-primary/10 p-4 sm:p-6">
                 <a href={`/blog/${post.slug}`} class="flex flex-col gap-4" aria-label={`阅读文章: ${post.data.title}`}>
                   <div class="flex items-center gap-4 text-xs text-muted-foreground">
                     <div class="flex items-center gap-1">
