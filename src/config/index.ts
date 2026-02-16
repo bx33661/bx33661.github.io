@@ -17,3 +17,6 @@ export * from './technologies'
 
 // 环境变量配置
 export * from './env'
+
+// 主题配置
+export * from './theme'

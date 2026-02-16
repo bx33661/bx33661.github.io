@@ -135,11 +135,11 @@ const avatarUrl = '/logo.png'
     )}
 
     <aside class="hidden xl:block xl:col-start-3 article-aside">
-      <div class="article-aside-card space-y-6 bg-neutral-50/60 dark:bg-neutral-900/40 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 shadow-sm">
+      <div class="article-aside-card space-y-6 bg-card/70 rounded-2xl border border-border p-5 shadow-sm">
         <div class="space-y-3">
           <div class="flex items-center gap-2">
-            <span class="text-sm text-neutral-500">分享</span>
-            <div class="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+            <span class="text-sm text-muted-foreground">分享</span>
+            <div class="h-px flex-1 bg-border" />
           </div>
           <div class="flex flex-wrap gap-2">
             <Button variant="secondary" size="sm" id="copy-share-link" className="flex-1 justify-center">
@@ -164,10 +164,10 @@ const avatarUrl = '/logo.png'
 
         <div class="space-y-3">
           <div class="flex items-center gap-2">
-            <span class="text-sm text-neutral-500">文章信息</span>
-            <div class="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+            <span class="text-sm text-muted-foreground">文章信息</span>
+            <div class="h-px flex-1 bg-border" />
           </div>
-          <div class="space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
+          <div class="space-y-2 text-sm text-foreground/80">
             <div class="flex justify-between">
               <span>发布时间</span>
               <span>{formatDate(post.data.date)}</span>
@@ -181,7 +181,7 @@ const avatarUrl = '/logo.png'
                 <span>标签</span>
                 <div class="flex flex-wrap gap-1">
                   {post.data.tags.slice(0, 3).map((tag) => (
-                    <span class="text-xs px-2 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                    <span class="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">
                       {tag}
                     </span>
                   ))}
@@ -193,27 +193,27 @@ const avatarUrl = '/logo.png'
 
         <div class="space-y-3">
           <div class="flex items-center gap-2">
-            <span class="text-sm text-neutral-500">作者</span>
-            <div class="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+            <span class="text-sm text-muted-foreground">作者</span>
+            <div class="h-px flex-1 bg-border" />
           </div>
           <div class="flex items-center gap-3">
             <img
               src={avatarUrl}
               alt={post.data.authors?.[0] || 'bx'}
-              class="w-10 h-10 rounded-full border border-neutral-200 dark:border-neutral-700 object-cover bg-white"
+              class="w-10 h-10 rounded-full border border-border object-cover bg-background"
               loading="lazy"
               decoding="async"
             />
             <div class="space-y-1">
-              <div class="font-medium text-neutral-900 dark:text-white">{post.data.authors?.[0] || 'bx'}</div>
-              <div class="text-xs text-neutral-500 dark:text-neutral-400">安全 / 开发 / 记录</div>
+              <div class="font-medium text-foreground">{post.data.authors?.[0] || 'bx'}</div>
+              <div class="text-xs text-muted-foreground">安全 / 开发 / 记录</div>
             </div>
           </div>
-          <div class="flex gap-3 text-neutral-500 dark:text-neutral-400">
-            <Link href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-900 dark:hover:text-white transition-colors">
+          <div class="flex gap-3 text-muted-foreground">
+            <Link href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors">
               <Icon name="line-md:github" class="size-5" />
             </Link>
-            <Link href="mailto:bx@gmail.com" class="hover:text-neutral-900 dark:hover:text-white transition-colors">
+            <Link href="mailto:bx@gmail.com" class="hover:text-foreground transition-colors">
               <Icon name="lucide:mail" class="size-5" />
             </Link>
           </div>
@@ -222,19 +222,19 @@ const avatarUrl = '/logo.png'
         {relatedPosts && relatedPosts.length > 0 && (
           <div class="space-y-3">
             <div class="flex items-center gap-2">
-              <span class="text-sm text-neutral-500">相关文章</span>
-              <div class="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
+              <span class="text-sm text-muted-foreground">相关文章</span>
+              <div class="h-px flex-1 bg-border" />
             </div>
             <div class="space-y-3">
               {relatedPosts.slice(0, 3).map((relatedPost) => (
                 <Link
                   href={`/blog/${relatedPostSlugMap.get(relatedPost.id) || relatedPost.data.slug || relatedPost.id}`}
-                  class="block p-3 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:border-primary/50 transition-colors"
+                  class="block rounded-lg border border-border p-3 transition-colors hover:border-primary/50"
                 >
-                  <div class="font-medium text-neutral-900 dark:text-white line-clamp-2">
+                  <div class="font-medium text-foreground line-clamp-2">
                     {relatedPost.data.title}
                   </div>
-                  <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                  <div class="mt-1 text-xs text-muted-foreground">
                     {formatDate(relatedPost.data.date)}
                   </div>
                 </Link>
@@ -243,8 +243,8 @@ const avatarUrl = '/logo.png'
           </div>
         )}
 
-        <div class="rounded-lg bg-white/50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 p-3">
-          <div class="text-sm text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+        <div class="rounded-lg border border-border bg-card/70 p-3">
+          <div class="flex items-center gap-2 text-sm text-foreground/80">
             <Icon name="line-md:star" class="size-4 text-yellow-500" />
             如果觉得有帮助，欢迎 GitHub 点星支持
           </div>
@@ -265,7 +265,7 @@ const avatarUrl = '/logo.png'
   </section>
 
   <!-- 阅读进度条 -->
-  <div class="fixed top-0 left-0 w-full h-1 bg-neutral-200 dark:bg-neutral-800 z-50">
+  <div class="fixed top-0 left-0 z-50 h-1 w-full bg-border">
     <div 
       id="reading-progress" 
       class="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300"

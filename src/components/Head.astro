@@ -4,6 +4,15 @@ import Favicons from './Favicons.astro'
 import Analytics from './Analytics.astro'
 import StructuredData from './StructuredData.astro'
 import { ENABLE_ANALYTICS, POSTHOG_HOST } from '@/config/env'
+import {
+  DARK_THEME_NAMES,
+  THEME_CHANGE_EVENT,
+  THEME_DARK_PREFERENCE_KEY,
+  THEME_LEGACY_MAP,
+  THEME_NAMES,
+  THEME_RUNTIME_COLORS,
+  THEME_STORAGE_KEY,
+} from '@/config/theme'
 
 interface Props {
   title?: string
@@ -20,6 +29,15 @@ const hasCustomHead = hasNamedHeadSlot || hasDefaultHeadSlot
 const ogLocale = SITE.locale.replace('-', '_')
 const defaultImage = new URL(image || '/ogImage.png', Astro.site).toString()
 const defaultCanonical = canonicalUrl || Astro.url
+const themeRuntimeConfig = {
+  storageKey: THEME_STORAGE_KEY,
+  darkPreferenceKey: THEME_DARK_PREFERENCE_KEY,
+  eventName: THEME_CHANGE_EVENT,
+  supportedThemes: THEME_NAMES,
+  legacyThemeMap: THEME_LEGACY_MAP,
+  darkThemes: DARK_THEME_NAMES,
+  colors: THEME_RUNTIME_COLORS,
+}
 ---
 
 <head>
@@ -39,28 +57,19 @@ const defaultCanonical = canonicalUrl || Astro.url
     content="width=device-width, initial-scale=1.0, user-scalable=yes"
   />
   <meta name="generator" content={Astro.generator} />
-  <script is:inline>
+  <script is:inline define:vars={{ themeRuntimeConfig }}>
     (() => {
       if (window.__BX_THEME__) {
         return
       }
 
-      const STORAGE_KEY = 'theme'
-      const DARK_PREFERENCE_KEY = 'theme-dark-preference'
-      const EVENT_NAME = 'bx-theme-change'
-      const SUPPORTED_THEMES = new Set(['light', 'midnight', 'retro'])
-      const LEGACY_THEME_MAP = {
-        dark: 'midnight',
-        dim: 'midnight',
-        synthwave: 'midnight',
-        valentine: 'retro'
-      }
-      const DARK_CLASS_THEMES = new Set(['midnight'])
-      const THEME_COLORS = {
-        light: '#f8fafc',
-        midnight: '#0b1120',
-        retro: '#ede4d3'
-      }
+      const STORAGE_KEY = themeRuntimeConfig.storageKey
+      const DARK_PREFERENCE_KEY = themeRuntimeConfig.darkPreferenceKey
+      const EVENT_NAME = themeRuntimeConfig.eventName
+      const SUPPORTED_THEMES = new Set(themeRuntimeConfig.supportedThemes)
+      const LEGACY_THEME_MAP = themeRuntimeConfig.legacyThemeMap
+      const DARK_CLASS_THEMES = new Set(themeRuntimeConfig.darkThemes)
+      const THEME_COLORS = themeRuntimeConfig.colors
 
       const root = document.documentElement
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
@@ -275,16 +284,16 @@ const defaultCanonical = canonicalUrl || Astro.url
   <!-- 主题颜色配置 -->
   <meta
     name="theme-color"
-    content="#121212"
+    content={THEME_RUNTIME_COLORS.midnight}
     media="(prefers-color-scheme: dark)"
   />
   <meta
     name="theme-color"
-    content="#ffffff"
+    content={THEME_RUNTIME_COLORS.light}
     media="(prefers-color-scheme: light)"
   />
-  <meta name="theme-color" content="#f8fafc" data-runtime-theme-color />
-  <meta name="msapplication-TileColor" content="#121212" />
+  <meta name="theme-color" content={THEME_RUNTIME_COLORS.light} data-runtime-theme-color />
+  <meta name="msapplication-TileColor" content={THEME_RUNTIME_COLORS.midnight} />
   <meta name="color-scheme" content="light dark" />
 
   <style is:inline>

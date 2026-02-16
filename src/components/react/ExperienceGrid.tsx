@@ -47,7 +47,7 @@ const getDefaultGradient = (type: string) => {
         case 'project':
             return "from-orange-500/20 to-amber-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30";
         default:
-            return "from-gray-500/20 to-slate-500/20 border-gray-500/30";
+            return "from-muted/70 to-accent/70 border-border";
     }
 };
 

@@ -34,6 +34,8 @@
     "preview": "astro preview",
     "gallery:optimize": "node scripts/optimize-gallery.mjs",
     "seo:check": "node scripts/seo-check.mjs",
+    "content:new": "node scripts/content-new.mjs",
+    "content:check": "node scripts/content-check.mjs",
     "astro": "astro",
     "prettier": "prettier --write **/*.{ts,tsx,js,jsx,css,md,mdx,json} --ignore-path .gitignore"
   },

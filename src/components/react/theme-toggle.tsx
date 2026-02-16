@@ -2,12 +2,15 @@ import { Button } from '@/components/ui/button'
 import { SunIcon, MoonIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import {
+  THEME_CHANGE_EVENT,
+  THEME_RUNTIME_COLORS,
+  isDarkTheme,
+  resolveDaisyTheme,
+  sanitizeTheme,
+} from '@/config/theme'
 export const prerender = true
 export const dynamic = 'force-dynamic'
-
-const DARK_THEMES: ThemeName[] = ['midnight']
-
-const isDarkTheme = (theme: ThemeName): boolean => DARK_THEMES.includes(theme)
 
 const ThemeToggle: React.FC = () => {
   const [isDark, setIsDark] = useState(false)
@@ -26,11 +29,20 @@ const ThemeToggle: React.FC = () => {
     const nextTheme: ThemeName = nextIsDark ? 'midnight' : 'light'
 
     element.classList.toggle('dark', nextIsDark)
-    element.dataset.theme = nextIsDark ? 'dark' : 'light'
+    element.dataset.theme = resolveDaisyTheme(nextTheme)
     element.dataset.colorMode = nextTheme
     element.style.colorScheme = nextIsDark ? 'dark' : 'light'
-    element.style.backgroundColor = nextIsDark ? '#0b1120' : '#f8fafc'
+    element.style.backgroundColor = THEME_RUNTIME_COLORS[nextTheme]
 
+    window.dispatchEvent(
+      new CustomEvent(THEME_CHANGE_EVENT, {
+        detail: {
+          theme: nextTheme,
+          daisyTheme: resolveDaisyTheme(nextTheme),
+          isDark: nextIsDark,
+        },
+      }),
+    )
     setIsDark(nextIsDark)
   }
 
@@ -39,7 +51,8 @@ const ThemeToggle: React.FC = () => {
     const api = window.__BX_THEME__
     const initialTheme = api && typeof api.get === 'function'
       ? api.get()
-      : document.documentElement.classList.contains('dark') ? 'midnight' : 'light'
+      : sanitizeTheme(document.documentElement.dataset.colorMode) ||
+        (document.documentElement.classList.contains('dark') ? 'midnight' : 'light')
 
     setIsDark(isDarkTheme(initialTheme))
 
@@ -50,10 +63,10 @@ const ThemeToggle: React.FC = () => {
       }
     }
 
-    window.addEventListener('bx-theme-change', handleThemeChange)
+    window.addEventListener(THEME_CHANGE_EVENT, handleThemeChange)
 
     return () => {
-      window.removeEventListener('bx-theme-change', handleThemeChange)
+      window.removeEventListener(THEME_CHANGE_EVENT, handleThemeChange)
     }
   }, [])
 

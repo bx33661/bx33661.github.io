@@ -134,7 +134,7 @@ const Navbar = () => {
             navigation="true"
           >
             <Logo className="h-6 w-6 md:h-8 md:w-8" />
-            <span className="transition-opacity duration-200 ease-in-out text-foreground/90 dark:text-white">
+            <span className="text-foreground/90 transition-opacity duration-200 ease-in-out">
               {SITE.title}
             </span>
           </Link>
@@ -142,7 +142,7 @@ const Navbar = () => {
           <div className="flex items-center gap-1 md:gap-2">
             <nav className="hidden items-center gap-6 md:flex" aria-label="Main navigation" role="navigation">
               {NAV_LINKS.map((item) => {
-                const isActive = activePath.startsWith(item.href) && item.href !== '/'
+                const isActive = isLinkActive(activePath, item.href)
                 return (
                   <motion.div
                     key={item.href}

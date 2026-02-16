@@ -79,13 +79,13 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
           </div>
         )}
         <div className="flex-1">
-          <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
+          <h2 className="mb-2 text-2xl font-bold text-foreground">
             {name}
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="mb-4 text-sm text-muted-foreground">
             {title}
           </p>
-          <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+          <p className="text-sm leading-relaxed text-foreground/80">
             {description}
           </p>
         </div>
@@ -162,16 +162,16 @@ export const InfoCard: React.FC<InfoCardProps> = ({
           </div>
         ) : null}
         <div>
-          <h3 className="text-lg font-bold mb-1 text-gray-900 dark:text-white">
+          <h3 className="mb-1 text-lg font-bold text-foreground">
             {title}
           </h3>
           {subtitle && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <p className="mb-2 text-sm text-muted-foreground">
               {subtitle}
             </p>
           )}
           {content && (
-            <p className="text-xs text-gray-700 dark:text-gray-300">
+            <p className="text-xs text-foreground/80">
               {content}
             </p>
           )}
@@ -191,18 +191,18 @@ interface QuickActionCardProps {
 export const QuickActionCard: React.FC<QuickActionCardProps> = ({
   title,
   action,
-  gradient = 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700'
+  gradient = 'bg-gradient-to-br from-muted to-accent'
 }) => {
   return (
     <BentoCard className={`md:col-span-1 ${gradient}`}>
       <div className="flex flex-col h-full justify-between items-start">
         <div className="flex-1">
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+          <h3 className="mb-2 text-sm font-medium text-muted-foreground">
             {title}
           </h3>
         </div>
         <div className="w-full">
-          <button className="w-full px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-xl text-sm font-medium hover:opacity-90 transition-opacity">
+          <button className="w-full rounded-xl bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90">
             {action}
           </button>
         </div>
@@ -222,7 +222,7 @@ export const StatusCard: React.FC<StatusCardProps> = ({
   status,
   label,
   icon,
-  gradient = 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800'
+  gradient = 'bg-gradient-to-br from-muted to-accent'
 }) => {
   return (
     <BentoCard className={`md:col-span-1 ${gradient}`}>
@@ -234,8 +234,8 @@ export const StatusCard: React.FC<StatusCardProps> = ({
             </div>
           </div>
         )}
-        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-        <p className="text-sm font-medium text-gray-900 dark:text-white">{status}</p>
+        <p className="mb-1 text-xs text-muted-foreground">{label}</p>
+        <p className="text-sm font-medium text-foreground">{status}</p>
       </div>
     </BentoCard>
   );

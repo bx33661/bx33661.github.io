@@ -1,151 +1,103 @@
 ---
 import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
+import BlogCard from '@/components/react/blog-card'
 import Skills from '@/components/react/skills'
 import { buttonVariants } from '@/components/ui/button'
-
+import Logo from '@/components/ui/logo'
 import Layout from '@/layouts/Layout.astro'
+import { SITE } from '@/consts'
 import { getAllPosts, getAllPostSlugs } from '@/lib/data-utils'
 
-
-import { OptimizedScrollProgress as ScrollProgress } from "@/components/react/optimized-scroll-progress"
-import { OptimizedScrollReveal as ScrollReveal } from '@/components/react/optimized-scroll-reveal'
-import Card3D from '@/components/react/card-3d'
-import RippleButton from '@/components/react/ripple-button'
-import Hero from '@/components/Hero.astro'
-
 const allPosts = await getAllPosts()
-const recentPosts = allPosts.slice(0, 5)
+const recentPosts = allPosts.slice(0, 3)
 const allPostSlugs = await getAllPostSlugs()
 
-// 为最近的文章添加slug信息
-const blog = recentPosts.map(post => {
+const blog = recentPosts.map((post) => {
   const postSlugData = allPostSlugs.find(({ post: p }) => p.id === post.id)
   return { ...post, slug: postSlugData?.slug || post.data.slug || 'unknown' }
 })
 
-const currentUrl = Astro.url;
+const currentUrl = Astro.url
 ---
 
 <Layout canonicalUrl={currentUrl}>
-    <ScrollProgress client:visible />
-  <PageHead slot="head" title="BX/bpple -安全研究-中国" />
-<Hero />
-    <div id="content-start"></div>
-    <div class="flex flex-col gap-y-8 px-4 py-6 sm:gap-y-12 sm:px-8 sm:py-8 lg:px-16">
-
-    <ScrollReveal client:visible>
-      <section class="neo-section relative" aria-labelledby="skills-title">
-        <h2
-          id="skills-title"
-          class="font-custom text-foreground text-2xl font-bold"
-          title="skills"
-          aria-label="skills"
-          role="heading"
-        >
-          技能与技术栈
-        </h2>
-        <p class="text-muted-foreground text-sm" aria-label="skills description">
-          为了好看加的动效🙂：
-        </p>
-        <div>
-          <Skills client:visible />
+  <PageHead slot="head" title="BX/bpple - 安全研究" />
+  <section class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
+    <div class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
+      <div class="relative overflow-hidden rounded-lg sm:shrink-0 sm:rounded-lg">
+        <Logo className="h-auto w-40 object-cover sm:w-48 md:w-56 lg:w-64" />
+      </div>
+      <div class="mt-8 sm:mt-0 sm:max-w-xl">
+        <h1 class="font-custom text-foreground text-start text-4xl font-extrabold sm:text-5xl">
+          {SITE.title}
+        </h1>
+        <div class="mt-4 flex items-center gap-2" aria-label="location">
+          <span class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1">
+            我来自
+          </span>
+          <span class="text-foreground text-sm font-medium">{SITE.location}</span>
         </div>
-      </section>
-    </ScrollReveal>
+        <p class="mt-4 text-start text-base text-foreground/90">
+          {SITE.description}
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <Link href="/blog/" class={buttonVariants({ variant: 'default' })}>
+            查看博客
+          </Link>
+          <Link href="/about/" class={buttonVariants({ variant: 'outline' })}>
+            关于我
+          </Link>
+        </div>
+      </div>
+    </div>
 
-    <ScrollReveal client:visible>
-      <section class="neo-section flex flex-col gap-y-4" aria-labelledby="latest-posts-title" role="region">
-        <div class="relative" aria-labelledby="latest-posts-title">
-          <h2
-            id="latest-posts-title"
-            class="font-custom text-foreground text-2xl font-bold"
-            title="latest blog posts"
-            aria-label="latest blog posts"
-          >
-            最新博客文章
-          </h2>
+    <section class="relative" aria-labelledby="home-skills-title">
+      <h2
+        id="home-skills-title"
+        class="font-custom text-foreground text-2xl font-bold"
+        title="skills"
+        aria-label="skills"
+      >
+        技能与技术栈
+      </h2>
+      <p class="text-muted-foreground text-sm" aria-label="skills description">
+        最近常用的一些技术与工具：
+      </p>
+      <div>
+        <Skills client:visible />
+      </div>
+    </section>
+
+    <section class="flex flex-col gap-y-4" aria-labelledby="home-latest-posts-title" role="region">
+      <div class="relative">
+        <h2
+          id="home-latest-posts-title"
+          class="font-custom text-foreground text-2xl font-bold"
+          title="latest blog posts"
+          aria-label="latest blog posts"
+        >
+          最新博客文章
+        </h2>
         <p class="text-muted-foreground text-sm" aria-label="blog description">
-          这里是我最新的一些博客文章，您可以在博客页面查看更多内容。
+          这里是我最新的一些博客文章，你可以进入博客页查看更多内容。
         </p>
       </div>
       <ul class="flex flex-col gap-y-4">
         {
-          blog.map((post, index) => (
-            <ScrollReveal client:visible direction="up" delay={index * 0.1} threshold={0.2}>
-              <li>
-                <Card3D client:visible>
-                <article class="neo-post-card group relative overflow-hidden rounded-xl border transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 bg-card/50 backdrop-blur-sm dark:bg-gradient-to-br dark:from-card dark:to-background/50 dark:border-border/30 dark:hover:border-primary/40 dark:hover:shadow-2xl dark:hover:shadow-primary/10 p-4 sm:p-6">
-                <a href={`/blog/${post.slug}`} class="flex flex-col gap-4" aria-label={`阅读文章: ${post.data.title}`}>
-                  <div class="flex items-center gap-4 text-xs text-muted-foreground">
-                    <div class="flex items-center gap-1">
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <time datetime={post.data.date.toISOString()}>
-                        {new Intl.DateTimeFormat('zh-CN', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        }).format(new Date(post.data.date))}
-                      </time>
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>{Math.ceil((post.body?.length || 0) / 1000 * 2) || 3} 分钟读完</span>
-                    </div>
-                  </div>
-                  
-                  <div class="space-y-2">
-                    <h3 class="font-semibold leading-tight transition-colors duration-200 group-hover:text-primary text-base sm:text-lg lg:text-xl dark:text-foreground dark:group-hover:text-primary">
-                      {post.data.title}
-                    </h3>
-                    <p class="text-muted-foreground text-sm sm:text-base leading-relaxed line-clamp-2 dark:text-muted-foreground/90">
-                      {post.data.description}
-                    </p>
-                  </div>
-                  
-                  {post.data.tags && (
-                    <div class="flex flex-wrap gap-1.5 sm:gap-2">
-                      {post.data.tags.slice(0, 3).map((tag) => (
-                        <span class="inline-flex items-center gap-1 bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-full transition-all duration-200 hover:bg-primary/10 hover:text-primary">
-                          <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                          </svg>
-                          {tag}
-                        </span>
-                      ))}
-                      {post.data.tags.length > 3 && (
-                        <span class="inline-flex items-center text-xs px-2 py-1 border border-border rounded-full opacity-60">
-                          +{post.data.tags.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </a>
-                </article>
-                </Card3D>
-              </li>
-            </ScrollReveal>
+          blog.map((post) => (
+            <li>
+              <BlogCard entry={post} slug={post.slug} basePath="/blog" tagLinkBase="/tags" />
+            </li>
           ))
         }
       </ul>
-      <ScrollReveal client:visible direction="fade" delay={0.3} threshold={0.3}>
-        <div class="flex justify-center pt-4">
-          <RippleButton client:visible>
-            <Link
-              href="/blog/"
-              class={buttonVariants({ variant: "outline" })}
-              aria-label="View all blog posts"
-            >
-              查看所有文章
-            </Link>
-          </RippleButton>
-        </div>
-      </ScrollReveal>
-      </section>
-    </ScrollReveal>
-  </div>
+      <div class="flex justify-center">
+        <Link href="/blog/" class={buttonVariants({ variant: 'ghost' }) + ' group'}>
+          查看所有文章
+          <span class="ml-1.5 transition-transform group-hover:translate-x-1">&rarr;</span>
+        </Link>
+      </div>
+    </section>
+  </section>
 </Layout>

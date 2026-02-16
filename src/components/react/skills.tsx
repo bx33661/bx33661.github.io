@@ -103,7 +103,7 @@ const techColors: { [key: string]: string } = {
   'Git': 'text-orange-600',
   'Docker': 'text-blue-400',
   'Postman': 'text-orange-500',
-  'Vercel': 'text-black dark:text-white',
+  'Vercel': 'text-foreground',
   'Aliyun': 'text-orange-500',
   'Cloudflare': 'text-orange-400',
   'Netlify': 'text-teal-500',

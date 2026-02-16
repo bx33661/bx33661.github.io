@@ -9,14 +9,14 @@ import {
 
 export const BentoHomepage: React.FC = () => {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-pink-900/20 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4 dark:from-background dark:via-primary/10 dark:to-accent/20 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* 顶部标题区域 */}
         <div className="mb-12 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
             Welcome to My Digital Space
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
+          <p className="text-lg text-muted-foreground">
             Building thoughtful products with a human touch
           </p>
         </div>
@@ -74,7 +74,7 @@ export const BentoHomepage: React.FC = () => {
             status="Deep Focus"
             label="MY AFTERNOON"
             icon="🎯"
-            gradient="bg-gradient-to-br from-gray-600 to-gray-700 dark:from-gray-700 dark:to-gray-800"
+            gradient="bg-gradient-to-br from-muted to-foreground/20"
           />
 
           {/* Coffee Chat 快速操作卡片 */}
@@ -88,13 +88,13 @@ export const BentoHomepage: React.FC = () => {
           <QuickActionCard
             title="Add Friend"
             action="Add Friend"
-            gradient="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700"
+            gradient="bg-gradient-to-br from-muted to-accent"
           />
         </BentoGrid>
 
         {/* 底部说明 */}
         <div className="mt-12 text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-muted-foreground">
             Made with ❤️ using Astro + React + Tailwind
           </p>
         </div>

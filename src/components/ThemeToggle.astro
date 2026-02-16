@@ -22,18 +22,22 @@ import { Icon } from 'astro-icon/components'
 </Button>
 
 <script>
-  const EVENT_NAME = 'bx-theme-change'
-  const DARK_THEMES: ThemeName[] = ['midnight']
-  let toggleButton: HTMLButtonElement | null = null
+  import { THEME_CHANGE_EVENT, THEME_RUNTIME_COLORS, isDarkTheme, sanitizeTheme, resolveDaisyTheme } from '@/config/theme'
 
-  const isDarkTheme = (theme: ThemeName) => DARK_THEMES.includes(theme)
+  const EVENT_NAME = THEME_CHANGE_EVENT
+  let toggleButton: HTMLButtonElement | null = null
 
   const getActiveTheme = () => {
     const api = window.__BX_THEME__
     if (api && typeof api.get === 'function') {
       return api.get()
     }
-    return document.documentElement.classList.contains('dark') ? 'midnight' : 'light'
+
+    const root = document.documentElement
+    const colorMode = sanitizeTheme(root.dataset.colorMode)
+    if (colorMode) return colorMode
+
+    return root.classList.contains('dark') ? 'midnight' : 'light'
   }
 
   const updateAriaState = (theme: ThemeName) => {
@@ -60,11 +64,20 @@ import { Icon } from 'astro-icon/components'
       const element = document.documentElement
 
       element.classList.toggle('dark', nextIsDark)
-      element.dataset.theme = nextIsDark ? 'dark' : 'light'
+      element.dataset.theme = resolveDaisyTheme(nextTheme)
       element.dataset.colorMode = nextTheme
       element.style.colorScheme = nextIsDark ? 'dark' : 'light'
-      element.style.backgroundColor = nextIsDark ? '#0b1120' : '#f8fafc'
+      element.style.backgroundColor = THEME_RUNTIME_COLORS[nextTheme]
 
+      window.dispatchEvent(
+        new CustomEvent(EVENT_NAME, {
+          detail: {
+            theme: nextTheme,
+            daisyTheme: resolveDaisyTheme(nextTheme),
+            isDark: nextIsDark,
+          },
+        }),
+      )
       updateAriaState(nextTheme)
     }
   }
@@ -75,20 +88,23 @@ import { Icon } from 'astro-icon/components'
       return
     }
 
-    if (toggleButton !== candidate) {
-      toggleButton?.removeEventListener('click', handleToggleClick)
-      toggleButton = candidate
+    toggleButton = candidate
+    if (candidate.dataset.bxThemeToggleBound !== 'true') {
+      candidate.addEventListener('click', handleToggleClick)
+      candidate.dataset.bxThemeToggleBound = 'true'
     }
-
-    toggleButton.removeEventListener('click', handleToggleClick)
-    toggleButton.addEventListener('click', handleToggleClick)
-
-    window.removeEventListener(EVENT_NAME, handleThemeChange)
-    window.addEventListener(EVENT_NAME, handleThemeChange)
 
     updateAriaState(getActiveTheme())
   }
 
+  if (!window.__BX_THEME_TOGGLE_EVENT_BOUND__) {
+    window.addEventListener(EVENT_NAME, handleThemeChange)
+    window.__BX_THEME_TOGGLE_EVENT_BOUND__ = true
+  }
+
   setup()
-  document.addEventListener('astro:after-swap', setup)
+  if (!window.__BX_THEME_TOGGLE_SWAP_BOUND__) {
+    document.addEventListener('astro:after-swap', setup)
+    window.__BX_THEME_TOGGLE_SWAP_BOUND__ = true
+  }
 </script>

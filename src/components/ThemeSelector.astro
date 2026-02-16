@@ -1,11 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components'
-
-const themes = [
-  { value: "light", label: "Light" },
-  { value: "midnight", label: "Midnight" },
-  { value: "retro", label: "Retro" },
-];
+import { THEME_OPTIONS } from '@/config/theme'
 ---
 
 <div class="dropdown dropdown-end">
@@ -17,7 +12,7 @@ const themes = [
     class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-lg"
   >
     {
-      themes.map((theme) => (
+      THEME_OPTIONS.map((theme) => (
         <li>
           <label class="flex items-center gap-2 cursor-pointer">
             <input
@@ -34,19 +29,29 @@ const themes = [
   </ul>
 </div>
 
-<script is:inline>
-  const EVENT_NAME = "bx-theme-change"
-  const SUPPORTED_THEMES = new Set(["light", "midnight", "retro"])
-  const DARK_THEMES = new Set(["midnight"])
+<script>
+  import {
+    DARK_THEME_NAMES,
+    THEME_CHANGE_EVENT,
+    THEME_STORAGE_KEY,
+    isSupportedTheme,
+    sanitizeTheme,
+    resolveDaisyTheme,
+  } from '@/config/theme'
+
+  const EVENT_NAME = THEME_CHANGE_EVENT
+  const DARK_THEMES = new Set(DARK_THEME_NAMES)
 
   const getFallbackTheme = () => {
     const root = document.documentElement
-    const mode = root.dataset.colorMode
-    if (mode && SUPPORTED_THEMES.has(mode)) return mode
-    if (root.dataset.theme === "retro") return "retro"
-    return root.dataset.theme === "dark" || root.classList.contains("dark")
-      ? "midnight"
-      : "light"
+    const mode = sanitizeTheme(root.dataset.colorMode)
+    if (mode) return mode
+
+    const daisyTheme = root.dataset.theme === 'dark' ? 'midnight' : root.dataset.theme
+    const mapped = sanitizeTheme(daisyTheme)
+    if (mapped) return mapped
+
+    return root.classList.contains('dark') ? 'midnight' : 'light'
   }
 
   const getActiveTheme = () => {
@@ -59,28 +64,29 @@ const themes = [
 
   const updateThemeRadios = () => {
     const activeTheme = getActiveTheme()
-    const radios = document.querySelectorAll('input[type="radio"][name="theme"]')
+    const radios = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="theme"]')
     radios.forEach((radio) => {
       radio.checked = radio.value === activeTheme
     })
   }
 
-  const handleThemeChangeEvent = (event) => {
-    const theme = event?.detail?.theme
-    if (typeof theme !== "string" || !SUPPORTED_THEMES.has(theme)) return
-    const radios = document.querySelectorAll('input[type="radio"][name="theme"]')
+  const handleThemeChangeEvent = (event: Event) => {
+    const detail = (event as CustomEvent<{ theme?: ThemeName }>).detail
+    const theme = detail?.theme
+    if (!isSupportedTheme(theme)) return
+    const radios = document.querySelectorAll<HTMLInputElement>('input[type="radio"][name="theme"]')
     radios.forEach((radio) => {
       radio.checked = radio.value === theme
     })
   }
 
-  const handleThemeRadioChange = (event) => {
+  const handleThemeRadioChange = (event: Event) => {
     const target = event.target
     if (!(target instanceof HTMLInputElement)) return
     if (target.type !== "radio" || target.name !== "theme") return
 
     const nextTheme = target.value
-    if (!SUPPORTED_THEMES.has(nextTheme)) return
+    if (!isSupportedTheme(nextTheme)) return
     const api = window.__BX_THEME__
 
     if (api && typeof api.set === "function") {
@@ -90,16 +96,26 @@ const themes = [
 
     const root = document.documentElement
     const darkTheme = DARK_THEMES.has(nextTheme)
-    root.dataset.theme = nextTheme === "midnight" ? "dark" : nextTheme
+    root.dataset.theme = resolveDaisyTheme(nextTheme)
     root.dataset.colorMode = nextTheme
     root.classList.toggle("dark", darkTheme)
     root.style.colorScheme = darkTheme ? "dark" : "light"
 
     try {
-      localStorage.setItem("theme", nextTheme)
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme)
     } catch {
       // ignore
     }
+
+    window.dispatchEvent(
+      new CustomEvent(EVENT_NAME, {
+        detail: {
+          theme: nextTheme,
+          daisyTheme: resolveDaisyTheme(nextTheme),
+          isDark: darkTheme,
+        },
+      }),
+    )
   }
 
   const bindThemeSelector = () => {

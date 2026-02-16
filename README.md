@@ -35,6 +35,12 @@ npm run seo:check
 
 # 指定目标站点
 npm run seo:check -- --site https://www.bx33661.com
+
+# 内容结构校验（frontmatter/slug/link/date）
+npm run content:check
+
+# 生成新内容模板（blog/notes/projects）
+npm run content:new -- --type blog --title "Your Post Title"
 ```
 
 ## 环境变量
@@ -60,6 +66,12 @@ cp .env.example .env
 - 项目：`src/content/projects`
 
 `slug` 为可选项；未提供时会根据文件名生成稳定 slug。
+
+推荐发布前执行一次：
+
+```bash
+npm run content:check
+```
 
 ## 部署
 

@@ -8,10 +8,7 @@ interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
-type ThemeName =
-  | 'light'
-  | 'midnight'
-  | 'retro'
+type ThemeName = import('@/config/theme').ThemeName
 
 interface ThemeController {
   get(): ThemeName
@@ -24,4 +21,6 @@ interface Window {
   __BX_THEME__?: ThemeController
   __BX_THEME_SELECTOR_BOUND__?: boolean
   __BX_THEME_SELECTOR_SWAP_BOUND__?: boolean
+  __BX_THEME_TOGGLE_EVENT_BOUND__?: boolean
+  __BX_THEME_TOGGLE_SWAP_BOUND__?: boolean
 }
