@@ -23,36 +23,36 @@ const currentUrl = Astro.url
 
 <Layout canonicalUrl={currentUrl}>
   <PageHead slot="head" title="BX/bpple - 安全研究" />
-  <section class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
-    <div class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
-      <div class="relative overflow-hidden rounded-lg sm:shrink-0 sm:rounded-lg">
-        <Logo className="h-auto w-40 object-cover sm:w-48 md:w-56 lg:w-64" />
+  <section class="flex flex-col gap-y-10 py-2 sm:gap-y-12 sm:py-6">
+    <div class="home-hero-card flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
+      <div class="home-hero-logo relative overflow-hidden rounded-2xl border border-border/70 bg-card p-2 shadow-sm sm:shrink-0 sm:rounded-lg sm:border-none sm:bg-transparent sm:p-0 sm:shadow-none">
+        <Logo className="h-auto w-28 object-cover sm:w-48 md:w-56 lg:w-64" />
       </div>
-      <div class="mt-8 sm:mt-0 sm:max-w-xl">
-        <h1 class="font-custom text-foreground text-start text-4xl font-extrabold sm:text-5xl">
+      <div class="mt-5 sm:mt-0 sm:max-w-xl">
+        <h1 class="font-custom text-foreground text-center text-3xl font-extrabold sm:text-left sm:text-5xl">
           {SITE.title}
         </h1>
-        <div class="mt-4 flex items-center gap-2" aria-label="location">
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-2 sm:justify-start" aria-label="location">
           <span class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1">
             我来自
           </span>
           <span class="text-foreground text-sm font-medium">{SITE.location}</span>
         </div>
-        <p class="mt-4 text-start text-base text-foreground/90">
+        <p class="mt-4 text-center text-base text-foreground/90 sm:text-left">
           {SITE.description}
         </p>
-        <div class="mt-6 flex flex-wrap gap-3">
-          <Link href="/blog/" class={buttonVariants({ variant: 'default' })}>
+        <div class="home-cta mt-6 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
+          <Link href="/blog/" class={buttonVariants({ variant: 'default' }) + ' w-full justify-center sm:w-auto'}>
             查看博客
           </Link>
-          <Link href="/about/" class={buttonVariants({ variant: 'outline' })}>
+          <Link href="/about/" class={buttonVariants({ variant: 'outline' }) + ' w-full justify-center sm:w-auto'}>
             关于我
           </Link>
         </div>
       </div>
     </div>
 
-    <section class="relative" aria-labelledby="home-skills-title">
+    <section class="home-section relative" aria-labelledby="home-skills-title">
       <h2
         id="home-skills-title"
         class="font-custom text-foreground text-2xl font-bold"
@@ -69,7 +69,7 @@ const currentUrl = Astro.url
       </div>
     </section>
 
-    <section class="flex flex-col gap-y-4" aria-labelledby="home-latest-posts-title" role="region">
+    <section class="home-section flex flex-col gap-y-4" aria-labelledby="home-latest-posts-title" role="region">
       <div class="relative">
         <h2
           id="home-latest-posts-title"
@@ -83,7 +83,7 @@ const currentUrl = Astro.url
           这里是我最新的一些博客文章，你可以进入博客页查看更多内容。
         </p>
       </div>
-      <ul class="flex flex-col gap-y-4">
+      <ul class="home-post-list flex flex-col gap-y-4">
         {
           blog.map((post) => (
             <li>
@@ -93,7 +93,7 @@ const currentUrl = Astro.url
         }
       </ul>
       <div class="flex justify-center">
-        <Link href="/blog/" class={buttonVariants({ variant: 'ghost' }) + ' group'}>
+        <Link href="/blog/" class={buttonVariants({ variant: 'ghost' }) + ' group w-full justify-center sm:w-auto'}>
           查看所有文章
           <span class="ml-1.5 transition-transform group-hover:translate-x-1">&rarr;</span>
         </Link>

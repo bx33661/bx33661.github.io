@@ -73,6 +73,7 @@ const BlogCardJSX = memo(
           'dark:bg-gradient-to-br dark:from-card dark:to-background/50',
           'dark:border-border/30 dark:hover:border-primary/50',
           'dark:hover:shadow-2xl dark:hover:shadow-primary/20',
+          'touch-manipulation',
         )}
       >
         <div
@@ -86,10 +87,10 @@ const BlogCardJSX = memo(
         <article className="relative p-4 sm:p-6">
           <a
             href={articleHref}
-            className="flex flex-col gap-4"
+            className="flex min-h-[164px] flex-col gap-3.5 sm:gap-4"
             aria-label={`阅读文章: ${entry.data.title}`}
           >
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-muted-foreground sm:text-xs">
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
                 <time dateTime={new Date(entry.data.date).toISOString()}>
@@ -125,7 +126,7 @@ const BlogCardJSX = memo(
               </p>
             </div>
 
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-start justify-between gap-2">
               {entry.data.tags && (
                 <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {entry.data.tags.slice(0, 3).map((tag, tagIndex) => (
@@ -164,14 +165,10 @@ const BlogCardJSX = memo(
                 </div>
               )}
 
-              <motion.div
-                className="flex items-center gap-1 text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                animate={isHovered ? { x: 0 } : { x: 10 }}
-                transition={{ duration: 0.2 }}
-              >
+              <div className="flex items-center gap-1 text-xs text-muted-foreground opacity-100 transition-opacity duration-300 sm:opacity-0 sm:group-hover:opacity-100">
                 <Eye className="w-3 h-3" />
                 <span>阅读更多</span>
-              </motion.div>
+              </div>
             </div>
 
             <motion.div

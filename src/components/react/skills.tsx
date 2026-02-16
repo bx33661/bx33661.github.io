@@ -144,8 +144,8 @@ const Skills: React.FC = () => {
   }, [])
 
   return (
-    <div className="z-30 mt-8 flex w-full flex-col max-w-[calc(100vw-2rem)] mx-auto sm:mt-12 sm:max-w-[calc(100vw-5rem)] lg:max-w-full">
-      <div className="space-y-3 sm:space-y-4">
+    <div className="z-30 mt-5 flex w-full flex-col sm:mt-8">
+      <div className="space-y-2.5 sm:space-y-4">
         {categoryGroups.map((group, groupIndex) => {
           // 为不同行设置不同的速度，创造层次感
           const baseSpeed = 40
@@ -157,7 +157,7 @@ const Skills: React.FC = () => {
               key={groupIndex}
               speed={scrollSpeed}
               direction={groupIndex % 2 === 0 ? 'left' : 'right'}
-              className="flex flex-row justify-center tech-scroll-container"
+              className="tech-scroll-container flex flex-row justify-center overflow-hidden"
               pauseOnHover={true}
             >
               {group.flatMap((category) =>
@@ -169,21 +169,16 @@ const Skills: React.FC = () => {
                     return (
                       <div
                         key={`${category}-${techIndex}`}
-                        className="tech-badge repo-card border-border bg-card/90 backdrop-blur-md text-muted-foreground mr-3 flex items-center gap-2 rounded-lg border p-2.5 shadow-sm group mobile-animation sm:mr-4 sm:gap-3 sm:rounded-xl sm:p-3 relative overflow-hidden"
+                        className="tech-badge repo-card border-border bg-card/90 text-muted-foreground mr-2.5 flex items-center gap-2 rounded-lg border p-2.5 shadow-sm group mobile-animation sm:mr-4 sm:gap-3 sm:rounded-xl sm:p-3 relative overflow-hidden"
                         data-tech-name={`${category}-${techIndex}`}
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-                          backdropFilter: 'blur(10px)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                        }}
                       >
                         {/* 添加微妙的光效背景 */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform -skew-x-12 group-hover:animate-pulse" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform -skew-x-12 group-hover:animate-pulse" />
                         
-                        <span className="bg-muted/50 flex h-8 w-8 items-center justify-center rounded-md p-1.5 text-base shadow-inner group-hover:bg-muted/70 transition-all duration-300 sm:h-10 sm:w-10 sm:rounded-lg sm:p-2 sm:text-lg relative z-10">
+                        <span className="bg-muted/50 flex h-9 w-9 items-center justify-center rounded-md p-1.5 text-base shadow-inner transition-all duration-300 group-hover:bg-muted/70 sm:h-10 sm:w-10 sm:rounded-lg sm:p-2 sm:text-lg relative z-10">
                           <IconComponent className={`tech-icon transition-all duration-300 ${colorClass}`} />
                         </span>
-                        <span className="text-foreground font-medium text-xs whitespace-nowrap sm:text-sm relative z-10">
+                        <span className="text-foreground font-medium text-[11px] whitespace-nowrap sm:text-sm relative z-10">
                           {tech.text}
                         </span>
                       </div>

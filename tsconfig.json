@@ -8,5 +8,10 @@
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
-  }
+  },
+  "exclude": [
+    "dist",
+    "portfolio",
+    "portfolio/**"
+  ]
 }

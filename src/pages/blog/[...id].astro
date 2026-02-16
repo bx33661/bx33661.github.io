@@ -7,7 +7,6 @@ import TableOfContents from '@/components/TableOfContents.astro'
 import PasswordProtect from '@/components/react/password-protect'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import Layout from '@/layouts/Layout.astro'
 import { getAdjacentPosts, getAllPostSlugs, getRelatedPosts } from '@/lib/data-utils'
 import { formatDate, readingTime } from '@/lib/utils'
@@ -35,6 +34,8 @@ const isPasswordProtected = !!post.data.password
 const currentUrl = Astro.url;
 const shareUrl = Astro.site + 'blog/' + currentSlug
 const avatarUrl = '/logo.png'
+const wordCount = (post.body || '').replace(/\s+/g, '').length
+const authorLabel = post.data.authors?.length ? post.data.authors.join(' & ') : 'BX'
 ---
 
 <Layout canonicalUrl={currentUrl} isWide={true}>
@@ -80,13 +81,24 @@ const avatarUrl = '/logo.png'
       </div>
     </section>
 
-    <div class="neo-article-meta text-muted-foreground px-4 sm:px-0 sm:col-start-2 flex flex-wrap items-center justify-start gap-2 text-xs sm:text-sm">
-      <div class="flex items-center gap-2">
-        <span>{formatDate(post.data.date)}</span>
-        <Separator orientation="vertical" className="h-4!" />
-        <span>{readingTime(post.body!)}</span>
-        <Separator orientation="vertical" className="h-4!" />
-        <span>By {(post.data.authors ?? []).join(' & ')}</span>
+    <div class="neo-article-meta text-muted-foreground px-4 sm:px-0 sm:col-start-2 text-xs sm:text-sm">
+      <div class="neo-article-meta-grid">
+        <span class="neo-article-meta-item">
+          <Icon name="lucide:calendar-days" class="size-3.5" />
+          {formatDate(post.data.date)}
+        </span>
+        <span class="neo-article-meta-item">
+          <Icon name="lucide:clock-3" class="size-3.5" />
+          {readingTime(post.body!)}
+        </span>
+        <span class="neo-article-meta-item">
+          <Icon name="lucide:file-text" class="size-3.5" />
+          约 {wordCount.toLocaleString()} 字
+        </span>
+        <span class="neo-article-meta-item">
+          <Icon name="lucide:user-round" class="size-3.5" />
+          {authorLabel}
+        </span>
       </div>
     </div>
 
@@ -94,7 +106,10 @@ const avatarUrl = '/logo.png'
       <details class="neo-mobile-toc md:hidden px-4 sm:px-0 sm:col-start-2">
         <summary>
           <span>文章目录</span>
-          <span>{headings.length} 节</span>
+          <span class="neo-mobile-toc-meta">
+            <span>{headings.length} 节</span>
+            <span id="mobile-reading-progress">0%</span>
+          </span>
         </summary>
         <ul>
           {headings
@@ -608,23 +623,42 @@ const avatarUrl = '/logo.png'
 
       // 阅读进度条功能
       if (readingProgress && article) {
-        window.addEventListener('scroll', () => {
-          const articleRect = article.getBoundingClientRect()
-          const articleHeight = article.offsetHeight
-          const windowHeight = window.innerHeight
-          const scrollTop = window.scrollY
-          
-          // 计算阅读进度
-          const progress = Math.min(
-            Math.max(
-              (scrollTop + windowHeight - articleRect.top) / (articleHeight + windowHeight) * 100,
-              0
-            ),
-            100
-          )
+        const articleShell = document.querySelector<HTMLElement>('.article-shell')
+        const mobileProgressLabel = document.getElementById('mobile-reading-progress')
 
+        const getReadingProgress = () => {
+          const target = articleShell || article
+          const rect = target.getBoundingClientRect()
+          const viewport = window.innerHeight
+          const offset = viewport * 0.24
+          const travelled = offset - rect.top
+          const total = Math.max(rect.height - viewport * 0.28, 1)
+          const raw = (travelled / total) * 100
+          return Math.min(Math.max(raw, 0), 100)
+        }
+
+        let ticking = false
+        const updateReadingProgress = () => {
+          const progress = getReadingProgress()
+          const roundedProgress = Math.round(progress)
           readingProgress.style.width = `${progress}%`
-        })
+          if (mobileProgressLabel) {
+            mobileProgressLabel.textContent = `${roundedProgress}%`
+          }
+        }
+
+        const onProgressChange = () => {
+          if (ticking) return
+          ticking = true
+          requestAnimationFrame(() => {
+            updateReadingProgress()
+            ticking = false
+          })
+        }
+
+        window.addEventListener('scroll', onProgressChange, { passive: true })
+        window.addEventListener('resize', onProgressChange)
+        updateReadingProgress()
       }
 
       applyBookmarkCards()
@@ -644,7 +678,7 @@ const avatarUrl = '/logo.png'
 
           scrollToTopButton.classList.toggle(
             'hidden',
-            window.scrollY <= 300 || isFooterVisible
+            window.scrollY <= (isMobileViewport ? 220 : 300) || isFooterVisible
           )
         })
       }
@@ -758,6 +792,47 @@ const avatarUrl = '/logo.png'
     color: color-mix(in srgb, var(--color-primary, #7aa2f7) 80%, white 20%);
   }
 
+  .neo-article-meta-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .neo-article-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 70%, transparent);
+    background: color-mix(in srgb, var(--color-card, #f8fafc) 92%, transparent);
+    color: color-mix(in srgb, var(--foreground) 84%, transparent);
+    padding: 0.34rem 0.64rem;
+    font-size: 0.78rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .neo-mobile-toc-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .neo-mobile-toc-meta span {
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 72%, transparent);
+    background: color-mix(in srgb, var(--background) 90%, transparent);
+    padding: 0.15rem 0.42rem;
+    font-size: 0.7rem;
+    line-height: 1.2;
+  }
+
+  .neo-mobile-toc-meta #mobile-reading-progress {
+    border-color: color-mix(in srgb, var(--color-primary, #7aa2f7) 56%, transparent);
+    background: color-mix(in srgb, var(--color-primary, #7aa2f7) 18%, transparent);
+    color: var(--foreground);
+  }
+
   @media (min-width: 640px) {
     .article-shell {
       padding: 26px 28px;
@@ -781,6 +856,11 @@ const avatarUrl = '/logo.png'
     .article-shell .prose p {
       font-size: 1rem;
       line-height: 1.75;
+    }
+
+    .neo-article-meta-item {
+      font-size: 0.7rem;
+      padding: 0.28rem 0.54rem;
     }
   }
 </style>
