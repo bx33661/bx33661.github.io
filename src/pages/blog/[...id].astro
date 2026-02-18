@@ -1,866 +1,134 @@
 ---
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import Link from '@/components/Link.astro'
 import PostHead from '@/components/PostHead.astro'
-import PostNavigation from '@/components/PostNavigation.astro'
-import TableOfContents from '@/components/TableOfContents.astro'
 import PasswordProtect from '@/components/react/password-protect'
-import { badgeVariants } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import Layout from '@/layouts/Layout.astro'
-import { getAdjacentPosts, getAllPostSlugs, getRelatedPosts } from '@/lib/data-utils'
+import TerminalLayout from '@/layouts/TerminalLayout.astro'
+import { getAdjacentPosts, getAllPostSlugs } from '@/lib/data-utils'
 import { formatDate, readingTime } from '@/lib/utils'
-import { Icon } from 'astro-icon/components'
 import { render } from 'astro:content'
 
 export async function getStaticPaths() {
   const postSlugs = await getAllPostSlugs()
   return postSlugs.map(({ slug, post }) => ({
-    params: { id: slug }, // 这里id参数实际上是slug
+    params: { id: slug },
     props: { post, slug },
   }))
 }
 
-const { post } = Astro.props
-const currentSlug = Astro.params.id // 这里获取的是slug
-const { Content, headings } = await render(post)
+const { post, slug } = Astro.props
+const currentSlug = slug || Astro.params.id
+const { Content } = await render(post)
 const { next, prev } = await getAdjacentPosts(currentSlug)
-const relatedPosts = await getRelatedPosts(post, 3)
-const allPostSlugs = await getAllPostSlugs()
-const relatedPostSlugMap = new Map(allPostSlugs.map(({ slug, post }) => [post.id, slug]))
 
-// 检查文章是否设置了密码保护
 const isPasswordProtected = !!post.data.password
-const currentUrl = Astro.url;
-const shareUrl = Astro.site + 'blog/' + currentSlug
-const avatarUrl = '/logo.png'
-const wordCount = (post.body || '').replace(/\s+/g, '').length
+const currentUrl = Astro.url
 const authorLabel = post.data.authors?.length ? post.data.authors.join(' & ') : 'BX'
+const wordCount = (post.body || '').replace(/\s+/g, '').length
+const coverImage = post.data.image?.src
 ---
 
-<Layout canonicalUrl={currentUrl} isWide={true}>
+<TerminalLayout canonicalUrl={currentUrl} title={post.data.title} description={post.data.description}>
   <PostHead slot="head" post={post} slug={currentSlug} noindex={isPasswordProtected} />
-  <section
-    class="neo-article-page px-0 sm:px-6 grid grid-cols-1 gap-y-3 sm:gap-y-6 xl:grid-cols-[var(--toc-width)_minmax(0,var(--article-width))_var(--meta-width)] xl:gap-x-12 blog-layout-mobile blog-grid"
-  >
-    <div class="px-4 sm:px-0 sm:col-start-2">
-      <Breadcrumbs
-        items={[
-          { href: '/blog', label: 'Blog', icon: 'lucide:archive' },
-          { label: post.data.title, icon: 'lucide:file-text' },
-        ]}
-      />
-    </div>
-    <section class="neo-article-header px-4 sm:px-0 sm:col-start-2 flex flex-col gap-y-3 sm:gap-y-6 text-start">
-      <div class="flex flex-col">
-        <h1
-          class="neo-article-title mb-1 sm:mb-2 text-2xl sm:text-5xl leading-tight font-medium text-pretty"
-        >
-          {post.data.title}
-        </h1>
 
-        <div class="neo-article-tags flex flex-wrap justify-start gap-2">
-          {
-            post.data.tags && post.data.tags.length > 0 ? (
-              post.data.tags.map((tag) => (
-                <a
-                  href={`/tags/${encodeURIComponent(tag)}`}
-                  class={badgeVariants({ variant: 'secondary' })}
-                >
-                  <Icon name="lucide:hash" class="size-3" />
-                  {tag}
-                </a>
-              ))
-            ) : (
-              <span class="text-muted-foreground text-sm">
-                No tags available
-              </span>
-            )
-          }
-        </div>
-      </div>
-    </section>
+  <article class="post">
+    <h1 class="post-title">{post.data.title}</h1>
 
-    <div class="neo-article-meta text-muted-foreground px-4 sm:px-0 sm:col-start-2 text-xs sm:text-sm">
-      <div class="neo-article-meta-grid">
-        <span class="neo-article-meta-item">
-          <Icon name="lucide:calendar-days" class="size-3.5" />
-          {formatDate(post.data.date)}
-        </span>
-        <span class="neo-article-meta-item">
-          <Icon name="lucide:clock-3" class="size-3.5" />
-          {readingTime(post.body!)}
-        </span>
-        <span class="neo-article-meta-item">
-          <Icon name="lucide:file-text" class="size-3.5" />
-          约 {wordCount.toLocaleString()} 字
-        </span>
-        <span class="neo-article-meta-item">
-          <Icon name="lucide:user-round" class="size-3.5" />
-          {authorLabel}
-        </span>
-      </div>
+    <div class="post-meta">
+      <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+      <span class="post-author">{authorLabel}</span>
+      <span class="post-author">{readingTime(post.body || '')}</span>
+      <span class="post-author">约 {wordCount.toLocaleString()} 字</span>
     </div>
 
-    {headings.length > 0 && (
-      <details class="neo-mobile-toc md:hidden px-4 sm:px-0 sm:col-start-2">
-        <summary>
-          <span>文章目录</span>
-          <span class="neo-mobile-toc-meta">
-            <span>{headings.length} 节</span>
-            <span id="mobile-reading-progress">0%</span>
-          </span>
-        </summary>
-        <ul>
-          {headings
-            .filter((heading) => heading.depth <= 3)
-            .map((heading) => (
-              <li class={`depth-${heading.depth}`}>
-                <a href={`#${heading.slug}`} aria-label={`跳转到 ${heading.text}`}>
-                  {heading.text}
-                </a>
-              </li>
-            ))}
-        </ul>
-      </details>
+    {post.data.tags && post.data.tags.length > 0 && (
+      <span class="post-tags">
+        {post.data.tags.map((tag) => <a href={`/tags/${encodeURIComponent(tag)}/`}>{tag}</a>)}
+      </span>
     )}
 
-    {headings.length > 0 && <div class="hidden xl:block xl:col-start-1"><TableOfContents headings={headings} /></div>}
+    {coverImage && (
+      <figure class="post-cover">
+        <img src={coverImage} alt={post.data.title} loading="lazy" decoding="async" />
+      </figure>
+    )}
 
     {isPasswordProtected ? (
-      <div class="sm:col-start-2">
-        <PasswordProtect
-          client:load
-          articleId={post.id}
-          correctPassword={post.data.password!}
-        >
-          <div class="article-shell">
-            <article class="prose max-w-none sm:max-w-[95ch] xl:max-w-[820px] xl:mx-auto w-full">
-              <Content />
-            </article>
-          </div>
-        </PasswordProtect>
-      </div>
-    ) : (
-      <div class="neo-article-body article-shell sm:col-start-2">
-        <article class="prose max-w-none sm:max-w-[95ch] xl:max-w-[820px] xl:mx-auto w-full">
+      <PasswordProtect client:load articleId={post.id} correctPassword={post.data.password!}>
+        <div class="post-content">
           <Content />
-        </article>
+        </div>
+      </PasswordProtect>
+    ) : (
+      <div class="post-content">
+        <Content />
       </div>
     )}
+  </article>
 
-    <aside class="hidden xl:block xl:col-start-3 article-aside">
-      <div class="article-aside-card space-y-6 bg-card/70 rounded-2xl border border-border p-5 shadow-sm">
-        <div class="space-y-3">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-muted-foreground">分享</span>
-            <div class="h-px flex-1 bg-border" />
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <Button variant="secondary" size="sm" id="copy-share-link" className="flex-1 justify-center">
-              <Icon name="lucide:copy" class="size-4 mr-1" />
-              复制链接
-            </Button>
-            <Link
-              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Share on X"
-              aria-label="Share on X"
-              class="flex-1"
-            >
-              <Button variant="outline" size="sm" className="w-full justify-center">
-                <Icon name="line-md:twitter" class="size-4 mr-1" />
-                X
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-muted-foreground">文章信息</span>
-            <div class="h-px flex-1 bg-border" />
-          </div>
-          <div class="space-y-2 text-sm text-foreground/80">
-            <div class="flex justify-between">
-              <span>发布时间</span>
-              <span>{formatDate(post.data.date)}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>阅读时间</span>
-              <span>{readingTime(post.body!)}</span>
-            </div>
-            {post.data.tags && post.data.tags.length > 0 && (
-              <div class="flex items-center gap-2">
-                <span>标签</span>
-                <div class="flex flex-wrap gap-1">
-                  {post.data.tags.slice(0, 3).map((tag) => (
-                    <span class="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-muted-foreground">作者</span>
-            <div class="h-px flex-1 bg-border" />
-          </div>
-          <div class="flex items-center gap-3">
-            <img
-              src={avatarUrl}
-              alt={post.data.authors?.[0] || 'bx'}
-              class="w-10 h-10 rounded-full border border-border object-cover bg-background"
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="space-y-1">
-              <div class="font-medium text-foreground">{post.data.authors?.[0] || 'bx'}</div>
-              <div class="text-xs text-muted-foreground">安全 / 开发 / 记录</div>
-            </div>
-          </div>
-          <div class="flex gap-3 text-muted-foreground">
-            <Link href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer" class="hover:text-foreground transition-colors">
-              <Icon name="line-md:github" class="size-5" />
-            </Link>
-            <Link href="mailto:bx@gmail.com" class="hover:text-foreground transition-colors">
-              <Icon name="lucide:mail" class="size-5" />
-            </Link>
-          </div>
-        </div>
-
-        {relatedPosts && relatedPosts.length > 0 && (
-          <div class="space-y-3">
-            <div class="flex items-center gap-2">
-              <span class="text-sm text-muted-foreground">相关文章</span>
-              <div class="h-px flex-1 bg-border" />
-            </div>
-            <div class="space-y-3">
-              {relatedPosts.slice(0, 3).map((relatedPost) => (
-                <Link
-                  href={`/blog/${relatedPostSlugMap.get(relatedPost.id) || relatedPost.data.slug || relatedPost.id}`}
-                  class="block rounded-lg border border-border p-3 transition-colors hover:border-primary/50"
-                >
-                  <div class="font-medium text-foreground line-clamp-2">
-                    {relatedPost.data.title}
-                  </div>
-                  <div class="mt-1 text-xs text-muted-foreground">
-                    {formatDate(relatedPost.data.date)}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div class="rounded-lg border border-border bg-card/70 p-3">
-          <div class="flex items-center gap-2 text-sm text-foreground/80">
-            <Icon name="line-md:star" class="size-4 text-yellow-500" />
-            如果觉得有帮助，欢迎 GitHub 点星支持
-          </div>
-          <Link
-            href="https://github.com/bx33661/bx33661"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-2 inline-flex items-center gap-2 text-primary hover:underline text-sm"
-          >
-            <Icon name="line-md:github" class="size-4" />
-            GitHub Repo
-          </Link>
-        </div>
-      </div>
-    </aside>
-
-    <PostNavigation prevPost={prev} nextPost={next} />
-  </section>
-
-  <!-- 阅读进度条 -->
-  <div class="fixed top-0 left-0 z-50 h-1 w-full bg-border">
-    <div 
-      id="reading-progress" 
-      class="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300"
-      style="width: 0%"
-    ></div>
+  <div class="pagination">
+    <div class="pagination__title">
+      <span class="pagination__title-h">Read other posts</span>
+      <hr />
+    </div>
+    <div class="pagination__buttons">
+      {prev && (
+        <a href={`/blog/${prev.slug}/`} class="button inline prev">
+          &lt; [<span class="button__text">{prev.post.data.title}</span>]
+        </a>
+      )}
+      {prev && next && <span>::</span>}
+      {next && (
+        <a href={`/blog/${next.slug}/`} class="button inline next">
+          [<span class="button__text">{next.post.data.title}</span>] &gt;
+        </a>
+      )}
+    </div>
   </div>
-
-  <Button
-    variant="outline"
-    size="icon"
-    className="group fixed right-8 bottom-8 z-50 hidden"
-    id="scroll-to-top"
-    title="Scroll to top"
-    aria-label="Scroll to top"
-  >
-    <Icon
-      name="lucide:arrow-up"
-      class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
-    />
-  </Button>
 
   <script>
     document.addEventListener('astro:page-load', () => {
-      const scrollToTopButton = document.getElementById('scroll-to-top')
-      const footer = document.querySelector('footer')
-      const readingProgress = document.getElementById('reading-progress')
-      const article = document.querySelector('article')
-      const proseBlocks = document.querySelectorAll('.article-shell .prose')
-      const isMobileViewport = window.matchMedia('(max-width: 767px)').matches
+      const codeBlocks = document.querySelectorAll('pre.astro-code')
 
-      // 将纯链接段落转换为书签卡片（Notion 风格）
-      const applyBookmarkCards = () => {
-        proseBlocks.forEach((prose) => {
-          const paragraphs = prose.querySelectorAll('p')
-          paragraphs.forEach((p) => {
-            const links = Array.from(
-              p.querySelectorAll<HTMLAnchorElement>('a[href^="http"]')
-            )
-            if (links.length !== 1) return
-            const link = links[0]
+      codeBlocks.forEach((block) => {
+        if (block.parentElement?.classList.contains('highlight')) {
+          return
+        }
 
-            // 仅处理“整段只有一个链接”的情况，避免误伤行内链接
-            const textOnly = p.textContent?.trim() || ''
-            const linkText = link.textContent?.trim() || ''
-            if (textOnly !== linkText) return
+        const wrapper = document.createElement('div')
+        wrapper.className = 'highlight'
+        block.parentNode?.insertBefore(wrapper, block)
+        wrapper.appendChild(block)
 
+        const lang = block.getAttribute('data-language') || 'text'
+        const titleDiv = document.createElement('div')
+        titleDiv.className = 'code-title'
+        titleDiv.textContent = lang
+
+        if (navigator.clipboard) {
+          const button = document.createElement('button')
+          button.className = 'copy-button'
+          button.textContent = 'Copy'
+
+          button.addEventListener('click', async () => {
+            const code = block.textContent || ''
             try {
-              const urlObj = new URL(link.href)
-              const host = urlObj.hostname.replace(/^www\./, '')
-              const isRawUrlText =
-                linkText === link.href ||
-                linkText === urlObj.href ||
-                linkText === decodeURI(urlObj.href)
-
-              const displayTitle =
-                isRawUrlText && urlObj.pathname
-                  ? urlObj.pathname.replace(/^\//, '') || host
-                  : linkText || host
-
-              const displayUrl = `${host}${urlObj.pathname}`
-
-              const card = document.createElement('a')
-              card.className = 'bookmark-card'
-              card.href = link.href
-              card.target = link.target || '_blank'
-              card.rel = link.rel || 'noopener noreferrer'
-              card.setAttribute('aria-label', `${displayTitle} - ${displayUrl}`)
-
-              card.innerHTML = `
-                <div class="bookmark-icon" aria-hidden="true">🌐</div>
-                <div class="bookmark-body">
-                  <div class="bookmark-title">${displayTitle}</div>
-                  <div class="bookmark-meta">${host}</div>
-                  <div class="bookmark-url">${displayUrl}</div>
-                </div>
-              `
-              p.replaceWith(card)
-            } catch (err) {
-              // ignore invalid URL
-            }
-          })
-        })
-      }
-
-      const setupMobileImageViewer = () => {
-        if (!isMobileViewport) return
-
-        const articleImages = Array.from(
-          document.querySelectorAll<HTMLImageElement>('.article-shell .prose img'),
-        )
-        if (articleImages.length === 0) return
-
-        const viewerId = 'neo-mobile-image-viewer'
-        let viewer = document.getElementById(viewerId) as HTMLDivElement | null
-
-        if (!viewer) {
-          viewer = document.createElement('div')
-          viewer.id = viewerId
-          viewer.className = 'neo-mobile-image-viewer'
-          viewer.innerHTML = `
-            <div class="neo-mobile-image-viewer-inner">
-              <div class="neo-mobile-image-viewer-toolbar">
-                <span class="neo-mobile-image-viewer-counter">1 / 1</span>
-                <button type="button" class="neo-mobile-image-viewer-close" aria-label="关闭图片预览">关闭</button>
-              </div>
-              <div class="neo-mobile-image-viewer-stage">
-                <button type="button" class="neo-mobile-image-viewer-nav is-prev" aria-label="上一张">‹</button>
-                <img src="" alt="" />
-                <button type="button" class="neo-mobile-image-viewer-nav is-next" aria-label="下一张">›</button>
-              </div>
-              <p class="neo-mobile-image-viewer-caption"></p>
-              <p class="neo-mobile-image-viewer-hint">左右滑动切换图片</p>
-            </div>
-          `
-          document.body.appendChild(viewer)
-        }
-
-        const viewerImg = viewer.querySelector('img')
-        const viewerCaption = viewer.querySelector('.neo-mobile-image-viewer-caption')
-        const viewerCounter = viewer.querySelector('.neo-mobile-image-viewer-counter')
-        const closeButton = viewer.querySelector<HTMLButtonElement>('.neo-mobile-image-viewer-close')
-        const prevButton = viewer.querySelector<HTMLButtonElement>('.neo-mobile-image-viewer-nav.is-prev')
-        const nextButton = viewer.querySelector<HTMLButtonElement>('.neo-mobile-image-viewer-nav.is-next')
-
-        let currentIndex = 0
-        let touchStartX = 0
-        let touchDeltaX = 0
-
-        const renderViewerImage = () => {
-          if (!viewerImg || !viewerCaption || !viewerCounter || !prevButton || !nextButton) return
-          const currentImage = articleImages[currentIndex]
-          if (!currentImage) return
-          const source = currentImage.currentSrc || currentImage.src
-          if (!source) return
-
-          viewerImg.src = source
-          viewerImg.alt = currentImage.alt || '文章图片预览'
-          viewerCaption.textContent = currentImage.alt || '点击空白处关闭'
-          viewerCounter.textContent = `${currentIndex + 1} / ${articleImages.length}`
-          prevButton.disabled = articleImages.length <= 1
-          nextButton.disabled = articleImages.length <= 1
-        }
-
-        const openViewer = (index: number) => {
-          if (!viewer) return
-          currentIndex = Math.max(0, Math.min(index, articleImages.length - 1))
-          renderViewerImage()
-          viewer.classList.add('is-open')
-          document.body.style.overflow = 'hidden'
-        }
-
-        const showPrevImage = () => {
-          if (articleImages.length <= 1) return
-          currentIndex =
-            currentIndex === 0 ? articleImages.length - 1 : currentIndex - 1
-          renderViewerImage()
-        }
-
-        const showNextImage = () => {
-          if (articleImages.length <= 1) return
-          currentIndex =
-            currentIndex === articleImages.length - 1 ? 0 : currentIndex + 1
-          renderViewerImage()
-        }
-
-        const closeViewer = () => {
-          if (!viewer || !viewerImg) return
-          viewer.classList.remove('is-open')
-          viewerImg.removeAttribute('src')
-          viewerImg.removeAttribute('alt')
-          document.body.style.overflow = ''
-        }
-
-        if (viewer.dataset.neoViewerBound !== 'true') {
-          viewer.dataset.neoViewerBound = 'true'
-          closeButton?.addEventListener('click', closeViewer)
-          prevButton?.addEventListener('click', (event) => {
-            event.stopPropagation()
-            showPrevImage()
-          })
-          nextButton?.addEventListener('click', (event) => {
-            event.stopPropagation()
-            showNextImage()
-          })
-
-          viewer.addEventListener('click', (event) => {
-            if (event.target === viewer) {
-              closeViewer()
+              await navigator.clipboard.writeText(code)
+              button.textContent = 'Copied'
+              setTimeout(() => {
+                button.textContent = 'Copy'
+              }, 1000)
+            } catch {
+              button.textContent = 'Copy failed'
+              setTimeout(() => {
+                button.textContent = 'Copy'
+              }, 1000)
             }
           })
 
-          viewerImg?.addEventListener('touchstart', (event) => {
-            touchStartX = event.touches[0]?.clientX || 0
-            touchDeltaX = 0
-          })
-          viewerImg?.addEventListener('touchmove', (event) => {
-            const currentX = event.touches[0]?.clientX || 0
-            touchDeltaX = currentX - touchStartX
-          })
-          viewerImg?.addEventListener('touchend', () => {
-            const swipeThreshold = 46
-            if (Math.abs(touchDeltaX) < swipeThreshold) return
-            if (touchDeltaX > 0) {
-              showPrevImage()
-            } else {
-              showNextImage()
-            }
-          })
-
-          document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-              closeViewer()
-            }
-            if (event.key === 'ArrowLeft') {
-              showPrevImage()
-            }
-            if (event.key === 'ArrowRight') {
-              showNextImage()
-            }
-          })
+          titleDiv.appendChild(button)
         }
 
-        articleImages.forEach((img, index) => {
-          if (img.dataset.neoZoomBound === 'true') return
-          img.dataset.neoZoomBound = 'true'
-          img.classList.add('neo-zoomable-image')
-
-          img.addEventListener('click', () => {
-            openViewer(index)
-          })
-        })
-      }
-
-      const enhanceMobileCodeCopyButtons = () => {
-        if (!isMobileViewport) return
-        const copyButtons = document.querySelectorAll<HTMLButtonElement>(
-          '.article-shell .expressive-code .copy button',
-        )
-
-        copyButtons.forEach((button) => {
-          if (button.dataset.neoCopyBound === 'true') return
-          button.dataset.neoCopyBound = 'true'
-          button.classList.add('neo-code-copy-btn')
-
-          if (!button.querySelector('.neo-copy-label')) {
-            const label = document.createElement('span')
-            label.className = 'neo-copy-label'
-            label.textContent = '复制'
-            button.appendChild(label)
-          }
-
-          button.addEventListener('click', () => {
-            const label = button.querySelector('.neo-copy-label')
-            if (!label) return
-            button.classList.add('is-copied')
-            label.textContent = '已复制'
-            window.setTimeout(() => {
-              button.classList.remove('is-copied')
-              label.textContent = '复制'
-            }, 1400)
-          })
-        })
-      }
-
-      const setupMobileTocSpy = () => {
-        if (!isMobileViewport) return
-        const toc = document.querySelector<HTMLDetailsElement>('.neo-mobile-toc')
-        if (!toc || toc.dataset.neoSpyBound === 'true') return
-
-        const tocLinks = Array.from(
-          toc.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'),
-        )
-        if (tocLinks.length === 0) return
-
-        const headingPairs = tocLinks
-          .map((link) => {
-            const hash = link.getAttribute('href')?.slice(1) || ''
-            const targetId = decodeURIComponent(hash)
-            const target = document.getElementById(targetId)
-            if (!target) return null
-            return { link, target }
-          })
-          .filter(Boolean) as Array<{ link: HTMLAnchorElement; target: HTMLElement }>
-
-        if (headingPairs.length === 0) return
-        toc.dataset.neoSpyBound = 'true'
-
-        const setActiveTocLink = (targetId: string) => {
-          headingPairs.forEach(({ link, target }) => {
-            const shouldActivate = target.id === targetId
-            link.classList.toggle('is-active', shouldActivate)
-            link.setAttribute('aria-current', shouldActivate ? 'true' : 'false')
-          })
-        }
-
-        const getCurrentHeadingId = () => {
-          const triggerLine = window.innerHeight * 0.34
-          let candidate = headingPairs[0]?.target
-
-          for (const { target } of headingPairs) {
-            const top = target.getBoundingClientRect().top
-            if (top <= triggerLine) {
-              candidate = target
-            } else {
-              break
-            }
-          }
-
-          return candidate?.id
-        }
-
-        const updateActiveByScroll = () => {
-          const currentId = getCurrentHeadingId()
-          if (currentId) {
-            setActiveTocLink(currentId)
-          }
-        }
-
-        let ticking = false
-        const onScroll = () => {
-          if (ticking) return
-          ticking = true
-          requestAnimationFrame(() => {
-            updateActiveByScroll()
-            ticking = false
-          })
-        }
-
-        window.addEventListener('scroll', onScroll, { passive: true })
-        window.addEventListener('resize', onScroll)
-        tocLinks.forEach((link) => {
-          link.addEventListener('click', () => {
-            toc.open = false
-            window.setTimeout(updateActiveByScroll, 220)
-          })
-        })
-
-        updateActiveByScroll()
-      }
-
-      // 阅读进度条功能
-      if (readingProgress && article) {
-        const articleShell = document.querySelector<HTMLElement>('.article-shell')
-        const mobileProgressLabel = document.getElementById('mobile-reading-progress')
-
-        const getReadingProgress = () => {
-          const target = articleShell || article
-          const rect = target.getBoundingClientRect()
-          const viewport = window.innerHeight
-          const offset = viewport * 0.24
-          const travelled = offset - rect.top
-          const total = Math.max(rect.height - viewport * 0.28, 1)
-          const raw = (travelled / total) * 100
-          return Math.min(Math.max(raw, 0), 100)
-        }
-
-        let ticking = false
-        const updateReadingProgress = () => {
-          const progress = getReadingProgress()
-          const roundedProgress = Math.round(progress)
-          readingProgress.style.width = `${progress}%`
-          if (mobileProgressLabel) {
-            mobileProgressLabel.textContent = `${roundedProgress}%`
-          }
-        }
-
-        const onProgressChange = () => {
-          if (ticking) return
-          ticking = true
-          requestAnimationFrame(() => {
-            updateReadingProgress()
-            ticking = false
-          })
-        }
-
-        window.addEventListener('scroll', onProgressChange, { passive: true })
-        window.addEventListener('resize', onProgressChange)
-        updateReadingProgress()
-      }
-
-      applyBookmarkCards()
-      setupMobileImageViewer()
-      enhanceMobileCodeCopyButtons()
-      setupMobileTocSpy()
-
-      // 回到顶部按钮功能
-      if (scrollToTopButton && footer) {
-        scrollToTopButton.addEventListener('click', () => {
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        })
-
-        window.addEventListener('scroll', () => {
-          const footerRect = footer.getBoundingClientRect()
-          const isFooterVisible = footerRect.top <= window.innerHeight
-
-          scrollToTopButton.classList.toggle(
-            'hidden',
-            window.scrollY <= (isMobileViewport ? 220 : 300) || isFooterVisible
-          )
-        })
-      }
+        wrapper.insertBefore(titleDiv, block)
+      })
     })
   </script>
-</Layout>
-
-<style>
-  .blog-grid {
-    --toc-width: clamp(220px, 23vw, 280px);
-    --meta-width: clamp(240px, 25vw, 320px);
-    --article-width: clamp(700px, 70vw, 940px);
-    align-items: start;
-  }
-
-  @media (max-width: 1279px) {
-    .blog-grid {
-      --article-width: min(96vw, 960px);
-    }
-  }
-
-  .article-aside {
-    position: sticky;
-    top: 110px;
-    max-height: calc(100vh - 140px);
-    align-self: start;
-  }
-
-  .article-aside-card {
-    max-height: inherit;
-    overflow-y: auto;
-    border-radius: 18px;
-    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 80%, transparent);
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.06);
-    backdrop-filter: blur(6px);
-  }
-
-  .article-shell {
-    background: color-mix(in srgb, var(--color-card, #0b1220) 92%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 85%, transparent);
-    border-radius: 18px;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
-    padding: 24px 24px;
-    backdrop-filter: blur(4px);
-    width: 100%;
-    max-width: min(var(--article-width), 96ch);
-    margin-inline: auto;
-  }
-
-  .article-shell .prose {
-    color: var(--foreground);
-  }
-
-  .article-shell .prose p {
-    line-height: 1.85;
-    font-size: 1.03rem;
-  }
-
-  .article-shell .prose h2,
-  .article-shell .prose h3,
-  .article-shell .prose h4 {
-    scroll-margin-top: 110px;
-    letter-spacing: -0.01em;
-  }
-
-  .article-shell .prose h2 { margin-top: 2.25rem; margin-bottom: 1rem; }
-  .article-shell .prose h3 { margin-top: 1.75rem; margin-bottom: 0.85rem; }
-
-  .article-shell .prose img {
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    margin: 1.5rem auto;
-  }
-
-  .article-shell .prose blockquote {
-    background: color-mix(in srgb, var(--color-muted, #f6f7fb) 70%, transparent);
-    border-left: 4px solid color-mix(in srgb, var(--color-primary, #7aa2f7) 65%, transparent);
-    border-radius: 12px;
-    padding: 12px 14px;
-  }
-
-  .article-shell .prose pre {
-    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 90%, transparent);
-    border-radius: 14px;
-    padding: 14px 16px;
-    background: color-mix(in srgb, var(--color-muted, #0f172a) 65%, transparent);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-  }
-
-  .article-shell .prose code:not(pre code) {
-    background: color-mix(in srgb, var(--color-muted, #e2e8f0) 70%, transparent);
-    padding: 2px 6px;
-    border-radius: 6px;
-    font-size: 0.95em;
-  }
-
-  .article-shell .prose ul,
-  .article-shell .prose ol {
-    margin-left: 1.1rem;
-    padding-left: 0.3rem;
-    line-height: 1.8;
-  }
-
-  .article-shell .prose a {
-    color: var(--color-primary, #7aa2f7);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-
-  .article-shell .prose a:hover {
-    color: color-mix(in srgb, var(--color-primary, #7aa2f7) 80%, white 20%);
-  }
-
-  .neo-article-meta-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-  }
-
-  .neo-article-meta-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 70%, transparent);
-    background: color-mix(in srgb, var(--color-card, #f8fafc) 92%, transparent);
-    color: color-mix(in srgb, var(--foreground) 84%, transparent);
-    padding: 0.34rem 0.64rem;
-    font-size: 0.78rem;
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  .neo-mobile-toc-meta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .neo-mobile-toc-meta span {
-    border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--color-border, #e5e7eb) 72%, transparent);
-    background: color-mix(in srgb, var(--background) 90%, transparent);
-    padding: 0.15rem 0.42rem;
-    font-size: 0.7rem;
-    line-height: 1.2;
-  }
-
-  .neo-mobile-toc-meta #mobile-reading-progress {
-    border-color: color-mix(in srgb, var(--color-primary, #7aa2f7) 56%, transparent);
-    background: color-mix(in srgb, var(--color-primary, #7aa2f7) 18%, transparent);
-    color: var(--foreground);
-  }
-
-  @media (min-width: 640px) {
-    .article-shell {
-      padding: 26px 28px;
-      border-radius: 20px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .article-shell {
-      padding: 30px 32px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .article-shell {
-      padding: 20px 20px;
-      border-radius: 14px;
-    }
-
-    .article-shell .prose p {
-      font-size: 1rem;
-      line-height: 1.75;
-    }
-
-    .neo-article-meta-item {
-      font-size: 0.7rem;
-      padding: 0.28rem 0.54rem;
-    }
-  }
-</style>
+</TerminalLayout>

@@ -1,162 +1,49 @@
 ---
 import Layout from '@/layouts/Layout.astro'
 import PageHead from '@/components/PageHead.astro'
-import { buttonVariants } from '@/components/ui/button'
-import { Icon } from 'astro-icon/components'
 import { SITE } from '@/consts'
 
-const currentUrl = Astro.url;
+const currentUrl = Astro.url
 ---
 
 <Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="支持我 - BX/bpple" />
-  
-  <div class="flex flex-col gap-y-12 px-4 py-8 sm:px-8 lg:px-16">
-    <!-- 标题部分 -->
-    <section class="text-center">
-      <h1 class="font-custom text-foreground text-4xl font-extrabold sm:text-5xl mb-4">
-        支持我
-      </h1>
-      <p class="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
-        如果我的内容对你有帮助，欢迎请我喝杯咖啡。你的支持是我继续创作和分享技术内容的动力！
-      </p>
-    </section>
+  <PageHead slot="head" title="支持我 - BX/bpple" canonicalURL={currentUrl.toString()} />
 
-    <!-- 支持方式 -->
-    <section class="max-w-4xl mx-auto w-full">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        <!-- 赞助目标 -->
-        <div class="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-              <Icon name="lucide:server" class="w-5 h-5 text-primary" />
-            </div>
-            <h2 class="text-xl font-bold text-foreground">VPS服务器</h2>
-          </div>
-          <p class="text-muted-foreground mb-4">
-            帮助我购买和维护服务器，用于托管项目和实验环境
-          </p>
-          <div class="mb-4">
-            <div class="flex justify-between text-sm text-muted-foreground mb-2">
-              <span>目标进度</span>
-              <span>¥120 / ¥3000</span>
-            </div>
-            <div class="w-full bg-muted rounded-full h-2">
-              <div class="bg-primary h-2 rounded-full transition-all duration-500" style="width: 4%"></div>
-            </div>
-            <p class="text-xs text-muted-foreground mt-1">4% 已完成</p>
-          </div>
-        </div>
-
-        <!-- 支持方式 -->
-        <div class="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-              <Icon name="lucide:coffee" class="w-5 h-5 text-primary" />
-            </div>
-            <h2 class="text-xl font-bold text-foreground">请我喝咖啡</h2>
-          </div>
-          <p class="text-muted-foreground mb-6">
-            每一杯咖啡都是对我最大的鼓励
-          </p>
-          <div class="space-y-4">
-            <a 
-              href="http://www.bx33661.com/support" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              class={buttonVariants({ variant: "default", size: "lg" }) + " w-full justify-center gap-2 group"}
-            >
-              <Icon name="lucide:heart" class="w-4 h-4 group-hover:text-red-400 transition-colors" />
-              支持我 ¥10
-            </a>
-            <p class="text-xs text-muted-foreground text-center">
-              点击跳转到外部支付页面
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 支持用途 -->
-    <section class="max-w-3xl mx-auto">
-      <h2 class="text-2xl font-bold text-foreground mb-6 text-center">你的支持将用于</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-            <Icon name="lucide:server" class="w-4 h-4 text-green-600" />
-          </div>
-          <div>
-            <h3 class="font-semibold text-foreground mb-1">服务器维护</h3>
-            <p class="text-sm text-muted-foreground">购买和维护VPS服务器，托管项目和实验环境</p>
-          </div>
-        </div>
-        
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-            <Icon name="lucide:globe" class="w-4 h-4 text-blue-600" />
-          </div>
-          <div>
-            <h3 class="font-semibold text-foreground mb-1">域名与证书</h3>
-            <p class="text-sm text-muted-foreground">购买域名和SSL证书，提供更好的访问体验</p>
-          </div>
-        </div>
-        
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-            <Icon name="lucide:shield" class="w-4 h-4 text-purple-600" />
-          </div>
-          <div>
-            <h3 class="font-semibold text-foreground mb-1">安全工具</h3>
-            <p class="text-sm text-muted-foreground">购买专业安全工具和软件许可证</p>
-          </div>
-        </div>
-        
-        <div class="flex items-start gap-3">
-          <div class="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-            <Icon name="lucide:book-open" class="w-4 h-4 text-orange-600" />
-          </div>
-          <div>
-            <h3 class="font-semibold text-foreground mb-1">内容创作</h3>
-            <p class="text-sm text-muted-foreground">投入更多时间创作高质量的技术内容</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 感谢部分 -->
-    <section class="text-center bg-card border border-border rounded-xl p-8 max-w-2xl mx-auto">
-      <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-        <Icon name="lucide:heart" class="w-8 h-8 text-primary" />
-      </div>
-      <h2 class="text-2xl font-bold text-foreground mb-4">感谢你的支持</h2>
-      <p class="text-muted-foreground leading-relaxed mb-6">
-        每一份支持都对我意义重大，无论金额大小，都是对我继续创作和分享的最大鼓励。
-        感谢你成为我技术路上的伙伴！
-      </p>
-             <div class="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-         <Icon name="lucide:globe" class="w-4 h-4" />
-         <span>{SITE.href}</span>
-       </div>
-    </section>
-
-    <!-- 其他支持方式 -->
-    <section class="text-center max-w-2xl mx-auto">
-      <h2 class="text-xl font-bold text-foreground mb-4">其他支持方式</h2>
-      <div class="flex flex-wrap justify-center gap-4">
-        <div class="flex items-center gap-2 px-4 py-2 bg-muted rounded-lg">
-          <Icon name="lucide:star" class="w-4 h-4 text-yellow-500" />
-          <span class="text-sm text-muted-foreground">给项目点star</span>
-        </div>
-        <div class="flex items-center gap-2 px-4 py-2 bg-muted rounded-lg">
-          <Icon name="lucide:share-2" class="w-4 h-4 text-blue-500" />
-          <span class="text-sm text-muted-foreground">分享给朋友</span>
-        </div>
-        <div class="flex items-center gap-2 px-4 py-2 bg-muted rounded-lg">
-          <Icon name="lucide:message-circle" class="w-4 h-4 text-green-500" />
-          <span class="text-sm text-muted-foreground">反馈建议</span>
-        </div>
-      </div>
-    </section>
+  <div class="page">
+    <h1>支持我</h1>
+    <p>如果我的内容对你有帮助，欢迎请我喝杯咖啡。你的支持是我持续创作的动力。</p>
   </div>
-</Layout> 
+
+  <div class="posts">
+    <h2 class="posts-title">支持方式</h2>
+    <ul>
+      <li>赞助目标：VPS 服务器与站点维护</li>
+      <li>当前进度：¥120 / ¥3000</li>
+      <li>
+        支持链接：
+        <a href="http://www.bx33661.com/support" target="_blank" rel="noopener noreferrer">
+          http://www.bx33661.com/support
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="posts">
+    <h2 class="posts-title">支持将用于</h2>
+    <ul>
+      <li>服务器与域名维护</li>
+      <li>安全工具与实验环境投入</li>
+      <li>高质量技术内容创作</li>
+    </ul>
+  </div>
+
+  <div class="posts">
+    <h2 class="posts-title">其他支持方式</h2>
+    <ul>
+      <li>给项目点 star</li>
+      <li>分享博客内容</li>
+      <li>反馈建议和勘误</li>
+    </ul>
+    <p>站点：<a href={SITE.href}>{SITE.href}</a></p>
+  </div>
+</Layout>

@@ -1,103 +1,43 @@
 ---
-import '@/styles/unified-pages.css'
-
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import TerminalNoteCard from '@/components/terminal/TerminalNoteCard.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
-import { getAllNotes, getAllNoteCategories, getAllNoteTags, getNoteSlug } from '@/lib/data-utils'
-import { Icon } from 'astro-icon/components'
-import type { CollectionEntry } from 'astro:content'
+import { getAllNoteSlugs, getAllNoteCategories, getAllNoteTags } from '@/lib/data-utils'
 
-const allNotes = await getAllNotes()
+const noteSlugs = await getAllNoteSlugs()
 const categories = await getAllNoteCategories()
 const tags = await getAllNoteTags()
 const currentUrl = Astro.url.toString()
 
-type Note = CollectionEntry<'notes'>
-
-const notesByCategory = new Map<string, Note[]>()
-for (const note of allNotes) {
-  const category = note.data.category || '未分类'
-  if (!notesByCategory.has(category)) {
-    notesByCategory.set(category, [])
-  }
-  notesByCategory.get(category)!.push(note)
-}
+const categoryEntries = Array.from(categories.entries()).sort((a, b) => b[1] - a[1])
 ---
 
-<Layout canonicalUrl={currentUrl} isWide={true}>
+<Layout canonicalUrl={currentUrl}>
   <PageHead slot="head" title="学习笔记" description="记录技术学习与实践总结。" canonicalURL={currentUrl} />
 
-  <div class="uipage">
-    <div class="uishell">
-      <Breadcrumbs items={[{ label: '笔记', icon: 'lucide:book-open' }]} />
+  <div class="page">
+    <h1>学习笔记</h1>
+    <p>总笔记：{noteSlugs.length} 篇 {' :: '} 分类：{categories.size} {' :: '} 标签：{tags.size}</p>
+    <p><a href="/notes/list/" class="button">按时间分页查看</a></p>
+  </div>
 
-      <section class="uipanel uihero">
-        <p class="uihero__eyebrow">Knowledge Base</p>
-        <h1>学习笔记</h1>
-        <p>记录日常学习与项目过程中的技术要点，按分类整理，便于回顾和查阅。</p>
-        <div class="uikpi-grid">
-          <article class="uikpi-card">
-            <p class="uikpi-card__label">总笔记</p>
-            <p class="uikpi-card__value">{allNotes.length}</p>
-          </article>
-          <article class="uikpi-card">
-            <p class="uikpi-card__label">分类数</p>
-            <p class="uikpi-card__value">{categories.size}</p>
-          </article>
-          <article class="uikpi-card">
-            <p class="uikpi-card__label">标签数</p>
-            <p class="uikpi-card__value">{tags.size}</p>
-          </article>
-          <a href="/notes/list/" class="uikpi-card no-underline">
-            <p class="uikpi-card__label">浏览方式</p>
-            <p class="uikpi-card__value text-base inline-flex items-center gap-1">
-              时间分页
-              <Icon name="lucide:arrow-right" class="size-4" />
-            </p>
-          </a>
-        </div>
-      </section>
+  <div class="posts">
+    <h2 class="posts-title">分类</h2>
+    {categoryEntries.length === 0 ? (
+      <p>暂无分类。</p>
+    ) : (
+      <ul>
+        {categoryEntries.map(([category, count]) => (
+          <li>{category} ({count})</li>
+        ))}
+      </ul>
+    )}
+  </div>
 
-      <section class="uisection">
-        <div class="uisection-head">
-          <div>
-            <h2>分类笔记</h2>
-            <p>按主题整理的学习记录</p>
-          </div>
-        </div>
-
-        {
-          allNotes.length > 0 ? (
-            <div class="uicard-grid uicard-grid--3">
-              {Array.from(notesByCategory.entries()).map(([category, items]) => (
-                <article class="uipanel uicard">
-                  <h3 class="inline-flex items-center gap-2">
-                    <Icon name="lucide:folder-open" class="size-4 text-primary" />
-                    {category}
-                  </h3>
-                  <p>{items.length} 篇笔记</p>
-                  <ul class="uiitem-list">
-                    {items.map((note: Note) => (
-                      <li>
-                        <a href={`/notes/${getNoteSlug(note)}`}>
-                          <span class="truncate text-foreground">{note.data.title}</span>
-                          <span class="uiitem-list__meta">{note.data.date.toLocaleDateString('zh-CN')}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <article class="uipanel uicard">
-              <h3>暂无笔记</h3>
-              <p>内容正在整理中。</p>
-            </article>
-          )
-        }
-      </section>
-    </div>
+  <div class="posts">
+    <h2 class="posts-title">最新笔记</h2>
+    {noteSlugs.slice(0, 10).map(({ note, slug }) => (
+      <TerminalNoteCard note={note} slug={slug} />
+    ))}
   </div>
 </Layout>

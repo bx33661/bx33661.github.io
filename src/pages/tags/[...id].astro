@@ -1,68 +1,52 @@
 ---
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import TerminalPostCard from '@/components/terminal/TerminalPostCard.astro'
 import PageHead from '@/components/PageHead.astro'
-import BlogCard from '@/components/react/blog-card'
-import Layout from '@/layouts/Layout.astro'
-import { getAllTags, getPostsByTag, getAllPostSlugs } from '@/lib/data-utils'
-import { Icon } from 'astro-icon/components'
+import TerminalLayout from '@/layouts/TerminalLayout.astro'
+import { getAllTags, getAllPostSlugs } from '@/lib/data-utils'
 
 export async function getStaticPaths() {
   const tagMap = await getAllTags()
   const uniqueTags = Array.from(tagMap.keys())
   const allPostSlugs = await getAllPostSlugs()
 
-  return Promise.all(
-    uniqueTags.map(async (tag) => {
-      const posts = await getPostsByTag(tag)
-      // 为文章添加slug信息
-      const postsWithSlugs = posts.map(post => {
-        const postSlugData = allPostSlugs.find(({ post: p }) => p.id === post.id)
-        return { ...post, slug: postSlugData?.slug || post.data.slug || 'unknown' }
-      })
-      return {
-        params: { id: tag },
-        props: {
-          tag,
-          posts: postsWithSlugs,
-        },
-      }
-    })
-  )
+  return uniqueTags.map((tag) => {
+    const posts = allPostSlugs
+      .filter(({ post }) => post.data.tags?.includes(tag))
+      .map(({ post, slug }) => ({ post, slug }))
+
+    return {
+      params: { id: tag },
+      props: {
+        tag,
+        posts,
+      },
+    }
+  })
 }
 
 const { tag, posts } = Astro.props
-const currentUrl = Astro.url;
+const currentUrl = Astro.url
+const description = `标签 ${tag} 下的所有文章。`
+const tagPosts = posts as Array<{ post: Awaited<ReturnType<typeof getAllPostSlugs>>[number]['post']; slug: string }>
 ---
 
-<Layout canonicalUrl={currentUrl}>
+<TerminalLayout canonicalUrl={currentUrl}>
   <PageHead
     slot="head"
-    title={`Posts tagged with "${tag}"`}
-    description={`A collection of posts tagged with ${tag}.`}
-  />
-  <Breadcrumbs
-    items={[
-      { href: '/tags', label: 'Tags', icon: 'lucide:tags' },
-      { label: tag, icon: 'lucide:tag' },
-    ]}
+    title={`标签: ${tag}`}
+    description={description}
+    canonicalURL={currentUrl.toString()}
   />
 
-  <div class="flex flex-wrap items-center gap-2">
-    <h1 class="text-3xl font-medium">Posts tagged with</h1>
-    <span
-      class="bg-secondary flex items-center gap-x-1 rounded-full px-4 py-2 text-2xl font-medium"
-    >
-      <Icon name="lucide:hash" class="size-6 -translate-x-0.5" />{tag}
-    </span>
-  </div>
+  <div class="posts">
+    <h1 class="posts-title">Tag: #{tag}</h1>
 
-  <ul class="flex flex-col gap-y-4">
-    {
-      posts.map((post) => (
-        <li>
-          <BlogCard entry={post} slug={post.slug} />
-        </li>
+    {tagPosts.length === 0 ? (
+      <p>该标签下暂无文章。</p>
+    ) : (
+      tagPosts.map(({ post, slug }) => (
+        <TerminalPostCard post={post} slug={slug} />
       ))
-    }
-  </ul>
-</Layout>
+    )}
+  </div>
+</TerminalLayout>

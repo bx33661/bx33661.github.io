@@ -2,7 +2,7 @@ import satori from 'satori'
 import { html } from 'satori-html'
 import { Resvg } from '@resvg/resvg-js'
 import { SITE } from '@/consts'
-import { getAllNoteSlugs, getAllPostSlugs, getAllProjectSlugs } from '@/lib/data-utils'
+import { getAllNoteSlugs, getAllPostSlugs } from '@/lib/data-utils'
 import type { APIContext } from 'astro'
 import fs from 'fs'
 import path from 'path'
@@ -167,7 +167,6 @@ export async function GET(context: APIContext) {
 
 export async function getStaticPaths() {
   const postSlugs = await getAllPostSlugs()
-  const projectSlugs = await getAllProjectSlugs()
   const noteSlugs = await getAllNoteSlugs()
 
   const postPaths = postSlugs.map(({ slug, post }) => ({
@@ -180,19 +179,6 @@ export async function getStaticPaths() {
       description: post.data.description,
       tags: post.data.tags || [],
       contentType: 'Blog Post'
-    },
-  }))
-
-  const projectPaths = projectSlugs.map(({ slug, project }) => ({
-    params: {
-      id: slug,
-    },
-    props: {
-      title: project.data.name,
-      date: project.data.endDate ?? project.data.startDate ?? new Date('2024-01-01'),
-      description: project.data.description,
-      tags: project.data.tags || [],
-      contentType: 'Project'
     },
   }))
 
@@ -209,5 +195,5 @@ export async function getStaticPaths() {
     },
   }))
 
-  return [...postPaths, ...projectPaths, ...notePaths]
+  return [...postPaths, ...notePaths]
 }

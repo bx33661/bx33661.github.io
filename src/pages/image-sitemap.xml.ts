@@ -1,11 +1,11 @@
 import { SITE } from '@/consts'
+import { GALLERY_IMAGES } from '@/data/gallery'
 import type { APIContext } from 'astro'
-import { getAllNoteSlugs, getAllPostSlugs, getAllProjectSlugs } from '@/lib/data-utils'
+import { getAllNoteSlugs, getAllPostSlugs } from '@/lib/data-utils'
 
 export async function GET(context: APIContext) {
   try {
     const postSlugs = await getAllPostSlugs()
-    const projects = await getAllProjectSlugs()
     const notes = await getAllNoteSlugs()
     const site = context.site ?? SITE.href
     const baseUrl = site.toString().endsWith('/') ? site.toString().slice(0, -1) : site.toString()
@@ -34,20 +34,15 @@ export async function GET(context: APIContext) {
       })
     }
 
-    // 项目图片
-    for (const { slug, project } of projects) {
-      const encodedSlug = encodeURIComponent(slug)
-      images.push({
-        loc: `${baseUrl}/projects/${encodedSlug}/`,
-        image: [
-          {
-            loc: `${baseUrl}/image/${encodedSlug}.png`,
-            title: project.data.name,
-            caption: project.data.description
-          }
-        ]
-      })
-    }
+    // 相册图片
+    images.push({
+      loc: `${baseUrl}/album/`,
+      image: GALLERY_IMAGES.map((item) => ({
+        loc: `${baseUrl}/gallery/${encodeURIComponent(item.file)}`,
+        title: item.title,
+        caption: item.alt,
+      })),
+    })
 
     // 笔记图片
     for (const { slug, note } of notes) {

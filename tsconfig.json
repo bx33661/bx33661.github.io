@@ -12,6 +12,8 @@
   "exclude": [
     "dist",
     "portfolio",
-    "portfolio/**"
+    "portfolio/**",
+    "astro-theme-terminal",
+    "astro-theme-terminal/**"
   ]
 }

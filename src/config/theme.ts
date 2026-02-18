@@ -1,6 +1,6 @@
 export const THEME_OPTIONS = [
   { value: 'light', label: 'Light' },
-  { value: 'midnight', label: 'Midnight' },
+  { value: 'midnight', label: 'Dark' },
   { value: 'retro', label: 'Retro' },
 ] as const
 
@@ -22,9 +22,9 @@ export const THEME_LEGACY_MAP: Record<string, ThemeName> = {
 export const DARK_THEME_NAMES: ThemeName[] = ['midnight']
 
 export const THEME_RUNTIME_COLORS: Record<ThemeName, string> = {
-  light: '#f8fafc',
-  midnight: '#0b1120',
-  retro: '#ede4d3',
+  light: '#ffffff',
+  midnight: '#1d2021',
+  retro: '#ffffff',
 }
 
 const THEME_NAME_SET = new Set<ThemeName>(THEME_NAMES)

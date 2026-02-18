@@ -5,7 +5,6 @@ import {
   getAllNoteSlugs,
   getAllPosts,
   getAllPostSlugs,
-  getAllProjectSlugs,
   getAllTags,
 } from '@/lib/data-utils'
 
@@ -23,7 +22,6 @@ export async function GET(context: APIContext) {
     const noteSlugs = await getAllNoteSlugs()
     const allPosts = await getAllPosts()
     const allNotes = await getAllNotes()
-    const projects = await getAllProjectSlugs()
     const tags = await getAllTags()
     const site = context.site ?? SITE.href
     const baseUrl = site.toString().endsWith('/') ? site.toString().slice(0, -1) : site.toString()
@@ -49,7 +47,7 @@ export async function GET(context: APIContext) {
         priority: '0.8'
       },
       {
-        url: buildUrl(baseUrl, '/projects/'),
+        url: buildUrl(baseUrl, '/album/'),
         lastmod: now,
         changefreq: 'weekly',
         priority: '0.8'
@@ -118,13 +116,6 @@ export async function GET(context: APIContext) {
       priority: '0.5'
     }))
 
-    const projectPosts = projects.map(({ slug, project }) => ({
-      url: buildUrl(baseUrl, `/projects/${encodePathSegment(slug)}/`),
-      lastmod: (project.data.endDate ?? new Date()).toISOString(),
-      changefreq: 'monthly',
-      priority: '0.6'
-    }))
-
     const tagUrls = Array.from(tags, ([tag]) => ({
       url: buildUrl(baseUrl, `/tags/${encodePathSegment(tag)}/`),
       lastmod: now,
@@ -134,7 +125,6 @@ export async function GET(context: APIContext) {
 
     const allUrls = [
       ...staticPages,
-      ...projectPosts,
       ...blogPosts,
       ...blogPages,
       ...notes,

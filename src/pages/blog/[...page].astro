@@ -1,78 +1,73 @@
-﻿---
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
+---
+import TerminalPostCard from '@/components/terminal/TerminalPostCard.astro'
 import PageHead from '@/components/PageHead.astro'
-import Search from '@/components/react/search'
-import PaginationComponent from '@/components/ui/pagination'
-import Layout from '@/layouts/Layout.astro'
+import TerminalLayout from '@/layouts/TerminalLayout.astro'
 import { getAllPostSlugs } from '@/lib/data-utils'
 import type { PaginateFunction } from 'astro'
-import { Icon } from 'astro-icon/components'
+
 export async function getStaticPaths({
   paginate,
 }: {
   paginate: PaginateFunction
 }) {
   const allPostSlugs = await getAllPostSlugs()
-  const postsWithSlugs = allPostSlugs.map(({ slug, post }) => ({ ...post, slug }))
-  return paginate(postsWithSlugs, { pageSize: 5 })
+  return paginate(allPostSlugs, { pageSize: 10 })
 }
 
 const { page } = Astro.props
-const allPostSlugs = await getAllPostSlugs()
-const searchList = allPostSlugs.map(({ slug, post }) => ({
-  id: post.id,
-  slug,
-  data: {
-    title: post.data.title,
-    description: post.data.description,
-    tags: post.data.tags ?? [],
-    date: post.data.date,
-  },
-  body: ''
-}))
-const currentUrl = Astro.url;
+const currentUrl = Astro.url
+const pageTitle = page.currentPage === 1 ? '博客' : `博客 - 第 ${page.currentPage} 页`
+const pageDescription = '安全研究、开发实践与日常技术记录。'
+const pageNumbers = Array.from({ length: page.lastPage }, (_, index) => index + 1)
+const pageEntries = page.data as Array<{ post: Awaited<ReturnType<typeof getAllPostSlugs>>[number]['post']; slug: string }>
+
+const buildPageLink = (pageNumber: number) => {
+  if (pageNumber <= 1) {
+    return '/blog/'
+  }
+  return `/blog/${pageNumber}/`
+}
 ---
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="博客" />
-  
-  <Breadcrumbs
-    items={[
-      { label: '博客', href: '/blog', icon: 'lucide:archive' },
-      { label: `Page ${page.currentPage}`, icon: 'lucide:folder-open' },
-    ]}
-  />
-  <section class="neo-section max-screen mt-4 md:mt-12 px-4 md:px-6" aria-labelledby="blog-page-title">
-    <div class="flex w-fit items-center gap-2 text-primary">
-        <Icon class="h-4 w-4 text-secondary-foreground animate-pulse" name="lucide:brain" />
-        <p class="shimmer word-spacing font-mono text-sm uppercase leading-none text-secondary-foreground">
-          Quick Thoughts
-        </p>
-    </div>
-    <h2
-    id="blog-page-title"
-    class="neo-section-title font-custom text-foreground text-4xl font-bold mt-2"
-    >
-      博客
-    </h2>
-    <p class="neo-section-desc text-md max-w-2xl mt-3">
-      欢迎来到我的博客，这里主要记录安全研究、开发实践和日常折腾笔记。会分享学习总结、项目经验以及对各种技术话题的看法，希望这些内容对你有帮助，如果有问题或建议也欢迎留言交流。
-    </p>
 
-    <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8 my-8 md:my-12">
-      <Search
-        client:idle
-        searchList={searchList}
-        initialPosts={page.data}
-        basePath="/blog"
-        tagLinkBase="/tags"
-      />
-    </div>
+<TerminalLayout canonicalUrl={currentUrl}>
+  <PageHead slot="head" title={pageTitle} description={pageDescription} canonicalURL={currentUrl.toString()} />
 
-    <PaginationComponent
-      currentPage={page.currentPage}
-      totalPages={page.lastPage}
-      baseUrl="/blog/"
-      client:idle
-    />
-  </section>
-</Layout>
+  <div class="posts">
+    <h1 class="posts-title">博客文章</h1>
+
+    {page.data.length === 0 ? (
+      <p>暂无文章，稍后再来看看。</p>
+    ) : (
+      pageEntries.map(({ post, slug }) => (
+        <TerminalPostCard post={post} slug={slug} />
+      ))
+    )}
+  </div>
+
+  {page.lastPage > 1 && (
+    <div class="pagination">
+      <div class="pagination__title">
+        <span class="pagination__title-h">Page {page.currentPage} / {page.lastPage}</span>
+        <hr />
+      </div>
+      <div class="pagination__buttons">
+        {page.url.prev && (
+          <a href={page.url.prev} class="button inline prev">&lt; [上一页]</a>
+        )}
+
+        {pageNumbers.map((pageNumber) => (
+          <a
+            href={buildPageLink(pageNumber)}
+            class={`button number ${pageNumber === page.currentPage ? 'active' : ''}`}
+          >
+            {pageNumber}
+          </a>
+        ))}
+
+        {page.url.next && (
+          <a href={page.url.next} class="button inline next">[下一页] &gt;</a>
+        )}
+      </div>
+    </div>
+  )}
+</TerminalLayout>

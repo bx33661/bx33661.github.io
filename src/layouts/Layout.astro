@@ -1,17 +1,5 @@
 ---
-import '@/styles/global.css'
-import '@/styles/typography.css'
-import '@/styles/article-readability.css'
-import '@/styles/code-highlight-enhancement.css'
-
-
-import Footer from '@/components/Footer.astro'
-import Head from '@/components/Head.astro'
-import Navbar from '@/components/react/navbar'
-import ThemeSelector from '@/components/ThemeSelector.astro'
-import FabFlower from '@/components/FabFlower.astro'
-import { SITE } from '@/consts'
-import { cn } from '@/lib/utils'
+import TerminalLayout from '@/layouts/TerminalLayout.astro'
 
 interface Props {
   isWide?: boolean
@@ -22,94 +10,14 @@ interface Props {
 }
 
 const {
-  isWide = false,
   title,
   description,
   image,
-  canonicalUrl
-} = Astro.props
+  canonicalUrl,
+} = Astro.props as Props
 ---
 
-<!doctype html>
-<html lang={SITE.locale}>
-  <Head title={title} description={description} image={image} canonicalUrl={canonicalUrl}>
-    <slot name="head" />
-    <!-- 优化分析脚本加载：延迟加载，减少对性能的影响 -->
-    <script is:inline>
-      // 延迟加载 Ahrefs 分析脚本
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          const script = document.createElement('script');
-          script.src = 'https://analytics.ahrefs.com/analytics.js';
-          script.setAttribute('data-key', '+FHMgRP7/Duxaq5D0gZtJw');
-          script.async = true;
-          document.head.appendChild(script);
-        }, 2000);
-      });
-    </script>
-    <!-- Smooth Scroll & Animations -->
-    <style is:global>
-      html {
-        scroll-behavior: smooth;
-        animation: pageLoadBlurFade 0.3s ease-in-out;
-        animation-fill-mode: both;
-      }
-
-      @keyframes pageLoadBlurFade {
-        0% {
-          opacity: 0;
-          filter: blur(8px);
-        }
-        100% {
-          opacity: 1;
-          filter: blur(0px);
-        }
-      }
-    </style>
-    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
-  </Head>
-  <body>
-    <div class="fixed top-4 right-4 z-50 hidden md:block">
-      <ThemeSelector />
-    </div>
-
-    <div class="neo-layout flex h-fit min-h-screen w-full flex-col gap-y-4 sm:gap-y-6 font-sans">
-      <Navbar client:idle />
-      <main
-        class="neo-main flex grow flex-col bg-background mt-0 lg:mt-6 mobile-scroll"
-        aria-label="Main content"
-        role="main"
-      >
-        <div
-          class={cn(
-            'neo-shell mx-auto flex grow flex-col gap-y-4 px-4 py-4 sm:gap-y-6 sm:px-6 sm:py-16 md:py-20 lg:py-24 lg:px-8',
-            !isWide && 'max-w-5xl'
-          )}
-        >
-          <slot />
-        </div>
-      </main>
-      <Footer />
-    </div>
-    <FabFlower />
-    <!-- PWA Service Worker 注册 -->
-    <script is:inline>
-      // 注册 Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
-              console.log('SW注册成功: ', registration.scope);
-            })
-            .catch(function(error) {
-              console.log('SW注册失败: ', error);
-            });
-        });
-      }
-    </script>
-
-
-
-
-  </body>
-</html>
+<TerminalLayout title={title} description={description} image={image} canonicalUrl={canonicalUrl}>
+  <slot name="head" slot="head" />
+  <slot />
+</TerminalLayout>

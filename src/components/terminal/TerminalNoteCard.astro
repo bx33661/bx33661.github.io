@@ -1,0 +1,37 @@
+---
+import { formatDate } from '@/lib/utils'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  note: CollectionEntry<'notes'>
+  slug: string
+}
+
+const { note, slug } = Astro.props
+---
+
+<article class="post on-list">
+  <h2 class="post-title">
+    <a href={`/notes/${slug}/`}>{note.data.title}</a>
+  </h2>
+
+  <div class="post-meta">
+    <time datetime={note.data.date.toISOString()}>{formatDate(note.data.date)}</time>
+    {note.data.category && <span class="post-author">{note.data.category}</span>}
+    {note.data.authors?.length && <span class="post-author">{note.data.authors.join(', ')}</span>}
+  </div>
+
+  {note.data.tags && note.data.tags.length > 0 && (
+    <span class="post-tags">
+      {note.data.tags.map((tag) => <a href={`/tags/${encodeURIComponent(tag)}/`}>{tag}</a>)}
+    </span>
+  )}
+
+  <div class="post-content">
+    <p>{note.data.description}</p>
+  </div>
+
+  <div>
+    <a href={`/notes/${slug}/`} class="read-more button inline">[查看笔记]</a>
+  </div>
+</article>

@@ -1,34 +1,67 @@
 ---
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
-import { badgeVariants } from '@/components/ui/badge'
-import Layout from '@/layouts/Layout.astro'
+import TerminalLayout from '@/layouts/TerminalLayout.astro'
 import { getSortedTags } from '@/lib/data-utils'
-import { Icon } from 'astro-icon/components'
 
 const sortedTags = await getSortedTags()
-const currentUrl = Astro.url;
+const currentUrl = Astro.url
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="Tags" />
-  <Breadcrumbs items={[{ label: 'Tags', icon: 'lucide:tags' }]} />
+<TerminalLayout canonicalUrl={currentUrl}>
+  <PageHead
+    slot="head"
+    title="标签"
+    description="按标签浏览博客文章。"
+    canonicalURL={currentUrl.toString()}
+  />
 
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-wrap gap-2">
-      {
-        sortedTags.map(({ tag, count }) => (
-          <Link
-            href={`/tags/${encodeURIComponent(tag)}`}
-            class={badgeVariants({ variant: 'secondary' })}
-          >
-            <Icon name="lucide:hash" class="size-3" />
-            {tag}
-            <span class="text-muted-foreground ml-1.5">({count})</span>
-          </Link>
-        ))
-      }
-    </div>
+  <div class="page">
+    <h1 class="posts-title">标签</h1>
+
+    {sortedTags.length === 0 ? (
+      <p>暂无标签。</p>
+    ) : (
+      <div class="tags-list">
+        {sortedTags.map(({ tag, count }) => (
+          <a href={`/tags/${encodeURIComponent(tag)}/`} class="tag-item">
+            <span class="tag-name">#{tag}</span>
+            <span class="tag-count">({count})</span>
+          </a>
+        ))}
+      </div>
+    )}
   </div>
-</Layout>
+</TerminalLayout>
+
+<style>
+  .tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 40px;
+  }
+
+  .tag-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 2px solid var(--accent);
+    text-decoration: none;
+    transition: all 0.15s linear;
+  }
+
+  .tag-item:hover {
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+
+  .tag-name {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .tag-count {
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
+    font-size: calc(var(--font-size) * 0.9);
+  }
+</style>

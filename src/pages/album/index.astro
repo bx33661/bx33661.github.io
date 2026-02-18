@@ -1,0 +1,85 @@
+---
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+import { GALLERY_IMAGES, buildGalleryImageSources } from '@/data/gallery'
+
+const currentUrl = Astro.url
+const ALBUM_SIZES = '(max-width: 767px) 96vw, (max-width: 1080px) 48vw, 25vw'
+const galleryImages = GALLERY_IMAGES.map((item) => buildGalleryImageSources(item))
+---
+
+<Layout canonicalUrl={currentUrl}>
+  <PageHead slot="head" title="相册" description="记录生活与旅途中的风景照片。" canonicalURL={currentUrl.toString()} />
+
+  <div class="page">
+    <h1>相册</h1>
+    <p>共 {galleryImages.length} 张风景照片。</p>
+  </div>
+
+  <div class="album-grid">
+    {galleryImages.map((image) => (
+      <article class="album-card">
+        <a class="album-card__link" href={image.originalSrc} target="_blank" rel="noopener noreferrer" aria-label={`查看原图：${image.title}`}>
+          <picture class="album-card__media">
+            <source type="image/avif" srcset={image.avifSrcSet} sizes={ALBUM_SIZES} />
+            <source type="image/webp" srcset={image.webpSrcSet} sizes={ALBUM_SIZES} />
+            <img
+              class="album-card__image"
+              src={image.optimizedSrc}
+              srcset={image.jpgSrcSet}
+              sizes={ALBUM_SIZES}
+              alt={image.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+        </a>
+        <p class="album-card__caption">{image.title} :: {image.date}</p>
+      </article>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  .album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .album-card {
+    margin: 0;
+  }
+
+  .album-card__link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .album-card__media {
+    display: block;
+    margin: 0 !important;
+    border: 4px solid var(--accent);
+    padding: 4px;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--background);
+  }
+
+  .album-card__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    object-fit: cover;
+  }
+
+  .album-card__caption {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  }
+</style>

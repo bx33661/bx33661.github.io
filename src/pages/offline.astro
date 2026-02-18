@@ -10,105 +10,30 @@ import PageHead from '@/components/PageHead.astro'
     description="您当前处于离线状态，请检查网络连接。"
     noindex={true}
   />
-  
-  <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-    <div class="max-w-md mx-auto">
-      <!-- 离线图标 -->
-      <div class="mb-8">
-        <svg 
-          class="w-24 h-24 mx-auto text-muted-foreground" 
-          fill="none" 
-          stroke="currentColor" 
-          viewBox="0 0 24 24"
-        >
-          <path 
-            stroke-linecap="round" 
-            stroke-linejoin="round" 
-            stroke-width="2" 
-            d="M18.364 5.636L5.636 18.364m0-12.728L18.364 18.364M8.111 8.111l7.778 7.778M15.889 8.111l-7.778 7.778"
-          />
-          <path 
-            stroke-linecap="round" 
-            stroke-linejoin="round" 
-            stroke-width="2" 
-            d="M3 12a9 9 0 1 1 18 0a9 9 0 0 1-18 0"
-          />
-        </svg>
-      </div>
-      
-      <h1 class="text-4xl font-bold text-foreground mb-4">
-        🔌 离线模式
-      </h1>
-      
-      <p class="text-lg text-muted-foreground mb-6">
-        您当前处于离线状态。请检查您的网络连接，然后重新加载页面。
-      </p>
-      
-      <p class="text-sm text-muted-foreground mb-8">
-        不过别担心，您仍然可以浏览一些缓存的内容！
-      </p>
-      
-      <!-- 可用的离线功能 -->
-      <div class="space-y-4 mb-8">
-        <h2 class="text-xl font-semibold text-foreground mb-4">
-          📚 可用功能
-        </h2>
-        
-        <div class="grid gap-3 text-left">
-          <a 
-            href="/" 
-            class="flex items-center p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-          >
-            <span class="mr-3">🏠</span>
-            <span>主页</span>
-          </a>
-          
-          <a 
-            href="/blog" 
-            class="flex items-center p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-          >
-            <span class="mr-3">📝</span>
-            <span>博客文章（缓存版本）</span>
-          </a>
-          
-        </div>
-      </div>
-      
-      <!-- 重试按钮 -->
-      <button 
-        onclick="location.reload()" 
-        class="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
-      >
-        🔄 重新连接
-      </button>
-      
-      <!-- 网络状态检测 -->
-      <div class="mt-6 text-xs text-muted-foreground">
-        <span id="network-status">检测网络状态中...</span>
-      </div>
-    </div>
+
+  <div class="page">
+    <h1>离线模式</h1>
+    <p>当前网络未连接。你仍可以访问已缓存内容。</p>
+    <p>
+      <a href="/" class="button">返回首页</a>
+      <span> </span>
+      <a href="/blog/" class="button">浏览博客</a>
+    </p>
+    <p><button onclick="location.reload()">重新连接</button></p>
+    <p id="network-status">检测网络状态中...</p>
   </div>
-  
+
   <script>
-    // 网络状态检测
     function updateNetworkStatus() {
       const statusEl = document.getElementById('network-status')
-      if (statusEl) {
-        if (navigator.onLine) {
-          statusEl.textContent = '✅ 网络已连接 - 点击重新连接按钮刷新页面'
-          statusEl.className = 'mt-6 text-xs text-green-600'
-        } else {
-          statusEl.textContent = '❌ 网络未连接'
-          statusEl.className = 'mt-6 text-xs text-red-600'
-        }
-      }
+      if (!statusEl) return
+      statusEl.textContent = navigator.onLine
+        ? '网络已连接，可点击“重新连接”刷新页面'
+        : '网络未连接'
     }
-    
-    // 监听网络状态变化
+
     window.addEventListener('online', updateNetworkStatus)
     window.addEventListener('offline', updateNetworkStatus)
-    
-    // 初始检测
     updateNetworkStatus()
   </script>
-</Layout> 
+</Layout>

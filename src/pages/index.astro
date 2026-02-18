@@ -1,103 +1,39 @@
 ---
-import Link from '@/components/Link.astro'
+import TerminalPostCard from '@/components/terminal/TerminalPostCard.astro'
 import PageHead from '@/components/PageHead.astro'
-import BlogCard from '@/components/react/blog-card'
-import Skills from '@/components/react/skills'
-import { buttonVariants } from '@/components/ui/button'
-import Logo from '@/components/ui/logo'
 import Layout from '@/layouts/Layout.astro'
 import { SITE } from '@/consts'
-import { getAllPosts, getAllPostSlugs } from '@/lib/data-utils'
+import { getAllPostSlugs } from '@/lib/data-utils'
 
-const allPosts = await getAllPosts()
-const recentPosts = allPosts.slice(0, 3)
 const allPostSlugs = await getAllPostSlugs()
-
-const blog = recentPosts.map((post) => {
-  const postSlugData = allPostSlugs.find(({ post: p }) => p.id === post.id)
-  return { ...post, slug: postSlugData?.slug || post.data.slug || 'unknown' }
-})
-
+const recentPosts = allPostSlugs.slice(0, 5)
 const currentUrl = Astro.url
 ---
 
 <Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="BX/bpple - 安全研究" />
-  <section class="flex flex-col gap-y-10 py-2 sm:gap-y-12 sm:py-6">
-    <div class="home-hero-card flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
-      <div class="home-hero-logo relative overflow-hidden rounded-2xl border border-border/70 bg-card p-2 shadow-sm sm:shrink-0 sm:rounded-lg sm:border-none sm:bg-transparent sm:p-0 sm:shadow-none">
-        <Logo className="h-auto w-28 object-cover sm:w-48 md:w-56 lg:w-64" />
-      </div>
-      <div class="mt-5 sm:mt-0 sm:max-w-xl">
-        <h1 class="font-custom text-foreground text-center text-3xl font-extrabold sm:text-left sm:text-5xl">
-          {SITE.title}
-        </h1>
-        <div class="mt-4 flex flex-wrap items-center justify-center gap-2 sm:justify-start" aria-label="location">
-          <span class="bg-primary text-primary-foreground ring-primary/30 rounded-full px-3 py-1 text-sm font-medium ring-1">
-            我来自
-          </span>
-          <span class="text-foreground text-sm font-medium">{SITE.location}</span>
-        </div>
-        <p class="mt-4 text-center text-base text-foreground/90 sm:text-left">
-          {SITE.description}
-        </p>
-        <div class="home-cta mt-6 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
-          <Link href="/blog/" class={buttonVariants({ variant: 'default' }) + ' w-full justify-center sm:w-auto'}>
-            查看博客
-          </Link>
-          <Link href="/about/" class={buttonVariants({ variant: 'outline' }) + ' w-full justify-center sm:w-auto'}>
-            关于我
-          </Link>
-        </div>
-      </div>
-    </div>
+  <PageHead
+    slot="head"
+    title={`${SITE.title} - 安全研究`}
+    description={SITE.description}
+    canonicalURL={currentUrl.toString()}
+  />
 
-    <section class="home-section relative" aria-labelledby="home-skills-title">
-      <h2
-        id="home-skills-title"
-        class="font-custom text-foreground text-2xl font-bold"
-        title="skills"
-        aria-label="skills"
-      >
-        技能与技术栈
-      </h2>
-      <p class="text-muted-foreground text-sm" aria-label="skills description">
-        最近常用的一些技术与工具：
-      </p>
-      <div>
-        <Skills client:visible />
-      </div>
-    </section>
+  <div class="page">
+    <h1>{SITE.title}</h1>
+    <p>{SITE.description}</p>
+    <p>
+      <a href="/blog/" class="button">博客</a>
+      <span> </span>
+      <a href="/notes/" class="button">笔记</a>
+      <span> </span>
+      <a href="/album/" class="button">相册</a>
+    </p>
+  </div>
 
-    <section class="home-section flex flex-col gap-y-4" aria-labelledby="home-latest-posts-title" role="region">
-      <div class="relative">
-        <h2
-          id="home-latest-posts-title"
-          class="font-custom text-foreground text-2xl font-bold"
-          title="latest blog posts"
-          aria-label="latest blog posts"
-        >
-          最新博客文章
-        </h2>
-        <p class="text-muted-foreground text-sm" aria-label="blog description">
-          这里是我最新的一些博客文章，你可以进入博客页查看更多内容。
-        </p>
-      </div>
-      <ul class="home-post-list flex flex-col gap-y-4">
-        {
-          blog.map((post) => (
-            <li>
-              <BlogCard entry={post} slug={post.slug} basePath="/blog" tagLinkBase="/tags" />
-            </li>
-          ))
-        }
-      </ul>
-      <div class="flex justify-center">
-        <Link href="/blog/" class={buttonVariants({ variant: 'ghost' }) + ' group w-full justify-center sm:w-auto'}>
-          查看所有文章
-          <span class="ml-1.5 transition-transform group-hover:translate-x-1">&rarr;</span>
-        </Link>
-      </div>
-    </section>
-  </section>
+  <div class="posts">
+    <h2 class="posts-title">最新文章</h2>
+    {recentPosts.map(({ post, slug }) => (
+      <TerminalPostCard post={post} slug={slug} />
+    ))}
+  </div>
 </Layout>

@@ -1,336 +1,144 @@
 ---
-import '@/styles/about-desktop.css'
-
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
-import { Icon } from 'astro-icon/components'
 import Layout from '@/layouts/Layout.astro'
+import { SITE } from '@/consts'
 import { GALLERY_IMAGES, buildGalleryImageSources } from '@/data/gallery'
-import { getAllProjects, getProjectSlug } from '@/lib/data-utils'
 
 const currentUrl = Astro.url.toString()
-const featuredProjects = (await getAllProjects()).slice(0, 6)
+const featuredPhotos = GALLERY_IMAGES.slice(0, 6).map((item) => buildGalleryImageSources(item))
 
 const milestones = [
-  {
-    period: '2023 - 至今',
-    title: '海南大学 · 信息安全',
-    subtitle: '网络空间安全学院',
-    summary:
-      '大学本科专业学习',
-    tags: ['信息安全', '工程基础', '安全研究'],
-  },
-  {
-    period: '2023 - 至今',
-    title: 'HnuSec 核心成员',
-    subtitle: 'CTF / Web Security',
-    summary:
-      '专注 Web 方向攻防与题目研究，持续输出复盘与技术沉淀，强化实战协作能力。',
-    tags: ['CTF', 'Web 安全', '团队协作'],
-  },
+  '海南大学 · 信息安全（2023 - 至今）',
+  'HnuSec 核心成员（CTF / Web Security）',
+  '持续进行 Web 安全、漏洞分析与工程实践输出',
 ]
 
-const expertise = [
-  {
-    icon: 'lucide:shield-check',
-    title: 'Security',
-    points: ['安全研究分析', '漏洞分析与复现', '持续学习'],
-  },
-  {
-    icon: 'lucide:cpu',
-    title: 'Engineering',
-    points: ['项目开发', '应用实践', '运维分析'],
-  },
-  {
-    icon: 'lucide:workflow',
-    title: 'AI Workflow',
-    points: ['LLM 应用集成', 'Agent应用', 'AI4Sec'],
-  },
-]
-
-const principles = [
-  '相信验证，而不是感觉。',
-  '正视时代，面向时代',
-  '立足现实约束，持续学习，持续突破！！',
-]
-
-
-const focusItems = [
-  {
-    icon: 'lucide:scan-search',
-    title: '漏洞研究',
-    detail: '持续跟进，持续关注',
-  },
-  {
-    icon: 'lucide:bot',
-    title: 'AI4Sec',
-    detail: '这个时代会何去何从',
-  },
-  {
-    icon: 'lucide:factory',
-    title: '开源',
-    detail: 'OpenSource',
-  },
-]
-
-const ABOUT_GALLERY_SIZES = '(max-width: 767px) 94vw, (max-width: 1190px) 48vw, 32vw'
-
-const galleryImages = GALLERY_IMAGES.slice(0, 8).map((item) => ({
-  ...buildGalleryImageSources(item),
-  shape: item.shape || '',
-}))
-
-const getProjectIcon = (tags: string[]) => {
-  if (tags.includes('security') || tags.includes('ctf') || tags.includes('web')) return '🛡️'
-  if (tags.includes('python')) return '🐍'
-  if (tags.includes('react') || tags.includes('typescript')) return '⚛️'
-  if (tags.includes('ai') || tags.includes('ml')) return '🤖'
-  return '💻'
-}
-
-const getProjectHref = (project: (typeof featuredProjects)[number]) => {
-  return project.data.link || `/projects/${getProjectSlug(project)}/`
-}
-
-const isExternalHref = (href: string) => /^https?:\/\//.test(href)
+const focuses = ['漏洞研究', 'AI4Sec', '开源实践']
 ---
 
-<Layout canonicalUrl={currentUrl} isWide={true}>
+<Layout canonicalUrl={currentUrl}>
   <PageHead
     slot="head"
     title="关于我"
-    description="BX 的背景、研究方向与项目实践。"
+    description="BX 的背景、研究方向与作品实践。"
     canonicalURL={currentUrl}
   />
 
-  <div class="about-page">
-    <div class="about-shell">
-      <Breadcrumbs items={[{ label: '关于我', icon: 'lucide:user-round' }]} />
+  <div class="page">
+    <h1>关于我</h1>
+    <p class="about-avatar-wrap">
+      <img
+        class="about-avatar"
+        src="/bx.jpg"
+        alt="BX 头像"
+        loading="eager"
+        decoding="async"
+        width="42"
+        height="42"
+      />
+    </p>
+    <p>我是 {SITE.title}，主要关注网络安全研究、工程开发与技术分享。</p>
+    <p>所在地：{SITE.location}</p>
+    <p>
+      <a href="mailto:bx33661@gmail.com">邮箱联系</a>
+      {' :: '}
+      <a href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </p>
+  </div>
 
-      <section class="about-panel about-hero">
-        <div class="about-hero__copy">
-          <p class="about-kicker">Profile</p>
-          <h1>Bx/Bpple</h1>
-          <p class="about-lead">
-            我是Bx，欢迎关注，我们一起学习，一起进步。
-          </p>
-          <div class="about-focus-grid">
-            {
-              focusItems.map((item) => (
-                <article class="about-focus-card">
-                  <div class="about-focus-card__title">
-                    <Icon name={item.icon} class="size-4" />
-                    <h3>{item.title}</h3>
-                  </div>
-                  <p>{item.detail}</p>
-                </article>
-              ))
-            }
-          </div>
-          <div class="about-hero__actions">
-            <a href="mailto:bx33661@gmail.com" class="about-btn about-btn--primary">
-              <Icon name="lucide:mail" class="size-4" />
-              邮件联系
-            </a>
-            <a
-              href="https://github.com/bx33661"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="about-btn"
-            >
-              <Icon name="lucide:github" class="size-4" />
-              GitHub 仓库
-            </a>
-          </div>
+  <div class="posts">
+    <h2 class="posts-title">成长路径</h2>
+    <ul>
+      {milestones.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+
+  <div class="posts">
+    <h2 class="posts-title">当前关注</h2>
+    <ul>
+      {focuses.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+
+  <div class="posts">
+    <h2 class="posts-title">相册精选</h2>
+    {featuredPhotos.length === 0 ? (
+      <p>暂无照片。</p>
+    ) : (
+      <>
+        <div class="about-album-grid">
+          {featuredPhotos.map((photo) => (
+            <article class="about-album-card">
+              <a class="about-album-link" href={photo.originalSrc} target="_blank" rel="noopener noreferrer" aria-label={`查看原图：${photo.title}`}>
+                <img
+                  class="about-album-image"
+                  src={photo.optimizedSrc}
+                  srcset={photo.jpgSrcSet}
+                  sizes="(max-width: 767px) 96vw, (max-width: 1080px) 48vw, 25vw"
+                  alt={photo.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <p class="about-album-caption">{photo.title}</p>
+            </article>
+          ))}
         </div>
-
-        <aside class="about-profile">
-          <p class="about-profile__status">
-            <span aria-hidden="true"></span>
-            可接受合作咨询
-          </p>
-          <div class="about-profile__avatar-wrap">
-            <img
-              src="/static/blogo.jpg"
-              alt="BX 头像"
-              class="about-profile__avatar"
-              loading="lazy"
-              decoding="async"
-              width="220"
-              height="220"
-            />
-          </div>
-          <h2>BX</h2>
-          <p>网络安全研究 / 工程开发</p>
-          <ul>
-            <li>
-              <Icon name="lucide:map-pin" class="size-4" />
-              中国
-            </li>
-            <li>
-              <Icon name="lucide:briefcase-business" class="size-4" />
-              一起见证星辰大海
-            </li>
-            <li>
-              <Icon name="lucide:clock-3" class="size-4" />
-              欢迎大家交流学习
-            </li>
-          </ul>
-        </aside>
-      </section>
-
-      <section class="about-main-grid">
-        <div class="about-panel about-timeline">
-          <div class="about-section-head">
-            <h2>成长路径</h2>
-            <p>Education / Experience</p>
-          </div>
-
-          <ol class="about-timeline-list">
-            {
-              milestones.map((item) => (
-                <li class="about-step">
-                  <span class="about-step__period">{item.period}</span>
-                  <h3>{item.title}</h3>
-                  <p class="about-step__subtitle">{item.subtitle}</p>
-                  <p class="about-step__summary">{item.summary}</p>
-                  <div class="about-step__tags">
-                    {item.tags.map((tag) => <span>{tag}</span>)}
-                  </div>
-                </li>
-              ))
-            }
-          </ol>
-        </div>
-
-        <div class="about-side-stack">
-          <section class="about-panel about-expertise">
-            <div class="about-section-head">
-              <h2>能力矩阵</h2>
-              <p>Core Capabilities</p>
-            </div>
-
-            <div class="about-expertise-grid">
-              {
-                expertise.map((group) => (
-                  <article class="about-expertise-card">
-                    <div class="about-expertise-card__title">
-                      <Icon name={group.icon} class="size-4" />
-                      <h3>{group.title}</h3>
-                    </div>
-                    <ul>
-                      {group.points.map((point) => <li>{point}</li>)}
-                    </ul>
-                  </article>
-                ))
-              }
-            </div>
-          </section>
-
-          <section class="about-panel about-principles">
-            <div class="about-section-head">
-              <h2>协作原则</h2>
-              <p>How I Work</p>
-            </div>
-            <ul>
-              {principles.map((item) => <li>{item}</li>)}
-            </ul>
-          </section>
-        </div>
-      </section>
-
-      <section class="about-panel about-projects">
-        <div class="about-section-head about-section-head--row">
-          <div>
-            <h2>项目与实践</h2>
-            <p>Selected Work</p>
-          </div>
-          <Link href="/projects/" class="about-inline-link">查看全部项目</Link>
-        </div>
-
-        <div class="about-project-grid">
-          {
-            featuredProjects.map((project) => {
-              const projectHref = getProjectHref(project)
-              const isExternal = isExternalHref(projectHref)
-
-              return (
-                <a
-                  href={projectHref}
-                  target={isExternal ? '_blank' : undefined}
-                  rel={isExternal ? 'noopener noreferrer' : undefined}
-                  class="about-project-card"
-                >
-                  <div class="about-project-card__top">
-                    <span class="about-project-card__icon">{getProjectIcon(project.data.tags)}</span>
-                    <span class="about-project-card__year">
-                      {(project.data.endDate || project.data.startDate)?.getFullYear() || 'Now'}
-                    </span>
-                  </div>
-                  <h3>{project.data.name}</h3>
-                  <p>{project.data.description}</p>
-                  <div class="about-project-card__tags">
-                    {project.data.tags.slice(0, 3).map((tag) => <span>{tag}</span>)}
-                  </div>
-                  <span class="about-project-card__more">
-                    {isExternal ? '查看项目' : '查看详情'}
-                    <Icon name="lucide:arrow-up-right" class="size-3.5" />
-                  </span>
-                </a>
-              )
-            })
-          }
-        </div>
-      </section>
-
-      <section class="about-panel about-gallery">
-        <div class="about-section-head about-section-head--row">
-          <div>
-            <h2>生活片段</h2>
-            <p>Personal Moments</p>
-          </div>
-          <Link href="/bento/" class="about-inline-link">查看更多</Link>
-        </div>
-
-        <div class="about-gallery-grid">
-          {
-            galleryImages.map((image) => (
-              <figure class={`about-shot ${image.shape}`.trim()}>
-                <picture>
-                  <source type="image/avif" srcset={image.avifSrcSet} sizes={ABOUT_GALLERY_SIZES} />
-                  <source type="image/webp" srcset={image.webpSrcSet} sizes={ABOUT_GALLERY_SIZES} />
-                  <img
-                    src={image.optimizedSrc}
-                    srcset={image.jpgSrcSet}
-                    sizes={ABOUT_GALLERY_SIZES}
-                    alt={image.alt}
-                    loading="lazy"
-                    decoding="async"
-                    width={image.width}
-                    height={image.height}
-                  />
-                </picture>
-                <figcaption>
-                  <span>{image.title}</span>
-                  <time>{image.date}</time>
-                </figcaption>
-              </figure>
-            ))
-          }
-        </div>
-      </section>
-
-      <section class="about-panel about-cta">
-        <div>
-          <h2>如需安全研究或者日常交流</h2>
-          <p>欢迎邮件沟通，我会及时回复😄。</p>
-        </div>
-        <div class="about-hero__actions">
-          <a href="mailto:bx33661@gmail.com" class="about-btn about-btn--primary">发送邮件</a>
-          <Link href="/blog/" class="about-btn">查看博客文章</Link>
-        </div>
-      </section>
-    </div>
+        <p><a href="/album/" class="button inline">[查看完整相册]</a></p>
+      </>
+    )}
   </div>
 </Layout>
+
+<style>
+  .about-avatar-wrap {
+    margin: 8px 0 12px;
+  }
+
+  .about-avatar {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 999px;
+    border: 2px solid var(--accent) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    object-fit: cover;
+  }
+
+  .about-album-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .about-album-card {
+    margin: 0;
+  }
+
+  .about-album-link {
+    display: block;
+    text-decoration: none;
+    border: 4px solid var(--accent);
+    padding: 4px;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--background);
+  }
+
+  .about-album-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    object-fit: cover;
+  }
+
+  .about-album-caption {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  }
+</style>

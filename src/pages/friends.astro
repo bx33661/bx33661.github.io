@@ -1,17 +1,9 @@
 ---
-import '@/styles/unified-pages.css'
-
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
-import { buttonVariants } from '@/components/ui/button'
 import { FRIEND_LINKS, ORGANIZATION_LINKS } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { Icon } from 'astro-icon/components'
 
 const currentUrl = Astro.url.toString()
-const friendCount = FRIEND_LINKS.length
-const orgCount = ORGANIZATION_LINKS.length
 
 const info = {
   name: 'BX的博客',
@@ -19,218 +11,54 @@ const info = {
   desc: '专注于安全研究和技术分享的个人博客',
   avatar: 'https://www.bx33661.com/bx.jpg',
 }
-
-const applyRules = [
-  { title: '内容合规', desc: '内容积极、持续更新、可公开访问。' },
-  { title: '技术相关', desc: '优先技术、安全、开发实践类站点。' },
-  { title: '稳定可达', desc: '站点应可长期访问，无频繁失效。' },
-  { title: '原创优先', desc: '有原创沉淀更容易通过。' },
-]
 ---
 
-<Layout canonicalUrl={currentUrl} isWide={true}>
+<Layout canonicalUrl={currentUrl}>
   <PageHead slot="head" title="友情链接" description="技术站点与安全社区链接集合。" canonicalURL={currentUrl} />
 
-  <div class="uipage">
-    <div class="uishell">
-      <Breadcrumbs items={[{ label: '友链', icon: 'lucide:users' }]} />
-
-      <section class="uipanel uihero">
-        <p class="uihero__eyebrow">Connections</p>
-        <h1>友情链接</h1>
-        <p>收录技术博客与安全社区站点，欢迎交流并申请互链。</p>
-        <div class="uikpi-grid">
-          <article class="uikpi-card">
-            <p class="uikpi-card__label">友链数量</p>
-            <p class="uikpi-card__value">{friendCount}</p>
-          </article>
-          <article class="uikpi-card">
-            <p class="uikpi-card__label">组织数量</p>
-            <p class="uikpi-card__value">{orgCount}</p>
-          </article>
-          <article class="uikpi-card">
-            <p class="uikpi-card__label">申请方式</p>
-            <p class="uikpi-card__value text-base">邮件 / Issue</p>
-          </article>
-          <a href="mailto:bx33661@gmail.com" class="uikpi-card no-underline">
-            <p class="uikpi-card__label">快速联系</p>
-            <p class="uikpi-card__value text-base inline-flex items-center gap-1">
-              发送邮件
-              <Icon name="lucide:arrow-right" class="size-4" />
-            </p>
-          </a>
-        </div>
-      </section>
-
-      <section class="uisection">
-        <div class="uisection-head">
-          <div>
-            <h2>友链列表</h2>
-            <p>Selected Blogs</p>
-          </div>
-        </div>
-        <div class="uicard-grid uicard-grid--3">
-          {
-            FRIEND_LINKS.map((friend) => (
-              <a
-                href={friend.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="uifriend-card"
-                aria-label={`访问 ${friend.name}`}
-              >
-                <div class="uifriend-card__top">
-                  <img src={friend.avatar || '/placeholder-avatar.png'} alt={friend.name} loading="lazy" />
-                  <div class="min-w-0">
-                    <h3 class="truncate">{friend.name}</h3>
-                    <p class="uifriend-card__host truncate">{new URL(friend.url).hostname}</p>
-                  </div>
-                </div>
-                <p class="uifriend-card__desc">{friend.description}</p>
-              </a>
-            ))
-          }
-        </div>
-      </section>
-
-      <section class="uisection">
-        <div class="uicard-grid uicard-grid--2">
-          <article class="uipanel uicard">
-            <h3 class="inline-flex items-center gap-2">
-              <Icon name="lucide:file-check-2" class="size-4 text-primary" />
-              申请要求
-            </h3>
-            <ul class="uiitem-list">
-              {applyRules.map((rule) => (
-                <li>
-                  <div>
-                    <span class="uiitem-list__primary">{rule.title}</span>
-                    <span class="uiitem-list__desc">{rule.desc}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <div class="ui-actions mt-4">
-              <Link href="mailto:bx33661@gmail.com" class={buttonVariants({ variant: 'default' })}>
-                <Icon name="lucide:mail" class="mr-2 size-4" />
-                邮件申请
-              </Link>
-              <Link
-                href="https://github.com/bx33661/bx33661.github.io/issues"
-                target="_blank"
-                rel="noopener noreferrer"
-                class={buttonVariants({ variant: 'outline' })}
-              >
-                <Icon name="lucide:github" class="mr-2 size-4" />
-                Issue 申请
-              </Link>
-            </div>
-          </article>
-
-          <article class="uipanel uicard">
-            <div class="flex items-center justify-between gap-2">
-              <h3 class="inline-flex items-center gap-2">
-                <Icon name="lucide:copy" class="size-4 text-primary" />
-                本站信息
-              </h3>
-              <button id="copy-all-btn" class="text-xs text-primary hover:underline cursor-pointer">
-                一键复制
-              </button>
-            </div>
-            <div class="ui-copy-list">
-              <button type="button" class="ui-copy-item copy-item" data-text={info.name} aria-label="复制站点名称">
-                <code>name</code>
-                <span>{info.name}</span>
-              </button>
-              <button type="button" class="ui-copy-item copy-item" data-text={info.address} aria-label="复制站点链接">
-                <code>link</code>
-                <span class="truncate">{info.address}</span>
-              </button>
-              <button type="button" class="ui-copy-item copy-item" data-text={info.desc} aria-label="复制站点描述">
-                <code>desc</code>
-                <span class="truncate">{info.desc}</span>
-              </button>
-              <button type="button" class="ui-copy-item copy-item" data-text={info.avatar} aria-label="复制站点头像地址">
-                <code>logo</code>
-                <span class="truncate">{info.avatar}</span>
-              </button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="uisection">
-        <div class="uisection-head">
-          <div>
-            <h2>组织与社区</h2>
-            <p>Communities</p>
-          </div>
-        </div>
-        <div class="uicard-grid uicard-grid--3">
-          {
-            ORGANIZATION_LINKS.map((org) => (
-              <a href={org.url} target="_blank" rel="noopener noreferrer" class="uifriend-card">
-                <div class="uifriend-card__top">
-                  <img src={org.avatar || '/placeholder-org.png'} alt={org.name} loading="lazy" />
-                  <div class="min-w-0">
-                    <h3 class="truncate">{org.name}</h3>
-                    <p class="uifriend-card__host truncate">{new URL(org.url).hostname}</p>
-                  </div>
-                </div>
-                <p class="uifriend-card__desc">{org.description}</p>
-                {org.tags && org.tags.length > 0 && (
-                  <div class="flex flex-wrap gap-1">
-                    {org.tags.slice(0, 3).map((tag) => (
-                      <span class="text-[11px] rounded-full border border-border px-2 py-0.5">{tag}</span>
-                    ))}
-                  </div>
-                )}
-              </a>
-            ))
-          }
-        </div>
-      </section>
-    </div>
+  <div class="page">
+    <h1>友情链接</h1>
+    <p>收录技术博客与安全社区站点，欢迎交流并申请互链。</p>
+    <p>
+      <a href="mailto:bx33661@gmail.com">邮件申请</a>
+      {' :: '}
+      <a href="https://github.com/bx33661/bx33661.github.io/issues" target="_blank" rel="noopener noreferrer">Issue 申请</a>
+    </p>
   </div>
 
-  <script is:inline define:vars={{ info }}>
-    const showToast = (message) => {
-      const toast = document.createElement('div')
-      toast.className =
-        'fixed bottom-8 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 rounded-full shadow-lg text-sm font-medium z-50'
-      toast.textContent = message
-      document.body.appendChild(toast)
-      setTimeout(() => {
-        toast.remove()
-      }, 1600)
-    }
+  <div class="posts">
+    <h2 class="posts-title">友链列表</h2>
+    <ul>
+      {FRIEND_LINKS.map((friend) => (
+        <li>
+          <a href={friend.url} target="_blank" rel="noopener noreferrer">{friend.name}</a>
+          {' :: '}
+          <span>{friend.description}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
 
-    const copyText = async (text) => {
-      if (!navigator?.clipboard?.writeText) {
-        showToast('当前环境不支持自动复制')
-        return
-      }
-      try {
-        await navigator.clipboard.writeText(text)
-        showToast('复制成功')
-      } catch {
-        showToast('复制失败，请手动复制')
-      }
-    }
+  <div class="posts">
+    <h2 class="posts-title">组织与社区</h2>
+    <ul>
+      {ORGANIZATION_LINKS.map((org) => (
+        <li>
+          <a href={org.url} target="_blank" rel="noopener noreferrer">{org.name}</a>
+          {' :: '}
+          <span>{org.description}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
 
-    document.addEventListener('astro:page-load', () => {
-      document.querySelectorAll('.copy-item').forEach((item) => {
-        item.addEventListener('click', () => {
-          const text = item.getAttribute('data-text')
-          if (text) copyText(text)
-        })
-      })
-
-      const copyAllBtn = document.getElementById('copy-all-btn')
-      copyAllBtn?.addEventListener('click', () => {
-        const allInfo = `Name: ${info.name}\nLink: ${info.address}\nDesc: ${info.desc}\nLogo: ${info.avatar}`
-        copyText(allInfo)
-      })
-    })
-  </script>
+  <div class="posts">
+    <h2 class="posts-title">本站信息</h2>
+    <ul>
+      <li>Name: {info.name}</li>
+      <li>Link: <a href={info.address}>{info.address}</a></li>
+      <li>Desc: {info.desc}</li>
+      <li>Logo: <a href={info.avatar}>{info.avatar}</a></li>
+    </ul>
+  </div>
 </Layout>

@@ -1,0 +1,27 @@
+/* Palette mapping from light_副本.css / dark_副本.css */
+:root,
+html[data-color-mode='light'] {
+  --background: #ffffff;
+  --foreground: #000000;
+  --accent: #000000;
+  color-scheme: light;
+}
+
+html[data-color-mode='midnight'],
+html[data-color-mode='dark'],
+html[data-theme='dark'],
+html.dark {
+  --background: #1d2021;
+  --foreground: #ebdbb2;
+  --accent: #8ec07c;
+  color-scheme: dark;
+}
+
+/* Keep legacy retro mode readable under terminal theme */
+html[data-color-mode='retro'],
+html[data-theme='retro'] {
+  --background: #ffffff;
+  --foreground: #000000;
+  --accent: #000000;
+  color-scheme: light;
+}

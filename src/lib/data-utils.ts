@@ -10,7 +10,7 @@ function stableHash(input: string): string {
   return Math.abs(hash).toString(36)
 }
 
-function createDeterministicSlug(source: string, prefix: 'post' | 'note' | 'project'): string {
+function createDeterministicSlug(source: string, prefix: 'post' | 'note'): string {
   const normalized = source
     .replace(/\.(md|mdx)$/i, '')
     .replace(/[\\/]/g, '-')
@@ -191,47 +191,6 @@ export async function getPostsByTag(
 ): Promise<CollectionEntry<'blog'>[]> {
   const posts = await getAllPosts()
   return posts.filter((post) => post.data.tags?.includes(tag))
-}
-
-export async function getAllProjects(): Promise<CollectionEntry<'projects'>[]> {
-  const projects = await getCollection('projects')
-  return projects
-    .sort((a, b) => (b.data.startDate?.valueOf() ?? 0) - (a.data.startDate?.valueOf() ?? 0))
-} 
-
-export function getProjectSlug(project: CollectionEntry<'projects'>): string {
-  return createDeterministicSlug(project.id, 'project')
-}
-
-export async function getAllProjectSlugs(): Promise<Array<{ slug: string; project: CollectionEntry<'projects'> }>> {
-  const projects = await getAllProjects()
-  const slugMap = new Map<string, CollectionEntry<'projects'>>()
-
-  for (const project of projects) {
-    const desiredSlug = getProjectSlug(project)
-    const uniqueSlug = ensureUniqueSlug(desiredSlug, project, slugMap)
-    slugMap.set(uniqueSlug, project)
-  }
-
-  return Array.from(slugMap.entries()).map(([slug, project]) => ({ slug, project }))
-}
-
-export async function getProjectsFeaturedTags(maxCount: number): Promise<string[]> {
-  const projects = await getAllProjects()
-  const tags = new Set<string>()
-
-  for (const project of projects) {
-    if (project.data.tags) {
-      for (const tag of project.data.tags) {
-        tags.add(tag)
-      }
-    }
-    if (tags.size >= maxCount) {
-      break
-    }
-  }
-
-  return Array.from(tags).slice(0, maxCount)
 }
 
 /**

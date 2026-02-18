@@ -1,13 +1,8 @@
 ---
-import '@/styles/unified-pages.css'
-
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
 import { getAllPosts, getAllPostSlugs } from '@/lib/data-utils'
 import { formatDate } from '@/lib/utils'
-import { Icon } from 'astro-icon/components'
 
 const allPosts = await getAllPosts()
 const allPostSlugs = await getAllPostSlugs()
@@ -17,89 +12,36 @@ const postsWithSlug = allPosts.map((post) => {
   return { ...post, slug: postSlugData?.slug || post.data.slug || 'unknown' }
 })
 
-const postsByYear = postsWithSlug.reduce(
-  (acc, post) => {
-    const year = post.data.date.getFullYear()
-    if (!acc[year]) acc[year] = []
-    acc[year].push(post)
-    return acc
-  },
-  {} as Record<number, typeof postsWithSlug>,
-)
+const postsByYear = postsWithSlug.reduce((acc, post) => {
+  const year = post.data.date.getFullYear()
+  if (!acc[year]) acc[year] = []
+  acc[year].push(post)
+  return acc
+}, {} as Record<number, typeof postsWithSlug>)
 
-const years = Object.keys(postsByYear)
-  .map(Number)
-  .sort((a, b) => b - a)
-
+const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a)
 const currentUrl = Astro.url.toString()
 ---
 
-<Layout canonicalUrl={currentUrl} isWide={true}>
+<Layout canonicalUrl={currentUrl}>
   <PageHead slot="head" title="文章归档" description="按年份整理的全部博客文章。" canonicalURL={currentUrl} />
 
-  <div class="uipage">
-    <div class="uishell">
-      <Breadcrumbs items={[{ label: '归档', icon: 'lucide:archive' }]} />
-
-      <section class="uipanel uihero">
-        <p class="uihero__eyebrow">Archive</p>
-        <h1>文章归档</h1>
-        <p>全部文章按年份整理，便于快速定位历史内容与持续追踪主题变化。</p>
-        <div class="uikpi-grid">
-          <article class="uikpi-card">
-            <p class="uikpi-card__label">文章总数</p>
-            <p class="uikpi-card__value">{allPosts.length}</p>
-          </article>
-          <article class="uikpi-card">
-            <p class="uikpi-card__label">年份覆盖</p>
-            <p class="uikpi-card__value">{years.length}</p>
-          </article>
-          <article class="uikpi-card">
-            <p class="uikpi-card__label">最新年份</p>
-            <p class="uikpi-card__value">{years[0] || '-'}</p>
-          </article>
-          <a href="/blog/" class="uikpi-card no-underline">
-            <p class="uikpi-card__label">继续浏览</p>
-            <p class="uikpi-card__value text-base inline-flex items-center gap-1">
-              博客列表
-              <Icon name="lucide:arrow-right" class="size-4" />
-            </p>
-          </a>
-        </div>
-      </section>
-
-      <section class="uisection">
-        <div class="uisection-head">
-          <div>
-            <h2>按年份查看</h2>
-            <p>Yearly Timeline</p>
-          </div>
-        </div>
-
-        <div class="uicard-grid">
-          {
-            years.map((year) => (
-              <article class="uipanel uicard">
-                <h3 class="inline-flex items-center gap-2">
-                  <Icon name="lucide:calendar-days" class="size-4 text-primary" />
-                  {year}
-                  <span class="text-sm text-muted-foreground">({postsByYear[year].length})</span>
-                </h3>
-                <ul class="uiitem-list">
-                  {postsByYear[year].map((post) => (
-                    <li>
-                      <Link href={`/blog/${post.slug}`}>
-                        <span class="truncate text-foreground">{post.data.title}</span>
-                        <span class="uiitem-list__meta">{formatDate(post.data.date).split(' ')[0]}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))
-          }
-        </div>
-      </section>
-    </div>
+  <div class="page">
+    <h1>文章归档</h1>
+    <p>按年份浏览所有博客文章。</p>
   </div>
+
+  {years.map((year) => (
+    <div class="posts">
+      <h2 class="posts-title">{year}</h2>
+      <ul>
+        {postsByYear[year].map((post) => (
+          <li>
+            <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+            <span>{' :: '}{formatDate(post.data.date)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
 </Layout>

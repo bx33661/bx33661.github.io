@@ -1,0 +1,255 @@
+---
+import Head from '@/components/Head.astro'
+import { SITE } from '@/consts'
+import '@/styles/terminal/terminal.css'
+import '@/styles/terminal/theme-colors.css'
+import '@/styles/terminal/fonts.css'
+import '@/styles/terminal/main.css'
+import '@/styles/terminal/header.css'
+import '@/styles/terminal/menu.css'
+import '@/styles/terminal/footer.css'
+import '@/styles/terminal/buttons.css'
+import '@/styles/terminal/post.css'
+import '@/styles/terminal/pagination.css'
+import '@/styles/terminal/code.css'
+import '@/styles/terminal/syntax.css'
+import '@/styles/terminal/gist.css'
+import '@/styles/terminal/terms.css'
+import '@/styles/terminal/layout-overrides.css'
+
+interface Props {
+  title?: string
+  description?: string
+  image?: string
+  canonicalUrl?: URL | string
+}
+
+const { title = SITE.title, description = SITE.description, image, canonicalUrl } = Astro.props
+const currentPath = Astro.url.pathname
+const currentYear = new Date().getFullYear()
+
+const navItems = [
+  { href: '/blog/', label: 'Blog' },
+  { href: '/tags/', label: 'Tags' },
+  { href: '/notes/', label: 'Notes' },
+  { href: '/album/', label: 'Album' },
+  { href: '/about/', label: 'About' },
+]
+
+const isActive = (href: string) => {
+  if (href === '/') return currentPath === '/'
+  return currentPath === href || currentPath.startsWith(href)
+}
+---
+
+<!doctype html>
+<html lang={SITE.locale}>
+  <Head title={title} description={description} image={image} canonicalUrl={canonicalUrl}>
+    <slot name="head" slot="head" />
+    <script is:inline>
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          const script = document.createElement('script')
+          script.src = 'https://analytics.ahrefs.com/analytics.js'
+          script.setAttribute('data-key', '+FHMgRP7/Duxaq5D0gZtJw')
+          script.async = true
+          document.head.appendChild(script)
+        }, 2000)
+      })
+    </script>
+    <link slot="head" rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
+  </Head>
+  <body>
+    <div class="container center">
+      <header class="header">
+        <div class="header__inner">
+          <div class="header__logo">
+            <a href="/">
+              <div class="logo">
+                <img class="logo__avatar" src="/bx.jpg" alt="BX 头像" loading="eager" decoding="async" />
+                <span>{SITE.title}</span>
+              </div>
+            </a>
+          </div>
+          <ul class="menu menu--mobile">
+            <li class="menu__trigger">Menu ▾</li>
+            <li>
+              <ul class="menu__dropdown">
+                {navItems.map((item) => (
+                  <li>
+                    <a href={item.href}>{item.label}</a>
+                  </li>
+                ))}
+                <li><a href="/rss.xml">RSS</a></li>
+                <li>
+                  <button
+                    type="button"
+                    class="theme-toggle js-theme-toggle"
+                    aria-label="切换深浅色"
+                    title="切换深浅色"
+                  >
+                    切换主题
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <nav class="navigation-menu">
+          <ul class="navigation-menu__inner menu--desktop">
+            {navItems.map((item) => (
+              <li>
+                <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))}
+            <li>
+              <a href="/rss.xml">RSS</a>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="theme-toggle js-theme-toggle"
+                aria-label="切换深浅色"
+                title="切换深浅色"
+              >
+                切换主题
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <main class="content">
+        <slot />
+      </main>
+
+      <footer class="footer">
+        <div class="footer__inner">
+          <div class="copyright">
+            <span>© {currentYear} {SITE.title}</span>
+            <span class="separator">::</span>
+            <span>Powered by <a href="https://astro.build">Astro</a></span>
+            <span class="separator">::</span>
+            <span><a href="https://github.com/dennisklappe/astro-theme-terminal">astro-theme-terminal</a></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      (() => {
+        const container = document.querySelector('.container')
+        const menus = document.querySelectorAll('.menu')
+
+        document.body.addEventListener('click', () => {
+          menus.forEach((menu) => {
+            menu.classList.remove('open')
+          })
+        })
+
+        window.addEventListener('resize', () => {
+          menus.forEach((menu) => {
+            menu.classList.remove('open')
+          })
+        })
+
+        menus.forEach((menu) => {
+          const trigger = menu.querySelector('.menu__trigger')
+          const dropdown = menu.querySelector('.menu__dropdown')
+
+          if (!trigger || !dropdown) return
+
+          trigger.addEventListener('click', (event) => {
+            event.stopPropagation()
+
+            if (menu.classList.contains('open')) {
+              menu.classList.remove('open')
+            } else {
+              menus.forEach((item) => item.classList.remove('open'))
+              menu.classList.add('open')
+            }
+
+            if (
+              container &&
+              dropdown instanceof HTMLElement &&
+              dropdown.getBoundingClientRect().right > container.getBoundingClientRect().right
+            ) {
+              dropdown.style.left = 'auto'
+              dropdown.style.right = '0'
+            }
+          })
+
+          dropdown.addEventListener('click', (event) => event.stopPropagation())
+        })
+
+        const getThemeApi = () => {
+          if (typeof window === 'undefined') return null
+          return window.__BX_THEME__ || null
+        }
+
+        const getIsDarkMode = () => {
+          const api = getThemeApi()
+          if (api && typeof api.get === 'function') {
+            return api.get() === 'midnight'
+          }
+          return document.documentElement.dataset.colorMode === 'midnight'
+        }
+
+        const updateThemeToggleLabel = () => {
+          const dark = getIsDarkMode()
+          document.querySelectorAll<HTMLButtonElement>('.js-theme-toggle').forEach((button) => {
+            button.textContent = dark ? '☀ 浅色模式' : '☾ 深色模式'
+            button.setAttribute('aria-pressed', dark ? 'true' : 'false')
+            button.setAttribute('title', dark ? '当前深色，点击切换浅色' : '当前浅色，点击切换深色')
+          })
+        }
+
+        const toggleTheme = () => {
+          const api = getThemeApi()
+          if (api && typeof api.set === 'function') {
+            const dark = getIsDarkMode()
+            api.set(dark ? 'light' : 'midnight')
+            updateThemeToggleLabel()
+            return
+          }
+
+          const root = document.documentElement
+          const dark = root.dataset.colorMode === 'midnight'
+          const next = dark ? 'light' : 'midnight'
+          root.dataset.colorMode = next
+          root.classList.toggle('dark', !dark)
+          root.style.colorScheme = dark ? 'light' : 'dark'
+          localStorage.setItem('theme', next)
+          updateThemeToggleLabel()
+        }
+
+        const bindThemeToggle = () => {
+          document.querySelectorAll<HTMLButtonElement>('.js-theme-toggle').forEach((button) => {
+            if (button.dataset.themeBound === 'true') return
+            button.dataset.themeBound = 'true'
+            button.addEventListener('click', (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              toggleTheme()
+            })
+          })
+          updateThemeToggleLabel()
+        }
+
+        bindThemeToggle()
+        document.addEventListener('astro:page-load', bindThemeToggle)
+        window.addEventListener('bx-theme-change', updateThemeToggleLabel)
+      })()
+    </script>
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').catch(function() {})
+        })
+      }
+    </script>
+  </body>
+</html>
