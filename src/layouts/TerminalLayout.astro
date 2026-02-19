@@ -184,6 +184,110 @@ const isActive = (href: string) => {
           dropdown.addEventListener('click', (event) => event.stopPropagation())
         })
 
+        const LIGHTBOX_ID = 'bx-image-lightbox'
+
+        const ensureImageLightbox = () => {
+          const existing = document.getElementById(LIGHTBOX_ID)
+          if (existing) {
+            return existing
+          }
+
+          const lightbox = document.createElement('div')
+          lightbox.id = LIGHTBOX_ID
+          lightbox.className = 'image-lightbox'
+          lightbox.setAttribute('aria-hidden', 'true')
+          lightbox.innerHTML = `
+            <div class="image-lightbox__panel" role="dialog" aria-modal="true" aria-label="图片预览">
+              <button type="button" class="image-lightbox__close" aria-label="关闭预览">×</button>
+              <img class="image-lightbox__image" src="" alt="" />
+              <p class="image-lightbox__caption" hidden></p>
+            </div>
+          `
+          document.body.appendChild(lightbox)
+          return lightbox
+        }
+
+        const resolvePreviewSource = (img: HTMLImageElement) => {
+          const fromAnchor = img.closest('a[href]') as HTMLAnchorElement | null
+          if (fromAnchor) {
+            const href = fromAnchor.getAttribute('href') || ''
+            const isImageLink = /\.(avif|webp|png|jpe?g|gif|svg)(\?|#|$)/i.test(href)
+            if (isImageLink) {
+              return new URL(href, window.location.href).toString()
+            }
+          }
+          return img.currentSrc || img.src
+        }
+
+        const bindImageLightbox = () => {
+          const lightbox = ensureImageLightbox()
+          const closeButton = lightbox.querySelector<HTMLButtonElement>('.image-lightbox__close')
+          const previewImage = lightbox.querySelector<HTMLImageElement>('.image-lightbox__image')
+          const previewCaption = lightbox.querySelector<HTMLParagraphElement>('.image-lightbox__caption')
+          if (!closeButton || !previewImage || !previewCaption) return
+
+          const closeLightbox = () => {
+            lightbox.classList.remove('is-open')
+            lightbox.setAttribute('aria-hidden', 'true')
+            document.body.classList.remove('lightbox-open')
+            previewImage.removeAttribute('src')
+            previewImage.removeAttribute('alt')
+            previewCaption.hidden = true
+            previewCaption.textContent = ''
+          }
+
+          const openLightbox = (src: string, alt: string) => {
+            previewImage.src = src
+            previewImage.alt = alt || '图片预览'
+            if (alt) {
+              previewCaption.hidden = false
+              previewCaption.textContent = alt
+            } else {
+              previewCaption.hidden = true
+              previewCaption.textContent = ''
+            }
+            lightbox.classList.add('is-open')
+            lightbox.setAttribute('aria-hidden', 'false')
+            document.body.classList.add('lightbox-open')
+          }
+
+          if (lightbox.dataset.lightboxBound !== 'true') {
+            lightbox.dataset.lightboxBound = 'true'
+
+            closeButton.addEventListener('click', closeLightbox)
+            lightbox.addEventListener('click', (event) => {
+              if (event.target === lightbox) closeLightbox()
+            })
+
+            window.addEventListener('keydown', (event) => {
+              if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+                closeLightbox()
+              }
+            })
+          }
+
+          document
+            .querySelectorAll<HTMLImageElement>('.post-content img, .post-cover img')
+            .forEach((img) => {
+              if (img.dataset.zoomBound === 'true') return
+              img.dataset.zoomBound = 'true'
+              img.classList.add('post-image-zoomable')
+
+              img.addEventListener('click', (event) => {
+                const fromAnchor = img.closest('a[href]') as HTMLAnchorElement | null
+                if (fromAnchor) {
+                  const href = fromAnchor.getAttribute('href') || ''
+                  const isImageLink = /\.(avif|webp|png|jpe?g|gif|svg)(\?|#|$)/i.test(href)
+                  if (!isImageLink) return
+                }
+
+                event.preventDefault()
+                event.stopPropagation()
+                openLightbox(resolvePreviewSource(img), img.alt || '')
+              })
+            })
+        }
+
         const getThemeApi = () => {
           if (typeof window === 'undefined') return null
           return window.__BX_THEME__ || null
@@ -239,7 +343,9 @@ const isActive = (href: string) => {
         }
 
         bindThemeToggle()
+        bindImageLightbox()
         document.addEventListener('astro:page-load', bindThemeToggle)
+        document.addEventListener('astro:page-load', bindImageLightbox)
         window.addEventListener('bx-theme-change', updateThemeToggleLabel)
       })()
     </script>
