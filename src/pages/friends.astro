@@ -11,6 +11,30 @@ const info = {
   desc: '专注于安全研究和技术分享的个人博客',
   avatar: 'https://www.bx33661.com/bx.jpg',
 }
+
+const getHost = (url: string) => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '')
+  } catch {
+    return url
+  }
+}
+
+const getFallbackText = (name: string) => name.trim().slice(0, 1).toUpperCase() || '?'
+
+const friendCards = FRIEND_LINKS.map((item) => ({
+  ...item,
+  host: getHost(item.url),
+  fallback: getFallbackText(item.name),
+}))
+
+const organizationCards = ORGANIZATION_LINKS.map((item) => ({
+  ...item,
+  host: getHost(item.url),
+  fallback: getFallbackText(item.name),
+}))
+
+const totalLinks = friendCards.length + organizationCards.length
 ---
 
 <Layout canonicalUrl={currentUrl}>
@@ -26,39 +50,240 @@ const info = {
     </p>
   </div>
 
-  <div class="posts">
+  <div class="friend-hero">
+    <div class="hero-chip">Links: {totalLinks}</div>
+    <div class="hero-chip">Friends: {friendCards.length}</div>
+    <div class="hero-chip">Orgs: {organizationCards.length}</div>
+  </div>
+
+  <div class="posts friend-section">
     <h2 class="posts-title">友链列表</h2>
-    <ul>
-      {FRIEND_LINKS.map((friend) => (
-        <li>
-          <a href={friend.url} target="_blank" rel="noopener noreferrer">{friend.name}</a>
-          {' :: '}
-          <span>{friend.description}</span>
-        </li>
+    <div class="friend-grid">
+      {friendCards.map((friend) => (
+        <article class="friend-card">
+          <a class="friend-card__link" href={friend.url} target="_blank" rel="noopener noreferrer" aria-label={`访问 ${friend.name}`}>
+            <div class="friend-card__avatar-wrap">
+              {friend.avatar ? (
+                <img class="friend-card__avatar" src={friend.avatar} alt={`${friend.name} 头像`} loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+              ) : (
+                <span class="friend-card__avatar-fallback">{friend.fallback}</span>
+              )}
+            </div>
+            <div class="friend-card__content">
+              <h3 class="friend-card__title">{friend.name}</h3>
+              <p class="friend-card__desc">{friend.description}</p>
+              <div class="friend-card__tags">
+                <span class="friend-tag friend-tag--host">{friend.host}</span>
+              </div>
+            </div>
+            <span class="friend-card__arrow">↗</span>
+          </a>
+        </article>
       ))}
-    </ul>
+    </div>
   </div>
 
-  <div class="posts">
+  <div class="posts friend-section">
     <h2 class="posts-title">组织与社区</h2>
-    <ul>
-      {ORGANIZATION_LINKS.map((org) => (
-        <li>
-          <a href={org.url} target="_blank" rel="noopener noreferrer">{org.name}</a>
-          {' :: '}
-          <span>{org.description}</span>
-        </li>
+    <div class="friend-grid">
+      {organizationCards.map((org) => (
+        <article class="friend-card friend-card--org">
+          <a class="friend-card__link" href={org.url} target="_blank" rel="noopener noreferrer" aria-label={`访问 ${org.name}`}>
+            <div class="friend-card__avatar-wrap">
+              {org.avatar ? (
+                <img class="friend-card__avatar" src={org.avatar} alt={`${org.name} 头像`} loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+              ) : (
+                <span class="friend-card__avatar-fallback">{org.fallback}</span>
+              )}
+            </div>
+            <div class="friend-card__content">
+              <h3 class="friend-card__title">{org.name}</h3>
+              <p class="friend-card__desc">{org.description}</p>
+              <div class="friend-card__tags">
+                <span class="friend-tag friend-tag--host">{org.host}</span>
+                {org.tags?.map((tag) => <span class="friend-tag">{tag}</span>)}
+              </div>
+            </div>
+            <span class="friend-card__arrow">↗</span>
+          </a>
+        </article>
       ))}
-    </ul>
+    </div>
   </div>
 
-  <div class="posts">
+  <div class="posts friend-section">
     <h2 class="posts-title">本站信息</h2>
-    <ul>
-      <li>Name: {info.name}</li>
-      <li>Link: <a href={info.address}>{info.address}</a></li>
-      <li>Desc: {info.desc}</li>
-      <li>Logo: <a href={info.avatar}>{info.avatar}</a></li>
-    </ul>
+    <article class="friend-card friend-card--self">
+      <a class="friend-card__link" href={info.address} target="_blank" rel="noopener noreferrer">
+        <div class="friend-card__avatar-wrap">
+          <img class="friend-card__avatar" src={info.avatar} alt={`${info.name} 头像`} loading="eager" decoding="async" />
+        </div>
+        <div class="friend-card__content">
+          <h3 class="friend-card__title">{info.name}</h3>
+          <p class="friend-card__desc">{info.desc}</p>
+          <div class="friend-card__tags">
+            <span class="friend-tag friend-tag--host">{getHost(info.address)}</span>
+            <span class="friend-tag">Security</span>
+            <span class="friend-tag">Blog</span>
+          </div>
+        </div>
+        <span class="friend-card__arrow">↗</span>
+      </a>
+    </article>
   </div>
 </Layout>
+
+<style>
+  .friend-hero {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 8px 0 24px;
+    padding: 14px;
+    border: 2px dashed var(--accent);
+    background:
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+        transparent 65%
+      );
+  }
+
+  .hero-chip {
+    padding: 3px 10px;
+    border: 1px solid var(--accent);
+    font-size: 0.88rem;
+    background: color-mix(in srgb, var(--background) 76%, var(--accent));
+  }
+
+  .friend-section {
+    margin-top: 24px;
+  }
+
+  .friend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+  }
+
+  .friend-card {
+    margin: 0;
+    border: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--background) 90%, var(--accent));
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .friend-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .friend-card--org {
+    background:
+      linear-gradient(
+        140deg,
+        color-mix(in srgb, var(--accent) 11%, transparent) 0%,
+        transparent 58%
+      ),
+      var(--background);
+  }
+
+  .friend-card--self {
+    max-width: 560px;
+  }
+
+  .friend-card__link {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .friend-card__avatar-wrap {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    border: 2px solid var(--accent);
+    background: color-mix(in srgb, var(--background) 70%, var(--accent));
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    flex: 0 0 auto;
+  }
+
+  .friend-card__avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  .friend-card__avatar-fallback {
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+  }
+
+  .friend-card__content {
+    min-width: 0;
+  }
+
+  .friend-card__title {
+    margin: 0 0 4px;
+    font-size: 1.03rem;
+  }
+
+  .friend-card__desc {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--foreground) 74%, transparent);
+  }
+
+  .friend-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .friend-tag {
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    padding: 1px 6px;
+    font-size: 0.74rem;
+    white-space: nowrap;
+  }
+
+  .friend-tag--host {
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .friend-card__arrow {
+    font-size: 1rem;
+    opacity: 0.9;
+    align-self: flex-start;
+  }
+
+  @media (max-width: 640px) {
+    .friend-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .friend-card__link {
+      grid-template-columns: auto 1fr;
+    }
+
+    .friend-card__arrow {
+      display: none;
+    }
+  }
+</style>
