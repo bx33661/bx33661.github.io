@@ -1,9 +1,11 @@
 ---
 import PageHead from '@/components/PageHead.astro'
+import TagOrbitSphere from '@/components/react/tag-orbit-sphere'
 import TerminalLayout from '@/layouts/TerminalLayout.astro'
 import { getSortedTags } from '@/lib/data-utils'
 
 const sortedTags = await getSortedTags()
+const orbitTags = sortedTags.slice(0, 120)
 const currentUrl = Astro.url
 ---
 
@@ -21,14 +23,18 @@ const currentUrl = Astro.url
     {sortedTags.length === 0 ? (
       <p>暂无标签。</p>
     ) : (
-      <div class="tags-list">
-        {sortedTags.map(({ tag, count }) => (
-          <a href={`/tags/${encodeURIComponent(tag)}/`} class="tag-item">
-            <span class="tag-name">#{tag}</span>
-            <span class="tag-count">({count})</span>
-          </a>
-        ))}
-      </div>
+      <>
+        <div class="tags-list">
+          {sortedTags.map(({ tag, count }) => (
+            <a href={`/tags/${encodeURIComponent(tag)}/`} class="tag-item">
+              <span class="tag-name">#{tag}</span>
+              <span class="tag-count">({count})</span>
+            </a>
+          ))}
+        </div>
+
+        <TagOrbitSphere client:visible tags={orbitTags} />
+      </>
     )}
   </div>
 </TerminalLayout>

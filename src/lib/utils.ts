@@ -53,10 +53,16 @@ export function readingTimeMinutes(markdown: string): number {
   const imageRegex = /!\[[^\]]*]\([^)]+\)/g
   const linkRegex = /\[([^\]]+)\]\([^)]+\)/g
   const cjkRegex = /[\u3400-\u4dbf\u4e00-\u9fff]/g
+  const headingRegex = /^#{1,6}\s+/gm
+  const listItemRegex = /^\s{0,3}(?:[-*+]\s+|\d+\.\s+)/gm
+  const tableRowRegex = /^\|.*\|\s*$/gm
 
   const codeBlocks = markdown.match(fencedCodeRegex) || []
   const inlineCodeCount = (markdown.replace(fencedCodeRegex, ' ').match(inlineCodeRegex) || []).length
   const imageCount = (markdown.match(imageRegex) || []).length
+  const headingCount = (markdown.match(headingRegex) || []).length
+  const listItemCount = (markdown.match(listItemRegex) || []).length
+  const tableRowCount = (markdown.match(tableRowRegex) || []).length
 
   const codeContent = codeBlocks
     .map((block) => block.replace(/^```[^\n]*\n?/, '').replace(/\n?```$/, ''))
@@ -89,12 +95,17 @@ export function readingTimeMinutes(markdown: string): number {
       .match(/[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*/g) || []
   ).length
 
-  const proseMinutes = cjkCount / 240 + nonCjkWordCount / 180
-  const codeMinutes = codeLineCount / 32 + codeTokenCount / 450
-  const inlineCodeMinutes = inlineCodeCount / 20
-  const imageMinutes = Math.min(imageCount * 0.2, 5)
+  // 技术文章通常包含术语、表格、代码块和步骤列表，阅读速度会显著低于纯叙述文本。
+  const proseMinutes = cjkCount / 230 + nonCjkWordCount / 165
+  const codeMinutes = codeLineCount / 26 + codeTokenCount / 400
+  const inlineCodeMinutes = inlineCodeCount / 18
+  const imageMinutes = Math.min(imageCount * 0.22, 6)
+  const structureMinutes =
+    headingCount * 0.05 + listItemCount * 0.01 + tableRowCount * 0.025 + codeBlocks.length * 0.1
 
-  const totalMinutes = Math.ceil(proseMinutes + codeMinutes + inlineCodeMinutes + imageMinutes)
+  const totalMinutes = Math.ceil(
+    proseMinutes + codeMinutes + inlineCodeMinutes + imageMinutes + structureMinutes
+  )
   return Math.max(1, totalMinutes)
 }
 

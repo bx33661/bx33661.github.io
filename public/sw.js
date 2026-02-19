@@ -1,14 +1,10 @@
-const CACHE_NAME = 'bx-blog-v1.1.0'
-const STATIC_CACHE = 'bx-blog-static-v1.1.0'
-const DYNAMIC_CACHE = 'bx-blog-dynamic-v1.1.0'
-const IMAGE_CACHE = 'bx-blog-images-v1.1.0'
+const CACHE_NAME = 'bx-blog-v1.2.0'
+const STATIC_CACHE = 'bx-blog-static-v1.2.0'
+const DYNAMIC_CACHE = 'bx-blog-dynamic-v1.2.0'
+const IMAGE_CACHE = 'bx-blog-images-v1.2.0'
 
 // 需要缓存的静态资源
 const STATIC_ASSETS = [
-  '/',
-  '/blog/',
-  '/about/',
-  '/album/',
   '/offline/',
   '/site.webmanifest',
   '/logo.svg',
@@ -113,7 +109,7 @@ async function handleRequest(request) {
         url.pathname.startsWith('/album/') ||
         url.pathname.startsWith('/notes/') ||
         url.pathname.startsWith('/tags/')) {
-      return await networkFirst(request, DYNAMIC_CACHE)
+      return await networkFirst(request, DYNAMIC_CACHE, 0)
     }
     
     // 4. API 请求：网络优先
@@ -188,15 +184,18 @@ async function networkFirst(request, cacheName, timeout = 3000) {
   const cache = await caches.open(cacheName)
   
   try {
-    // 设置超时
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), timeout)
-    
-    const response = await fetch(request, {
-      signal: controller.signal
-    })
-    
-    clearTimeout(timeoutId)
+    let response
+
+    if (timeout > 0) {
+      // 设置超时
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), timeout)
+      response = await fetch(request, { signal: controller.signal })
+      clearTimeout(timeoutId)
+    } else {
+      // 文档类请求不使用短超时，避免误回退到旧缓存页面
+      response = await fetch(request)
+    }
     
     if (response.ok) {
       console.log('[SW] Network success, updating cache:', request.url)

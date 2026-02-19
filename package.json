@@ -74,6 +74,8 @@
     "astro": "^5.9.2",
     "astro-expressive-code": "^0.41.2",
     "astro-icon": "^1.1.5",
+    "baseline-browser-mapping": "^2.10.0",
+    "caniuse-lite": "^1.0.30001770",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.16.0",
