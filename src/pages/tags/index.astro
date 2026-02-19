@@ -2,10 +2,37 @@
 import PageHead from '@/components/PageHead.astro'
 import TagOrbitSphere from '@/components/react/tag-orbit-sphere'
 import TerminalLayout from '@/layouts/TerminalLayout.astro'
-import { getSortedTags } from '@/lib/data-utils'
+import { getAllPosts, getSortedTags } from '@/lib/data-utils'
 
 const sortedTags = await getSortedTags()
 const orbitTags = sortedTags.slice(0, 120)
+const orbitTagSet = new Set(orbitTags.map(({ tag }) => tag))
+const allPosts = await getAllPosts()
+
+const relationCountMap = new Map<string, number>()
+for (const post of allPosts) {
+  const postTags = Array.from(new Set((post.data.tags || []).filter((tag) => orbitTagSet.has(tag))))
+  if (postTags.length < 2) continue
+
+  for (let i = 0; i < postTags.length; i += 1) {
+    for (let j = i + 1; j < postTags.length; j += 1) {
+      const a = postTags[i]
+      const b = postTags[j]
+      const key = a < b ? `${a}|||${b}` : `${b}|||${a}`
+      relationCountMap.set(key, (relationCountMap.get(key) || 0) + 1)
+    }
+  }
+}
+
+const orbitRelations = Array.from(relationCountMap.entries())
+  .map(([key, weight]) => {
+    const [source, target] = key.split('|||')
+    return { source, target, weight }
+  })
+  .filter((item) => item.weight >= 1)
+  .sort((a, b) => b.weight - a.weight)
+  .slice(0, 900)
+
 const currentUrl = Astro.url
 ---
 
@@ -33,7 +60,7 @@ const currentUrl = Astro.url
           ))}
         </div>
 
-        <TagOrbitSphere client:visible tags={orbitTags} />
+        <TagOrbitSphere client:visible tags={orbitTags} relations={orbitRelations} />
       </>
     )}
   </div>

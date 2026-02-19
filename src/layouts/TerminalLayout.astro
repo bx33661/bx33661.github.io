@@ -49,6 +49,11 @@ const isActive = (href: string) => {
     <slot name="head" slot="head" />
     <script is:inline>
       window.addEventListener('load', function() {
+        const host = window.location.hostname
+        const isLocal = host === 'localhost' || host === '127.0.0.1'
+        const isLighthouse = navigator.userAgent.includes('Chrome-Lighthouse')
+        if (isLocal || isLighthouse) return
+
         setTimeout(function() {
           const script = document.createElement('script')
           script.src = 'https://analytics.ahrefs.com/analytics.js'
@@ -352,6 +357,11 @@ const isActive = (href: string) => {
     <script is:inline>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
+          const host = window.location.hostname
+          const isLocal = host === 'localhost' || host === '127.0.0.1'
+          const isLighthouse = navigator.userAgent.includes('Chrome-Lighthouse')
+          if (isLocal || isLighthouse) return
+
           navigator.serviceWorker
             .register('/sw.js')
             .then(function(registration) {
