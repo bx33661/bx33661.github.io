@@ -1,72 +1,243 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 interface PasswordProtectProps {
   articleId: string
-  correctPassword: string
+  passwordSalt: string
+  passwordIterations: number
+  passwordVerifier: string
   children: React.ReactNode
+}
+
+const MAX_FAILED_ATTEMPTS = 5
+const LOCKOUT_DURATION_MS = 30_000
+const PERSIST_UNLOCK_TTL_MS = 7 * 24 * 60 * 60 * 1000
+const SESSION_UNLOCK_PREFIX = 'article_unlocked_session_'
+const PERSIST_UNLOCK_PREFIX = 'article_unlocked_persist_'
+const LOCK_STATE_PREFIX = 'article_lock_state_'
+
+interface PersistUnlockState {
+  expiresAt: number
+}
+
+interface LockState {
+  failedAttempts: number
+  lockUntil: number
+}
+
+function toHex(buffer: ArrayBuffer): string {
+  return Array.from(new Uint8Array(buffer))
+    .map((value) => value.toString(16).padStart(2, '0'))
+    .join('')
+}
+
+async function derivePasswordVerifier(password: string, salt: string, iterations: number): Promise<string> {
+  if (!window.crypto?.subtle) {
+    throw new Error('当前浏览器不支持加密校验')
+  }
+
+  const encoder = new TextEncoder()
+  const keyMaterial = await window.crypto.subtle.importKey(
+    'raw',
+    encoder.encode(password),
+    'PBKDF2',
+    false,
+    ['deriveBits'],
+  )
+  const derivedBits = await window.crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: encoder.encode(salt),
+      iterations,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    256,
+  )
+
+  return toHex(derivedBits)
+}
+
+function parsePersistState(raw: string | null): PersistUnlockState | null {
+  if (!raw) {
+    return null
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as PersistUnlockState
+    if (typeof parsed.expiresAt !== 'number') {
+      return null
+    }
+    return parsed
+  } catch {
+    return null
+  }
+}
+
+function parseLockState(raw: string | null): LockState | null {
+  if (!raw) {
+    return null
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as LockState
+    if (typeof parsed.failedAttempts !== 'number' || typeof parsed.lockUntil !== 'number') {
+      return null
+    }
+    return parsed
+  } catch {
+    return null
+  }
 }
 
 export default function PasswordProtect({
   articleId,
-  correctPassword,
+  passwordSalt,
+  passwordIterations,
+  passwordVerifier,
   children,
 }: PasswordProtectProps) {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [isVerifying, setIsVerifying] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [rememberUnlock, setRememberUnlock] = useState(true)
+  const [failedAttempts, setFailedAttempts] = useState(0)
+  const [lockUntil, setLockUntil] = useState(0)
+  const [now, setNow] = useState(() => Date.now())
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // 检查是否已经解锁过（从 sessionStorage 读取）
+  const sessionUnlockKey = useMemo(() => `${SESSION_UNLOCK_PREFIX}${articleId}`, [articleId])
+  const persistUnlockKey = useMemo(() => `${PERSIST_UNLOCK_PREFIX}${articleId}`, [articleId])
+  const lockStateKey = useMemo(() => `${LOCK_STATE_PREFIX}${articleId}`, [articleId])
+  const isLocked = lockUntil > now
+  const lockSecondsRemaining = isLocked ? Math.max(1, Math.ceil((lockUntil - now) / 1000)) : 0
+  const passwordErrorId = `password-error-${articleId}`
+
+  const saveLockState = (next: LockState) => {
+    sessionStorage.setItem(lockStateKey, JSON.stringify(next))
+  }
+
+  // 恢复会话状态
   useEffect(() => {
-    const storageKey = `article_unlocked_${articleId}`
-    const unlocked = sessionStorage.getItem(storageKey)
-    if (unlocked === 'true') {
-      setIsUnlocked(true)
-    }
-    setIsLoading(false)
-    
-    // 检测是否为移动设备
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [articleId])
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-
-    if (password === correctPassword) {
-      setIsUnlocked(true)
-      // 保存解锁状态到 sessionStorage
-      const storageKey = `article_unlocked_${articleId}`
-      sessionStorage.setItem(storageKey, 'true')
-      // 移动端收起键盘
-      if (isMobile && inputRef.current) {
-        inputRef.current.blur()
+    try {
+      const sessionUnlocked = sessionStorage.getItem(sessionUnlockKey) === 'true'
+      if (sessionUnlocked) {
+        setIsUnlocked(true)
+        return
       }
-    } else {
-      setError('密码错误，请重试')
+
+      const persistState = parsePersistState(localStorage.getItem(persistUnlockKey))
+      if (persistState && persistState.expiresAt > Date.now()) {
+        setIsUnlocked(true)
+        sessionStorage.setItem(sessionUnlockKey, 'true')
+      } else {
+        localStorage.removeItem(persistUnlockKey)
+      }
+
+      const lockState = parseLockState(sessionStorage.getItem(lockStateKey))
+      if (lockState) {
+        setFailedAttempts(Math.max(lockState.failedAttempts, 0))
+        setLockUntil(lockState.lockUntil > Date.now() ? lockState.lockUntil : 0)
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }, [lockStateKey, persistUnlockKey, sessionUnlockKey])
+
+  // 锁定倒计时
+  useEffect(() => {
+    if (!isLocked) {
+      return
+    }
+
+    const timer = window.setInterval(() => {
+      setNow(Date.now())
+    }, 1000)
+
+    return () => window.clearInterval(timer)
+  }, [isLocked])
+
+  // 锁定结束后重置失败状态
+  useEffect(() => {
+    if (lockUntil === 0 || now < lockUntil) {
+      return
+    }
+
+    setLockUntil(0)
+    setFailedAttempts(0)
+    setError('')
+    saveLockState({ failedAttempts: 0, lockUntil: 0 })
+  }, [lockUntil, now])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!password || isLocked || isVerifying) {
+      return
+    }
+
+    setError('')
+    setIsVerifying(true)
+
+    try {
+      const computedVerifier = await derivePasswordVerifier(password, passwordSalt, passwordIterations)
+
+      if (computedVerifier === passwordVerifier) {
+        setIsUnlocked(true)
+        setPassword('')
+        setFailedAttempts(0)
+        setLockUntil(0)
+        setNow(Date.now())
+        sessionStorage.setItem(sessionUnlockKey, 'true')
+        saveLockState({ failedAttempts: 0, lockUntil: 0 })
+
+        if (rememberUnlock) {
+          localStorage.setItem(
+            persistUnlockKey,
+            JSON.stringify({
+              expiresAt: Date.now() + PERSIST_UNLOCK_TTL_MS,
+            } satisfies PersistUnlockState),
+          )
+        } else {
+          localStorage.removeItem(persistUnlockKey)
+        }
+
+        inputRef.current?.blur()
+        return
+      }
+
+      const nextFailedAttempts = failedAttempts + 1
+      if (nextFailedAttempts >= MAX_FAILED_ATTEMPTS) {
+        const nextLockUntil = Date.now() + LOCKOUT_DURATION_MS
+        setFailedAttempts(0)
+        setLockUntil(nextLockUntil)
+        setNow(Date.now())
+        saveLockState({ failedAttempts: 0, lockUntil: nextLockUntil })
+        setError(`输错次数过多，请在 ${Math.ceil(LOCKOUT_DURATION_MS / 1000)} 秒后重试`)
+      } else {
+        const remainingAttempts = MAX_FAILED_ATTEMPTS - nextFailedAttempts
+        setFailedAttempts(nextFailedAttempts)
+        saveLockState({ failedAttempts: nextFailedAttempts, lockUntil: 0 })
+        setError(`密码错误，还可尝试 ${remainingAttempts} 次`)
+      }
+
       setPassword('')
-      // 震动反馈（支持的设备）
       if (navigator.vibrate) {
         navigator.vibrate([100, 50, 100])
       }
-      // 重新聚焦输入框
       setTimeout(() => {
         inputRef.current?.focus()
       }, 100)
+    } catch {
+      setError('浏览器加密能力不可用，暂时无法验证密码')
+    } finally {
+      setIsVerifying(false)
     }
   }
 
-  // 加载中状态
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -75,20 +246,18 @@ export default function PasswordProtect({
     )
   }
 
-  // 已解锁，显示内容
   if (isUnlocked) {
     return <>{children}</>
   }
 
-  // 未解锁，显示密码输入界面
   return (
-    <div className={`flex items-center justify-center px-4 ${isMobile ? 'min-h-[calc(100vh-200px)] py-8' : 'min-h-[500px]'}`}>
+    <div className="flex items-center justify-center min-h-[calc(100vh-220px)] md:min-h-[500px] px-4 py-8 md:py-0">
       <div className="w-full max-w-md">
-        <div className={`bg-card border border-border rounded-lg shadow-lg transition-all ${isMobile ? 'p-6' : 'p-8'}`}>
-          <div className={`text-center ${isMobile ? 'mb-5' : 'mb-6'}`}>
-            <div className={`mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4 ${isMobile ? 'w-14 h-14' : 'w-16 h-16'}`}>
+        <div className="bg-card border border-border rounded-lg shadow-lg transition-all p-6 md:p-8">
+          <div className="text-center mb-5 md:mb-6">
+            <div className="mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4 w-14 h-14 md:w-16 md:h-16">
               <svg
-                className={`text-primary ${isMobile ? 'w-7 h-7' : 'w-8 h-8'}`}
+                className="text-primary w-7 h-7 md:w-8 md:h-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -102,19 +271,15 @@ export default function PasswordProtect({
                 />
               </svg>
             </div>
-            <h2 className={`font-bold text-foreground mb-2 ${isMobile ? 'text-xl' : 'text-2xl'}`}>
-              受保护的文章
-            </h2>
-            <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-base'}`}>
-              这篇文章需要密码才能访问
-            </p>
+            <h2 className="font-bold text-foreground mb-2 text-xl md:text-2xl">受保护的文章</h2>
+            <p className="text-muted-foreground text-sm md:text-base">这篇文章需要密码才能访问</p>
           </div>
 
-          <form onSubmit={handleSubmit} className={isMobile ? 'space-y-3' : 'space-y-4'}>
+          <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
             <div>
               <label
                 htmlFor="password"
-                className={`block font-medium text-foreground mb-2 ${isMobile ? 'text-xs' : 'text-sm'}`}
+                className="block font-medium text-foreground mb-2 text-xs md:text-sm"
               >
                 请输入密码
               </label>
@@ -124,17 +289,25 @@ export default function PasswordProtect({
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    if (!isLocked && error) {
+                      setError('')
+                    }
+                  }}
                   placeholder="输入文章密码"
-                  className={`w-full pr-10 ${isMobile ? 'h-12 text-base' : 'h-10'}`}
-                  autoFocus={!isMobile}
-                  autoComplete="off"
+                  className="w-full pr-10 h-12 md:h-10 text-base md:text-sm"
+                  autoComplete="current-password"
                   inputMode="text"
                   enterKeyHint="go"
+                  disabled={isVerifying || isLocked}
+                  aria-invalid={error ? true : false}
+                  aria-describedby={error ? passwordErrorId : undefined}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={isVerifying || isLocked}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   aria-label={showPassword ? '隐藏密码' : '显示密码'}
                 >
@@ -152,8 +325,24 @@ export default function PasswordProtect({
               </div>
             </div>
 
+            <label className="flex items-center gap-2 text-xs text-muted-foreground select-none">
+              <input
+                type="checkbox"
+                checked={rememberUnlock}
+                onChange={(event) => setRememberUnlock(event.target.checked)}
+                className="h-4 w-4 rounded border-border"
+                disabled={isVerifying}
+              />
+              记住此设备 7 天
+            </label>
+
             {error && (
-              <div className={`bg-destructive/10 border border-destructive/20 text-destructive rounded-md p-3 flex items-center gap-2 animate-shake ${isMobile ? 'text-xs' : 'text-sm'}`}>
+              <div
+                id={passwordErrorId}
+                role="alert"
+                aria-live="polite"
+                className="bg-destructive/10 border border-destructive/20 text-destructive rounded-md p-3 flex items-center gap-2 animate-shake text-xs md:text-sm"
+              >
                 <svg
                   className="w-4 h-4 flex-shrink-0"
                   fill="none"
@@ -172,14 +361,18 @@ export default function PasswordProtect({
               </div>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full touch-manipulation active:scale-95 transition-transform" 
-              size={isMobile ? 'default' : 'lg'}
-              style={{ minHeight: isMobile ? '48px' : 'auto' }}
+            {isLocked && (
+              <p className="text-xs text-muted-foreground text-center">请等待 {lockSecondsRemaining} 秒后再试</p>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full touch-manipulation active:scale-95 transition-transform min-h-12 md:min-h-11"
+              size="lg"
+              disabled={!password || isVerifying || isLocked}
             >
               <svg
-                className={`mr-2 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`}
+                className="mr-2 w-4 h-4 md:w-5 md:h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -192,13 +385,16 @@ export default function PasswordProtect({
                   d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"
                 />
               </svg>
-              解锁文章
+              {isVerifying ? '验证中...' : isLocked ? `请等待 ${lockSecondsRemaining}s` : '解锁文章'}
             </Button>
           </form>
 
-          <div className={`border-t border-border ${isMobile ? 'mt-4 pt-4' : 'mt-6 pt-6'}`}>
-            <p className={`text-muted-foreground text-center leading-relaxed ${isMobile ? 'text-[11px]' : 'text-xs'}`}>
-              💡 {isMobile ? '密码会话期间有效' : '提示：密码在当前浏览器会话中保存，刷新页面不需要重新输入'}
+          <div className="border-t border-border mt-4 pt-4 md:mt-6 md:pt-6">
+            <p className="text-muted-foreground text-center leading-relaxed text-[11px] md:text-xs">
+              提示：默认会在当前会话内保持解锁，关闭浏览器标签页后失效。
+            </p>
+            <p className="text-muted-foreground text-center leading-relaxed text-[11px] md:text-xs mt-1">
+              勾选“记住此设备”后可保持 7 天。
             </p>
           </div>
         </div>

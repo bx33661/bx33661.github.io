@@ -5,6 +5,7 @@ import TerminalLayout from '@/layouts/TerminalLayout.astro'
 import { getAdjacentPosts, getAllPostSlugs } from '@/lib/data-utils'
 import { formatDate, readingTime } from '@/lib/utils'
 import { render } from 'astro:content'
+import { pbkdf2Sync } from 'node:crypto'
 
 export async function getStaticPaths() {
   const postSlugs = await getAllPostSlugs()
@@ -24,6 +25,11 @@ const currentUrl = Astro.url
 const authorLabel = post.data.authors?.length ? post.data.authors.join(' & ') : 'BX'
 const wordCount = (post.body || '').replace(/\s+/g, '').length
 const coverImage = post.data.image?.src
+const passwordSalt = `bx-article:${post.id}`
+const passwordIterations = 120_000
+const passwordVerifier = isPasswordProtected
+  ? pbkdf2Sync(post.data.password!, passwordSalt, passwordIterations, 32, 'sha256').toString('hex')
+  : ''
 ---
 
 <TerminalLayout canonicalUrl={currentUrl} title={post.data.title} description={post.data.description}>
@@ -52,7 +58,13 @@ const coverImage = post.data.image?.src
     )}
 
     {isPasswordProtected ? (
-      <PasswordProtect client:load articleId={post.id} correctPassword={post.data.password!}>
+      <PasswordProtect
+        client:load
+        articleId={post.id}
+        passwordSalt={passwordSalt}
+        passwordIterations={passwordIterations}
+        passwordVerifier={passwordVerifier}
+      >
         <div class="post-content">
           <Content />
         </div>
