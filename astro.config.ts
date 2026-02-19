@@ -58,7 +58,18 @@ export default defineConfig({
     expressiveCode({
       themes: ['github-light', 'one-dark-pro'],
       plugins: [pluginCollapsibleSections(), pluginLineNumbers(), pluginFrames(), pluginTextMarkers()],
-      useDarkModeMediaQuery: true,
+      // 站点使用手动主题切换（data-color-mode），不要跟随系统主题判断代码块暗色
+      useDarkModeMediaQuery: false,
+      // 将 Expressive Code 主题选择器对齐到站点现有主题状态
+      themeCssSelector: (theme) => {
+        if (theme.name === 'one-dark-pro') {
+          return "[data-color-mode='midnight'], [data-theme='dark'], .dark"
+        }
+        if (theme.name === 'github-light') {
+          return "[data-color-mode='light'], [data-color-mode='retro'], [data-theme='light'], [data-theme='retro']"
+        }
+        return false
+      },
       // 配置复制按钮和其他实用功能
       frames: {
         showCopyToClipboardButton: true, // 启用复制按钮
