@@ -1,15 +1,15 @@
-const CACHE_NAME = 'bx-blog-v1.0.1'
-const STATIC_CACHE = 'bx-blog-static-v1.0.1'
-const DYNAMIC_CACHE = 'bx-blog-dynamic-v1.0.1'
-const IMAGE_CACHE = 'bx-blog-images-v1.0.1'
+const CACHE_NAME = 'bx-blog-v1.1.0'
+const STATIC_CACHE = 'bx-blog-static-v1.1.0'
+const DYNAMIC_CACHE = 'bx-blog-dynamic-v1.1.0'
+const IMAGE_CACHE = 'bx-blog-images-v1.1.0'
 
 // 需要缓存的静态资源
 const STATIC_ASSETS = [
   '/',
-  '/blog',
-  '/about',
-  '/projects',
-  '/offline',
+  '/blog/',
+  '/about/',
+  '/album/',
+  '/offline/',
   '/site.webmanifest',
   '/logo.svg',
   '/fonts/ClashDisplay-Semibold.woff2',
@@ -90,10 +90,14 @@ self.addEventListener('fetch', event => {
 // 处理请求的策略
 async function handleRequest(request) {
   const url = new URL(request.url)
+  const normalizedPath =
+    url.pathname.length > 1 && url.pathname.endsWith('/')
+      ? url.pathname.slice(0, -1)
+      : url.pathname
   
   try {
     // 1. 静态资源：缓存优先
-    if (STATIC_ASSETS.includes(url.pathname)) {
+    if (STATIC_ASSETS.includes(url.pathname) || STATIC_ASSETS.includes(`${normalizedPath}/`)) {
       return await cacheFirst(request, STATIC_CACHE)
     }
     
@@ -106,7 +110,8 @@ async function handleRequest(request) {
     // 3. HTML 页面：网络优先，缓存备用
     if (request.destination === 'document' || 
         url.pathname.startsWith('/blog/') ||
-        url.pathname.startsWith('/projects/') ||
+        url.pathname.startsWith('/album/') ||
+        url.pathname.startsWith('/notes/') ||
         url.pathname.startsWith('/tags/')) {
       return await networkFirst(request, DYNAMIC_CACHE)
     }

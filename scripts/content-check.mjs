@@ -2,12 +2,11 @@ import fs from 'fs'
 import path from 'path'
 
 const CONTENT_ROOT = path.resolve('src/content')
-const COLLECTIONS = ['blog', 'notes', 'projects']
+const COLLECTIONS = ['blog', 'notes']
 
 const REQUIRED_FIELDS = {
   blog: ['title', 'description', 'date'],
   notes: ['title', 'description', 'date'],
-  projects: ['name', 'description', 'tags', 'image', 'link'],
 }
 
 function walkMarkdownFiles(rootDir) {
@@ -116,7 +115,7 @@ function resolveSlugForFile(collection, filePath, frontmatter) {
   if (slugRaw) return slugRaw
 
   const relFromCollection = path.relative(path.join(CONTENT_ROOT, collection), filePath)
-  const prefix = collection === 'notes' ? 'note' : collection === 'projects' ? 'project' : 'post'
+  const prefix = collection === 'notes' ? 'note' : 'post'
   return createDeterministicSlug(relFromCollection, prefix)
 }
 

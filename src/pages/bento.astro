@@ -22,7 +22,7 @@ const galleryImages = GALLERY_IMAGES.map((item) => ({
   <div class="gallery-grid">
     {galleryImages.map((image) => (
       <figure class="gallery-item">
-        <a href={image.originalSrc} target="_blank" rel="noopener noreferrer" aria-label={`查看原图：${image.title}`}>
+        <a href={image.originalSrc} target="_blank" rel="noopener noreferrer" aria-label={`查看大图：${image.title}`}>
           <picture>
             <source type="image/avif" srcset={image.avifSrcSet} sizes={BENTO_GALLERY_SIZES} />
             <source type="image/webp" srcset={image.webpSrcSet} sizes={BENTO_GALLERY_SIZES} />

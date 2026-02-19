@@ -47,6 +47,12 @@ jobs:
 
       - name: Build with Astro
         run: npm run build:vercel
+
+      - name: Lighthouse CI (budgets)
+        run: npm run lighthouse:ci
+
+      - name: Dist smoke checks
+        run: npm run smoke:dist
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

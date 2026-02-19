@@ -69,7 +69,7 @@ const focuses = ['漏洞研究', 'AI4Sec', '开源实践']
         <div class="about-album-grid">
           {featuredPhotos.map((photo) => (
             <article class="about-album-card">
-              <a class="about-album-link" href={photo.originalSrc} target="_blank" rel="noopener noreferrer" aria-label={`查看原图：${photo.title}`}>
+              <a class="about-album-link" href={photo.originalSrc} target="_blank" rel="noopener noreferrer" aria-label={`查看大图：${photo.title}`}>
                 <img
                   class="about-album-image"
                   src={photo.optimizedSrc}

@@ -30,6 +30,9 @@ export default defineConfig({
   // 如果仓库名是 portfolio（不是 username.github.io），需要设置 base
   // 如果使用自定义域名或仓库名是 username.github.io，保持 '/'
   base: '/',
+  prefetch: {
+    defaultStrategy: 'hover',
+  },
   redirects: {
     '/projects': '/album',
     '/projects/algorithm-practice': '/album',

@@ -19,7 +19,7 @@ const galleryImages = GALLERY_IMAGES.map((item) => buildGalleryImageSources(item
   <div class="album-grid">
     {galleryImages.map((image) => (
       <article class="album-card">
-        <a class="album-card__link" href={image.originalSrc} target="_blank" rel="noopener noreferrer" aria-label={`查看原图：${image.title}`}>
+        <a class="album-card__link" href={image.originalSrc} target="_blank" rel="noopener noreferrer" aria-label={`查看大图：${image.title}`}>
           <picture class="album-card__media">
             <source type="image/avif" srcset={image.avifSrcSet} sizes={ALBUM_SIZES} />
             <source type="image/webp" srcset={image.webpSrcSet} sizes={ALBUM_SIZES} />

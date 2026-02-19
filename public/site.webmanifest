@@ -48,7 +48,7 @@
       "name": "博客文章",
       "short_name": "博客",
       "description": "查看最新的技术文章和安全研究",
-      "url": "/blog",
+      "url": "/blog/",
       "icons": [
         {
           "src": "/web-app-manifest-192x192.png",
@@ -57,10 +57,10 @@
       ]
     },
     {
-      "name": "项目展示",
-      "short_name": "项目",
-      "description": "查看我的技术项目和开源贡献",
-      "url": "/projects",
+      "name": "相册精选",
+      "short_name": "相册",
+      "description": "查看我的风景照片与生活记录",
+      "url": "/album/",
       "icons": [
         {
           "src": "/web-app-manifest-192x192.png",

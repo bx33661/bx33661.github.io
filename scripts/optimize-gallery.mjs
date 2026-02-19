@@ -2,8 +2,8 @@ import fsp from 'node:fs/promises'
 import path from 'node:path'
 import sharp from 'sharp'
 
-const SOURCE_DIR = path.resolve('public/gallery')
-const OUTPUT_DIR = path.join(SOURCE_DIR, 'optimized')
+const SOURCE_DIR = path.resolve('assets/gallery-source')
+const OUTPUT_DIR = path.resolve('public/gallery/optimized')
 const SUPPORTED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png'])
 const TARGET_WIDTHS = [640, 960, 1280, 1600]
 

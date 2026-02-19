@@ -64,7 +64,7 @@ const isActive = (href: string) => {
       <header class="header">
         <div class="header__inner">
           <div class="header__logo">
-            <a href="/">
+            <a href="/" data-astro-prefetch="hover">
               <div class="logo">
                 <img class="logo__avatar" src="/bx.jpg" alt="BX 头像" loading="eager" decoding="async" />
                 <span>{SITE.title}</span>
@@ -77,10 +77,10 @@ const isActive = (href: string) => {
               <ul class="menu__dropdown">
                 {navItems.map((item) => (
                   <li>
-                    <a href={item.href}>{item.label}</a>
+                    <a href={item.href} data-astro-prefetch="hover">{item.label}</a>
                   </li>
                 ))}
-                <li><a href="/rss.xml">RSS</a></li>
+                <li><a href="/rss.xml" data-astro-prefetch="hover">RSS</a></li>
                 <li>
                   <button
                     type="button"
@@ -100,13 +100,13 @@ const isActive = (href: string) => {
           <ul class="navigation-menu__inner menu--desktop">
             {navItems.map((item) => (
               <li>
-                <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                <a href={item.href} data-astro-prefetch="hover" aria-current={isActive(item.href) ? 'page' : undefined}>
                   {item.label}
                 </a>
               </li>
             ))}
             <li>
-              <a href="/rss.xml">RSS</a>
+              <a href="/rss.xml" data-astro-prefetch="hover">RSS</a>
             </li>
             <li>
               <button
@@ -131,9 +131,9 @@ const isActive = (href: string) => {
           <div class="copyright">
             <span>© {currentYear} {SITE.title}</span>
             <span class="separator">::</span>
-            <span>Powered by <a href="https://astro.build">Astro</a></span>
+            <span>Powered by <a href="https://astro.build" rel="noopener noreferrer">Astro</a></span>
             <span class="separator">::</span>
-            <span><a href="https://github.com/dennisklappe/astro-theme-terminal">astro-theme-terminal</a></span>
+            <span><a href="https://github.com/dennisklappe/astro-theme-terminal" rel="noopener noreferrer">astro-theme-terminal</a></span>
           </div>
         </div>
       </footer>

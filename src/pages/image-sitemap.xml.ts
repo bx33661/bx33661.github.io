@@ -1,5 +1,5 @@
 import { SITE } from '@/consts'
-import { GALLERY_IMAGES } from '@/data/gallery'
+import { GALLERY_IMAGES, buildGalleryImageSources } from '@/data/gallery'
 import type { APIContext } from 'astro'
 import { getAllNoteSlugs, getAllPostSlugs } from '@/lib/data-utils'
 
@@ -34,14 +34,17 @@ export async function GET(context: APIContext) {
       })
     }
 
-    // 相册图片
+    // 相册图片（只收录线上发布的优化图）
     images.push({
       loc: `${baseUrl}/album/`,
-      image: GALLERY_IMAGES.map((item) => ({
-        loc: `${baseUrl}/gallery/${encodeURIComponent(item.file)}`,
-        title: item.title,
-        caption: item.alt,
-      })),
+      image: GALLERY_IMAGES.map((item) => {
+        const sources = buildGalleryImageSources(item)
+        return {
+          loc: `${baseUrl}${sources.originalSrc}`,
+          title: item.title,
+          caption: item.alt,
+        }
+      }),
     })
 
     // 笔记图片

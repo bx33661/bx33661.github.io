@@ -308,11 +308,8 @@ const themeRuntimeConfig = {
     html[data-color-mode='retro'] { background-color: #ffffff; }
   </style>
 
-  <!-- 安全性增强 -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-  <meta http-equiv="X-Frame-Options" content="DENY" />
-  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
-  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <!-- 安全性增强（HTML 层可控部分） -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta 
     http-equiv="Content-Security-Policy" 
     content={`default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://gstatic.loli.net; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com${posthogConnect ? ' ' + posthogConnect : ''};`} 
@@ -330,19 +327,6 @@ const themeRuntimeConfig = {
 
   <!-- 性能优化脚本 -->
   <script is:inline>
-    // 预加载重要页面
-    const criticalPages = ['/blog', '/about'];
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        criticalPages.forEach(page => {
-          const link = document.createElement('link');
-          link.rel = 'prefetch';
-          link.href = page;
-          document.head.appendChild(link);
-        });
-      });
-    }
-
     // LCP 优化 - 预加载首屏图片
     const preloadHeroImage = () => {
       const heroImg = document.querySelector('[data-hero-image]');

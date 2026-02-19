@@ -1,0 +1,6 @@
+/projects /album 301
+/projects/ /album 301
+/projects/* /album 301
+/projects/algorithm-practice /album 301
+/projects/fruit-guardians /album 301
+/projects/the-marx-in-my-mind /album 301

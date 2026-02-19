@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-const VALID_TYPES = new Set(['blog', 'notes', 'projects'])
+const VALID_TYPES = new Set(['blog', 'notes'])
 
 function parseArgs(argv) {
   const args = {
@@ -135,31 +135,9 @@ slug: "${slug}"
 `
 }
 
-function buildProjectsTemplate({ title, description, date }) {
-  const safeName = escapeDoubleQuotes(title)
-  const safeDesc = escapeDoubleQuotes(description || 'Briefly describe what this project solves and how it is built.')
-  return `---
-name: "${safeName}"
-description: "${safeDesc}"
-tags:
-  - "project"
-image: "../../../public/static/placeholder.png"
-link: "https://github.com/your-account/your-repo"
-startDate: "${date}"
----
-
-## Overview
-
-## Stack
-
-## Highlights
-`
-}
-
 function buildTemplate(type, payload) {
   if (type === 'blog') return buildBlogTemplate(payload)
-  if (type === 'notes') return buildNotesTemplate(payload)
-  return buildProjectsTemplate(payload)
+  return buildNotesTemplate(payload)
 }
 
 function main() {
@@ -184,7 +162,7 @@ function main() {
   }
 
   const date = resolveDate(args.date)
-  const slug = toSlug(String(args.slug || title), type === 'projects' ? 'project' : type === 'notes' ? 'note' : 'post')
+  const slug = toSlug(String(args.slug || title), type === 'notes' ? 'note' : 'post')
   const targetDir = path.resolve('src/content', type)
   const targetPath = path.join(targetDir, `${slug}.${ext}`)
 

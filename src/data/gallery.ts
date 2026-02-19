@@ -15,6 +15,7 @@ export interface GalleryImageWithSources extends GalleryImageItem {
   webpSrcSet: string
   jpgSrcSet: string
   renditionWidths: number[]
+  largestWidth: number
 }
 
 const GALLERY_RENDITION_WIDTHS = [640, 960, 1280, 1600] as const
@@ -38,15 +39,17 @@ export const buildGalleryImageSources = (item: GalleryImageItem): GalleryImageWi
   const baseName = stripExtension(item.file)
   const renditionWidths = getRenditionWidths(item.width)
   const largestWidth = renditionWidths[renditionWidths.length - 1]
+  const largeJpg = `/gallery/optimized/${baseName}-w${largestWidth}.jpg`
 
   return {
     ...item,
-    originalSrc: `/gallery/${item.file}`,
-    optimizedSrc: `/gallery/optimized/${baseName}-w${largestWidth}.jpg`,
+    originalSrc: largeJpg,
+    optimizedSrc: largeJpg,
     avifSrcSet: buildSrcSet(baseName, renditionWidths, 'avif'),
     webpSrcSet: buildSrcSet(baseName, renditionWidths, 'webp'),
     jpgSrcSet: buildSrcSet(baseName, renditionWidths, 'jpg'),
     renditionWidths,
+    largestWidth,
   }
 }
 
