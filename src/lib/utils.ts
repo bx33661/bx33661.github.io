@@ -40,13 +40,62 @@ export function formatRelativeTime(date: Date, locale: string = 'zh-CN'): string
 }
 
 export function readingTime(html: string) {
-  const textOnly = html.replace(/<[^>]+>/g, '')
-  const cjkCount = (textOnly.match(/[\u4e00-\u9fa5]/g) || []).length
-  const nonCjkText = textOnly.replace(/[\u4e00-\u9fa5]/g, ' ')
-  const nonCjkCount = nonCjkText.split(/\s+/).filter(Boolean).length
-  const totalCount = cjkCount + nonCjkCount
-  const readingTimeMinutes = Math.ceil(totalCount / 300) || 1
-  return `${readingTimeMinutes} 分钟阅读`
+  return `${readingTimeMinutes(html)} 分钟阅读`
+}
+
+export function readingTimeMinutes(markdown: string): number {
+  if (!markdown?.trim()) {
+    return 1
+  }
+
+  const fencedCodeRegex = /```[\s\S]*?```/g
+  const inlineCodeRegex = /`[^`\n]+`/g
+  const imageRegex = /!\[[^\]]*]\([^)]+\)/g
+  const linkRegex = /\[([^\]]+)\]\([^)]+\)/g
+  const cjkRegex = /[\u3400-\u4dbf\u4e00-\u9fff]/g
+
+  const codeBlocks = markdown.match(fencedCodeRegex) || []
+  const inlineCodeCount = (markdown.replace(fencedCodeRegex, ' ').match(inlineCodeRegex) || []).length
+  const imageCount = (markdown.match(imageRegex) || []).length
+
+  const codeContent = codeBlocks
+    .map((block) => block.replace(/^```[^\n]*\n?/, '').replace(/\n?```$/, ''))
+    .join('\n')
+  const codeLineCount = codeContent
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean).length
+  const codeTokenCount = (codeContent.match(/[A-Za-z_][\w.-]*/g) || []).length
+
+  const proseText = markdown
+    .replace(fencedCodeRegex, ' ')
+    .replace(inlineCodeRegex, ' ')
+    .replace(imageRegex, ' ')
+    .replace(linkRegex, '$1')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/^>\s?/gm, ' ')
+    .replace(/^#{1,6}\s+/gm, ' ')
+    .replace(/^[-*+]\s+/gm, ' ')
+    .replace(/^\d+\.\s+/gm, ' ')
+    .replace(/[*_~]/g, ' ')
+    .replace(/\|/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  const cjkCount = (proseText.match(cjkRegex) || []).length
+  const nonCjkWordCount = (
+    proseText
+      .replace(cjkRegex, ' ')
+      .match(/[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*/g) || []
+  ).length
+
+  const proseMinutes = cjkCount / 240 + nonCjkWordCount / 180
+  const codeMinutes = codeLineCount / 32 + codeTokenCount / 450
+  const inlineCodeMinutes = inlineCodeCount / 20
+  const imageMinutes = Math.min(imageCount * 0.2, 5)
+
+  const totalMinutes = Math.ceil(proseMinutes + codeMinutes + inlineCodeMinutes + imageMinutes)
+  return Math.max(1, totalMinutes)
 }
 
 /**

@@ -2,7 +2,7 @@ import { memo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Hash, Calendar, Clock, Eye } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import { cn, readingTimeMinutes } from '@/lib/utils'
 
 interface SearchCardEntry {
   id: string
@@ -43,7 +43,7 @@ const BlogCardJSX = memo(
   }: BlogCardProps) => {
     const [isHovered, setIsHovered] = useState(false)
 
-    const estimatedReadTime = Math.ceil(((entry.body?.length ?? 0) / 1000) * 2) || 3
+    const estimatedReadTime = readingTimeMinutes(entry.body || '')
     const normalizedBasePath = normalizeBasePath(basePath)
     const articleHref = `${normalizedBasePath}/${slug}`
 

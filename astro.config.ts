@@ -85,6 +85,8 @@ export default defineConfig({
           'ansi,bat,bash,batch,cmd,console,powershell,ps,ps1,psd1,psm1,sh,shell,shellscript,shellsession,text,zsh':
             {
               showLineNumbers: true,
+              // Shell 类代码块默认用 code frame，避免 terminal 头部空标题栏
+              frame: 'code',
             },
         },
       },
