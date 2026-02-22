@@ -6,6 +6,13 @@ const currentUrl = Astro.url.toString()
 
 const toolItems = [
   {
+    id: 'jsoncrack',
+    title: 'JSON Crack',
+    href: '/tools/jsoncrack/',
+    description: '交互式 JSON 可视化编辑器，适合快速看结构、调试和分享。',
+    state: 'available',
+  },
+  {
     id: 'cyberchef',
     title: 'CyberChef',
     href: '/tools/cyberchef/',
@@ -55,6 +62,8 @@ const plannedCount = toolItems.filter((item) => item.state === 'coming-soon').le
             <span class="tool-status" id="cyberchef-status" data-ready-label="已就绪" data-missing-label="未同步">
               检查中
             </span>
+          ) : tool.id === 'jsoncrack' ? (
+            <span class="tool-status is-ready">在线</span>
           ) : (
             <span class="tool-status">计划中</span>
           )}
