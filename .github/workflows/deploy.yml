@@ -3,10 +3,10 @@ name: Deploy to GitHub Pages
 on:
   # 在推送到 main 分支时触发
   push:
-    branches: [ main ]
+    branches: [main]
   # PR 检查（仅构建，不部署）
   pull_request:
-    branches: [ main ]
+    branches: [main]
   # 允许手动运行工作流
   workflow_dispatch:
 
@@ -18,30 +18,35 @@ permissions:
 
 # 只允许一个并发部署，跳过正在运行中的部署队列中的运行
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: false
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      CYBERCHEF_VERSION: v10.22.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
+      - name: Sync CyberChef bundle
+        run: npm run cyberchef:sync
+
       - name: Quality checks
         run: npm run check
 
@@ -53,7 +58,7 @@ jobs:
 
       - name: Dist smoke checks
         run: npm run smoke:dist
-      
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -71,4 +76,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v4

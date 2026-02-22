@@ -26,6 +26,10 @@ export const NAV_LINKS: SocialLink[] = [
     href: '/friends/',
     label: '友链',
   },
+  {
+    href: '/tools/',
+    label: '工具',
+  },
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [

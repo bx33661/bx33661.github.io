@@ -15,6 +15,7 @@ import {
   Menu,
   UserRound,
   Users,
+  Wrench,
   X,
   type LucideIcon,
 } from 'lucide-react'
@@ -26,6 +27,7 @@ const ICON_BY_PATH: Record<string, LucideIcon> = {
   '/notes/': BookText,
   '/archive': Archive,
   '/friends/': Users,
+  '/tools/': Wrench,
 }
 
 const MOBILE_DOCK_PATHS = ['/', '/blog/', '/notes/', '/archive', '/friends/']
@@ -140,7 +142,11 @@ const Navbar = () => {
           </Link>
 
           <div className="flex items-center gap-1 md:gap-2">
-            <nav className="hidden items-center gap-6 md:flex" aria-label="Main navigation" role="navigation">
+            <nav
+              className="hidden items-center gap-6 md:flex"
+              aria-label="Main navigation"
+              role="navigation"
+            >
               {NAV_LINKS.map((item) => {
                 const isActive = isLinkActive(activePath, item.href)
                 return (
@@ -191,7 +197,11 @@ const Navbar = () => {
         </div>
       </motion.header>
 
-      <header className="neo-navbar-wrap md:hidden" aria-label="Navigation" role="navigation">
+      <header
+        className="neo-navbar-wrap md:hidden"
+        aria-label="Navigation"
+        role="navigation"
+      >
         <div className="neo-mobile-top">
           <Link
             href="/"
@@ -218,7 +228,11 @@ const Navbar = () => {
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               className="h-10 w-10 rounded-xl border border-foreground/20 bg-background p-0 shadow-[3px_3px_0_0_rgba(15,23,42,0.18)]"
             >
-              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              {mobileMenuOpen ? (
+                <X className="h-4 w-4" />
+              ) : (
+                <Menu className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </div>
@@ -292,7 +306,10 @@ const Navbar = () => {
                         setActivePath(item.href)
                         setMobileMenuOpen(false)
                       }}
-                      className={cn('neo-mobile-sheet-link', active && 'is-active')}
+                      className={cn(
+                        'neo-mobile-sheet-link',
+                        active && 'is-active',
+                      )}
                     >
                       <span className="neo-mobile-sheet-link-icon">
                         <Icon className="h-4 w-4" />

@@ -15,3 +15,5 @@ teaser.pptx
 ~$teaser.pptx
 .vercel
 .lighthouseci/
+.tmp/
+public/vendor/cyberchef/

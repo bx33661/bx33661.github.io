@@ -41,7 +41,23 @@ npm run content:check
 
 # 生成新内容模板（blog/notes/projects）
 npm run content:new -- --type blog --title "Your Post Title"
+
+# 同步 CyberChef 自托管静态包（默认版本见脚本）
+npm run cyberchef:sync
+
+# 指定 CyberChef 版本同步
+CYBERCHEF_VERSION=v10.22.1 npm run cyberchef:sync
 ```
+
+## CyberChef 集成说明
+
+- 工具导航页：`/tools/`
+- CyberChef 入口：`/tools/cyberchef/`
+- 自托管静态目录：`public/vendor/cyberchef/`
+- 同步脚本：`scripts/sync-cyberchef.mjs`
+- CI 会在构建前自动执行同步（`.github/workflows/deploy.yml`）
+
+> 说明：`public/vendor/cyberchef/` 默认已加入 `.gitignore`，避免将大体积发布包提交到仓库历史。
 
 ## 环境变量
 
