@@ -1,5 +1,6 @@
 import { defineConfig, envField } from "astro/config";
 import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
@@ -18,6 +19,7 @@ export default defineConfig({
     defaultStrategy: "hover",
   },
   integrations: [
+    react(),
     mdx({
       extendMarkdownConfig: true,
     }),

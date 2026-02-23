@@ -8,62 +8,128 @@ import { GALLERY_IMAGES, buildGalleryImageSources } from '@/data/gallery'
 const currentUrl = Astro.url.toString()
 const featuredPhotos = GALLERY_IMAGES.slice(0, 6).map((item) => buildGalleryImageSources(item))
 
-const milestones = [
-  '海南大学 · 信息安全（2023 - 至今）',
-  'HnuSec 核心成员（CTF / Web Security）',
-  '持续进行 Web 安全、漏洞分析与工程实践输出',
+const experiences = [
+  { period: '2023 - 至今', role: '信息安全专业', org: '海南大学', tags: ['本科生', '在读'] },
+  { period: '2023 - 至今', role: '核心成员', org: 'HnuSec', tags: ['CTF', 'Web Security'] },
+  { period: '持续进行', role: '技术研究', org: '个人项目', tags: ['漏洞分析', '工程实践'] },
 ]
 
-const focuses = ['漏洞研究', 'AI4Sec', '开源实践']
+const focuses = ['漏洞研究', 'AI4Sec', '开源实践', 'CTF 竞赛']
+
+const links = [
+  { name: 'GitHub', url: 'https://github.com/bx33661' },
+  { name: 'Email', url: 'mailto:bx33661@gmail.com' },
+]
 ---
 
 <Layout title="关于我" description="BX 的背景、研究方向与作品实践。" canonicalURL={currentUrl}>
   <Header />
 
-  <main id="main-content" class="app-layout pb-10">
+  <main id="main-content" class="about-wrapper">
+    <div class="about-container">
+      <!-- Left Panel: Terminal Style Content -->
+      <div class="about-left">
+        <div class="about-header">
+          <h1 class="about-site-title">bx33661.cv</h1>
+          <button class="theme-toggle-btn" id="about-theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </button>
+        </div>
 
-  <div class="page">
-    <h1>关于我</h1>
-    <p class="about-avatar-wrap">
-      <img
-        class="about-avatar"
-        src="/logonew.jpg"
-        alt="BX 头像"
-        loading="eager"
-        decoding="async"
-        width="42"
-        height="42"
-      />
-    </p>
-    <p>我是 {SITE.title}，主要关注网络安全研究、工程开发与技术分享。</p>
-    <p>所在地：{SITE.location}</p>
-    <p>
-      <a href="mailto:bx33661@gmail.com">邮箱联系</a>
-      {' :: '}
-      <a href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer">GitHub</a>
-    </p>
-  </div>
+        <div class="about-profile">
+          <div class="profile-header">
+            <div class="profile-avatar-wrap">
+              <img 
+                src="/logonew.jpg" 
+                alt="BX Avatar" 
+                class="profile-avatar"
+                loading="eager"
+                decoding="async"
+              />
+              <div class="avatar-ring" aria-hidden="true"></div>
+            </div>
+            <div class="profile-info">
+              <div class="profile-name-row">
+                <h2 class="about-name">{SITE.author || 'BX'}</h2>
+                <span class="profile-flag" title="中国">🇨🇳</span>
+              </div>
+              <p class="about-role">安全研究员 · 开发者</p>
+            </div>
+          </div>
+        </div>
 
-  <div class="posts">
-    <h2 class="posts-title">成长路径</h2>
-    <ul>
-      {milestones.map((item) => <li>{item}</li>)}
-    </ul>
-  </div>
+        <div class="about-section">
+          <h3 class="about-section-title">经历</h3>
+          <div class="about-timeline">
+            {experiences.map((exp) => (
+              <div class="timeline-item">
+                <div class="timeline-period">{exp.period}</div>
+                <div class="timeline-role">{exp.role}</div>
+                <div class="timeline-org">{exp.org}</div>
+                {exp.tags && (
+                  <div class="timeline-tags">
+                    {exp.tags.map((tag) => (
+                      <span class="timeline-tag">{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
 
-  <div class="posts">
-    <h2 class="posts-title">当前关注</h2>
-    <ul>
-      {focuses.map((item) => <li>{item}</li>)}
-    </ul>
-  </div>
+        <div class="about-section">
+          <h3 class="about-section-title">当前关注</h3>
+          <div class="about-focuses">
+            {focuses.map((focus) => (
+              <div class="focus-item">{focus}</div>
+            ))}
+          </div>
+        </div>
 
-  <div class="posts">
-    <h2 class="posts-title">相册精选</h2>
-    {featuredPhotos.length === 0 ? (
-      <p>暂无照片。</p>
-    ) : (
-      <>
+        <div class="about-section">
+          <h3 class="about-section-title">联系方式</h3>
+          <div class="about-location">
+            <span class="location-label">所在地</span>
+            <span class="location-value">{SITE.location || '中国'}</span>
+          </div>
+        </div>
+
+        <div class="about-footer">
+          <div class="about-links">
+            <span class="links-label">Links</span>
+            {links.map((link, index) => (
+              <>
+                <a href={link.url} target="_blank" rel="noopener noreferrer" class="about-link">
+                  {link.name}
+                </a>
+                {index < links.length - 1 && <span class="link-separator">·</span>}
+              </>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Halftone Dot Effect -->
+      <div class="about-right" aria-hidden="true">
+        <canvas id="halftone-canvas" class="halftone-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Gallery Section (Full Width Below) -->
+    {featuredPhotos.length > 0 && (
+      <div class="about-gallery-section">
+        <h2 class="gallery-title">相册精选</h2>
         <div class="about-album-grid">
           {featuredPhotos.map((photo) => (
             <article class="about-album-card">
@@ -82,35 +148,404 @@ const focuses = ['漏洞研究', 'AI4Sec', '开源实践']
             </article>
           ))}
         </div>
-        <p><a href="/galleries/" class="button inline">[查看完整相册]</a></p>
-      </>
+        <p class="gallery-link-wrap">
+          <a href="/galleries/" class="gallery-link">查看完整相册 →</a>
+        </p>
+      </div>
     )}
-  </div>
   </main>
 
   <Footer />
 </Layout>
 
-<style>
-  .about-avatar-wrap {
-    margin: 8px 0 12px;
+<script>
+  // Halftone canvas effect
+  function initHalftone() {
+    const canvas = document.getElementById('halftone-canvas') as HTMLCanvasElement
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let animationId: number
+    let time = 0
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1
+      const rect = canvas.getBoundingClientRect()
+      canvas.width = rect.width * dpr
+      canvas.height = rect.height * dpr
+      ctx.scale(dpr, dpr)
+    }
+
+    function draw() {
+      const w = canvas.width / (window.devicePixelRatio || 1)
+      const h = canvas.height / (window.devicePixelRatio || 1)
+      
+      ctx.fillStyle = getComputedStyle(canvas).getPropertyValue('background-color') || '#000'
+      ctx.fillRect(0, 0, w, h)
+
+      const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#008fec'
+      
+      const spacing = 8
+      const cols = Math.ceil(w / spacing) + 1
+      const rows = Math.ceil(h / spacing) + 1
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = i * spacing
+          const y = j * spacing
+          
+          // Create wave effect
+          const distX = (x - w * 0.7) / w
+          const distY = (y - h * 0.5) / h
+          const dist = Math.sqrt(distX * distX + distY * distY)
+          
+          const wave1 = Math.sin(dist * 8 - time * 0.02) * 0.5 + 0.5
+          const wave2 = Math.sin(x * 0.02 + time * 0.03) * 0.3 + 0.3
+          const wave3 = Math.cos(y * 0.02 - time * 0.025) * 0.2 + 0.2
+          
+          const radius = (wave1 * 0.6 + wave2 * 0.3 + wave3 * 0.1) * 4
+          
+          const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius)
+          gradient.addColorStop(0, accentColor)
+          gradient.addColorStop(1, 'transparent')
+          
+          ctx.fillStyle = gradient
+          ctx.beginPath()
+          ctx.arc(x, y, radius, 0, Math.PI * 2)
+          ctx.fill()
+        }
+      }
+
+      time++
+      animationId = requestAnimationFrame(draw)
+    }
+
+    resize()
+    draw()
+
+    window.addEventListener('resize', () => {
+      resize()
+    })
+
+    return () => {
+      cancelAnimationFrame(animationId)
+    }
   }
 
-  .about-avatar {
-    width: 42px !important;
-    height: 42px !important;
-    border-radius: 999px;
-    border: 2px solid var(--accent) !important;
-    padding: 0 !important;
-    margin: 0 !important;
+  // Initialize on load
+  document.addEventListener('astro:page-load', () => {
+    initHalftone()
+  })
+</script>
+
+<style>
+  .about-wrapper {
+    min-height: calc(100vh - 8rem);
+    padding: 2rem 0;
+  }
+
+  .about-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    box-shadow: 0 20px 60px -20px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  /* Left Panel */
+  .about-left {
+    background: var(--background);
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    font-family: var(--font-cartograph), 'Courier New', monospace;
+  }
+
+  .about-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .about-site-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--foreground);
+    letter-spacing: -0.02em;
+  }
+
+  .theme-toggle-btn {
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    color: var(--foreground);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .theme-toggle-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .about-profile {
+    border-bottom: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+    padding-bottom: 2rem;
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .profile-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 1rem;
+    border: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
     object-fit: cover;
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
+
+  .profile-avatar:hover {
+    border-color: var(--accent);
+    transform: scale(1.05);
+  }
+
+  .avatar-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 1.125rem;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .profile-avatar:hover + .avatar-ring {
+    opacity: 0.4;
+  }
+
+  .profile-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .profile-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .about-name {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--foreground);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .profile-flag {
+    font-size: 1.5rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: transform 0.3s ease;
+    cursor: default;
+  }
+
+  .profile-flag:hover {
+    transform: scale(1.2);
+  }
+
+  .about-role {
+    margin: 0;
+    font-size: 1rem;
+    color: color-mix(in srgb, var(--foreground) 70%, transparent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .about-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .about-section-title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .about-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .timeline-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .timeline-period {
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--foreground) 60%, transparent);
+    letter-spacing: 0.02em;
+  }
+
+  .timeline-role {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .timeline-org {
+    font-size: 0.875rem;
+    color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  }
+
+  .timeline-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.375rem;
+  }
+
+  .timeline-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 0.375rem;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+
+  .about-focuses {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .focus-item {
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent);
+    border-radius: 0.5rem;
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--foreground) 3%, transparent);
+    text-align: center;
+  }
+
+  .about-location {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .location-label {
+    color: color-mix(in srgb, var(--foreground) 60%, transparent);
+  }
+
+  .location-value {
+    color: var(--foreground);
+  }
+
+  .about-footer {
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  }
+
+  .about-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+    flex-wrap: wrap;
+  }
+
+  .links-label {
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .about-link {
+    color: var(--accent);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .about-link:hover {
+    opacity: 0.7;
+  }
+
+  .link-separator {
+    color: color-mix(in srgb, var(--foreground) 40%, transparent);
+  }
+
+  /* Right Panel: Halftone Effect */
+  .about-right {
+    position: relative;
+    background: var(--background);
+    overflow: hidden;
+  }
+
+  .halftone-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: var(--background);
+  }
+
+  /* Gallery Section */
+  .about-gallery-section {
+    max-width: 1400px;
+    margin: 4rem auto 0;
+    padding: 0 1rem;
+  }
+
+  .gallery-title {
+    margin: 0 0 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--foreground);
+    font-family: var(--font-cartograph), monospace;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
   }
 
   .about-album-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-top: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 1.5rem;
   }
 
   .about-album-card {
@@ -120,11 +555,19 @@ const focuses = ['漏洞研究', 'AI4Sec', '开源实践']
   .about-album-link {
     display: block;
     text-decoration: none;
-    border: 4px solid var(--accent);
-    padding: 4px;
+    border: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 0.75rem;
+    padding: 0.5rem;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    background: var(--background);
+    background: color-mix(in srgb, var(--accent) 5%, var(--background));
+    transition: all 0.3s ease;
+  }
+
+  .about-album-link:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px color-mix(in srgb, var(--accent) 40%, transparent);
   }
 
   .about-album-image {
@@ -134,12 +577,109 @@ const focuses = ['漏洞研究', 'AI4Sec', '开源实践']
     margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
+    border-radius: 0.375rem;
     object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .about-album-link:hover .about-album-image {
+    transform: scale(1.05);
   }
 
   .about-album-caption {
-    margin-top: 6px;
-    font-size: 0.9rem;
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
     color: color-mix(in srgb, var(--foreground) 70%, transparent);
+    font-family: var(--font-cartograph), monospace;
+  }
+
+  .gallery-link-wrap {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .gallery-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    background: var(--accent);
+    color: var(--background);
+    text-decoration: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: all 0.3s ease;
+  }
+
+  .gallery-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -8px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  @media (max-width: 1024px) {
+    .about-container {
+      grid-template-columns: 1fr;
+    }
+
+    .about-right {
+      min-height: 400px;
+    }
+
+    .about-focuses {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .about-wrapper {
+      padding: 1rem 0;
+    }
+
+    .about-container {
+      border-radius: 1rem;
+      margin: 0 1rem;
+    }
+
+    .about-left {
+      padding: 2rem 1.5rem;
+      gap: 2rem;
+    }
+
+    .profile-header {
+      gap: 1rem;
+    }
+
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 0.875rem;
+    }
+
+    .avatar-ring {
+      inset: -5px;
+      border-radius: 1rem;
+    }
+
+    .about-name {
+      font-size: 1.5rem;
+    }
+
+    .profile-flag {
+      font-size: 1.25rem;
+    }
+
+    .about-right {
+      min-height: 300px;
+    }
+
+    .gallery-title {
+      font-size: 1.5rem;
+    }
+
+    .about-album-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
   }
 </style>
