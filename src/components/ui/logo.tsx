@@ -1,13 +1,13 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Logo({ className }: { className?: string }) {
   return (
     <img
-      src="/logo.ico"
+      src="/logonew.jpg"
       alt="BX Logo"
       className={cn(
         "w-full h-auto object-cover rounded-lg transition-all duration-300 hover:scale-105",
-        className
+        className,
       )}
       loading="eager"
       fetchPriority="high"
@@ -15,7 +15,7 @@ function Logo({ className }: { className?: string }) {
       height={266}
       decoding="async"
     />
-  )
+  );
 }
 
-export default Logo
+export default Logo;

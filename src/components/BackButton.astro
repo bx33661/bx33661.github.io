@@ -1,0 +1,154 @@
+---
+import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
+import { SITE } from "@/config.ts";
+
+// Build breadcrumb from current URL
+const currentUrlPath = Astro.url.pathname.replace(/\/+$/, "");
+const pathSegments = currentUrlPath.split("/").filter(s => s.trim());
+---
+
+{
+  SITE.showBackButton && (
+    <div class="app-layout">
+      <div class="nav-bar-back mt-6 mb-2 flex items-center gap-3 overflow-hidden">
+        {/* Back button pill */}
+        <a
+          id="back-button"
+          href="/"
+          class="back-btn group inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border/30 bg-muted/10 px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 hover:text-accent hover:shadow-sm hover:shadow-accent/10"
+        >
+          <IconChevronLeft class="size-4 transition-transform duration-200 group-hover:-translate-x-0.5 rtl:rotate-180 rtl:group-hover:translate-x-0.5" />
+          <span>返回</span>
+        </a>
+
+        {/* Breadcrumb trail */}
+        {pathSegments.length > 0 && (
+          <nav
+            aria-label="breadcrumb"
+            class="breadcrumb-trail flex min-w-0 items-center gap-1 text-sm"
+          >
+            {/* Separator */}
+            <span
+              class="breadcrumb-sep shrink-0 text-border/50"
+              aria-hidden="true"
+            >
+              <svg
+                class="size-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </span>
+
+            {/* Home */}
+            <a
+              href="/"
+              class="breadcrumb-link shrink-0 transition-colors duration-200 hover:text-accent"
+              aria-label="回到首页"
+              title="首页"
+            >
+              <svg
+                class="size-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+            </a>
+
+            {pathSegments.map((segment, index) => (
+              <>
+                <span
+                  class="breadcrumb-sep shrink-0 text-border/40"
+                  aria-hidden="true"
+                >
+                  <svg
+                    class="size-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </span>
+
+                {index + 1 === pathSegments.length ? (
+                  <span
+                    class="breadcrumb-current truncate font-medium text-accent/80"
+                    aria-current="page"
+                  >
+                    {decodeURIComponent(segment)}
+                  </span>
+                ) : (
+                  <a
+                    href={`/${pathSegments.slice(0, index + 1).join("/")}/`}
+                    class="breadcrumb-link shrink-0 capitalize transition-colors duration-200 hover:text-accent"
+                  >
+                    {decodeURIComponent(segment)}
+                  </a>
+                )}
+              </>
+            ))}
+          </nav>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .back-btn {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .breadcrumb-link {
+    color: color-mix(in srgb, var(--foreground) 55%, transparent);
+  }
+
+  .breadcrumb-link:hover {
+    color: var(--accent);
+  }
+
+  .breadcrumb-current {
+    max-width: 22ch;
+  }
+
+  /* Mobile: hide breadcrumb text, keep back button */
+  @media (max-width: 639px) {
+    .breadcrumb-trail {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  /* Update back URL from session */
+  function updateGoBackUrl() {
+    const backButton: HTMLAnchorElement | null =
+      document.querySelector("#back-button");
+
+    const backUrl = sessionStorage.getItem("backUrl");
+
+    if (backUrl && backButton) {
+      backButton.href = backUrl;
+    }
+  }
+
+  document.addEventListener("astro:page-load", updateGoBackUrl);
+  updateGoBackUrl();
+</script>

@@ -1,0 +1,285 @@
+---
+import { getCollection } from "astro:content";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header.astro";
+import { SITE } from "@/config.ts";
+import Layout from "@/layouts/Layout.astro";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+
+const posts = await getCollection("blog", ({ data }) => !data.draft);
+const sortedPosts = posts
+  .slice()
+  .sort((a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf());
+
+const monthFormatter = new Intl.DateTimeFormat("zh-CN", { month: "long" });
+
+const postMap = new Map<number, Map<number, typeof sortedPosts>>();
+
+for (const post of sortedPosts) {
+  const year = post.data.pubDatetime.getFullYear();
+  const month = post.data.pubDatetime.getMonth();
+
+  if (!postMap.has(year)) {
+    postMap.set(year, new Map());
+  }
+
+  const monthMap = postMap.get(year)!;
+  const monthPosts = monthMap.get(month) ?? [];
+  monthPosts.push(post);
+  monthMap.set(month, monthPosts);
+}
+
+const archiveYears = Array.from(postMap.entries())
+  .sort((a, b) => b[0] - a[0])
+  .map(([year, monthMap]) => {
+    const months = Array.from(monthMap.entries())
+      .sort((a, b) => b[0] - a[0])
+      .map(([month, monthPosts]) => ({
+        month,
+        label: monthFormatter.format(new Date(year, month, 1)),
+        posts: monthPosts,
+      }));
+
+    return {
+      year,
+      months,
+      total: months.reduce((acc, monthItem) => acc + monthItem.posts.length, 0),
+    };
+  });
+
+const yearCount = archiveYears.length;
+---
+
+<Layout
+  title={`归档 | ${SITE.title}`}
+  description="按时间整理的全部文章与更新记录。"
+  canonicalURL={Astro.url.toString()}
+>
+  <Header />
+  <Breadcrumb />
+
+  <main id="main-content" class="app-layout pb-12">
+    <section class="archives-hero">
+      <h1>归档</h1>
+      <p>按时间整理我发布过的内容，方便回看与检索。</p>
+      <div class="archives-meta">
+        <span>{sortedPosts.length} 篇文章</span>
+        <span>{yearCount} 年</span>
+      </div>
+    </section>
+
+    {
+      archiveYears.map(yearItem => (
+        <section class="archives-year">
+          <div class="archives-year-head">
+            <h2>{yearItem.year}</h2>
+            <span>{yearItem.total}</span>
+          </div>
+
+          {yearItem.months.map(monthItem => (
+            <section class="archives-month">
+              <div class="archives-month-head">
+                <h3>{monthItem.label}</h3>
+                <span>{monthItem.posts.length}</span>
+              </div>
+              <ul>
+                {monthItem.posts.map(post => (
+                  <li>
+                    <a href={`/blog/${resolveLegacyPostSlug(post)}/`}>
+                      <span class="archives-day">
+                        {post.data.pubDatetime.getDate().toString().padStart(2, "0")}
+                      </span>
+                      <div class="archives-content">
+                        <h4>{post.data.title}</h4>
+                        <p>{post.data.description}</p>
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </section>
+      ))
+    }
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .archives-hero {
+    border-radius: 1.75rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 15%, transparent);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      color-mix(in srgb, var(--background) 92%, transparent)
+    );
+    padding: 2rem 1.5rem;
+  }
+
+  .archives-hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    line-height: 1.08;
+    color: color-mix(in srgb, var(--accent) 70%, var(--foreground));
+  }
+
+  .archives-hero p {
+    margin-top: 0.75rem;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: color-mix(in srgb, var(--foreground) 74%, transparent);
+  }
+
+  .archives-meta {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .archives-meta span {
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, var(--background));
+    padding: 0.23rem 0.72rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--accent) 70%, var(--foreground));
+  }
+
+  .archives-year {
+    margin-top: 1.9rem;
+  }
+
+  .archives-year-head {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    background: color-mix(in srgb, var(--accent) 9%, var(--background));
+    padding: 0.45rem 0.95rem;
+  }
+
+  .archives-year-head h2 {
+    margin: 0;
+    font-size: 2rem;
+    line-height: 1;
+    color: color-mix(in srgb, var(--accent) 72%, var(--foreground));
+  }
+
+  .archives-year-head span {
+    display: inline-flex;
+    min-width: 1.65rem;
+    justify-content: center;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 14%, var(--background));
+    padding: 0.1rem 0.42rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--accent) 72%, var(--foreground));
+  }
+
+  .archives-month {
+    margin-top: 1.1rem;
+  }
+
+  .archives-month-head {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .archives-month-head h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    color: color-mix(in srgb, var(--accent) 82%, var(--foreground));
+  }
+
+  .archives-month-head span {
+    color: color-mix(in srgb, var(--foreground) 46%, transparent);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .archives-month ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .archives-month li a {
+    display: grid;
+    grid-template-columns: 2.1rem minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: start;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--border) 34%, transparent);
+    background: color-mix(in srgb, var(--background) 94%, transparent);
+    padding: 0.85rem 0.95rem;
+    text-decoration: none;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .archives-month li a:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+  }
+
+  .archives-day {
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--accent) 40%, var(--foreground));
+  }
+
+  .archives-content h4 {
+    margin: 0;
+    font-size: 1.17rem;
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--foreground) 95%, transparent);
+  }
+
+  .archives-content p {
+    margin: 0.28rem 0 0;
+    font-size: 0.97rem;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--foreground) 62%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    .archives-hero {
+      padding: 1.35rem 1rem;
+    }
+
+    .archives-year-head h2 {
+      font-size: 1.6rem;
+    }
+
+    .archives-month li a {
+      grid-template-columns: 1.85rem minmax(0, 1fr);
+      gap: 0.7rem;
+      padding: 0.72rem;
+    }
+
+    .archives-day {
+      font-size: 1.65rem;
+    }
+
+    .archives-content h4 {
+      font-size: 1.02rem;
+    }
+
+    .archives-content p {
+      font-size: 0.88rem;
+    }
+  }
+</style>

@@ -1,0 +1,152 @@
+---
+import type { ImageMetadata } from "astro";
+import { getCollection } from "astro:content";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Footer from "@/components/Footer.astro";
+import GalleryCard from "@/components/GalleryCard.astro";
+import Header from "@/components/Header.astro";
+import { SITE } from "@/config.ts";
+import Layout from "@/layouts/Layout.astro";
+
+const galleries = await getCollection("galleries", ({ data }) => !data.draft);
+
+const sortedGalleries = galleries
+  .slice()
+  .sort((a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf());
+
+const allImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/data/galleries/**/*.{jpg,jpeg,png,webp,avif,gif,JPG,JPEG,PNG,WEBP}",
+  { eager: true }
+);
+
+const getGallerySlug = (id: string) =>
+  id
+    .replace(/\\/g, "/")
+    .replace(/\/index\.(md|mdx)$/, "")
+    .replace(/\.(md|mdx)$/, "");
+
+const getGalleryImages = (slug: string) =>
+  Object.entries(allImages)
+    .filter(([imagePath]) => imagePath.startsWith(`/src/data/galleries/${slug}/`))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, mod]) => mod.default);
+
+const galleryCards = sortedGalleries.map(gallery => {
+  const slug = getGallerySlug(gallery.id);
+  const images = getGalleryImages(slug);
+  return {
+    gallery,
+    slug,
+    imageCount: images.length,
+    fallbackImage: images[0],
+  };
+});
+
+const totalImages = galleryCards.reduce((acc, item) => acc + item.imageCount, 0);
+---
+
+<Layout
+  title={`画廊 | ${SITE.title}`}
+  description="收录项目记录与日常瞬间的图像集合。"
+  canonicalURL={Astro.url.toString()}
+>
+  <Header />
+  <Breadcrumb />
+
+  <main id="main-content" class="app-layout pb-12">
+    <section class="galleries-hero">
+      <h1>画廊</h1>
+      <p>收录项目过程与生活片段，用图片记录每一次变化。</p>
+      <div class="galleries-meta">
+        <span>{galleryCards.length} 个图集</span>
+        <span>{totalImages} 张图片</span>
+      </div>
+    </section>
+
+    {
+      galleryCards.length > 0 ? (
+        <section class="galleries-grid" aria-label="画廊列表">
+          {galleryCards.map(item => (
+            <GalleryCard
+              gallery={item.gallery}
+              slug={item.slug}
+              fallbackImage={item.fallbackImage}
+              imageCount={item.imageCount}
+            />
+          ))}
+        </section>
+      ) : (
+        <p class="galleries-empty">暂时还没有已发布图集。</p>
+      )
+    }
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .galleries-hero {
+    border-radius: 1.75rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--background));
+    padding: 1.8rem 1.5rem;
+  }
+
+  .galleries-hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 3.4vw, 3rem);
+    line-height: 1.08;
+    color: color-mix(in srgb, var(--accent) 70%, var(--foreground));
+  }
+
+  .galleries-hero p {
+    margin-top: 0.75rem;
+    font-size: 1.04rem;
+    font-style: italic;
+    color: color-mix(in srgb, var(--foreground) 73%, transparent);
+  }
+
+  .galleries-meta {
+    margin-top: 0.95rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .galleries-meta span {
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, var(--background));
+    padding: 0.23rem 0.72rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--accent) 70%, var(--foreground));
+  }
+
+  .galleries-grid {
+    margin-top: 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(285px, 320px));
+    gap: 1rem;
+    justify-content: start;
+  }
+
+  .galleries-empty {
+    margin-top: 1rem;
+    border-radius: 0.85rem;
+    border: 1px solid color-mix(in srgb, var(--border) 34%, transparent);
+    background: color-mix(in srgb, var(--muted) 16%, transparent);
+    padding: 0.95rem 1rem;
+    color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    .galleries-hero {
+      padding: 1.35rem 1rem;
+    }
+
+    .galleries-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import PageHead from '@/components/PageHead.astro'
+import Header from '@/components/Header.astro'
+import Footer from '@/components/Footer.astro'
 
 const currentUrl = Astro.url.toString()
 
@@ -32,13 +33,10 @@ const availableCount = toolItems.filter((item) => item.state === 'available').le
 const plannedCount = toolItems.filter((item) => item.state === 'coming-soon').length
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead
-    slot="head"
-    title="Tools"
-    description="BX 工具箱，集中管理常用在线工具入口。"
-    canonicalURL={currentUrl}
-  />
+<Layout title="Tools" description="BX 工具箱，集中管理常用在线工具入口。" canonicalURL={currentUrl}>
+  <Header />
+
+  <main id="main-content" class="app-layout pb-10">
 
   <div class="page">
     <h1>Tools</h1>
@@ -72,7 +70,7 @@ const plannedCount = toolItems.filter((item) => item.state === 'coming-soon').le
 
         {tool.state === 'available' ? (
           <p class="tool-card__actions">
-            <a class="tool-link" href={tool.href}>打开工具 -></a>
+            <a class="tool-link" href={tool.href}>打开工具 -&gt;</a>
           </p>
         ) : (
           <p class="tool-card__actions"><span class="tool-placeholder">敬请期待</span></p>
@@ -105,6 +103,9 @@ const plannedCount = toolItems.filter((item) => item.state === 'coming-soon').le
         })
     })()
   </script>
+  </main>
+
+  <Footer />
 </Layout>
 
 <style>

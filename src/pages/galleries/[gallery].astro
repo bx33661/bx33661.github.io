@@ -1,0 +1,368 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Datetime from "@/components/Datetime.astro";
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header.astro";
+import { SITE } from "@/config.ts";
+import Layout from "@/layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const galleries = await getCollection("galleries", ({ data }) => !data.draft);
+  return galleries.map(gallery => ({
+    params: {
+      gallery: gallery.id
+        .replace(/\\/g, "/")
+        .replace(/\/index\.(md|mdx)$/, "")
+        .replace(/\.(md|mdx)$/, ""),
+    },
+    props: { gallery },
+  }));
+}
+
+type Props = {
+  gallery: (Awaited<ReturnType<typeof getCollection<"galleries">>>)[number];
+};
+
+const { gallery } = Astro.props as Props;
+const slug = Astro.params.gallery ?? "";
+
+const filenameToAlt = (filename: string) =>
+  filename
+    .replace(/\.[^.]+$/, "")
+    .replace(/^\d+[-_]?/, "")
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w/g, char => char.toUpperCase())
+    .trim() || gallery.data.title;
+
+const allImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/data/galleries/**/*.{jpg,jpeg,png,webp,avif,gif,JPG,JPEG,PNG,WEBP}",
+  { eager: true }
+);
+
+const images = Object.entries(allImages)
+  .filter(([imagePath]) => imagePath.startsWith(`/src/data/galleries/${slug}/`))
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([imagePath, mod]) => {
+    const filename = imagePath.split("/").pop() ?? "";
+    return {
+      src: mod.default,
+      alt: filenameToAlt(filename),
+    };
+  });
+---
+
+<Layout
+  title={`${gallery.data.title} | 画廊 | ${SITE.title}`}
+  description={gallery.data.description}
+  canonicalURL={Astro.url.toString()}
+  pubDatetime={gallery.data.pubDatetime}
+>
+  <Header />
+  <Breadcrumb />
+
+  <main id="main-content" class="app-layout pb-10">
+    <section class="rounded-2xl border border-border/25 bg-muted/10 p-6">
+      <h1 class="text-3xl font-bold tracking-tight">{gallery.data.title}</h1>
+      <p class="mt-3 text-foreground/70">{gallery.data.description}</p>
+      <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-foreground/60">
+        <Datetime pubDatetime={gallery.data.pubDatetime} />
+        <span class="rounded-full border border-border/40 px-3 py-1">
+          {images.length} 张图片
+        </span>
+      </div>
+    </section>
+
+    {
+      images.length > 0 ? (
+        <ul class="gallery-grid mt-8" role="list" aria-label={gallery.data.title}>
+          {images.map((image, index) => (
+            <li>
+              <button
+                class="gallery-item"
+                type="button"
+                data-lightbox-trigger
+                data-index={index}
+                data-src={image.src.src}
+                data-alt={image.alt}
+                aria-label={`查看第 ${index + 1} 张图片`}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  class="gallery-image"
+                  loading={index < 6 ? "eager" : "lazy"}
+                  widths={[400, 800, 1200]}
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="mt-8 rounded-xl border border-border/25 bg-muted/5 p-5 text-foreground/65">
+          这个图集暂时还没有图片。
+        </p>
+      )
+    }
+  </main>
+
+  <Footer />
+</Layout>
+
+<dialog id="gallery-lightbox" class="gallery-lightbox" aria-label="图片查看器" aria-modal="true">
+  <button id="gallery-lightbox-close" class="gallery-lightbox-close" type="button" aria-label="关闭">
+    ×
+  </button>
+  <button id="gallery-lightbox-prev" class="gallery-lightbox-nav" type="button" aria-label="上一张">
+    ‹
+  </button>
+  <div class="gallery-lightbox-body">
+    <img id="gallery-lightbox-image" src="" alt="" />
+    <p id="gallery-lightbox-caption"></p>
+    <span id="gallery-lightbox-counter"></span>
+  </div>
+  <button id="gallery-lightbox-next" class="gallery-lightbox-nav" type="button" aria-label="下一张">
+    ›
+  </button>
+</dialog>
+
+<script>
+  let lightboxCleanup = null;
+
+  const initGalleryLightbox = () => {
+    if (lightboxCleanup) {
+      lightboxCleanup();
+      lightboxCleanup = null;
+    }
+
+    const dialog = document.getElementById("gallery-lightbox");
+    if (!(dialog instanceof HTMLDialogElement)) return;
+
+    const triggers = Array.from(document.querySelectorAll("[data-lightbox-trigger]"));
+    if (triggers.length === 0) return;
+
+    const img = document.getElementById("gallery-lightbox-image");
+    const caption = document.getElementById("gallery-lightbox-caption");
+    const counter = document.getElementById("gallery-lightbox-counter");
+    const closeBtn = document.getElementById("gallery-lightbox-close");
+    const prevBtn = document.getElementById("gallery-lightbox-prev");
+    const nextBtn = document.getElementById("gallery-lightbox-next");
+
+    if (!(img instanceof HTMLImageElement) || !caption || !counter) return;
+
+    let current = 0;
+
+    const open = index => {
+      if (index < 0 || index >= triggers.length) return;
+      current = index;
+      const trigger = triggers[current];
+      const src = trigger.getAttribute("data-src") || "";
+      const alt = trigger.getAttribute("data-alt") || "";
+      img.src = src;
+      img.alt = alt;
+      caption.textContent = alt;
+      counter.textContent = `${current + 1} / ${triggers.length}`;
+      dialog.showModal();
+      document.body.style.overflow = "hidden";
+    };
+
+    const close = () => {
+      dialog.close();
+      document.body.style.overflow = "";
+    };
+
+    const toPrev = () => open((current - 1 + triggers.length) % triggers.length);
+    const toNext = () => open((current + 1) % triggers.length);
+
+    const onKeydown = event => {
+      if (!dialog.open) return;
+      if (event.key === "Escape") close();
+      if (event.key === "ArrowLeft") toPrev();
+      if (event.key === "ArrowRight") toNext();
+    };
+
+    const disposers = [];
+
+    triggers.forEach((trigger, index) => {
+      const handler = () => open(index);
+      trigger.addEventListener("click", handler);
+      disposers.push(() => trigger.removeEventListener("click", handler));
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", close);
+      disposers.push(() => closeBtn.removeEventListener("click", close));
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", toPrev);
+      disposers.push(() => prevBtn.removeEventListener("click", toPrev));
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", toNext);
+      disposers.push(() => nextBtn.removeEventListener("click", toNext));
+    }
+
+    const onDialogClick = event => {
+      if (event.target === dialog) close();
+    };
+
+    dialog.addEventListener("click", onDialogClick);
+    disposers.push(() => dialog.removeEventListener("click", onDialogClick));
+
+    document.addEventListener("keydown", onKeydown);
+    disposers.push(() => document.removeEventListener("keydown", onKeydown));
+
+    lightboxCleanup = () => {
+      disposers.forEach(dispose => dispose());
+      if (dialog.open) dialog.close();
+      document.body.style.overflow = "";
+    };
+  };
+
+  document.addEventListener("astro:page-load", initGalleryLightbox);
+  document.addEventListener("astro:after-swap", initGalleryLightbox);
+</script>
+
+<style>
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 768px) {
+    .gallery-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .gallery-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .gallery-item {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0.9rem;
+    overflow: hidden;
+    cursor: zoom-in;
+    background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  }
+
+  .gallery-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .gallery-item:hover .gallery-image {
+    transform: scale(1.04);
+  }
+
+  .gallery-lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    z-index: 120;
+  }
+
+  .gallery-lightbox::backdrop {
+    background: transparent;
+  }
+
+  .gallery-lightbox:not([open]) {
+    display: none;
+  }
+
+  .gallery-lightbox-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 3.25rem 0.75rem;
+  }
+
+  #gallery-lightbox-image {
+    max-width: 100%;
+    max-height: calc(100dvh - 10rem);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0.5rem;
+  }
+
+  #gallery-lightbox-caption {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  #gallery-lightbox-counter {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .gallery-lightbox-close,
+  .gallery-lightbox-nav {
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.13);
+    color: #fff;
+    border-radius: 999px;
+    width: 2.7rem;
+    height: 2.7rem;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  .gallery-lightbox-close {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+  }
+
+  @media (max-width: 600px) {
+    .gallery-lightbox-nav {
+      position: absolute;
+      bottom: 1rem;
+    }
+
+    #gallery-lightbox-prev {
+      left: 1rem;
+    }
+
+    #gallery-lightbox-next {
+      right: 1rem;
+    }
+  }
+</style>

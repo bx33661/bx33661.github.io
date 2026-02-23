@@ -1,16 +1,30 @@
 ---
-import Layout from '@/layouts/Layout.astro'
-import PageHead from '@/components/PageHead.astro'
-
-const currentUrl = Astro.url
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import { SITE } from "@/config.ts";
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="404" noindex={true} />
+<Layout title={`404 页面不存在 | ${SITE.title}`}>
+  <Header />
 
-  <div class="page">
-    <h1>404</h1>
-    <p>页面不存在或链接已失效。</p>
-    <p><a href="/" class="button">返回首页</a></p>
-  </div>
+  <main
+    id="main-content"
+    class="app-layout flex flex-1 items-center justify-center"
+  >
+    <div class="mb-14 flex flex-col items-center justify-center">
+      <h1 class="text-9xl font-bold text-accent">404</h1>
+      <span aria-hidden="true">¯\_(ツ)_/¯</span>
+      <p class="mt-4 text-2xl sm:text-3xl">页面不存在</p>
+      <LinkButton
+        href="/"
+        class="my-6 text-lg underline decoration-dashed underline-offset-8"
+      >
+        返回首页
+      </LinkButton>
+    </div>
+  </main>
+
+  <Footer />
 </Layout>

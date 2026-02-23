@@ -1,23 +1,319 @@
 ---
-import TerminalLayout from '@/layouts/TerminalLayout.astro'
+import { ClientRouter } from "astro:transitions";
+import { SITE } from "@/config.ts";
+import SearchModal from "@/components/SearchModal.astro";
+import "@/styles/global.css";
 
-interface Props {
-  isWide?: boolean
-  title?: string
-  description?: string
-  image?: string
-  canonicalUrl?: URL | string
-}
+type Props = {
+  title?: string;
+  author?: string;
+  profile?: string;
+  description?: string;
+  ogImage?: string;
+  canonicalURL?: string;
+  pubDatetime?: Date;
+  modDatetime?: Date | null;
+  scrollSmooth?: boolean;
+};
 
 const {
-  title,
-  description,
-  image,
-  canonicalUrl,
-} = Astro.props as Props
+  title = SITE.title,
+  author = SITE.author,
+  profile = SITE.profile,
+  description = SITE.desc,
+  ogImage = SITE.ogImage ? `/${SITE.ogImage}` : "/og.png",
+  canonicalURL = new URL(Astro.url.pathname, Astro.url),
+  pubDatetime,
+  modDatetime,
+  scrollSmooth = false,
+} = Astro.props;
+
+const socialImageURL = new URL(ogImage, Astro.url);
+
+const structuredData = pubDatetime
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: `${title}`,
+      image: `${socialImageURL}`,
+      datePublished: pubDatetime.toISOString(),
+      ...(modDatetime && { dateModified: modDatetime.toISOString() }),
+      author: [
+        {
+          "@type": "Person",
+          name: `${author}`,
+          ...(profile && { url: profile }),
+        },
+      ],
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: `${SITE.title}`,
+      url: new URL("/", Astro.site ?? Astro.url).toString(),
+      description: `${SITE.desc}`,
+    };
 ---
 
-<TerminalLayout title={title} description={description} image={image} canonicalUrl={canonicalUrl}>
-  <slot name="head" slot="head" />
-  <slot />
-</TerminalLayout>
+<!doctype html>
+<html
+  dir={SITE.dir}
+  lang=`${SITE.lang ?? "en"}`
+  class={`${scrollSmooth && "scroll-smooth"}`}
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/jpeg" href="/logonew.jpg" />
+    <link rel="shortcut icon" href="/logonew.jpg" />
+    <link rel="apple-touch-icon" href="/logonew.jpg" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- General Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={socialImageURL} />
+
+    <!-- Article Published/Modified time -->
+    {
+      pubDatetime && (
+        <meta
+          property="article:published_time"
+          content={pubDatetime.toISOString()}
+        />
+      )
+    }
+    {
+      modDatetime && (
+        <meta
+          property="article:modified_time"
+          content={modDatetime.toISOString()}
+        />
+      )
+    }
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={socialImageURL} />
+
+    <!-- Google JSON-LD Structured data -->
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(structuredData)}
+    />
+
+    <!-- Enable RSS feed auto-discovery  -->
+    <!-- https://docs.astro.build/en/recipes/rss/#enabling-rss-feed-auto-discovery -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={SITE.title}
+      href={new URL("rss.xml", Astro.site)}
+    />
+
+    <meta name="theme-color" content="" />
+
+    <ClientRouter />
+
+    <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
+    <script is:inline>
+      (function () {
+        const initialColorScheme = ""; // "light" | "dark"
+        const currentTheme = localStorage.getItem("theme");
+
+        function getPreferTheme() {
+          if (currentTheme) return currentTheme;
+          if (initialColorScheme) return initialColorScheme;
+          return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+
+        const themeValue = getPreferTheme();
+
+        // Set theme immediately to prevent flash
+        document.firstElementChild?.setAttribute("data-theme", themeValue);
+
+        // Export minimal API for external script
+        window.theme = {
+          themeValue: themeValue,
+          getTheme: () => window.theme.themeValue,
+          setTheme: val => {
+            window.theme.themeValue = val;
+          },
+        };
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Global decorative backdrop (grid, glow, cursor glow, noise) -->
+    <div class="site-backdrop pointer-events-none" aria-hidden="true">
+      <div class="site-grid"></div>
+      <div class="site-glow"></div>
+      <div class="site-cursor-glow"></div>
+      <div class="site-grain"></div>
+    </div>
+
+    <slot />
+
+    <SearchModal />
+
+    <!-- Load full theme logic -->
+    <script src="../scripts/theme.ts"></script>
+  </body>
+</html>
+
+<style>
+  .site-backdrop {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 0;
+    mask-image: linear-gradient(
+      to bottom,
+      black 0%,
+      black 40%,
+      rgba(0, 0, 0, 0.3) 70%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      black 0%,
+      black 40%,
+      rgba(0, 0, 0, 0.3) 70%,
+      transparent 100%
+    );
+  }
+
+  .site-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--accent) 1px, transparent 1px),
+      linear-gradient(90deg, var(--accent) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.035;
+    mask-image: radial-gradient(
+      ellipse 100% 60% at 50% 0%,
+      black 15%,
+      transparent 100%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 100% 60% at 50% 0%,
+      black 15%,
+      transparent 100%
+    );
+  }
+
+  .site-glow {
+    position: absolute;
+    top: -15%;
+    left: 50%;
+    transform: translateX(-50%) translateZ(0);
+    width: 800px;
+    height: 550px;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in oklab, var(--accent) 100%, transparent) 0%,
+      color-mix(in oklab, var(--accent) 80%, transparent) 10%,
+      color-mix(in oklab, var(--accent) 60%, transparent) 20%,
+      color-mix(in oklab, var(--accent) 45%, transparent) 30%,
+      color-mix(in oklab, var(--accent) 30%, transparent) 40%,
+      color-mix(in oklab, var(--accent) 18%, transparent) 50%,
+      color-mix(in oklab, var(--accent) 10%, transparent) 60%,
+      color-mix(in oklab, var(--accent) 4%, transparent) 70%,
+      transparent 85%
+    );
+    opacity: 0.06;
+    filter: blur(80px);
+  }
+
+  .site-cursor-glow {
+    position: absolute;
+    inset: 0;
+    transform: translateZ(0);
+    background: radial-gradient(
+      550px circle at var(--site-cx, 50%) var(--site-cy, 50%),
+      color-mix(in oklab, var(--accent) 6%, transparent) 0%,
+      color-mix(in oklab, var(--accent) 4%, transparent) 15%,
+      color-mix(in oklab, var(--accent) 2.5%, transparent) 25%,
+      color-mix(in oklab, var(--accent) 1.5%, transparent) 38%,
+      color-mix(in oklab, var(--accent) 0.8%, transparent) 50%,
+      color-mix(in oklab, var(--accent) 0.2%, transparent) 62%,
+      transparent 75%
+    );
+    filter: blur(40px);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    will-change: transform;
+  }
+
+  .site-cursor-glow.active {
+    opacity: 1;
+  }
+
+  .site-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("/noise.png");
+    background-repeat: repeat;
+    background-size: 64px 64px;
+    opacity: 0.55;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  let cursorCleanup: AbortController | null = null;
+
+  document.addEventListener("astro:page-load", () => {
+    // Cleanup previous listeners
+    if (cursorCleanup) cursorCleanup.abort();
+    cursorCleanup = new AbortController();
+    const { signal } = cursorCleanup;
+
+    const backdrop = document.querySelector<HTMLElement>(".site-backdrop");
+    const cursorGlow = document.querySelector<HTMLElement>(".site-cursor-glow");
+
+    if (backdrop && cursorGlow) {
+      document.addEventListener(
+        "mousemove",
+        (e: MouseEvent) => {
+          // Use requestAnimationFrame for performance optimization
+          requestAnimationFrame(() => {
+            backdrop.style.setProperty("--site-cx", `${e.clientX}px`);
+            backdrop.style.setProperty("--site-cy", `${e.clientY}px`);
+            if (!cursorGlow.classList.contains("active")) {
+              cursorGlow.classList.add("active");
+            }
+          });
+        },
+        { signal }
+      );
+
+      document.addEventListener(
+        "mouseleave",
+        () => {
+          cursorGlow.classList.remove("active");
+        },
+        { signal }
+      );
+    }
+  });
+</script>

@@ -1,26 +1,27 @@
-import { SITE } from '@/consts'
-import rss from '@astrojs/rss'
-import type { APIContext } from 'astro'
-import { getAllPostSlugs } from '@/lib/data-utils'
+import rss from "@astrojs/rss";
+import { getCollection } from "astro:content";
+import { getPath } from "@/utils/getPath";
+import getSortedPosts from "@/utils/getSortedPosts";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { SITE } from "@/config.ts";
 
-export async function GET(context: APIContext) {
-  try {
-    const postSlugs = await getAllPostSlugs()
-
-    return rss({
-      title: SITE.title,
-      description: SITE.description,
-      site: context.site ?? SITE.href,
-      items: postSlugs.map(({ slug, post }) => ({
-        title: post.data.title,
-        description: post.data.description,
-        pubDate: post.data.date,
-        link: `/blog/${slug}/`,
-      })),
-    })
-  } catch (error) {
-    // 静默处理错误，避免在生产环境中暴露敏感信息
-    // 可选：发送到错误监控服务
-    return new Response('Internal Server Error', { status: 500 })
-  }
+export async function GET() {
+  const posts = await getCollection("blog");
+  const sortedPosts = getSortedPosts(posts);
+  return rss({
+    title: SITE.title,
+    description: SITE.desc,
+    site: SITE.website,
+    items: sortedPosts.map((post) => ({
+      link: getPath(
+        post.id,
+        post.filePath,
+        true,
+        post.data.slug || resolveLegacyPostSlug(post)
+      ),
+      title: post.data.title,
+      description: post.data.description,
+      pubDate: new Date(post.data.modDatetime ?? post.data.pubDatetime),
+    })),
+  });
 }

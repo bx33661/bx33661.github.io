@@ -12,7 +12,7 @@ export const GET: APIRoute = async () => {
             description: post.data.description,
             slug: slugData?.slug || post.data.slug || 'unknown',
             tags: post.data.tags || [],
-            date: post.data.date.toISOString(),
+            date: post.data.pubDatetime.toISOString(),
             // Include a snippet of content for search
             content: post.body?.slice(0, 500) || '',
         }

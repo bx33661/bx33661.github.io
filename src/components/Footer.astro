@@ -1,36 +1,125 @@
 ---
-import { Separator } from '@/components/ui/separator'
-import { SOCIAL_LINKS } from '@/consts'
-import Link from './Link.astro'
-import SocialIcons from './SocialIcons.astro'
+import type { HTMLAttributes } from "astro/types";
+import { SOCIALS } from "@/constants";
+import LinkButton from "./LinkButton.astro";
+import { SITE } from "@/config.ts";
+
+const currentYear = new Date().getFullYear();
+
+type Props = {
+  noMarginTop?: boolean;
+} & HTMLAttributes<"footer">;
+
+const { noMarginTop = false, class: className, ...attrs } = Astro.props;
 ---
 
-<footer class="neo-footer py-4" aria-label="Footer" role="contentinfo" id="footer">
+<footer
+  class:list={["footer-wrapper", { "mt-auto": !noMarginTop }, className]}
+  {...attrs}
+>
+  <!-- Top gradient border -->
   <div
-    class="neo-footer-inner mx-auto flex max-w-5xl flex-col items-center justify-center gap-y-2 px-4 sm:flex-row sm:justify-between"
+    class="h-px w-full bg-linear-to-r from-transparent via-border/40 to-transparent"
   >
-    <SocialIcons links={SOCIAL_LINKS} />
-    <div class="flex flex-wrap items-center justify-center gap-x-2 text-center">
-      <span class="text-muted-foreground text-sm" aria-label="copyright">
-        2020 - {new Date().getFullYear()} &copy; BX All rights reserved.
-      </span>
-      <Separator orientation="vertical" className="hidden h-4! sm:block" />
-      <p class="text-muted-foreground text-sm" aria-label="open-source description">
-        <Link
-          href="https://github.com/bx33661/bx33661"
-          class="text-foreground"
-          external
-          underline>Open-source</Link
-        > under MIT license
+  </div>
+
+  <div class="app-layout py-8 sm:py-10">
+    <!-- Main footer grid -->
+    <div
+      class="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between"
+    >
+      <!-- Brand column -->
+      <div class="flex flex-col items-center gap-3 sm:items-start">
+        <a
+          href="/"
+          class="group flex items-center gap-2 text-lg font-bold tracking-tight"
+        >
+          <img
+            src="/logonew.jpg"
+            alt={`${SITE.title} logo`}
+            class="footer-brand-logo size-7 rounded-md border border-border/30 bg-background/90 p-0.5 object-cover transition-all duration-300 group-hover:scale-105 group-hover:border-accent/40"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="footer-logo-text">{SITE.title}</span>
+        </a>
+        <p
+          class="max-w-xs text-center text-xs leading-relaxed opacity-50 sm:text-start"
+        >
+          记录网络安全与工程实践，持续分享真实可复现的技术经验。
+        </p>
+      </div>
+
+      <!-- Social links -->
+      <div class="flex flex-col items-center gap-2 sm:items-end">
+        <span
+          class="font-cartograph text-[10px] tracking-wider text-foreground/35 uppercase select-none"
+          >联系与关注</span
+        >
+        <div class="flex items-center gap-1">
+          {
+            SOCIALS.map(social => (
+              <LinkButton
+                href={social.href}
+                class="footer-social-btn inline-flex size-8 items-center justify-center rounded-lg border border-border/20 bg-muted/5 transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-sm hover:shadow-accent/10"
+                title={social.linkTitle}
+              >
+                <social.icon class="size-4 fill-transparent stroke-current stroke-2" />
+                <span class="sr-only">{social.linkTitle}</span>
+              </LinkButton>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="mt-8 flex items-center gap-3" aria-hidden="true">
+      <div
+        class="h-px flex-1 bg-linear-to-r from-transparent via-border/25 to-transparent"
+      >
+      </div>
+    </div>
+
+    <div
+      class="mt-4 flex flex-col items-center justify-between gap-2 sm:flex-row"
+    >
+      <p class="font-cartograph text-[11px] tracking-wide opacity-35">
+        &copy; {currentYear}
+        {SITE.title}. 保留所有权利。
       </p>
-      <Separator orientation="vertical" className="hidden h-4! sm:block" />
-      <p class="text-muted-foreground text-sm" aria-label="filing information">
-        <Link
-          href="https://beian.miit.gov.cn/"
-          class="text-foreground"
-          external
-          underline>琼ICP备2024046051号-1</Link>
+      <p class="font-cartograph text-[11px] tracking-wide opacity-30">
+        由热爱驱动，长期维护更新
       </p>
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-wrapper {
+    background: color-mix(in srgb, var(--background) 60%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .footer-logo-text {
+    background: linear-gradient(
+      135deg,
+      var(--foreground) 0%,
+      var(--foreground) 60%,
+      var(--accent) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .footer-brand-logo {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--border) 40%, transparent);
+  }
+
+  .footer-social-btn {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+</style>

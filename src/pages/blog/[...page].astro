@@ -1,73 +1,223 @@
 ---
-import TerminalPostCard from '@/components/terminal/TerminalPostCard.astro'
-import PageHead from '@/components/PageHead.astro'
-import TerminalLayout from '@/layouts/TerminalLayout.astro'
-import { getAllPostSlugs } from '@/lib/data-utils'
-import type { PaginateFunction } from 'astro'
+import type { GetStaticPaths } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Card from "@/components/Card.astro";
+import Pagination from "@/components/Pagination.astro";
+import getSortedPosts from "@/utils/getSortedPosts";
+import { SITE } from "@/config.ts";
 
-export async function getStaticPaths({
-  paginate,
-}: {
-  paginate: PaginateFunction
-}) {
-  const allPostSlugs = await getAllPostSlugs()
-  return paginate(allPostSlugs, { pageSize: 10 })
-}
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return paginate(getSortedPosts(posts), { pageSize: SITE.postPerPage });
+}) satisfies GetStaticPaths;
 
-const { page } = Astro.props
-const currentUrl = Astro.url
-const pageTitle = page.currentPage === 1 ? '博客' : `博客 - 第 ${page.currentPage} 页`
-const pageDescription = '安全研究、开发实践与日常技术记录。'
-const pageNumbers = Array.from({ length: page.lastPage }, (_, index) => index + 1)
-const pageEntries = page.data as Array<{ post: Awaited<ReturnType<typeof getAllPostSlugs>>[number]['post']; slug: string }>
-
-const buildPageLink = (pageNumber: number) => {
-  if (pageNumber <= 1) {
-    return '/blog/'
-  }
-  return `/blog/${pageNumber}/`
-}
+const { page } = Astro.props;
+const totalPosts = page.total;
+const pageData = page.data as CollectionEntry<"blog">[];
 ---
 
-<TerminalLayout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title={pageTitle} description={pageDescription} canonicalURL={currentUrl.toString()} />
-
-  <div class="posts">
-    <h1 class="posts-title">博客文章</h1>
-
-    {page.data.length === 0 ? (
-      <p>暂无文章，稍后再来看看。</p>
-    ) : (
-      pageEntries.map(({ post, slug }) => (
-        <TerminalPostCard post={post} slug={slug} />
-      ))
-    )}
-  </div>
-
-  {page.lastPage > 1 && (
-    <div class="pagination">
-      <div class="pagination__title">
-        <span class="pagination__title-h">Page {page.currentPage} / {page.lastPage}</span>
-        <hr />
-      </div>
-      <div class="pagination__buttons">
-        {page.url.prev && (
-          <a href={page.url.prev} class="button inline prev">&lt; [上一页]</a>
-        )}
-
-        {pageNumbers.map((pageNumber) => (
-          <a
-            href={buildPageLink(pageNumber)}
-            class={`button number ${pageNumber === page.currentPage ? 'active' : ''}`}
-          >
-            {pageNumber}
-          </a>
-        ))}
-
-        {page.url.next && (
-          <a href={page.url.next} class="button inline next">[下一页] &gt;</a>
-        )}
+<Layout title={`Blog | ${SITE.title}`} canonicalURL={Astro.url.toString()}>
+  <Header />
+  <Breadcrumb />
+  <main id="main-content" class="app-layout pb-4">
+    <div class="posts-hero" data-posts-hero>
+      <div class="aurora-orb aurora-orb-1"></div>
+      <div class="aurora-orb aurora-orb-2"></div>
+      <div class="aurora-orb aurora-orb-3"></div>
+      <div class="aurora-mouse" data-posts-mouse></div>
+      <div class="relative z-10">
+        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
+          <span class="glow-text">Blog</span>
+        </h1>
+        <p class="mt-3 max-w-lg text-foreground/70 italic">按时间浏览全部博客文章。</p>
+        <div class="mt-4 flex flex-wrap items-center gap-2">
+          <span class="hero-badge">{totalPosts} posts</span>
+          {
+            page.lastPage > 1 && (
+              <span class="hero-badge">
+                Page {page.currentPage}/{page.lastPage}
+              </span>
+            )
+          }
+        </div>
       </div>
     </div>
-  )}
-</TerminalLayout>
+
+    <ul>{pageData.map((data) => <Card {...data} />)}</ul>
+  </main>
+
+  <Pagination page={page as any} />
+
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const hero = document.querySelector("[data-posts-hero]") as HTMLElement;
+    const heroMouse = document.querySelector(
+      "[data-posts-mouse]"
+    ) as HTMLElement;
+    if (hero && heroMouse) {
+      hero.addEventListener("mousemove", (e) => {
+        const rect = hero.getBoundingClientRect();
+        heroMouse.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+        heroMouse.style.setProperty("--my", `${e.clientY - rect.top}px`);
+        heroMouse.style.opacity = "1";
+      });
+      hero.addEventListener("mouseleave", () => {
+        heroMouse.style.opacity = "0";
+      });
+    }
+  });
+</script>
+
+<style>
+  .posts-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+    background: color-mix(
+      in srgb,
+      var(--color-foreground) 3%,
+      var(--color-background)
+    );
+    border: 1px solid color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
+
+  @media (min-width: 640px) {
+    .posts-hero {
+      padding: 3rem;
+    }
+  }
+
+  .aurora-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .aurora-orb-1 {
+    width: 300px;
+    height: 300px;
+    top: -30%;
+    left: -10%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-accent) 25%, transparent),
+      transparent 70%
+    );
+    animation: orb-1 7s ease-in-out infinite alternate;
+  }
+
+  .aurora-orb-2 {
+    width: 250px;
+    height: 250px;
+    top: 10%;
+    right: -5%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-border) 20%, transparent),
+      transparent 70%
+    );
+    animation: orb-2 9s ease-in-out infinite alternate;
+  }
+
+  .aurora-orb-3 {
+    width: 200px;
+    height: 200px;
+    bottom: -20%;
+    left: 40%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-accent) 12%, transparent),
+      transparent 70%
+    );
+    animation: orb-3 11s ease-in-out infinite alternate;
+  }
+
+  @keyframes orb-1 {
+    0% {
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      transform: translate(40px, 20px) scale(1.2);
+    }
+  }
+
+  @keyframes orb-2 {
+    0% {
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      transform: translate(-30px, 30px) scale(1.15);
+    }
+  }
+
+  @keyframes orb-3 {
+    0% {
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      transform: translate(20px, -25px) scale(1.1);
+    }
+  }
+
+  .aurora-mouse {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-accent) 18%, transparent),
+      color-mix(in srgb, var(--color-border) 8%, transparent) 40%,
+      transparent 70%
+    );
+    filter: blur(50px);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    transform: translate(
+      calc(var(--mx, 0px) - 175px),
+      calc(var(--my, 0px) - 175px)
+    );
+    will-change: transform;
+    z-index: 1;
+  }
+
+  .glow-text {
+    background: linear-gradient(
+      135deg,
+      var(--color-foreground),
+      var(--color-accent)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(
+      0 0 25px color-mix(in srgb, var(--color-accent) 25%, transparent)
+    );
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 15%, transparent);
+    backdrop-filter: blur(8px);
+  }
+</style>

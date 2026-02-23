@@ -1,56 +1,39 @@
 ---
-import TerminalNoteCard from '@/components/terminal/TerminalNoteCard.astro'
-import PageHead from '@/components/PageHead.astro'
-import Layout from '@/layouts/Layout.astro'
-import { getAllNoteSlugs } from '@/lib/data-utils'
-import type { PaginateFunction } from 'astro'
+import type { GetStaticPaths } from "astro";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Pagination from "@/components/Pagination.astro";
+import { SITE } from "@/config.ts";
+import { getAllNotesWithSlugs, type NoteWithSlug } from "@/utils/notes";
 
-export async function getStaticPaths({
-  paginate,
-}: {
-  paginate: PaginateFunction
-}) {
-  const allNoteSlugs = await getAllNoteSlugs()
-  return paginate(allNoteSlugs, { pageSize: 10 })
-}
+export const getStaticPaths = (async ({ paginate }) => {
+  const notes = await getAllNotesWithSlugs();
+  return paginate(notes, { pageSize: 10 });
+}) satisfies GetStaticPaths;
 
-const { page } = Astro.props
-const currentUrl = Astro.url
-const pageTitle = page.currentPage === 1 ? '学习笔记' : `学习笔记 - 第 ${page.currentPage} 页`
-const pageNumbers = Array.from({ length: page.lastPage }, (_, index) => index + 1)
-const noteEntries = page.data as Awaited<ReturnType<typeof getAllNoteSlugs>>
-
-const buildPageLink = (pageNumber: number) => {
-  if (pageNumber <= 1) return '/notes/list/'
-  return `/notes/list/${pageNumber}/`
-}
+const { page } = Astro.props;
+const noteEntries = page.data as NoteWithSlug[];
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title={pageTitle} description="学习笔记分页列表。" canonicalURL={currentUrl.toString()} />
-
-  <div class="posts">
-    <h1 class="posts-title">学习笔记列表</h1>
-    {noteEntries.map(({ note, slug }) => (
-      <TerminalNoteCard note={note} slug={slug} />
-    ))}
-  </div>
-
-  {page.lastPage > 1 && (
-    <div class="pagination">
-      <div class="pagination__title">
-        <span class="pagination__title-h">Page {page.currentPage} / {page.lastPage}</span>
-        <hr />
-      </div>
-      <div class="pagination__buttons">
-        {page.url.prev && <a href={page.url.prev} class="button inline prev">&lt; [上一页]</a>}
-        {pageNumbers.map((pageNumber) => (
-          <a href={buildPageLink(pageNumber)} class={`button number ${pageNumber === page.currentPage ? 'active' : ''}`}>
-            {pageNumber}
+<Layout title={`Notes List | ${SITE.title}`} canonicalURL={Astro.url.toString()}>
+  <Header />
+  <Breadcrumb />
+  <main id="main-content" class="app-layout pb-6">
+    <h1 class="text-3xl font-bold tracking-tight">学习笔记列表</h1>
+    <ul class="mt-5 space-y-3">
+      {noteEntries.map(({ note, slug }) => (
+        <li class="rounded-xl border border-border/25 bg-muted/5 p-4">
+          <a href={`/notes/${slug}/`} class="font-medium text-foreground hover:text-accent">
+            {note.data.title}
           </a>
-        ))}
-        {page.url.next && <a href={page.url.next} class="button inline next">[下一页] &gt;</a>}
-      </div>
-    </div>
-  )}
+          <p class="mt-1 text-sm text-foreground/65">{note.data.description}</p>
+          <p class="mt-2 text-xs text-foreground/50">{note.data.date.toLocaleDateString("zh-CN")}</p>
+        </li>
+      ))}
+    </ul>
+  </main>
+  <Pagination page={page as any} />
+  <Footer noMarginTop={page.lastPage > 1} />
 </Layout>

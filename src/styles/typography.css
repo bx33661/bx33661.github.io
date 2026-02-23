@@ -1,347 +1,247 @@
-@reference './global.css';
+@plugin "@tailwindcss/typography";
 
-@layer components {
-  .prose {
-    @apply text-foreground text-base sm:text-lg leading-relaxed;
-    @apply [&>*]:first:mt-0 [&>*]:last:mb-0 [&>section:first-child>*]:mt-0 [&>section:last-child>*]:mb-0;
-    /* 暗夜模式下的基础优化 */
-    @apply dark:text-foreground/95 dark:leading-relaxed;
+@layer base {
+  /* ===== Override default Tailwind Typography styles ===== */
+  .app-prose {
+    @apply prose;
 
-    p {
-      @apply text-foreground my-4 sm:my-6 leading-relaxed sm:leading-loose not-first:mt-4 sm:not-first:mt-6;
-      /* 暗夜模式段落优化 */
-      @apply dark:text-foreground/90 dark:leading-relaxed dark:tracking-wide;
-    }
-
-    h1 {
-      @apply text-foreground mt-0 mb-6 sm:mb-8 scroll-m-20 text-2xl sm:text-4xl leading-tight font-bold;
-      /* 暗夜模式标题优化 */
-      @apply dark:text-foreground dark:font-bold dark:tracking-tight;
-    }
-
-    h2 {
-      @apply text-foreground mt-8 sm:mt-10 mb-4 sm:mb-6 scroll-m-20 text-xl sm:text-3xl leading-snug font-semibold;
-      /* 暗夜模式标题优化 */
-      @apply dark:text-foreground dark:font-semibold dark:tracking-tight;
+    h1,
+    h2,
+    h3,
+    h4,
+    th {
+      @apply mb-3 text-foreground;
     }
 
     h3 {
-      @apply text-foreground mt-6 sm:mt-8 mb-3 sm:mb-5 scroll-m-20 text-lg sm:text-2xl leading-snug font-medium;
-      /* 暗夜模式标题优化 */
-      @apply dark:text-foreground dark:font-semibold dark:tracking-tight;
+      @apply font-sriracha italic;
     }
 
-    h4 {
-      @apply text-foreground mt-6 sm:mt-8 mb-3 sm:mb-4 scroll-m-20 text-base sm:text-xl leading-normal font-medium;
+    p,
+    strong,
+    ol,
+    ul,
+    figcaption,
+    table,
+    code {
+      @apply text-foreground;
     }
 
-    h5 {
-      @apply text-foreground mt-4 sm:mt-6 mb-3 sm:mb-4 scroll-m-20 text-base sm:text-lg leading-normal font-medium;
-    }
-
-    h6 {
-      @apply text-foreground mt-4 sm:mt-6 mb-3 sm:mb-4 scroll-m-20 text-sm sm:text-base leading-normal font-medium;
-    }
-
-    /* 内部链接样式 */
-    a:not([href^="http"]) {
-      @apply text-primary decoration-primary hover:decoration-primary/80 font-medium break-words underline underline-offset-4 transition-colors duration-200 ease-in-out;
-      /* 暗夜模式链接优化 */
-      @apply dark:text-primary dark:decoration-primary/80 dark:hover:text-primary/90 dark:hover:decoration-primary;
-    }
-
-    strong {
-      @apply text-foreground font-semibold;
-      /* 暗夜模式强调文字优化 */
-      @apply dark:text-foreground dark:font-bold;
+    a {
+      @apply wrap-break-word text-foreground decoration-dashed underline-offset-4 hover:text-accent focus-visible:no-underline;
     }
 
     ul {
-      @apply marker:text-primary/50 my-6 ml-8 list-disc [&>li]:mt-3;
-    }
-
-    ol {
-      @apply marker:text-primary/50 my-6 ml-8 list-decimal [&>li]:mt-3;
-      @apply [&[type='A']]:list-[upper-alpha] [&[type='I']]:list-[upper-roman] [&[type='a']]:list-[lower-alpha] [&[type='i']]:list-[lower-roman];
+      @apply overflow-x-clip;
     }
 
     li {
-      @apply text-foreground pl-3 leading-relaxed [&>p]:my-0;
-      /* 暗夜模式列表项优化 */
-      @apply dark:text-foreground/90 dark:leading-relaxed;
-    }
-
-    ul ul,
-    ol ol,
-    ul ol,
-    ol ul {
-      @apply marker:text-primary/30 my-3 ml-8;
-    }
-
-    code {
-      @apply bg-muted text-foreground relative rounded-md px-2 py-1 font-mono text-sm font-medium break-words whitespace-pre-wrap;
-      /* 暗夜模式代码优化 */
-      @apply dark:bg-muted/80 dark:text-foreground dark:border dark:border-border/50;
-    }
-
-    pre {
-      @apply bg-muted text-foreground max-w-full overflow-x-auto rounded-lg p-3 sm:p-4 font-mono text-xs sm:text-sm;
-      /* 暗夜模式代码块优化 */
-      @apply dark:bg-muted/60 dark:text-foreground dark:border dark:border-border/50 dark:shadow-lg;
-    }
-
-    /* 表格在移动端横向滚动与尺寸优化 */
-    .table-wrapper {
-      @apply w-full overflow-x-auto;
-    }
-
-    table {
-      @apply min-w-[640px] sm:min-w-0;
-    }
-
-    /* 图片与视频在小屏幕的间距与阴影优化 */
-    img,
-    video {
-      @apply my-6 sm:my-10 rounded-lg shadow-md;
-    }
-
-    .expressive-code {
-      @apply my-8;
-
-      .title {
-        font-weight: 600 !important;
-      }
-
-      /* 移动端优化 */
-      @apply mx-0 rounded-lg overflow-hidden;
-
-      /* 代码框架样式 */
-      .frame {
-        @apply rounded-lg border border-border/50;
-      }
-
-      /* 代码内容区域 */
-      .code {
-        @apply overflow-x-auto;
-        /* 移动端滚动优化 */
-        scrollbar-width: thin;
-        scrollbar-color: hsl(var(--muted-foreground)) transparent;
-
-        /* Webkit浏览器滚动条样式 */
-        &::-webkit-scrollbar {
-          height: 8px;
-        }
-
-        &::-webkit-scrollbar-track {
-          @apply bg-transparent;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          @apply bg-muted-foreground/30 rounded-full;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-          @apply bg-muted-foreground/50;
-        }
-      }
-
-      /* 复制按钮优化 */
-      .copy {
-        @apply transition-all duration-200;
-        /* 移动端触摸优化 */
-        min-height: 44px;
-        min-width: 44px;
-
-        /* 确保按钮在移动端可见 */
-        @apply opacity-100 sm:opacity-0 sm:group-hover:opacity-100;
-      }
-
-      /* 标题栏优化 */
-      .header {
-        @apply px-4 py-2 text-sm font-medium;
-        @apply border-b border-border/50;
-      }
-
-      /* 行号优化 */
-      .line-numbers {
-        @apply select-none text-muted-foreground/60;
-        /* 移动端行号间距调整 */
-        @apply text-xs sm:text-sm;
-      }
-
-      /* 代码行优化 */
-      .line {
-        @apply px-4 py-1;
-        /* 移动端代码字体大小 */
-        @apply text-xs sm:text-sm;
-
-        /* 确保代码不会换行 */
-        white-space: pre;
-        word-break: keep-all;
-      }
-    }
-
-    blockquote {
-      @apply text-muted-foreground bg-muted/30 my-8 rounded-md border-l-4 border-l-primary pl-6 italic;
-      @apply py-4 text-sm leading-relaxed;
-      @apply [&>p]:my-0 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0;
-      /* 暗夜模式引用块优化 */
-      @apply dark:text-foreground/80 dark:bg-muted/20 dark:border-l-primary/60 dark:shadow-sm;
+      @apply marker:text-accent;
     }
 
     hr {
-      @apply border-border my-10 border-t-2;
+      @apply border-border;
     }
 
-    table {
-      @apply my-10 w-full border-collapse overflow-hidden rounded-lg text-sm shadow-sm text-foreground;
-      /* 暗夜模式表格优化 */
-      @apply dark:bg-muted/20 dark:border dark:border-border/50 dark:shadow-lg;
-    }
-
-    thead {
-      @apply bg-muted/30 text-foreground font-semibold;
-      /* 暗夜模式表头优化 */
-      @apply dark:bg-muted/40 dark:text-foreground dark:font-semibold;
-    }
-
-    th {
-      @apply border border-border text-foreground px-6 py-3 text-left font-medium [&[align=center]]:text-center [&[align=right]]:text-right;
-      /* 暗夜模式表头单元格优化 */
-      @apply dark:border-border/50 dark:text-foreground dark:font-semibold;
-    }
-
-    tbody tr {
-      @apply border-border even:bg-muted/50 odd:bg-muted/30 border-b;
-      /* 暗夜模式表格行优化 */
-      @apply dark:border-border/30 dark:even:bg-muted/30 dark:odd:bg-muted/20;
-    }
-
-    td {
-      @apply border border-border text-foreground px-6 py-3 text-left [&[align=center]]:text-center [&[align=right]]:text-right;
-      /* 暗夜模式表格单元格优化 */
-      @apply dark:border-border/30 dark:text-foreground/90;
-    }
-
-    img,
-    video {
-      @apply my-10 rounded-lg shadow-md;
+    img {
+      @apply mx-auto border border-border;
     }
 
     figcaption {
-      @apply text-muted-foreground mt-4 text-sm italic;
+      @apply opacity-75;
     }
 
-    kbd {
-      @apply text-foreground bg-muted border-border rounded-md border px-3 py-1 font-mono text-xs font-medium shadow-sm;
-      @apply [&>span[data-line='']>*]:text-(--shiki-light) dark:[&>span[data-line='']>*]:text-(--shiki-dark);
+    table {
+      @apply w-full table-auto border-collapse;
+
+      th,
+      td {
+        @apply border border-border p-2;
+        word-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+        overflow-wrap: break-word;
+      }
+
+      th {
+        @apply py-1.5;
+      }
+
+      code {
+        @apply break-all sm:break-normal;
+      }
     }
 
-    .katex-display {
-      @apply my-8 overflow-x-auto overflow-y-hidden py-3 tracking-normal;
-      @apply [&>span[data-line='']>*]:text-(--shiki-light) dark:[&>span[data-line='']>*]:text-(--shiki-dark);
+    code {
+      @apply rounded bg-muted/75 p-1 wrap-break-word text-foreground before:content-none after:content-none;
     }
 
-    .katex {
-      @apply text-foreground;
+    .astro-code code {
+      @apply flex-[1_0_100%] bg-inherit p-0;
     }
 
-    .katex * {
-      @apply text-foreground;
+    blockquote {
+      @apply border-s-accent/80 wrap-break-word opacity-80;
+    }
+
+    /* ===== Table of Contents (modern card) ===== */
+    details {
+      @apply block w-full cursor-pointer rounded-2xl border border-border/20 bg-muted/5 text-foreground backdrop-blur-sm transition-all duration-300 ease-in-out select-none hover:border-accent/25 hover:shadow-lg hover:shadow-accent/5 [&_p]:hidden [&_ul]:my-0!;
+    }
+
+    details[open] {
+      @apply border-accent/20 bg-muted/8 shadow-md shadow-accent/5;
+    }
+
+    summary {
+      @apply flex list-none items-center gap-2 px-4 py-3 font-cartograph text-sm font-medium tracking-wide text-foreground transition-colors duration-200 hover:text-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent focus-visible:outline-dashed;
+    }
+
+    summary:hover::before,
+    summary:hover::after {
+      background-color: var(--accent);
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::before {
+      content: "";
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='3' y1='6' x2='21' y2='6'/%3E%3Cline x1='3' y1='12' x2='15' y2='12'/%3E%3Cline x1='3' y1='18' x2='18' y2='18'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='3' y1='6' x2='21' y2='6'/%3E%3Cline x1='3' y1='12' x2='15' y2='12'/%3E%3Cline x1='3' y1='18' x2='18' y2='18'/%3E%3C/svg%3E");
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      background-color: var(--foreground);
+      opacity: 0.55;
+      transition:
+        opacity 0.2s,
+        background-color 0.2s;
+    }
+
+    details[open] > summary::before {
+      background-color: var(--accent);
+      opacity: 0.8;
+    }
+
+    summary::after {
+      content: "";
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-left: auto;
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      background-color: var(--foreground);
+      opacity: 0.45;
+      transition:
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.2s,
+        background-color 0.2s;
+    }
+
+    details[open] > summary::after {
+      transform: rotate(180deg);
+      background-color: var(--accent);
+      opacity: 0.7;
+    }
+
+    /* TOC inner list container */
+    details > ul {
+      @apply relative mx-0 mt-0 mb-0 border-t border-border/15 px-4 pt-2 pb-3;
+    }
+
+    details > ul > li {
+      @apply relative list-none py-0.5;
+    }
+
+    details > ul li {
+      @apply list-none;
+    }
+
+    details > ul li a {
+      @apply relative inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-cartograph text-[13px] text-foreground/85 no-underline transition-all duration-200 hover:bg-accent/8 hover:text-accent hover:no-underline;
+    }
+
+    details > ul li a::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: color-mix(in srgb, var(--accent) 50%, transparent);
+      transition: all 0.2s;
+    }
+
+    details > ul li a:hover::before {
+      background: var(--accent);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+
+    /* Nested list (sub-items) */
+    details > ul ul {
+      @apply my-0 ml-3 border-l-2 border-accent/15 pl-2;
+    }
+
+    details > ul ul li a {
+      @apply text-[12px] text-foreground/70;
+    }
+
+    details > ul ul li a::before {
+      width: 4px;
+      height: 4px;
+      background: color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    details > ul ul li a:hover::before {
+      background: color-mix(in srgb, var(--accent) 70%, transparent);
+    }
+
+    pre {
+      @apply focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-dashed;
     }
   }
 
-
-  .font-inter {
-    font-family: var(--font-sans);
+  /* ===== Code Blocks & Syntax Highlighting ===== */
+  .astro-code,
+  code {
+    @apply font-cartograph;
   }
 
-  /* 标题样式优化 - 使用Inter */
-  .heading-modern {
-    @apply font-sans font-semibold tracking-tight;
+  .astro-code {
+    @apply flex border bg-(--shiki-light-bg) text-(--shiki-light) outline-border [&_span]:text-(--shiki-light);
   }
 
-  /* 代码样式优化 - 使用Lucida Console */
-  .font-code {
-    font-family: var(--font-mono);
-    font-feature-settings: "liga" 0;
-    /* 禁用连字，保持传统等宽效果 */
+  html[data-theme="dark"] .astro-code {
+    @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
   }
 
-  /* 移动端优化 - 2026年1月全面整改 */
-  @media (max-width: 768px) {
-    .prose {
-      font-size: 1rem;
-      line-height: 1.85;
-      padding-left: 0;
-      padding-right: 0;
-      margin-left: 0;
-      margin-right: 0;
+  /* Styles for Shiki transformers */
+  /* https://shiki.style/packages/transformers */
+  .astro-code {
+    .line.diff.add {
+      @apply relative inline-block w-full bg-green-400/20 before:absolute before:-left-3 before:text-green-500 before:content-['+'];
     }
-
-    .prose h1 {
-      font-size: 1.6rem;
-      margin: 1rem 0 0.8rem;
-      line-height: 1.25;
-      word-break: break-word;
+    .line.diff.remove {
+      @apply relative inline-block w-full bg-red-500/20 before:absolute before:-left-3 before:text-red-500 before:content-['-'];
     }
-
-    .prose h2 {
-      font-size: 1.35rem;
-      margin: 1.2rem 0 0.6rem;
-      line-height: 1.3;
+    .line.highlighted {
+      @apply inline-block w-full bg-slate-400/20;
     }
-
-    .prose h3 {
-      font-size: 1.15rem;
-      margin: 1rem 0 0.5rem;
-      line-height: 1.35;
-    }
-
-    .prose h4 {
-      font-size: 1.05rem;
-      margin: 0.9rem 0 0.4rem;
-    }
-
-    .prose p {
-      margin: 0.8rem 0;
-      line-height: 1.8;
-    }
-
-    .prose ul,
-    .prose ol {
-      margin: 0.6rem 0 0.6rem 1.2rem;
-      line-height: 1.75;
-    }
-
-    .prose li {
-      margin-bottom: 0.4rem;
-    }
-
-    .prose pre {
-      margin: 0.8rem 0;
-      font-size: 0.82rem;
-      line-height: 1.5;
-    }
-
-    .prose img {
-      margin: 1rem 0;
-      border-radius: 0;
-    }
-
-    .prose blockquote {
-      margin: 1rem 0;
-      padding: 0.8rem 1rem;
-      font-size: 0.95rem;
-    }
-
-    .prose table {
-      font-size: 0.85rem;
-    }
-
-    .prose th,
-    .prose td {
-      padding: 0.5rem 0.6rem;
+    .highlighted-word {
+      @apply rounded-sm border border-border px-0.5 py-px;
     }
   }
 }

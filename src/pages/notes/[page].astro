@@ -1,24 +1,30 @@
 ---
-import Layout from '@/layouts/Layout.astro'
-import PageHead from '@/components/PageHead.astro'
-import { getAllNoteSlugs } from '@/lib/data-utils'
+import { getAllNotesWithSlugs } from "@/utils/notes";
 
 export async function getStaticPaths() {
-  const allNoteSlugs = await getAllNoteSlugs()
-  const pageSize = 5
-  const totalPages = Math.ceil(allNoteSlugs.length / pageSize)
+  const notes = await getAllNotesWithSlugs();
+  const pageSize = 10;
+  const totalPages = Math.ceil(notes.length / pageSize);
 
   return Array.from({ length: Math.max(totalPages - 1, 0) }, (_, index) => ({
     params: { page: String(index + 2) },
-  }))
+  }));
 }
 
-const page = Astro.params.page
-const target = `/notes/list/${page}/`
+const page = Astro.params.page;
+const target = `/notes/list/${page}/`;
 ---
 
-<Layout canonicalUrl={new URL(target, Astro.site)}>
-  <PageHead slot="head" title="Redirecting..." noindex={true} />
-  <meta http-equiv="refresh" content={`0;url=${target}`} />
-  <p>Redirecting to <a href={target}>{target}</a>...</p>
-</Layout>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>{target}</a>...</p>
+  </body>
+</html>

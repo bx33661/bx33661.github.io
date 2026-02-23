@@ -1,24 +1,35 @@
-import { glob } from 'astro/loaders'
-import { defineCollection, z } from 'astro:content'
+import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
+import { SITE } from "@/config.ts";
+
+export const BLOG_PATH = "src/data/blog";
+export const NOTES_PATH = "src/data/notes";
+export const GALLERY_PATH = "src/data/galleries";
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${BLOG_PATH}` }),
   schema: ({ image }) =>
     z.object({
+      author: z.string().default(SITE.author),
+      pubDatetime: z.coerce.date(),
+      modDatetime: z.coerce.date().optional().nullable(),
       title: z.string(),
-      description: z.string(),
-      date: z.coerce.date(),
-      image: image().optional(),
-      tags: z.array(z.string()).optional(),
-      authors: z.array(z.string()).optional(),
+      featured: z.boolean().optional(),
       draft: z.boolean().optional(),
-      slug: z.string().optional(), // 可选：不提供时会按文件名生成稳定slug
-      password: z.string().optional(), // 文章密码保护，如果设置则需要输入密码才能阅读
+      tags: z.array(z.string()).default(["others"]),
+      ogImage: image().or(z.string()).optional(),
+      description: z.string(),
+      canonicalURL: z.string().optional(),
+      hideEditPost: z.boolean().optional(),
+      timezone: z.string().optional(),
+      slug: z.string().optional(),
+      password: z.string().optional(),
+      authors: z.array(z.string()).optional(),
     }),
-})
+});
 
 const notes = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/notes' }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: `./${NOTES_PATH}` }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -26,11 +37,24 @@ const notes = defineCollection({
       date: z.coerce.date(),
       image: image().optional(),
       tags: z.array(z.string()).optional(),
-      category: z.string().optional(), // 学习笔记分类
+      category: z.string().optional(),
       authors: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
-      slug: z.string().optional(), // 可选：不提供时会按文件名生成稳定slug
+      slug: z.string().optional(),
     }),
-})
+});
 
-export const collections = { blog, notes }
+const galleries = defineCollection({
+  loader: glob({ pattern: "**/index.{md,mdx}", base: `./${GALLERY_PATH}` }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      pubDatetime: z.date(),
+      draft: z.boolean().optional(),
+      coverImage: image().optional(),
+      tags: z.array(z.string()).default([]),
+    }),
+});
+
+export const collections = { blog, notes, galleries };

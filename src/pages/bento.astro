@@ -1,6 +1,7 @@
 ---
-import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
+import Header from '@/components/Header.astro'
+import Footer from '@/components/Footer.astro'
 import { GALLERY_IMAGES, buildGalleryImageSources } from '@/data/gallery'
 
 const currentUrl = Astro.url.toString()
@@ -11,8 +12,10 @@ const galleryImages = GALLERY_IMAGES.map((item) => ({
 }))
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="相册" description="记录生活与旅途中的一些片段。" canonicalURL={currentUrl} />
+<Layout title="Bento" description="记录生活与旅途中的一些片段。" canonicalURL={currentUrl}>
+  <Header />
+
+  <main id="main-content" class="app-layout pb-10">
 
   <div class="page">
     <h1>相册</h1>
@@ -42,6 +45,9 @@ const galleryImages = GALLERY_IMAGES.map((item) => ({
       </figure>
     ))}
   </div>
+  </main>
+
+  <Footer />
 </Layout>
 
 <style>

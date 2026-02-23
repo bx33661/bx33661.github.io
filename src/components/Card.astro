@@ -1,0 +1,92 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { slugifyStr } from "@/utils/slugify";
+import { getPath } from "@/utils/getPath";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import Datetime from "./Datetime.astro";
+
+type Props = {
+  variant?: "h2" | "h3";
+} & CollectionEntry<"blog">;
+
+const { variant: Heading = "h2", id, data, filePath } = Astro.props;
+
+const { title, description, ...props } = data;
+const postSlug = resolveLegacyPostSlug(Astro.props);
+---
+
+<li
+  class:list={[
+    "card-glow group/card relative my-3 rounded-2xl p-4 sm:p-5",
+    "border border-border/25",
+    "transition-all duration-300 ease-out",
+    "hover:border-accent/30 hover:bg-accent/5",
+    "hover:-translate-y-0.5",
+    "hover:shadow-lg hover:shadow-accent/10",
+    "cursor-pointer",
+  ]}
+>
+  <!-- Cursor-following glow -->
+  <div
+    class="card-glow-effect pointer-events-none absolute inset-0 z-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+    aria-hidden="true"
+  >
+  </div>
+  <!-- Noise dithering -->
+  <div
+    class="card-noise pointer-events-none absolute inset-0 z-1 rounded-2xl opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+    aria-hidden="true"
+  >
+  </div>
+
+  <!-- Full card clickable overlay -->
+  <a
+    href={getPath(id, filePath, true, postSlug)}
+    class="absolute inset-0 z-10 rounded-2xl"
+    aria-label={title}
+  >
+    <span class="sr-only">{title}</span>
+  </a>
+
+  <div class="relative z-5">
+    <Heading
+      class:list={[
+        "text-lg font-semibold text-foreground",
+        "transition-colors duration-200 group-hover/card:text-accent",
+      ]}
+      style={{ viewTransitionName: slugifyStr(title.replaceAll(".", "-")) }}
+    >
+      {title}
+    </Heading>
+    <Datetime {...props} class="mt-1.5" />
+    <p class="mt-2 line-clamp-2 text-sm leading-relaxed opacity-65">
+      {description}
+    </p>
+  </div>
+</li>
+
+<style>
+  .card-glow-effect {
+    background: radial-gradient(
+      350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      color-mix(in oklab, var(--accent) 8%, transparent) 0%,
+      color-mix(in oklab, var(--accent) 6%, transparent) 15%,
+      color-mix(in oklab, var(--accent) 4%, transparent) 30%,
+      color-mix(in oklab, var(--accent) 2%, transparent) 45%,
+      color-mix(in oklab, var(--accent) 0.8%, transparent) 60%,
+      transparent 80%
+    );
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  .card-noise {
+    background-image: url("/noise.png");
+    background-repeat: repeat;
+    background-size: 64px 64px;
+    mix-blend-mode: overlay;
+    opacity: 0;
+  }
+  .group\/card:hover .card-noise {
+    opacity: 0.4;
+  }
+</style>

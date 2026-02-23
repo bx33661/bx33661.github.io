@@ -1,47 +1,17 @@
 ---
-import PageHead from '@/components/PageHead.astro'
-import Layout from '@/layouts/Layout.astro'
-import { getAllPosts, getAllPostSlugs } from '@/lib/data-utils'
-import { formatDate } from '@/lib/utils'
-
-const allPosts = await getAllPosts()
-const allPostSlugs = await getAllPostSlugs()
-
-const postsWithSlug = allPosts.map((post) => {
-  const postSlugData = allPostSlugs.find(({ post: p }) => p.id === post.id)
-  return { ...post, slug: postSlugData?.slug || post.data.slug || 'unknown' }
-})
-
-const postsByYear = postsWithSlug.reduce((acc, post) => {
-  const year = post.data.date.getFullYear()
-  if (!acc[year]) acc[year] = []
-  acc[year].push(post)
-  return acc
-}, {} as Record<number, typeof postsWithSlug>)
-
-const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a)
-const currentUrl = Astro.url.toString()
+const target = "/archives/";
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="文章归档" description="按年份整理的全部博客文章。" canonicalURL={currentUrl} />
-
-  <div class="page">
-    <h1>文章归档</h1>
-    <p>按年份浏览所有博客文章。</p>
-  </div>
-
-  {years.map((year) => (
-    <div class="posts">
-      <h2 class="posts-title">{year}</h2>
-      <ul>
-        {postsByYear[year].map((post) => (
-          <li>
-            <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
-            <span>{' :: '}{formatDate(post.data.date)}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  ))}
-</Layout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>{target}</a>...</p>
+  </body>
+</html>

@@ -28,7 +28,7 @@ const {
 } = Astro.props
 
 const articleUrl = new URL(`/blog/${slug}`, SITE.href).toString()
-const imageUrl = image ? new URL(image, SITE.href).toString() : new URL('/logo.png', SITE.href).toString()
+const imageUrl = image ? new URL(image, SITE.href).toString() : new URL('/logonew.jpg', SITE.href).toString()
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -49,7 +49,7 @@ const articleSchema = {
     name: SITE.author,
     logo: {
       '@type': 'ImageObject',
-      url: new URL('/logo.png', SITE.href).toString(),
+      url: new URL('/logonew.jpg', SITE.href).toString(),
     },
   },
   mainEntityOfPage: {

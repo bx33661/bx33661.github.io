@@ -1,7 +1,7 @@
 import satori from 'satori'
 import { html } from 'satori-html'
 import { Resvg } from '@resvg/resvg-js'
-import { SITE } from '@/consts'
+import { SITE } from '@/config.ts'
 import { getAllNoteSlugs, getAllPostSlugs } from '@/lib/data-utils'
 import type { APIContext } from 'astro'
 import fs from 'fs'
@@ -56,7 +56,7 @@ export async function GET(context: APIContext) {
 
   const safeTitle = escapeHtml(truncate(title || SITE.title, MAX_TITLE_LENGTH))
   const safeDescription = escapeHtml(
-    truncate(description || SITE.description, MAX_DESCRIPTION_LENGTH),
+    truncate(description || SITE.desc, MAX_DESCRIPTION_LENGTH),
   )
   const safeContentType = escapeHtml(contentType)
   const safeSiteName = escapeHtml(SITE.title)
@@ -101,7 +101,7 @@ export async function GET(context: APIContext) {
         <div style="display: flex; margin-top: auto; padding-top: 28px; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.14);">
           <div style="display: flex; flex-direction: column;">
             <div style="display: flex; color: #ffffff; font-size: 32px; font-weight: 700;">${safeSiteName}</div>
-            <div style="display: flex; margin-top: 6px; color: #aab9e0; font-size: 20px;">${escapeHtml(new URL(SITE.href).hostname)}</div>
+            <div style="display: flex; margin-top: 6px; color: #aab9e0; font-size: 20px;">${escapeHtml(new URL(SITE.website).hostname)}</div>
           </div>
           <div style="display: flex; align-items: center; color: #dde7ff; font-size: 22px; border-radius: 14px; padding: 12px 18px; border: 1px solid rgba(167, 189, 255, 0.30); background: rgba(20, 30, 52, 0.66);">
             Open Graph Card
@@ -175,7 +175,7 @@ export async function getStaticPaths() {
     },
     props: {
       title: post.data.title,
-      date: post.data.date,
+      date: post.data.pubDatetime,
       description: post.data.description,
       tags: post.data.tags || [],
       contentType: 'Blog Post'

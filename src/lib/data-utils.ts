@@ -1,6 +1,11 @@
 import { getCollection, type CollectionEntry } from 'astro:content'
 import { withCache } from './cache-utils'
 
+function getBlogDate(post: CollectionEntry<'blog'>): Date {
+  const maybe = post.data as { pubDatetime?: Date; date?: Date }
+  return maybe.pubDatetime || maybe.date || new Date(0)
+}
+
 function stableHash(input: string): string {
   let hash = 0
   for (let i = 0; i < input.length; i++) {
@@ -45,7 +50,7 @@ export async function getAllPosts(): Promise<CollectionEntry<'blog'>[]> {
     const posts = await getCollection('blog')
     return posts
       .filter((post) => !post.data.draft)
-      .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+      .sort((a, b) => getBlogDate(b).valueOf() - getBlogDate(a).valueOf())
   })
 }
 
@@ -104,7 +109,7 @@ export async function getRecentPosts(
 ): Promise<CollectionEntry<'blog'>[]> {
   const posts = await getAllPosts()
   const postsByDay = posts.reduce<Record<string, CollectionEntry<'blog'>[]>>((acc, post) => {
-    const key = getDayKey(post.data.date)
+    const key = getDayKey(getBlogDate(post))
     if (!acc[key]) {
       acc[key] = []
     }
@@ -171,7 +176,7 @@ export function groupPostsByYear(
 ): Record<string, CollectionEntry<'blog'>[]> {
   return posts.reduce(
     (acc: Record<string, CollectionEntry<'blog'>[]>, post) => {
-      const year = post.data.date.getFullYear().toString()
+      const year = getBlogDate(post).getFullYear().toString()
       ;(acc[year] ??= []).push(post)
       return acc
     },

@@ -1,43 +1,71 @@
 ---
-import TerminalNoteCard from '@/components/terminal/TerminalNoteCard.astro'
-import PageHead from '@/components/PageHead.astro'
-import Layout from '@/layouts/Layout.astro'
-import { getAllNoteSlugs, getAllNoteCategories, getAllNoteTags } from '@/lib/data-utils'
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import { SITE } from "@/config.ts";
+import { getAllNotesWithSlugs } from "@/utils/notes";
 
-const noteSlugs = await getAllNoteSlugs()
-const categories = await getAllNoteCategories()
-const tags = await getAllNoteTags()
-const currentUrl = Astro.url.toString()
+const notes = await getAllNotesWithSlugs();
+const categories = new Map<string, number>();
+const tags = new Map<string, number>();
 
-const categoryEntries = Array.from(categories.entries()).sort((a, b) => b[1] - a[1])
+for (const { note } of notes) {
+  const category = note.data.category || "未分类";
+  categories.set(category, (categories.get(category) || 0) + 1);
+  for (const tag of note.data.tags || []) {
+    tags.set(tag, (tags.get(tag) || 0) + 1);
+  }
+}
+
+const categoryEntries = Array.from(categories.entries()).sort((a, b) => b[1] - a[1]);
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="学习笔记" description="记录技术学习与实践总结。" canonicalURL={currentUrl} />
+<Layout title={`Notes | ${SITE.title}`} canonicalURL={Astro.url.toString()}>
+  <Header />
+  <Breadcrumb />
+  <main id="main-content" class="app-layout pb-10">
+    <section class="rounded-2xl border border-border/25 bg-muted/10 p-6">
+      <h1 class="text-3xl font-bold tracking-tight">学习笔记</h1>
+      <p class="mt-3 text-foreground/70">
+        总笔记 {notes.length} 篇，分类 {categories.size} 个，标签 {tags.size} 个。
+      </p>
+      <p class="mt-3">
+        <a class="text-accent underline underline-offset-4" href="/notes/list/">
+          按时间分页查看
+        </a>
+      </p>
+    </section>
 
-  <div class="page">
-    <h1>学习笔记</h1>
-    <p>总笔记：{noteSlugs.length} 篇 {' :: '} 分类：{categories.size} {' :: '} 标签：{tags.size}</p>
-    <p><a href="/notes/list/" class="button">按时间分页查看</a></p>
-  </div>
+    <section class="mt-8">
+      <h2 class="text-lg font-semibold">分类</h2>
+      {categoryEntries.length === 0 ? (
+        <p class="mt-2 text-foreground/70">暂无分类。</p>
+      ) : (
+        <ul class="mt-3 flex flex-wrap gap-2">
+          {categoryEntries.map(([category, count]) => (
+            <li class="rounded-full border border-border/30 px-3 py-1 text-sm">
+              {category} ({count})
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
 
-  <div class="posts">
-    <h2 class="posts-title">分类</h2>
-    {categoryEntries.length === 0 ? (
-      <p>暂无分类。</p>
-    ) : (
-      <ul>
-        {categoryEntries.map(([category, count]) => (
-          <li>{category} ({count})</li>
+    <section class="mt-8">
+      <h2 class="text-lg font-semibold">最新笔记</h2>
+      <ul class="mt-4 space-y-3">
+        {notes.slice(0, 10).map(({ note, slug }) => (
+          <li class="rounded-xl border border-border/25 bg-muted/5 p-4">
+            <a href={`/notes/${slug}/`} class="font-medium text-foreground hover:text-accent">
+              {note.data.title}
+            </a>
+            <p class="mt-1 text-sm text-foreground/65">{note.data.description}</p>
+            <p class="mt-2 text-xs text-foreground/50">{note.data.date.toLocaleDateString("zh-CN")}</p>
+          </li>
         ))}
       </ul>
-    )}
-  </div>
-
-  <div class="posts">
-    <h2 class="posts-title">最新笔记</h2>
-    {noteSlugs.slice(0, 10).map(({ note, slug }) => (
-      <TerminalNoteCard note={note} slug={slug} />
-    ))}
-  </div>
+    </section>
+  </main>
+  <Footer />
 </Layout>

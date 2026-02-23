@@ -1,26 +1,11 @@
-/// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />
-interface ImportMetaEnv {
-  // 环境变量类型定义
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv
-}
-
-type ThemeName = import('@/config/theme').ThemeName
-
-interface ThemeController {
-  get(): ThemeName
-  set(theme: ThemeName): ThemeName
-  toggle(): ThemeName
-  resetToSystem(): void
-}
 
 interface Window {
-  __BX_THEME__?: ThemeController
-  __BX_THEME_SELECTOR_BOUND__?: boolean
-  __BX_THEME_SELECTOR_SWAP_BOUND__?: boolean
-  __BX_THEME_TOGGLE_EVENT_BOUND__?: boolean
-  __BX_THEME_TOGGLE_SWAP_BOUND__?: boolean
+  theme?: {
+    themeValue: string;
+    setPreference: () => void;
+    reflectPreference: () => void;
+    getTheme: () => string;
+    setTheme: (val: string) => void;
+  };
 }

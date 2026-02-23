@@ -1,76 +1,70 @@
 ---
-import PageHead from '@/components/PageHead.astro'
-import Layout from '@/layouts/Layout.astro'
-import { getAdjacentNotes, getAllNoteSlugs } from '@/lib/data-utils'
-import { render } from 'astro:content'
+import { render } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import { SITE } from "@/config.ts";
+import { getAdjacentNotes, getAllNotesWithSlugs } from "@/utils/notes";
 
 export async function getStaticPaths() {
-  const allNoteSlugs = await getAllNoteSlugs()
-  return allNoteSlugs.map(({ slug, note }) => ({
+  const notes = await getAllNotesWithSlugs();
+  return notes.map(({ note, slug }) => ({
     params: { id: slug },
     props: { note, slug },
-  }))
+  }));
 }
 
-const { note, slug } = Astro.props
-const { Content } = await render(note)
-const { prev, next } = await getAdjacentNotes(slug)
-
-const currentUrl = Astro.url
-const encodedSlug = slug.split('/').map((segment: string) => encodeURIComponent(segment)).join('/')
-const ogImagePath = `/image/${encodedSlug}.png`
+const { note, slug } = Astro.props;
+const { Content } = await render(note);
+const { prev, next } = await getAdjacentNotes(slug);
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead
-    slot="head"
-    title={note.data.title}
-    description={note.data.description}
-    image={ogImagePath}
-    article={true}
-    tags={note.data.tags || []}
-    publishedTime={note.data.date.toISOString()}
-    modifiedTime={note.data.date.toISOString()}
-    canonicalURL={currentUrl.toString()}
-  />
+<Layout
+  title={`${note.data.title} | ${SITE.title}`}
+  description={note.data.description}
+  pubDatetime={note.data.date}
+  canonicalURL={Astro.url.toString()}
+>
+  <Header />
+  <Breadcrumb />
+  <main id="main-content" class="app-layout pb-10">
+    <article class="app-prose w-full max-w-app">
+      <h1 class="text-3xl font-bold tracking-tight">{note.data.title}</h1>
+      <p class="mt-2 text-sm text-foreground/60">{note.data.date.toLocaleDateString("zh-CN")}</p>
+      {
+        note.data.tags &&
+        note.data.tags.length > 0 && (
+          <div class="mt-3 flex flex-wrap gap-2">
+            {note.data.tags.map((tag: string) => (
+              <span class="rounded-full border border-border/30 px-2 py-0.5 text-xs">#{tag}</span>
+            ))}
+          </div>
+        )
+      }
+      <div class="mt-8">
+        <Content />
+      </div>
+    </article>
 
-  <article class="post">
-    <h1 class="post-title">{note.data.title}</h1>
-
-    <div class="post-meta">
-      <time datetime={note.data.date.toISOString()}>{note.data.date.toLocaleDateString('zh-CN')}</time>
-      {note.data.category && <span class="post-author">{note.data.category}</span>}
-      {note.data.authors && note.data.authors.length > 0 && <span class="post-author">{note.data.authors.join(', ')}</span>}
-    </div>
-
-    {note.data.tags && note.data.tags.length > 0 && (
-      <span class="post-tags">
-        {note.data.tags.map((tag) => <a href={`/tags/${encodeURIComponent(tag)}/`}>{tag}</a>)}
-      </span>
-    )}
-
-    <div class="post-content">
-      <Content />
-    </div>
-  </article>
-
-  <div class="pagination">
-    <div class="pagination__title">
-      <span class="pagination__title-h">Read other notes</span>
-      <hr />
-    </div>
-    <div class="pagination__buttons">
-      {prev && (
-        <a href={`/notes/${prev.slug}/`} class="button inline prev">
-          &lt; [<span class="button__text">{prev.post.data.title}</span>]
+    <div class="mt-10 grid gap-3 sm:grid-cols-2">
+      {prev ? (
+        <a class="rounded-xl border border-border/25 bg-muted/5 p-4" href={`/notes/${prev.slug}/`}>
+          <p class="text-xs text-foreground/55">上一篇</p>
+          <p class="mt-1 font-medium">{prev.note.data.title}</p>
         </a>
+      ) : (
+        <div></div>
       )}
-      {prev && next && <span>::</span>}
-      {next && (
-        <a href={`/notes/${next.slug}/`} class="button inline next">
-          [<span class="button__text">{next.post.data.title}</span>] &gt;
+      {next ? (
+        <a class="rounded-xl border border-border/25 bg-muted/5 p-4 text-right" href={`/notes/${next.slug}/`}>
+          <p class="text-xs text-foreground/55">下一篇</p>
+          <p class="mt-1 font-medium">{next.note.data.title}</p>
         </a>
+      ) : (
+        <div></div>
       )}
     </div>
-  </div>
+  </main>
+  <Footer />
 </Layout>

@@ -1,8 +1,8 @@
-import { SITE } from '@/consts'
+import { SITE } from '@/config.ts'
 import type { APIContext } from 'astro'
 
 export async function GET(context: APIContext) {
-  const site = context.site ?? SITE.href
+  const site = context.site ?? SITE.website
   const baseUrl = site.toString().endsWith('/') ? site.toString().slice(0, -1) : site.toString()
 
   const sitemaps = [

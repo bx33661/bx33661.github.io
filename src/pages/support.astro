@@ -1,13 +1,16 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import PageHead from '@/components/PageHead.astro'
 import { SITE } from '@/consts'
+import Header from '@/components/Header.astro'
+import Footer from '@/components/Footer.astro'
 
 const currentUrl = Astro.url
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead slot="head" title="支持我 - BX/bpple" canonicalURL={currentUrl.toString()} />
+<Layout title="支持我 - BX" description="支持站点创作和维护。" canonicalURL={currentUrl.toString()}>
+  <Header />
+
+  <main id="main-content" class="app-layout pb-10">
 
   <div class="page">
     <h1>支持我</h1>
@@ -46,4 +49,7 @@ const currentUrl = Astro.url
     </ul>
     <p>站点：<a href={SITE.href}>{SITE.href}</a></p>
   </div>
+  </main>
+
+  <Footer />
 </Layout>

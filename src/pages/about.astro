@@ -1,6 +1,7 @@
 ---
-import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
+import Header from '@/components/Header.astro'
+import Footer from '@/components/Footer.astro'
 import { SITE } from '@/consts'
 import { GALLERY_IMAGES, buildGalleryImageSources } from '@/data/gallery'
 
@@ -16,20 +17,17 @@ const milestones = [
 const focuses = ['漏洞研究', 'AI4Sec', '开源实践']
 ---
 
-<Layout canonicalUrl={currentUrl}>
-  <PageHead
-    slot="head"
-    title="关于我"
-    description="BX 的背景、研究方向与作品实践。"
-    canonicalURL={currentUrl}
-  />
+<Layout title="关于我" description="BX 的背景、研究方向与作品实践。" canonicalURL={currentUrl}>
+  <Header />
+
+  <main id="main-content" class="app-layout pb-10">
 
   <div class="page">
     <h1>关于我</h1>
     <p class="about-avatar-wrap">
       <img
         class="about-avatar"
-        src="/bx.jpg"
+        src="/logonew.jpg"
         alt="BX 头像"
         loading="eager"
         decoding="async"
@@ -84,10 +82,13 @@ const focuses = ['漏洞研究', 'AI4Sec', '开源实践']
             </article>
           ))}
         </div>
-        <p><a href="/album/" class="button inline">[查看完整相册]</a></p>
+        <p><a href="/galleries/" class="button inline">[查看完整相册]</a></p>
       </>
     )}
   </div>
+  </main>
+
+  <Footer />
 </Layout>
 
 <style>
