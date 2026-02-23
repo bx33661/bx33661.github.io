@@ -47,8 +47,25 @@ const links = [
         </div>
 
         <div class="about-profile">
-          <h2 class="about-name">{SITE.author || 'BX'}</h2>
-          <p class="about-role">安全研究员 · 开发者</p>
+          <div class="profile-header">
+            <div class="profile-avatar-wrap">
+              <img 
+                src="/logonew.jpg" 
+                alt="BX Avatar" 
+                class="profile-avatar"
+                loading="eager"
+                decoding="async"
+              />
+              <div class="avatar-ring" aria-hidden="true"></div>
+            </div>
+            <div class="profile-info">
+              <div class="profile-name-row">
+                <h2 class="about-name">{SITE.author || 'BX'}</h2>
+                <span class="profile-flag" title="中国">🇨🇳</span>
+              </div>
+              <p class="about-role">安全研究员 · 开发者</p>
+            </div>
+          </div>
         </div>
 
         <div class="about-section">
@@ -284,13 +301,83 @@ const links = [
     padding-bottom: 2rem;
   }
 
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .profile-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 1rem;
+    border: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    object-fit: cover;
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
+
+  .profile-avatar:hover {
+    border-color: var(--accent);
+    transform: scale(1.05);
+  }
+
+  .avatar-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 1.125rem;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .profile-avatar:hover + .avatar-ring {
+    opacity: 0.4;
+  }
+
+  .profile-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .profile-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
   .about-name {
-    margin: 0 0 0.5rem;
+    margin: 0;
     font-size: 2rem;
     font-weight: 700;
     color: var(--foreground);
     text-transform: uppercase;
     letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .profile-flag {
+    font-size: 1.5rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: transform 0.3s ease;
+    cursor: default;
+  }
+
+  .profile-flag:hover {
+    transform: scale(1.2);
   }
 
   .about-role {
@@ -559,8 +646,27 @@ const links = [
       gap: 2rem;
     }
 
+    .profile-header {
+      gap: 1rem;
+    }
+
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 0.875rem;
+    }
+
+    .avatar-ring {
+      inset: -5px;
+      border-radius: 1rem;
+    }
+
     .about-name {
       font-size: 1.5rem;
+    }
+
+    .profile-flag {
+      font-size: 1.25rem;
     }
 
     .about-right {
