@@ -56,7 +56,7 @@
     "satori-html": "^0.3.2",
     "sharp": "^0.34.5",
     "slugify": "^1.6.6",
-    "tailwind-merge": "^2.7.0",
+    "tailwind-merge": "^2.6.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
