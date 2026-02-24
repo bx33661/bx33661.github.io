@@ -55,13 +55,12 @@ export function ArtworkCard({ artwork, isActive, dragOffset, index, currentIndex
             draggable={false}
           />
 
-          {/* Gradient overlay for text */}
+          {/* Gradient overlay for text - only at bottom */}
           <motion.div
             className="artwork-card-gradient"
-            initial={{ opacity: 0, height: "30%" }}
+            initial={{ opacity: 0 }}
             animate={{
               opacity: isActive ? 1 : 0,
-              height: isHovered ? "50%" : "30%",
             }}
             transition={{ duration: 0.3 }}
           />

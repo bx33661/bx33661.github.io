@@ -80,22 +80,17 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
       {/* Blur overlay */}
       <div className="gallery-blur-overlay" />
 
-      {/* Header */}
-      <header className="gallery-header">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <h1 className="gallery-title">Gallery</h1>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="gallery-counter"
-        >
-          <span className="gallery-counter-current">{String(currentIndex + 1).padStart(2, "0")}</span>
-          <span className="gallery-counter-separator">/</span>
-          <span className="gallery-counter-total">{String(artworks.length).padStart(2, "0")}</span>
-        </motion.div>
-      </header>
+      {/* Counter - moved to top right */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="gallery-counter"
+      >
+        <span className="gallery-counter-current">{String(currentIndex + 1).padStart(2, "0")}</span>
+        <span className="gallery-counter-separator">/</span>
+        <span className="gallery-counter-total">{String(artworks.length).padStart(2, "0")}</span>
+      </motion.div>
 
       {/* Slider */}
       <div

@@ -23,30 +23,12 @@
   z-index: 1;
 }
 
-/* Header */
-.gallery-header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem;
-}
-
-.gallery-title {
-  font-family: Georgia, 'Playfair Display', serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0;
-}
-
+/* Counter - positioned top right under navigation */
 .gallery-counter {
+  position: absolute;
+  top: 6rem;
+  right: 2rem;
+  z-index: 20;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -152,10 +134,12 @@
 
 .artwork-card-gradient {
   position: absolute;
-  inset: 0.75rem 0.75rem 0.75rem 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
   bottom: 0.75rem;
+  height: 40%;
   border-radius: 0 0 0.75rem 0.75rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
   pointer-events: none;
 }
 
@@ -290,15 +274,9 @@
 
 /* Responsive Adjustments */
 @media (max-width: 640px) {
-  .gallery-header {
-    padding: 1.5rem;
-  }
-
-  .gallery-title {
-    font-size: 1.25rem;
-  }
-
   .gallery-counter {
+    top: 5rem;
+    right: 1rem;
     padding: 0.375rem 0.75rem;
   }
 
@@ -337,8 +315,16 @@
     padding: 1rem;
   }
 
-  .gallery-header {
-    padding: 1rem;
+  .gallery-counter {
+    top: 4.5rem;
+    right: 0.75rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .gallery-counter-current,
+  .gallery-counter-total,
+  .gallery-counter-separator {
+    font-size: 0.75rem;
   }
 }
 
