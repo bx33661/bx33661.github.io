@@ -6,7 +6,6 @@ import ThemeToggle from './theme-toggle'
 import { NAV_LINKS, SITE } from '../../consts'
 import { cn } from '@/lib/utils'
 import debounce from 'lodash.debounce'
-import Logo from '../ui/logo'
 import { Button } from '@/components/ui/button'
 import {
   Archive,
@@ -19,6 +18,68 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react'
+
+const BXLogo = () => (
+  <svg
+    width="72"
+    height="32"
+    viewBox="0 0 72 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-label="BX"
+    role="img"
+  >
+    <defs>
+      <linearGradient id="bx-slash-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#6366f1" />
+        <stop offset="100%" stopColor="#06b6d4" />
+      </linearGradient>
+      <linearGradient id="bx-b-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
+        <stop offset="100%" stopColor="currentColor" stopOpacity="0.85" />
+      </linearGradient>
+    </defs>
+
+    {/* Letter B */}
+    <text
+      x="0"
+      y="25"
+      fontFamily="'Inter', 'Helvetica Neue', Arial, sans-serif"
+      fontSize="26"
+      fontWeight="800"
+      letterSpacing="-1"
+      fill="url(#bx-b-grad)"
+      className="fill-foreground"
+    >
+      B
+    </text>
+
+    {/* Divider slash — the unique element */}
+    <line
+      x1="33"
+      y1="4"
+      x2="40"
+      y2="28"
+      stroke="url(#bx-slash-grad)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+
+    {/* Letter X */}
+    <text
+      x="41"
+      y="25"
+      fontFamily="'Inter', 'Helvetica Neue', Arial, sans-serif"
+      fontSize="26"
+      fontWeight="800"
+      letterSpacing="-1"
+      fill="url(#bx-b-grad)"
+      className="fill-foreground"
+    >
+      X
+    </text>
+  </svg>
+)
 
 const ICON_BY_PATH: Record<string, LucideIcon> = {
   '/': House,
@@ -135,10 +196,7 @@ const Navbar = () => {
             title="Home"
             navigation="true"
           >
-            <Logo className="h-6 w-6 md:h-8 md:w-8" />
-            <span className="text-foreground/90 transition-opacity duration-200 ease-in-out">
-              {SITE.title}
-            </span>
+            <BXLogo />
           </Link>
 
           <div className="flex items-center gap-1 md:gap-2">
@@ -210,8 +268,7 @@ const Navbar = () => {
             title="Home"
             navigation="true"
           >
-            <Logo className="h-8 w-8 rounded-lg border border-foreground/30 p-1.5" />
-            <span>{SITE.title}</span>
+            <BXLogo />
           </Link>
 
           <div className="flex items-center gap-2">

@@ -41,607 +41,706 @@ const totalLinks = friendCards.length + organizationCards.length
 <Layout title="友情链接" description="技术站点与安全社区链接集合。" canonicalURL={currentUrl}>
   <Header />
 
-  <main id="main-content" class="app-layout pb-10">
-  <section class="friends-hero">
-    <div class="friends-hero__bg-orb friends-hero__bg-orb--1" aria-hidden="true"></div>
-    <div class="friends-hero__bg-orb friends-hero__bg-orb--2" aria-hidden="true"></div>
-    <div class="friends-hero__content">
-      <h1 class="friends-hero__title">友情链接</h1>
-      <p class="friends-hero__subtitle">这里整理了我长期关注的技术博客与安全社区，欢迎互相交流、共同进步。</p>
-      <div class="friends-actions">
-        <a href="mailto:bx33661@gmail.com" class="friends-action friends-action--primary">
-          <span>邮件申请互链</span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 3L13 13M13 13V5M13 13H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <a href="https://github.com/bx33661/bx33661.github.io/issues" target="_blank" rel="noopener noreferrer" class="friends-action friends-action--secondary">
-          <span>通过 Issue 申请</span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 3L13 13M13 13V5M13 13H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
-      <div class="friends-stats">
-        <div class="stat-chip">
-          <span class="stat-chip__value">{totalLinks}</span>
-          <span class="stat-chip__label">总链接</span>
-        </div>
-        <div class="stat-chip">
-          <span class="stat-chip__value">{friendCards.length}</span>
-          <span class="stat-chip__label">博客</span>
-        </div>
-        <div class="stat-chip">
-          <span class="stat-chip__value">{organizationCards.length}</span>
-          <span class="stat-chip__label">组织</span>
-        </div>
-      </div>
+  <main id="main-content" class="friends-main app-layout">
+    <!-- Top bar -->
+    <div class="fp-topbar">
+      <h1 class="fp-heading">Friends <span class="fp-total">{totalLinks}</span></h1>
+      <a href="mailto:bx33661@gmail.com" class="fp-apply-btn" aria-label="邮件申请互链">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1.75 3.5L7 7.875L12.25 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="1.75" y="2.625" width="10.5" height="8.75" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        Apply Link
+      </a>
     </div>
-  </section>
 
-  <div class="friend-section">
-    <h2 class="friend-section__title">
-      <span class="section-title__text">技术博客</span>
-      <span class="section-title__line"></span>
-    </h2>
-    <div class="friend-grid">
-      {friendCards.map((friend, index) => (
-        <article class="friend-card" style={`--card-index: ${index}`}>
-          <a class="friend-card__link" href={friend.url} target="_blank" rel="noopener noreferrer" aria-label={`访问 ${friend.name}`}>
-            <div class="friend-card__glow" aria-hidden="true"></div>
-            <div class="friend-card__inner">
-              <div class="friend-card__header">
-                <div class="friend-card__avatar-wrap">
-                  {friend.avatar ? (
-                    <img class="friend-card__avatar" src={friend.avatar} alt={`${friend.name} 头像`} loading="lazy" decoding="async" referrerpolicy="no-referrer" />
-                  ) : (
-                    <span class="friend-card__avatar-fallback">{friend.fallback}</span>
-                  )}
-                </div>
-                <span class="friend-card__arrow">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 4L16 16M16 16V6M16 16H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
+    <!-- Blog cards -->
+    <section aria-label="技术博客">
+      <h2 class="fp-section-label">技术博客 <span class="fp-count">{friendCards.length}</span></h2>
+      <div class="fp-grid">
+        {friendCards.map((friend, index) => (
+          <a
+            class="fc"
+            href={friend.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`访问 ${friend.name}`}
+            style={`--i:${index}`}
+          >
+            <div class="fc-back" aria-hidden="true">
+              <div class="fc-avatar-area">
+                {friend.avatar ? (
+                  <img class="fc-avatar" src={friend.avatar} alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                ) : (
+                  <span class="fc-avatar-fb">{friend.fallback}</span>
+                )}
+              </div>
+            </div>
+            <div class="fc-front">
+              <div class="fc-body">
+                <h3 class="fc-name">{friend.name}</h3>
+                <p class="fc-desc">{friend.description}</p>
+              </div>
+              <div class="fc-foot">
+                <span class="fc-host-pill">
+                  <img class="fc-favicon" src={`https://www.google.com/s2/favicons?domain=${friend.host}&sz=32`} alt="" width="14" height="14" loading="lazy" />
+                  {friend.host}
                 </span>
-              </div>
-              <div class="friend-card__content">
-                <h3 class="friend-card__title">{friend.name}</h3>
-                <p class="friend-card__desc">{friend.description}</p>
-              </div>
-              <div class="friend-card__footer">
-                <span class="friend-tag friend-tag--host">{friend.host}</span>
+                <span class="fc-arrow" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
               </div>
             </div>
           </a>
-        </article>
-      ))}
-    </div>
-  </div>
+        ))}
+      </div>
+    </section>
 
-  <div class="friend-section">
-    <h2 class="friend-section__title">
-      <span class="section-title__text">组织与社区</span>
-      <span class="section-title__line"></span>
-    </h2>
-    <div class="friend-grid">
-      {organizationCards.map((org, index) => (
-        <article class="friend-card friend-card--featured" style={`--card-index: ${index}`}>
-          <a class="friend-card__link" href={org.url} target="_blank" rel="noopener noreferrer" aria-label={`访问 ${org.name}`}>
-            <div class="friend-card__glow" aria-hidden="true"></div>
-            <div class="friend-card__inner">
-              <div class="friend-card__header">
-                <div class="friend-card__avatar-wrap">
-                  {org.avatar ? (
-                    <img class="friend-card__avatar" src={org.avatar} alt={`${org.name} 头像`} loading="lazy" decoding="async" referrerpolicy="no-referrer" />
-                  ) : (
-                    <span class="friend-card__avatar-fallback">{org.fallback}</span>
-                  )}
+    <!-- Organizations -->
+    <section aria-label="组织与社区">
+      <h2 class="fp-section-label">组织与社区 <span class="fp-count">{organizationCards.length}</span></h2>
+      <div class="fp-grid">
+        {organizationCards.map((org, index) => (
+          <a
+            class="fc fc--org"
+            href={org.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`访问 ${org.name}`}
+            style={`--i:${index}`}
+          >
+            <div class="fc-back" aria-hidden="true">
+              <div class="fc-avatar-area">
+                {org.avatar ? (
+                  <img class="fc-avatar" src={org.avatar} alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                ) : (
+                  <span class="fc-avatar-fb">{org.fallback}</span>
+                )}
+              </div>
+            </div>
+            <div class="fc-front">
+              <div class="fc-body">
+                <h3 class="fc-name">{org.name}</h3>
+                <div class="fc-tag-row">
+                  {org.tags?.map((tag) => <span class="fc-tag">{tag}</span>)}
                 </div>
-                <span class="friend-card__arrow">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 4L16 16M16 16V6M16 16H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
+              </div>
+              <div class="fc-foot">
+                <span class="fc-host-pill">
+                  <img class="fc-favicon" src={`https://www.google.com/s2/favicons?domain=${org.host}&sz=32`} alt="" width="14" height="14" loading="lazy" />
+                  {org.host}
                 </span>
-              </div>
-              <div class="friend-card__content">
-                <h3 class="friend-card__title">{org.name}</h3>
-                <p class="friend-card__desc">{org.description}</p>
-              </div>
-              <div class="friend-card__footer">
-                <span class="friend-tag friend-tag--host">{org.host}</span>
-                {org.tags?.map((tag) => <span class="friend-tag">{tag}</span>)}
+                <span class="fc-arrow" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
               </div>
             </div>
           </a>
-        </article>
-      ))}
-    </div>
-  </div>
+        ))}
+      </div>
+    </section>
 
-  <div class="friend-section">
-    <h2 class="friend-section__title">
-      <span class="section-title__text">本站信息</span>
-      <span class="section-title__line"></span>
-    </h2>
-    <article class="friend-card friend-card--self">
-      <a class="friend-card__link" href={info.address} target="_blank" rel="noopener noreferrer">
-        <div class="friend-card__glow" aria-hidden="true"></div>
-        <div class="friend-card__inner">
-          <div class="friend-card__header">
-            <div class="friend-card__avatar-wrap">
-              <img class="friend-card__avatar" src={info.avatar} alt={`${info.name} 头像`} loading="eager" decoding="async" />
-            </div>
-            <span class="friend-card__arrow">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4L16 16M16 16V6M16 16H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </div>
-          <div class="friend-card__content">
-            <h3 class="friend-card__title">{info.name}</h3>
-            <p class="friend-card__desc">{info.desc}</p>
-          </div>
-          <div class="friend-card__footer">
-            <span class="friend-tag friend-tag--host">{getHost(info.address)}</span>
-            <span class="friend-tag">Security</span>
-            <span class="friend-tag">Blog</span>
-          </div>
+    <!-- Self info — horizontal banner -->
+    <section aria-label="本站信息">
+      <h2 class="fp-section-label">本站信息</h2>
+      <a class="self-banner" href={info.address} target="_blank" rel="noopener noreferrer">
+        <div class="self-banner-glow" aria-hidden="true"></div>
+        <img class="self-banner-avatar" src={info.avatar} alt={`${info.name} 头像`} loading="eager" decoding="async" />
+        <div class="self-banner-content">
+          <h3 class="self-banner-name">{info.name}</h3>
+          <p class="self-banner-desc">{info.desc}</p>
+        </div>
+        <div class="self-banner-link">
+          <span class="fc-host-pill">
+            <img class="fc-favicon" src={`https://www.google.com/s2/favicons?domain=${getHost(info.address)}&sz=32`} alt="" width="14" height="14" loading="lazy" />
+            {getHost(info.address)}
+          </span>
+          <span class="self-banner-arrow" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10L10 4M10 4H5.5M10 4V8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
         </div>
       </a>
-    </article>
-  </div>
+    </section>
   </main>
 
   <Footer />
 </Layout>
 
 <style>
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -30px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
+  /*
+   * Friends page — theme-aware design
+   * Uses project CSS vars: --background, --foreground, --accent, --muted, --border
+   * Adapts automatically via data-theme="light" / data-theme="dark"
+   */
+
+  /* ===== Semantic tokens ===== */
+  .friends-main {
+    --fc-bg:       color-mix(in srgb, var(--foreground) 4%, var(--background));
+    --fc-bg-hover: color-mix(in srgb, var(--foreground) 7%, var(--background));
+    --fc-border:   color-mix(in srgb, var(--foreground) 8%, transparent);
+    --fc-border-h: color-mix(in srgb, var(--accent) 30%, transparent);
+    --fc-glass:    color-mix(in srgb, var(--background) 85%, transparent);
+    --fc-glass-h:  color-mix(in srgb, var(--background) 90%, transparent);
+    --fc-text-1:   color-mix(in srgb, var(--foreground) 88%, transparent);
+    --fc-text-2:   color-mix(in srgb, var(--foreground) 55%, transparent);
+    --fc-text-3:   color-mix(in srgb, var(--foreground) 40%, transparent);
+    --fc-text-4:   color-mix(in srgb, var(--foreground) 28%, transparent);
+    --fc-sep:      color-mix(in srgb, var(--foreground) 7%, transparent);
+    --fc-pill-bg:  color-mix(in srgb, var(--accent) 8%, var(--background));
+    --fc-pill-bd:  color-mix(in srgb, var(--accent) 20%, transparent);
+    --fc-pill-fg:  color-mix(in srgb, var(--accent) 85%, var(--foreground));
+    --fc-glow:     color-mix(in srgb, var(--accent) 10%, transparent);
+    --fc-shadow:   color-mix(in srgb, var(--foreground) 8%, transparent);
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* ===== Layout ===== */
+  .friends-main {
+    padding-top: 0.5rem;
+    padding-bottom: 5rem;
   }
 
-  .friends-hero {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--accent) 15%, transparent);
-    border-radius: 2rem;
-    padding: 3.5rem 2.5rem;
-    margin-bottom: 4rem;
-    background: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--accent) 15%, transparent), transparent),
-      linear-gradient(145deg, color-mix(in srgb, var(--accent) 5%, var(--background)), var(--background));
-    backdrop-filter: blur(20px);
-  }
-
-  .friends-hero__bg-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.6;
-    pointer-events: none;
-    animation: float 20s ease-in-out infinite;
-  }
-
-  .friends-hero__bg-orb--1 {
-    width: 400px;
-    height: 400px;
-    top: -200px;
-    right: -100px;
-    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 40%, transparent), transparent 70%);
-    animation-delay: 0s;
-  }
-
-  .friends-hero__bg-orb--2 {
-    width: 300px;
-    height: 300px;
-    bottom: -150px;
-    left: -50px;
-    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 30%, transparent), transparent 70%);
-    animation-delay: 10s;
-  }
-
-  .friends-hero__content {
-    position: relative;
-    z-index: 1;
-  }
-
-  .friends-hero__title {
-    margin: 0;
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    line-height: 1.1;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, var(--foreground), color-mix(in srgb, var(--accent) 80%, var(--foreground)));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .friends-hero__subtitle {
-    max-width: 56ch;
-    margin: 1.25rem 0 0;
-    font-size: 1.125rem;
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--foreground) 70%, transparent);
-  }
-
-  .friends-actions {
-    margin-top: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .friends-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    border-radius: 0.75rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .friends-action::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, transparent));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .friends-action--primary {
-    background: var(--accent);
-    color: var(--background);
-    border: 1px solid transparent;
-  }
-
-  .friends-action--primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 24px -8px color-mix(in srgb, var(--accent) 50%, transparent);
-  }
-
-  .friends-action--secondary {
-    background: color-mix(in srgb, var(--accent) 10%, var(--background));
-    color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-  }
-
-  .friends-action--secondary:hover {
-    transform: translateY(-2px);
-    background: color-mix(in srgb, var(--accent) 15%, var(--background));
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  }
-
-  .friends-action--secondary:hover::before {
-    opacity: 1;
-  }
-
-  .friends-stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-top: 2.5rem;
-  }
-
-  .stat-chip {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1rem 1.5rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-    border-radius: 1rem;
-    background: color-mix(in srgb, var(--accent) 5%, var(--background));
-    backdrop-filter: blur(10px);
-  }
-
-  .stat-chip__value {
-    font-size: 1.875rem;
-    font-weight: 700;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .stat-chip__label {
-    font-size: 0.875rem;
-    color: color-mix(in srgb, var(--foreground) 60%, transparent);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .friend-section {
-    margin-top: 4rem;
-  }
-
-  .friend-section__title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 0 0 2rem;
-  }
-
-  .section-title__text {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--foreground);
-    white-space: nowrap;
-  }
-
-  .section-title__line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, color-mix(in srgb, var(--accent) 30%, transparent), transparent);
-  }
-
-  .friend-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-    gap: 1.5rem;
-  }
-
-  .friend-card {
-    position: relative;
-    margin: 0;
-    animation: fadeInUp 0.6s ease-out backwards;
-    animation-delay: calc(var(--card-index, 0) * 0.1s);
-  }
-
-  .friend-card__link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    height: 100%;
-    position: relative;
-  }
-
-  .friend-card__glow {
-    position: absolute;
-    inset: -1px;
-    border-radius: 1.25rem;
-    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .friend-card:hover .friend-card__glow {
-    opacity: 0.6;
-  }
-
-  .friend-card__inner {
-    position: relative;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1.5rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 15%, transparent);
-    border-radius: 1.25rem;
-    background: 
-      linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, var(--background)), color-mix(in srgb, var(--accent) 3%, var(--background)));
-    backdrop-filter: blur(20px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1;
-  }
-
-  .friend-card:hover .friend-card__inner {
-    transform: translateY(-4px);
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-    box-shadow: 
-      0 20px 40px -12px color-mix(in srgb, var(--accent) 25%, transparent),
-      0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent) inset;
-  }
-
-  .friend-card--featured .friend-card__inner {
-    background: 
-      linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--background)), color-mix(in srgb, var(--accent) 5%, var(--background)));
-  }
-
-  .friend-card--self {
-    max-width: 600px;
-  }
-
-  .friend-card--self .friend-card__inner {
-    background: 
-      linear-gradient(135deg, color-mix(in srgb, var(--accent) 15%, var(--background)), color-mix(in srgb, var(--accent) 5%, var(--background)));
-    border-color: color-mix(in srgb, var(--accent) 25%, transparent);
-  }
-
-  .friend-card__header {
+  /* ===== Top bar ===== */
+  .fp-topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 2rem;
   }
 
-  .friend-card__avatar-wrap {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    background: color-mix(in srgb, var(--background) 50%, var(--accent));
+  .fp-heading {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--foreground);
+    letter-spacing: -0.02em;
+  }
+
+  .fp-total {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0 0.375rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 0.375rem;
+  }
+
+  .fp-apply-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    height: 2.125rem;
+    padding: 0 1rem;
+    border-radius: 9999px;
+    border: 1px solid var(--fc-border);
+    background: var(--fc-bg);
+    color: var(--fc-text-2);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .fp-apply-btn:hover {
+    background: var(--fc-bg-hover);
+    border-color: var(--fc-border-h);
+    color: var(--accent);
+  }
+
+  /* ===== Section labels ===== */
+  .fp-section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 3rem 0 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--fc-text-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .fp-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.375rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--fc-pill-fg);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .fp-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--fc-sep);
+  }
+
+  section:first-of-type .fp-section-label {
+    margin-top: 0;
+  }
+
+  /* ===== Grid ===== */
+  .fp-grid {
     display: grid;
-    place-items: center;
-    overflow: hidden;
-    flex-shrink: 0;
-    transition: all 0.3s ease;
-    position: relative;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 560px) {
+    .fp-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 900px) {
+    .fp-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  /* (self-banner replaces fp-grid--single) */
+
+  /* ===== Card ===== */
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
   }
 
-  .friend-card__avatar-wrap::before {
+  .fc {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--fc-border);
+    background: var(--fc-bg);
+    animation: cardIn 0.3s ease-out backwards;
+    animation-delay: calc(var(--i, 0) * 35ms);
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .fc:hover {
+    border-color: var(--fc-border-h);
+    box-shadow:
+      0 4px 24px -4px var(--fc-shadow),
+      0 0 0 1px var(--fc-border-h);
+    transform: translateY(-2px);
+  }
+
+  /* -- Back panel: avatar area ---------------------------------- */
+  .fc-back {
+    position: relative;
+    height: 120px;
+    flex-shrink: 0;
+    background: var(--fc-bg);
+    overflow: hidden;
+  }
+
+  /* Hover glow behind avatar */
+  .fc-back::after {
     content: '';
     position: absolute;
-    inset: -2px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 50%, transparent));
+    inset: 0;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(
+      ellipse 70% 80% at 50% 50%,
+      var(--fc-glow),
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+  .fc:hover .fc-back::after {
+    opacity: 1;
   }
 
-  .friend-card:hover .friend-card__avatar-wrap {
-    transform: scale(1.1);
-    border-color: var(--accent);
+  .fc-avatar-area {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .friend-card:hover .friend-card__avatar-wrap::before {
-    opacity: 0.3;
-  }
-
-  .friend-card__avatar {
-    width: 100%;
-    height: 100%;
+  .fc-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
     object-fit: cover;
-    display: block;
+    border: 2.5px solid var(--fc-border);
+    box-shadow: 0 6px 20px var(--fc-shadow);
+    transition:
+      transform 0.35s cubic-bezier(0.23, 1, 0.32, 1),
+      border-color 0.3s ease;
     margin: 0 !important;
     padding: 0 !important;
-    border: 0 !important;
+  }
+
+  .fc:hover .fc-avatar {
+    transform: scale(1.08);
+    border-color: var(--fc-border-h);
+  }
+
+  .fc-avatar-fb {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--fc-bg-hover);
+    border: 2.5px solid var(--fc-border);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--fc-text-3);
+    box-shadow: 0 6px 20px var(--fc-shadow);
+  }
+
+  /* -- Front panel ---------------------------------------------- */
+  .fc-front {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--fc-glass);
+    backdrop-filter: blur(16px) saturate(1.1);
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
+    border-top: 1px solid var(--fc-sep);
+  }
+
+  .fc-body {
+    padding: 0.75rem 1rem 0.5rem;
+    flex: 1;
+  }
+
+  .fc-name {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--fc-text-1);
+    transition: color 0.2s ease;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .fc:hover .fc-name {
+    color: var(--foreground);
+  }
+
+  .fc-desc {
+    margin: 0.2rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--fc-text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s ease;
+  }
+
+  .fc:hover .fc-desc {
+    color: var(--fc-text-2);
+  }
+
+  .fc-tag-row {
+    display: flex;
+    gap: 0.375rem;
+    margin-top: 0.375rem;
+    overflow: hidden;
+  }
+
+  .fc-tag {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
+    font-size: 0.6875rem;
+    color: var(--fc-pill-fg);
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .fc:hover .fc-tag {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  /* -- Footer with host pill ------------------------------------ */
+  .fc-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    height: 38px;
+    padding: 0 0.75rem;
+    border-top: 1px solid var(--fc-sep);
+  }
+
+  .fc-host-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    height: 1.5rem;
+    padding: 0 0.625rem;
+    border-radius: 9999px;
+    border: 1px solid var(--fc-pill-bd);
+    background: var(--fc-pill-bg);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--fc-pill-fg);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    transition: all 0.2s ease;
+  }
+
+  .fc:hover .fc-host-pill {
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    background: color-mix(in srgb, var(--accent) 12%, var(--background));
+  }
+
+  .fc-favicon {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    object-fit: contain;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    opacity: 0.8;
+  }
+
+  .fc-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    color: var(--fc-text-4);
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+
+  .fc:hover .fc-arrow {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    transform: translate(1px, -1px);
+  }
+
+  /* -- Variant: org --------------------------------------------- */
+  .fc--org {
+    border-color: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .fc--org:hover {
+    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  /* ===== Self-info banner ======================================= */
+  .self-banner {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    position: relative;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+    background:
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent) 6%, var(--background)),
+        color-mix(in srgb, var(--accent) 2%, var(--background))
+      );
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .self-banner:hover {
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow:
+      0 4px 24px -4px var(--fc-shadow),
+      0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .self-banner-glow {
+    position: absolute;
+    top: -40%;
+    left: -10%;
+    width: 50%;
+    height: 180%;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in srgb, var(--accent) 8%, transparent),
+      transparent 70%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .self-banner:hover .self-banner-glow {
+    opacity: 1;
+  }
+
+  .self-banner-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    box-shadow: 0 4px 16px var(--fc-shadow);
+    transition:
+      transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+      border-color 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .self-banner:hover .self-banner-avatar {
+    transform: scale(1.08);
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  .self-banner-content {
+    flex: 1;
+    min-width: 0;
     position: relative;
     z-index: 1;
   }
 
-  .friend-card__avatar-fallback {
-    font-weight: 700;
-    font-size: 1.25rem;
-    letter-spacing: 0.02em;
-    color: var(--accent);
-  }
-
-  .friend-card__arrow {
-    width: 32px;
-    height: 32px;
-    display: grid;
-    place-items: center;
-    border-radius: 0.5rem;
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
-    color: var(--accent);
-    transition: all 0.3s ease;
-  }
-
-  .friend-card:hover .friend-card__arrow {
-    background: var(--accent);
-    color: var(--background);
-    transform: translate(2px, -2px);
-  }
-
-  .friend-card__content {
-    flex: 1;
-  }
-
-  .friend-card__title {
+  .self-banner-name {
     margin: 0;
-    font-size: 1.125rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--fc-text-1);
+    transition: color 0.2s ease;
+  }
+
+  .self-banner:hover .self-banner-name {
     color: var(--foreground);
   }
 
-  .friend-card__desc {
-    margin: 0.5rem 0 0;
-    font-size: 0.9375rem;
-    line-height: 1.5;
-    color: color-mix(in srgb, var(--foreground) 65%, transparent);
-  }
-
-  .friend-card__footer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid color-mix(in srgb, var(--accent) 10%, transparent);
-  }
-
-  .friend-tag {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.375rem 0.75rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-    border-radius: 0.5rem;
+  .self-banner-desc {
+    margin: 0.125rem 0 0;
     font-size: 0.8125rem;
-    font-weight: 500;
-    white-space: nowrap;
-    color: color-mix(in srgb, var(--foreground) 70%, transparent);
-    background: color-mix(in srgb, var(--accent) 5%, var(--background));
+    line-height: 1.4;
+    color: var(--fc-text-3);
+    transition: color 0.2s ease;
+  }
+
+  .self-banner:hover .self-banner-desc {
+    color: var(--fc-text-2);
+  }
+
+  .self-banner-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .self-banner-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    color: var(--fc-text-4);
+    background: transparent;
     transition: all 0.2s ease;
   }
 
-  .friend-tag--host {
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-    background: color-mix(in srgb, var(--accent) 12%, var(--background));
+  .self-banner:hover .self-banner-arrow {
     color: var(--accent);
-    font-weight: 600;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    transform: translate(1px, -1px);
   }
 
-  .friend-card:hover .friend-tag {
-    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
-  }
-
-  @media (max-width: 640px) {
-    .friends-hero {
-      padding: 2rem 1.5rem;
-      margin-bottom: 3rem;
+  @media (max-width: 559px) {
+    .self-banner {
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 1rem;
     }
 
-    .friends-hero__title {
-      font-size: 2rem;
+    .self-banner-avatar {
+      width: 48px;
+      height: 48px;
     }
 
-    .friends-hero__subtitle {
-      font-size: 1rem;
+    .self-banner-content {
+      flex-basis: calc(100% - 60px);
     }
 
-    .friends-actions {
-      flex-direction: column;
-    }
-
-    .friends-action {
+    .self-banner-link {
       width: 100%;
-      justify-content: center;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--fc-sep);
     }
+  }
 
-    .friends-stats {
-      gap: 1rem;
-    }
-
-    .stat-chip {
-      flex: 1;
-      min-width: 0;
-      padding: 0.75rem 1rem;
-    }
-
-    .stat-chip__value {
-      font-size: 1.5rem;
-    }
-
-    .friend-grid {
-      gap: 1rem;
-    }
-
-    .section-title__text {
+  /* ===== Mobile ===== */
+  @media (max-width: 559px) {
+    .fp-heading {
       font-size: 1.25rem;
+    }
+    .fc-back {
+      height: 100px;
+    }
+    .fc-avatar,
+    .fc-avatar-fb {
+      width: 60px;
+      height: 60px;
+    }
+    .fc-avatar-fb {
+      font-size: 1.375rem;
+    }
+    .fc-body {
+      padding: 0.625rem 0.75rem 0.375rem;
+    }
+    .fc-foot {
+      padding: 0 0.625rem;
+      height: 34px;
+    }
+  }
+
+  /* ===== Reduced motion ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .fc {
+      animation: none !important;
+      transition: none !important;
+    }
+    .fc-avatar {
+      transition: none !important;
     }
   }
 </style>
