@@ -1,9 +1,5 @@
 ---
-import Breadcrumb from "@/components/Breadcrumb.astro";
-import Footer from "@/components/Footer.astro";
-import Header from "@/components/Header.astro";
 import { SITE } from "@/config.ts";
-import Layout from "@/layouts/Layout.astro";
 import ArtGallerySlider from "@/components/react/art-gallery-slider";
 import { GALLERY_IMAGES, buildGalleryImageSources } from "@/data/gallery";
 import "@/styles/art-gallery-slider.css";
@@ -20,46 +16,39 @@ const galleryImages = GALLERY_IMAGES.map((item) => {
     height: item.height,
   };
 });
-
-const totalImages = galleryImages.length;
 ---
 
-<Layout
-  title={`画廊 | ${SITE.title}`}
-  description="收录项目记录与日常瞬间的图像集合。"
-  canonicalURL={Astro.url.toString()}
->
-  <Header />
-  <Breadcrumb />
-
-  <main id="main-content" class="app-layout pb-16">
-    <section class="galleries-hero">
-      <div class="galleries-hero-content">
-        <h1 class="galleries-title">艺术画廊</h1>
-        <p class="galleries-description">
-          探索精选的视觉故事，每一张图片都讲述着独特的瞬间
-        </p>
-        <div class="galleries-stats">
-          <div class="stat-item">
-            <span class="stat-number">{totalImages}</span>
-            <span class="stat-label">张作品</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-number">{new Set(galleryImages.map(img => new Date(img.date).getFullYear())).size}</span>
-            <span class="stat-label">年份</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>画廊 | {SITE.title}</title>
+    <meta name="description" content="收录项目记录与日常瞬间的图像集合" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={Astro.url.toString()} />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000000;
+      }
+    </style>
+  </head>
+  <body>
     {
       galleryImages.length > 0 ? (
-        <section class="gallery-section" aria-label="艺术画廊">
-          <ArtGallerySlider images={galleryImages} client:load />
-        </section>
+        <ArtGallerySlider images={galleryImages} client:load />
       ) : (
-        <div class="galleries-empty">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; color: rgba(255,255,255,0.6); background: #000;">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="48"
@@ -70,250 +59,15 @@ const totalImages = galleryImages.length;
             stroke-width="1.5"
             stroke-linecap="round"
             stroke-linejoin="round"
+            style="opacity: 0.5; margin-bottom: 1rem;"
           >
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
             <circle cx="9" cy="9" r="2" />
             <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
           </svg>
-          <p>暂时还没有图片</p>
+          <p style="font-size: 1.125rem;">暂时还没有图片</p>
         </div>
       )
     }
-
-    <section class="gallery-footer-info">
-      <div class="info-card">
-        <h3>浏览提示</h3>
-        <ul>
-          <li>使用左右箭头键或点击按钮导航</li>
-          <li>在移动设备上滑动浏览图片</li>
-          <li>点击缩略图快速跳转</li>
-        </ul>
-      </div>
-    </section>
-  </main>
-
-  <Footer />
-</Layout>
-
-<style>
-  .galleries-hero {
-    position: relative;
-    border-radius: 2rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--accent) 8%, var(--background)) 0%,
-      color-mix(in srgb, var(--accent) 4%, var(--background)) 100%
-    );
-    padding: 3rem 2.5rem;
-    margin-bottom: 3rem;
-    overflow: hidden;
-  }
-
-  .galleries-hero::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--accent) 12%, transparent) 0%,
-      transparent 70%
-    );
-    border-radius: 50%;
-    transform: translate(40%, -40%);
-    pointer-events: none;
-  }
-
-  .galleries-hero-content {
-    position: relative;
-    z-index: 1;
-  }
-
-  .galleries-title {
-    margin: 0;
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    line-height: 1.1;
-    font-weight: 800;
-    background: linear-gradient(
-      135deg,
-      var(--foreground) 0%,
-      color-mix(in srgb, var(--accent) 80%, var(--foreground)) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.02em;
-  }
-
-  .galleries-description {
-    margin-top: 1rem;
-    font-size: 1.125rem;
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--foreground) 75%, transparent);
-    max-width: 600px;
-  }
-
-  .galleries-stats {
-    margin-top: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .stat-number {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: color-mix(in srgb, var(--foreground) 65%, transparent);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .stat-divider {
-    width: 1px;
-    height: 2.5rem;
-    background: color-mix(in srgb, var(--border) 40%, transparent);
-  }
-
-  .gallery-section {
-    margin-bottom: 3rem;
-  }
-
-  .galleries-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 4rem 2rem;
-    border-radius: 1.5rem;
-    border: 2px dashed color-mix(in srgb, var(--border) 40%, transparent);
-    background: color-mix(in srgb, var(--muted) 8%, transparent);
-    color: color-mix(in srgb, var(--foreground) 60%, transparent);
-    text-align: center;
-  }
-
-  .galleries-empty svg {
-    opacity: 0.5;
-  }
-
-  .galleries-empty p {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 500;
-  }
-
-  .gallery-footer-info {
-    margin-top: 3rem;
-  }
-
-  .info-card {
-    border-radius: 1.5rem;
-    border: 1px solid color-mix(in srgb, var(--border) 25%, transparent);
-    background: color-mix(in srgb, var(--accent) 3%, var(--background));
-    padding: 2rem;
-  }
-
-  .info-card h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--foreground);
-  }
-
-  .info-card ul {
-    margin: 0;
-    padding-left: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .info-card li {
-    color: color-mix(in srgb, var(--foreground) 75%, transparent);
-    line-height: 1.6;
-  }
-
-  @media (max-width: 768px) {
-    .galleries-hero {
-      padding: 2rem 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .galleries-title {
-      font-size: clamp(2rem, 8vw, 2.5rem);
-    }
-
-    .galleries-description {
-      font-size: 1rem;
-      margin-top: 0.75rem;
-    }
-
-    .galleries-stats {
-      margin-top: 1.5rem;
-      gap: 1.5rem;
-    }
-
-    .stat-number {
-      font-size: 1.75rem;
-    }
-
-    .stat-label {
-      font-size: 0.8125rem;
-    }
-
-    .gallery-section {
-      margin-bottom: 2rem;
-    }
-
-    .gallery-footer-info {
-      margin-top: 2rem;
-    }
-
-    .info-card {
-      padding: 1.5rem;
-    }
-
-    .info-card h3 {
-      font-size: 1.125rem;
-    }
-
-    .info-card ul {
-      font-size: 0.9375rem;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .galleries-hero {
-      padding: 1.5rem 1rem;
-      border-radius: 1.5rem;
-    }
-
-    .galleries-stats {
-      flex-wrap: wrap;
-    }
-
-    .galleries-empty {
-      padding: 3rem 1.5rem;
-    }
-
-    .info-card {
-      padding: 1.25rem;
-    }
-  }
-</style>
+  </body>
+</html>
