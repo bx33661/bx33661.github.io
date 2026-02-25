@@ -12,517 +12,770 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
 <Layout title={`搜索 | ${SITE.title}`}>
   <Header />
   <Breadcrumb />
-  <main id="main-content" class="app-layout pb-12">
-    <!-- Hero -->
-    <div class="search-hero" data-search-hero>
-      <div class="aurora-orb aurora-orb-1"></div>
-      <div class="aurora-orb aurora-orb-2"></div>
-      <div class="aurora-orb aurora-orb-3"></div>
-      <div class="aurora-mouse" data-search-mouse></div>
-      <div class="relative z-10">
-        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
-          <span class="glow-text">搜索</span>
-        </h1>
-        <p class="mt-3 max-w-lg text-foreground/70 italic">
-          快速检索博客中的文章、教程与技术记录。
-        </p>
-      </div>
-    </div>
+  <main id="main-content" class="app-layout pb-16">
 
-    <!-- Search container -->
-    <div class="search-container" data-search-card>
-      <div class="search-aurora" data-card-aurora></div>
-      <div class="search-border-glow" data-card-border></div>
-      <div class="search-inner">
-        <div id="pagefind-search" transition:persist data-backurl={backUrl}>
+    <!-- ===== Hero ===== -->
+    <section class="sp-hero" data-sp-hero aria-label="搜索页头部">
+      <!-- Aurora background orbs -->
+      <div class="sp-orb sp-orb-1" aria-hidden="true"></div>
+      <div class="sp-orb sp-orb-2" aria-hidden="true"></div>
+      <div class="sp-orb sp-orb-3" aria-hidden="true"></div>
+      <!-- Animated grid overlay -->
+      <div class="sp-grid" aria-hidden="true"></div>
+      <!-- Mouse-follow spotlight -->
+      <div class="sp-spotlight" data-sp-spotlight aria-hidden="true"></div>
+      <!-- Sparkle dots -->
+      <div class="sp-sparkle sp-sparkle-a" aria-hidden="true"></div>
+      <div class="sp-sparkle sp-sparkle-b" aria-hidden="true"></div>
+      <div class="sp-sparkle sp-sparkle-c" aria-hidden="true"></div>
+      <div class="sp-sparkle sp-sparkle-d" aria-hidden="true"></div>
+
+      <div class="sp-hero-content">
+        <!-- Eyebrow badge -->
+        <div class="sp-badge" data-sp-badge>
+          <span class="sp-badge-dot" aria-hidden="true"></span>
+          全站搜索
+        </div>
+        <!-- Heading with clip-text -->
+        <h1 class="sp-title" data-sp-title>
+          <span class="sp-title-line">探索每一篇</span>
+          <span class="sp-title-accent">文章与记录</span>
+        </h1>
+        <p class="sp-subtitle" data-sp-subtitle>
+          快速检索博客中的技术文章、实践笔记与学习记录。
+        </p>
+        <!-- Stats row -->
+        <div class="sp-stats" data-sp-stats>
+          <div class="sp-stat">
+            <span class="sp-stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+              </svg>
+            </span>
+            <span class="sp-stat-label">文章</span>
+          </div>
+          <div class="sp-stat-sep" aria-hidden="true"></div>
+          <div class="sp-stat">
+            <span class="sp-stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+            <span class="sp-stat-label">全文检索</span>
+          </div>
+          <div class="sp-stat-sep" aria-hidden="true"></div>
+          <div class="sp-stat">
+            <span class="sp-stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </span>
+            <span class="sp-stat-label">即时响应</span>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- ===== Search Panel ===== -->
+    <section class="sp-panel" data-sp-panel aria-label="搜索界面">
+      <!-- Panel glow layers -->
+      <div class="sp-panel-aurora" data-sp-aurora aria-hidden="true"></div>
+      <div class="sp-panel-border" aria-hidden="true"></div>
+      <div class="sp-panel-shimmer" aria-hidden="true"></div>
+
+      <!-- Panel header row -->
+      <div class="sp-panel-header">
+        <div class="sp-panel-label">
+          <span class="sp-panel-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <span>搜索文章</span>
+        </div>
+        <div class="sp-panel-tip">
+          <kbd class="sp-kbd">⌘</kbd><kbd class="sp-kbd">K</kbd>
+          <span>快速打开</span>
+        </div>
+      </div>
+
+      <!-- Pagefind UI mount point -->
+      <div class="sp-body">
+        <div id="pagefind-search" transition:persist data-backurl={backUrl}></div>
+      </div>
+    </section>
+
   </main>
   <Footer />
 </Layout>
 
+<!-- ===== Mouse spotlight script ===== -->
 <script>
-  let searchCleanup: AbortController | null = null;
+  let spCleanup: AbortController | null = null;
 
   document.addEventListener("astro:page-load", () => {
-    // Cleanup previous listeners
-    if (searchCleanup) searchCleanup.abort();
-    searchCleanup = new AbortController();
-    const { signal } = searchCleanup;
+    if (spCleanup) spCleanup.abort();
+    spCleanup = new AbortController();
+    const { signal } = spCleanup;
 
-    // Hero mouse-follow
-    const hero = document.querySelector("[data-search-hero]") as HTMLElement;
-    const heroMouse = document.querySelector(
-      "[data-search-mouse]"
-    ) as HTMLElement;
-    if (hero && heroMouse) {
-      hero.addEventListener(
-        "mousemove",
-        e => {
-          requestAnimationFrame(() => {
-            const rect = hero.getBoundingClientRect();
-            heroMouse.style.setProperty("--mx", `${e.clientX - rect.left}px`);
-            heroMouse.style.setProperty("--my", `${e.clientY - rect.top}px`);
-            heroMouse.style.opacity = "1";
-          });
-        },
-        { signal }
-      );
-      hero.addEventListener(
-        "mouseleave",
-        () => {
-          heroMouse.style.opacity = "0";
-        },
-        { signal }
-      );
+    const hero = document.querySelector("[data-sp-hero]") as HTMLElement | null;
+    const spotlight = document.querySelector("[data-sp-spotlight]") as HTMLElement | null;
+
+    if (hero && spotlight) {
+      hero.addEventListener("mousemove", (e: MouseEvent) => {
+        requestAnimationFrame(() => {
+          const r = hero.getBoundingClientRect();
+          spotlight.style.setProperty("--sx", `${e.clientX - r.left}px`);
+          spotlight.style.setProperty("--sy", `${e.clientY - r.top}px`);
+          spotlight.style.opacity = "1";
+        });
+      }, { signal });
+
+      hero.addEventListener("mouseleave", () => {
+        spotlight.style.opacity = "0";
+      }, { signal });
     }
 
-    // Search card mouse-follow
-    const card = document.querySelector("[data-search-card]") as HTMLElement;
-    const aurora = card?.querySelector("[data-card-aurora]") as HTMLElement;
-    const border = card?.querySelector("[data-card-border]") as HTMLElement;
-    if (card && aurora) {
-      card.addEventListener(
-        "mousemove",
-        e => {
-          requestAnimationFrame(() => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            aurora.style.setProperty("--mx", `${x}px`);
-            aurora.style.setProperty("--my", `${y}px`);
-            aurora.style.opacity = "1";
-            if (border) {
-              border.style.setProperty("--mx", `${x}px`);
-              border.style.setProperty("--my", `${y}px`);
-              border.style.opacity = "1";
-            }
-          });
-        },
-        { signal }
-      );
-      card.addEventListener(
-        "mouseleave",
-        () => {
-          aurora.style.opacity = "0";
-          if (border) border.style.opacity = "0";
-        },
-        { signal }
-      );
+    // Panel aurora follow
+    const panel = document.querySelector("[data-sp-panel]") as HTMLElement | null;
+    const aurora = panel?.querySelector("[data-sp-aurora]") as HTMLElement | null;
+
+    if (panel && aurora) {
+      panel.addEventListener("mousemove", (e: MouseEvent) => {
+        requestAnimationFrame(() => {
+          const r = panel.getBoundingClientRect();
+          aurora.style.setProperty("--ax", `${e.clientX - r.left}px`);
+          aurora.style.setProperty("--ay", `${e.clientY - r.top}px`);
+          aurora.style.opacity = "1";
+        });
+      }, { signal });
+
+      panel.addEventListener("mouseleave", () => {
+        aurora.style.opacity = "0";
+      }, { signal });
     }
+
+    // Staggered entrance animations
+    const badge = document.querySelector("[data-sp-badge]") as HTMLElement | null;
+    const title = document.querySelector("[data-sp-title]") as HTMLElement | null;
+    const subtitle = document.querySelector("[data-sp-subtitle]") as HTMLElement | null;
+    const stats = document.querySelector("[data-sp-stats]") as HTMLElement | null;
+    const panelEl = document.querySelector("[data-sp-panel]") as HTMLElement | null;
+
+    const items = [badge, title, subtitle, stats, panelEl];
+    items.forEach((el, i) => {
+      if (!el) return;
+      el.style.opacity = "0";
+      el.style.transform = "translateY(20px)";
+      el.style.transition = `opacity 0.55s ease ${i * 0.1}s, transform 0.55s ease ${i * 0.1}s`;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+        });
+      });
+    });
   });
 </script>
 
+<!-- ===== Pagefind init script ===== -->
 <script>
   function initSearch() {
-    const pageFindSearch: HTMLElement | null =
-      document.querySelector("#pagefind-search");
-
-    // If container doesn't exist or already has content (initialized), stop.
-    if (!pageFindSearch || pageFindSearch.childElementCount > 0) return;
+    const container = document.querySelector<HTMLElement>("#pagefind-search");
+    if (!container || container.childElementCount > 0) return;
 
     const params = new URLSearchParams(window.location.search);
-
-    const onIdle = window.requestIdleCallback || (cb => setTimeout(cb, 1));
+    const onIdle = window.requestIdleCallback || ((cb: () => void) => setTimeout(cb, 1));
 
     onIdle(async () => {
-      // @ts-expect-error — Missing types for @pagefind/default-ui package.
+      // @ts-expect-error — Missing types for @pagefind/default-ui
       const { PagefindUI } = await import("@pagefind/default-ui");
 
-      // Display warning in dev mode
       if (import.meta.env.DEV) {
-        pageFindSearch.innerHTML = `
-            <div class="bg-muted/75 rounded p-4 space-y-4 mb-4">
-              <p><strong>开发模式提示：</strong>请至少先构建一次项目，开发环境下才会显示搜索结果。</p>
-              <code class="block bg-black text-white px-2 py-1 rounded">npm run build</code>
-            </div>
-          `;
+        container.innerHTML = `
+          <div class="sp-dev-notice">
+            <strong>开发模式提示：</strong>请先构建站点以启用搜索。
+            <code>npm run build</code>
+          </div>`;
       }
 
       const search = new PagefindUI({
         element: "#pagefind-search",
         showImages: false,
         showSubResults: true,
-        processTerm: function (term: string) {
+        processTerm: (term: string) => {
           params.set("q", term);
           history.replaceState(history.state, "", "?" + params.toString());
-
-          const backUrl = pageFindSearch?.dataset?.backurl;
-          sessionStorage.setItem("backUrl", backUrl + "?" + params.toString());
-
+          const backUrl = container?.dataset?.backurl;
+          if (backUrl) sessionStorage.setItem("backUrl", backUrl + "?" + params.toString());
           return term;
         },
       });
 
       const query = params.get("q");
-      if (query) {
-        search.triggerSearch(query);
-      }
+      if (query) search.triggerSearch(query);
 
-      const searchInput = document.querySelector(".pagefind-ui__search-input");
-      const clearButton = document.querySelector(".pagefind-ui__search-clear");
-      searchInput?.addEventListener("input", resetSearchParam);
-      clearButton?.addEventListener("click", resetSearchParam);
+      const input = document.querySelector<HTMLInputElement>(".pagefind-ui__search-input");
+      const clear = document.querySelector<HTMLElement>(".pagefind-ui__search-clear");
 
-      function resetSearchParam(e: Event) {
+      function resetParam(e: Event) {
         if ((e.target as HTMLInputElement)?.value.trim() === "") {
           history.replaceState(history.state, "", window.location.pathname);
         }
       }
+
+      input?.addEventListener("input", resetParam);
+      clear?.addEventListener("click", resetParam);
     });
   }
 
   document.addEventListener("astro:after-swap", () => {
-    const pagefindSearch = document.querySelector("#pagefind-search");
-    if (pagefindSearch && pagefindSearch.querySelector("form")) return;
+    const el = document.querySelector("#pagefind-search");
+    if (el && el.querySelector("form")) return;
     initSearch();
   });
   initSearch();
 </script>
 
 <style>
-  /* ===== Hero ===== */
-  .search-hero {
+  /* ============================================================
+     HERO
+  ============================================================ */
+  .sp-hero {
     position: relative;
     overflow: hidden;
-    border-radius: 1.5rem;
-    padding: 2.5rem 2rem;
-    margin-bottom: 2rem;
-    background: color-mix(
-      in srgb,
-      var(--color-foreground) 3%,
-      var(--color-background)
-    );
+    border-radius: 1.75rem;
+    padding: 3rem 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+    background: color-mix(in srgb, var(--color-accent) 3%, var(--color-background));
     border: 1px solid color-mix(in srgb, var(--color-accent) 12%, transparent);
   }
   @media (min-width: 640px) {
-    .search-hero {
-      padding: 3rem;
-    }
+    .sp-hero { padding: 3.5rem; }
   }
 
-  .aurora-orb {
+  /* Aurora orbs */
+  .sp-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(60px);
+    filter: blur(70px);
     pointer-events: none;
     will-change: transform;
   }
-  .aurora-orb-1 {
-    width: 300px;
-    height: 300px;
-    top: -30%;
-    left: -10%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 25%, transparent),
-      transparent 70%
-    );
-    animation: orb-1 7s ease-in-out infinite alternate;
+  .sp-orb-1 {
+    width: 380px; height: 380px;
+    top: -40%; left: -12%;
+    background: radial-gradient(circle,
+      color-mix(in srgb, var(--color-accent) 22%, transparent),
+      transparent 65%);
+    animation: sp-orb1 8s ease-in-out infinite alternate;
   }
-  .aurora-orb-2 {
-    width: 250px;
-    height: 250px;
-    top: 10%;
-    right: -5%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-border) 20%, transparent),
-      transparent 70%
-    );
-    animation: orb-2 9s ease-in-out infinite alternate;
+  .sp-orb-2 {
+    width: 280px; height: 280px;
+    top: 5%; right: -8%;
+    background: radial-gradient(circle,
+      color-mix(in srgb, var(--color-border) 18%, transparent),
+      transparent 65%);
+    animation: sp-orb2 10s ease-in-out infinite alternate;
   }
-  .aurora-orb-3 {
-    width: 200px;
-    height: 200px;
-    bottom: -20%;
-    left: 40%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 12%, transparent),
-      transparent 70%
-    );
-    animation: orb-3 11s ease-in-out infinite alternate;
+  .sp-orb-3 {
+    width: 220px; height: 220px;
+    bottom: -30%; left: 45%;
+    background: radial-gradient(circle,
+      color-mix(in srgb, var(--color-accent) 14%, transparent),
+      transparent 65%);
+    animation: sp-orb3 12s ease-in-out infinite alternate;
   }
-  @keyframes orb-1 {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    100% {
-      transform: translate(40px, 20px) scale(1.2);
-    }
+  @keyframes sp-orb1 { to { transform: translate(50px, 30px) scale(1.25); } }
+  @keyframes sp-orb2 { to { transform: translate(-35px, 40px) scale(1.2); } }
+  @keyframes sp-orb3 { to { transform: translate(25px, -30px) scale(1.15); } }
+
+  /* Animated grid */
+  .sp-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--color-accent) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 4%, transparent) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+    pointer-events: none;
+    animation: sp-grid-drift 20s linear infinite;
   }
-  @keyframes orb-2 {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    100% {
-      transform: translate(-30px, 30px) scale(1.15);
-    }
-  }
-  @keyframes orb-3 {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    100% {
-      transform: translate(20px, -25px) scale(1.1);
-    }
+  @keyframes sp-grid-drift {
+    0%   { background-position: 0 0; }
+    100% { background-position: 40px 40px; }
   }
 
-  .aurora-mouse {
+  /* Mouse spotlight */
+  .sp-spotlight {
     position: absolute;
-    width: 350px;
-    height: 350px;
+    width: 450px; height: 450px;
     border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 18%, transparent),
-      color-mix(in srgb, var(--color-border) 8%, transparent) 40%,
-      transparent 70%
-    );
-    filter: blur(50px);
+    background: radial-gradient(circle,
+      color-mix(in srgb, var(--color-accent) 16%, transparent),
+      color-mix(in srgb, var(--color-border) 6%, transparent) 40%,
+      transparent 70%);
+    filter: blur(55px);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.4s ease;
-    transform: translate(
-      calc(var(--mx, 0px) - 175px),
-      calc(var(--my, 0px) - 175px)
-    );
+    transform: translate(calc(var(--sx, 0px) - 225px), calc(var(--sy, 0px) - 225px));
     will-change: transform;
     z-index: 1;
   }
 
-  .glow-text {
-    background: linear-gradient(
-      135deg,
-      var(--color-foreground),
-      var(--color-accent)
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(
-      0 0 25px color-mix(in srgb, var(--color-accent) 25%, transparent)
-    );
-  }
-
-  /* ===== Search Container ===== */
-  .search-container {
-    position: relative;
-    border-radius: 1.25rem;
-    padding: 1.5rem;
-    background: color-mix(
-      in srgb,
-      var(--color-foreground) 2%,
-      var(--color-background)
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--color-foreground) 6%, transparent);
-    overflow: hidden;
-    transition:
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
-  }
-
-  .search-container:has(.pagefind-ui__search-input:focus) {
-    border-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
-    box-shadow:
-      0 8px 30px -8px color-mix(in srgb, var(--color-accent) 10%, transparent),
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 6%, transparent);
-  }
-
-  .search-aurora {
+  /* Sparkles */
+  .sp-sparkle {
     position: absolute;
-    width: 300px;
-    height: 300px;
+    width: 4px; height: 4px;
     border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 18%, transparent),
-      color-mix(in srgb, var(--color-border) 8%, transparent) 40%,
-      transparent 70%
-    );
-    filter: blur(40px);
-    pointer-events: none;
+    background: var(--color-accent);
+    box-shadow: 0 0 8px 2px color-mix(in srgb, var(--color-accent) 50%, transparent);
     opacity: 0;
-    transition: opacity 0.35s ease;
-    transform: translate(
-      calc(var(--mx, 0px) - 150px),
-      calc(var(--my, 0px) - 150px)
-    );
-    will-change: transform;
-    z-index: 0;
+    animation: sp-sparkle 3.5s ease-in-out infinite;
+  }
+  .sp-sparkle-a { top: 14%; left: 7%;  animation-delay: 0s; }
+  .sp-sparkle-b { top: 22%; right: 9%; animation-delay: 0.7s; }
+  .sp-sparkle-c { bottom: 20%; left: 16%; animation-delay: 1.4s; }
+  .sp-sparkle-d { top: 8%;  right: 22%; animation-delay: 2.1s; }
+  @keyframes sp-sparkle {
+    0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+    50%       { opacity: 0.9; transform: scale(1) rotate(180deg); }
   }
 
-  .search-border-glow {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 30%, transparent),
-      transparent 70%
-    );
-    filter: blur(20px);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    transform: translate(
-      calc(var(--mx, 0px) - 75px),
-      calc(var(--my, 0px) - 75px)
-    );
-    will-change: transform;
-    z-index: 0;
-    mix-blend-mode: screen;
-  }
-
-  .search-inner {
+  /* Hero content */
+  .sp-hero-content {
     position: relative;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Eyebrow badge */
+  .sp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+    width: fit-content;
+  }
+  .sp-badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    box-shadow: 0 0 6px var(--color-accent);
+    animation: sp-dot-pulse 2s ease-in-out infinite;
+  }
+  @keyframes sp-dot-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  /* Heading */
+  .sp-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    font-size: clamp(1.75rem, 5vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .sp-title-line {
+    color: var(--color-foreground);
+  }
+  .sp-title-accent {
+    background: linear-gradient(135deg,
+      var(--color-accent),
+      color-mix(in srgb, var(--color-border) 70%, var(--color-accent)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 30px color-mix(in srgb, var(--color-accent) 20%, transparent));
+  }
+
+  /* Subtitle */
+  .sp-subtitle {
+    font-size: 0.95rem;
+    color: color-mix(in srgb, var(--color-foreground) 55%, transparent);
+    line-height: 1.65;
+    max-width: 38rem;
+  }
+
+  /* Stats row */
+  .sp-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+  }
+  .sp-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: color-mix(in srgb, var(--color-foreground) 50%, transparent);
+  }
+  .sp-stat-icon {
+    display: inline-flex;
+    color: var(--color-accent);
+    opacity: 0.8;
+  }
+  .sp-stat-label { }
+  .sp-stat-sep {
+    width: 1px;
+    height: 14px;
+    background: color-mix(in srgb, var(--color-foreground) 12%, transparent);
+  }
+
+  /* ============================================================
+     PANEL
+  ============================================================ */
+  .sp-panel {
+    position: relative;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-foreground) 2%, var(--color-background));
+    border: 1px solid color-mix(in srgb, var(--color-foreground) 7%, transparent);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .sp-panel:focus-within {
+    border-color: color-mix(in srgb, var(--color-accent) 28%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-accent) 8%, transparent),
+      0 8px 40px -10px color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
+
+  /* Animated conic border glow */
+  .sp-panel-border {
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    background: conic-gradient(
+      from var(--sp-border-angle, 0deg),
+      transparent 0%,
+      color-mix(in srgb, var(--color-accent) 30%, transparent) 8%,
+      transparent 18%,
+      transparent 82%,
+      color-mix(in srgb, var(--color-border) 20%, transparent) 92%,
+      transparent 100%
+    );
+    mask: linear-gradient(black, black) content-box, linear-gradient(black, black);
+    -webkit-mask: linear-gradient(black, black) content-box, linear-gradient(black, black);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    padding: 1px;
+    animation: sp-border-spin 5s linear infinite;
+    opacity: 0.7;
+  }
+  @property --sp-border-angle {
+    syntax: "<angle>"; inherits: false; initial-value: 0deg;
+  }
+  @keyframes sp-border-spin {
+    to { --sp-border-angle: 360deg; }
+  }
+
+  /* Shimmer sweep */
+  .sp-panel-shimmer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      color-mix(in srgb, var(--color-accent) 4%, transparent) 50%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    animation: sp-shimmer 4s ease-in-out infinite;
+  }
+  @keyframes sp-shimmer {
+    0%, 100% { background-position: 200% 0; }
+    50%        { background-position: -200% 0; }
+  }
+
+  /* Aurora follow glow */
+  .sp-panel-aurora {
+    position: absolute;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      color-mix(in srgb, var(--color-accent) 16%, transparent),
+      color-mix(in srgb, var(--color-border) 6%, transparent) 45%,
+      transparent 70%);
+    filter: blur(45px);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    transform: translate(calc(var(--ax, 0px) - 160px), calc(var(--ay, 0px) - 160px));
+    will-change: transform;
+    z-index: 0;
+  }
+
+  /* Panel header */
+  .sp-panel-header {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-foreground) 5%, transparent);
+    background: color-mix(in srgb, var(--color-accent) 2%, transparent);
+  }
+  .sp-panel-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--color-foreground) 45%, transparent);
+    text-transform: uppercase;
+  }
+  .sp-panel-icon {
+    display: inline-flex;
+    padding: 0.3rem;
+    border-radius: 0.4rem;
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    color: var(--color-accent);
+  }
+  .sp-panel-tip {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    color: color-mix(in srgb, var(--color-foreground) 30%, transparent);
+  }
+  .sp-kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.3rem;
+    padding: 0.05rem 0.3rem;
+    font-size: 0.6rem;
+    font-family: inherit;
+    border-radius: 0.25rem;
+    border: 1px solid color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    background: color-mix(in srgb, var(--color-foreground) 5%, transparent);
+    color: color-mix(in srgb, var(--color-foreground) 45%, transparent);
+  }
+
+  /* Panel body */
+  .sp-body {
+    position: relative;
+    z-index: 2;
+    padding: 1.5rem;
+  }
+
+  /* Dev notice */
+  .sp-dev-notice {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--color-foreground) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 10%, transparent);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+  .sp-dev-notice code {
+    display: block;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, var(--color-foreground) 8%, transparent);
+    font-family: var(--font-cartograph, monospace);
+    font-size: 0.8rem;
   }
 </style>
 
+<!-- ===== Pagefind global overrides ===== -->
 <style is:global>
   #pagefind-search {
     --pagefind-ui-font: var(--font-app);
     --pagefind-ui-text: var(--foreground);
     --pagefind-ui-background: transparent;
-    --pagefind-ui-border: color-mix(in srgb, var(--border) 50%, transparent);
+    --pagefind-ui-border: color-mix(in srgb, var(--border) 40%, transparent);
     --pagefind-ui-primary: var(--accent);
     --pagefind-ui-tag: var(--background);
-    --pagefind-ui-border-radius: 0.75rem;
+    --pagefind-ui-border-radius: 0.875rem;
     --pagefind-ui-border-width: 1px;
-    --pagefind-ui-image-border-radius: 8px;
-    --pagefind-ui-image-box-ratio: 3 / 2;
+  }
 
-    /* Search icon */
-    form::before {
-      background-color: var(--foreground);
-      opacity: 0.5;
-    }
+  /* Search icon */
+  #pagefind-search form::before {
+    background-color: var(--accent);
+    opacity: 0.55;
+    transition: opacity 0.2s ease;
+  }
+  #pagefind-search form:focus-within::before {
+    opacity: 1;
+  }
 
-    /* Input */
-    input.pagefind-ui__search-input {
-      font-weight: 400;
-      border: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
-      border-radius: 0.75rem;
-      background: color-mix(in srgb, var(--foreground) 3%, var(--background));
-      padding: 0.85rem 1rem 0.85rem 3rem;
-      transition:
-        border-color 0.3s ease,
-        box-shadow 0.3s ease,
-        background 0.3s ease;
-    }
+  /* Input */
+  #pagefind-search input.pagefind-ui__search-input {
+    font-weight: 400;
+    font-size: 1rem;
+    border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+    border-radius: 0.875rem;
+    background: color-mix(in srgb, var(--foreground) 3%, var(--background));
+    padding: 0.95rem 1rem 0.95rem 3.25rem;
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      background 0.25s ease;
+  }
+  #pagefind-search input.pagefind-ui__search-input:focus-visible {
+    outline: none;
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent),
+      0 0 30px -5px color-mix(in srgb, var(--accent) 15%, transparent);
+    background: color-mix(in srgb, var(--accent) 3%, var(--background));
+  }
+  #pagefind-search input.pagefind-ui__search-input::placeholder {
+    color: color-mix(in srgb, var(--foreground) 30%, transparent);
+  }
 
-    input.pagefind-ui__search-input:focus-visible {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow:
-        0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent),
-        0 0 20px color-mix(in srgb, var(--accent) 8%, transparent);
-      background: color-mix(in srgb, var(--accent) 3%, var(--background));
-    }
+  /* Clear button */
+  #pagefind-search .pagefind-ui__search-clear {
+    border-radius: 0.5rem;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+  #pagefind-search .pagefind-ui__search-clear:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    color: var(--accent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
 
-    input.pagefind-ui__search-input::placeholder {
-      color: color-mix(in srgb, var(--foreground) 35%, transparent);
-    }
+  /* Results area */
+  #pagefind-search .pagefind-ui__results-area {
+    margin-top: 1.5rem;
+  }
+  #pagefind-search .pagefind-ui__message {
+    font-style: italic;
+    opacity: 0.5;
+    padding: 0.75rem 0;
+    font-size: 0.875rem;
+  }
 
-    /* Clear button */
-    .pagefind-ui__search-clear {
-      border-radius: 0.5rem;
-      transition:
-        background 0.2s ease,
-        color 0.2s ease;
-    }
+  /* Individual result */
+  #pagefind-search .pagefind-ui__result {
+    padding: 1.1rem 1rem;
+    margin: 0.3rem -1rem;
+    border-radius: 1rem;
+    border-bottom: none;
+    transition:
+      background 0.22s ease,
+      box-shadow 0.22s ease,
+      transform 0.22s ease;
+  }
+  #pagefind-search .pagefind-ui__result:hover {
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    box-shadow:
+      0 4px 20px -8px color-mix(in srgb, var(--accent) 14%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--accent) 8%, transparent);
+    transform: translateX(3px);
+  }
+  #pagefind-search .pagefind-ui__result + .pagefind-ui__result {
+    border-top: 1px solid color-mix(in srgb, var(--foreground) 5%, transparent);
+  }
 
-    .pagefind-ui__search-clear:hover {
-      background: color-mix(in srgb, var(--accent) 10%, transparent);
-      color: var(--accent);
-    }
+  /* Result title */
+  #pagefind-search .pagefind-ui__result-title a {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.975rem;
+    text-decoration: none;
+    outline-offset: 2px;
+    outline-color: var(--accent);
+    transition: text-shadow 0.25s ease, color 0.2s ease;
+  }
+  #pagefind-search .pagefind-ui__result-title a:hover {
+    text-shadow: 0 0 20px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  #pagefind-search .pagefind-ui__result-title a:focus-visible,
+  #pagefind-search .pagefind-ui__search-clear:focus-visible {
+    text-decoration-line: none;
+    outline-width: 2px;
+    outline-style: dashed;
+  }
 
-    /* Results */
-    .pagefind-ui__results-area {
-      margin-top: 1.5rem;
-    }
+  /* Excerpt */
+  #pagefind-search .pagefind-ui__result-excerpt {
+    opacity: 0.55;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin-top: 0.3rem;
+  }
+  #pagefind-search .pagefind-ui__result-excerpt mark {
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    color: var(--accent);
+    border-radius: 3px;
+    padding: 0.05em 0.25em;
+    font-weight: 600;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 10%, transparent);
+  }
 
-    .pagefind-ui__message {
-      font-style: italic;
-      opacity: 0.6;
-      padding: 1rem 0;
-    }
+  /* Nested results */
+  #pagefind-search .pagefind-ui__result-nested {
+    padding-left: 1.5rem;
+    border-left: 2px solid color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+  #pagefind-search .pagefind-ui__result-nested .pagefind-ui__result-link:before {
+    font-family: system-ui;
+  }
 
-    .pagefind-ui__result {
-      padding: 1.25rem 0;
-      border-bottom: 1px solid
-        color-mix(in srgb, var(--foreground) 6%, transparent);
-      transition: background 0.2s ease;
-    }
+  /* Load more button */
+  #pagefind-search .pagefind-ui__button {
+    border-radius: 0.875rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition:
+      background 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.25s ease;
+  }
+  #pagefind-search .pagefind-ui__button:hover {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow:
+      0 4px 20px color-mix(in srgb, var(--accent) 15%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--accent) 8%, transparent);
+    transform: translateY(-1px);
+  }
+  #pagefind-search .pagefind-ui__button:active {
+    transform: translateY(0);
+  }
 
-    .pagefind-ui__result:last-of-type {
-      border-bottom: 0;
-    }
-
-    .pagefind-ui__result-title a {
-      color: var(--accent);
-      font-weight: 600;
-      text-decoration: none;
-      outline-offset: 2px;
-      outline-color: var(--accent);
-      transition:
-        color 0.2s ease,
-        text-shadow 0.3s ease;
-    }
-
-    .pagefind-ui__result-title a:hover {
-      text-shadow: 0 0 15px color-mix(in srgb, var(--accent) 30%, transparent);
-    }
-
-    .pagefind-ui__result-title a:focus-visible,
-    .pagefind-ui__search-clear:focus-visible {
-      text-decoration-line: none;
-      outline-width: 2px;
-      outline-style: dashed;
-    }
-
-    .pagefind-ui__result-excerpt {
-      opacity: 0.65;
-      font-size: 0.875rem;
-      line-height: 1.6;
-    }
-
-    .pagefind-ui__result-excerpt mark {
-      background: color-mix(in srgb, var(--accent) 20%, transparent);
-      color: var(--accent);
-      border-radius: 2px;
-      padding: 0.05em 0.2em;
-      font-weight: 600;
-    }
-
-    .pagefind-ui__result-nested .pagefind-ui__result-link:before {
-      font-family: system-ui;
-    }
-
-    .pagefind-ui__result-nested {
-      padding-left: 1.5rem;
-      border-left: 2px solid color-mix(in srgb, var(--accent) 15%, transparent);
-    }
-
-    /* Button */
-    .pagefind-ui__button {
-      border-radius: 0.75rem;
-      border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-      background: color-mix(in srgb, var(--accent) 5%, transparent);
-      color: var(--accent);
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .pagefind-ui__button:hover {
-      background: color-mix(in srgb, var(--accent) 12%, transparent);
-      border-color: color-mix(in srgb, var(--accent) 35%, transparent);
-      box-shadow: 0 4px 15px color-mix(in srgb, var(--accent) 12%, transparent);
-    }
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .sp-orb, .sp-grid, .sp-sparkle, .sp-badge-dot,
+    .sp-panel-border, .sp-panel-shimmer { animation: none !important; }
+    .sp-spotlight, .sp-panel-aurora { display: none; }
   }
 </style>
