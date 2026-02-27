@@ -9,12 +9,11 @@ const currentUrl = Astro.url.toString()
 const featuredPhotos = GALLERY_IMAGES.slice(0, 6).map((item) => buildGalleryImageSources(item))
 
 const experiences = [
-  { period: '2023 - 至今', role: '信息安全专业', org: '海南大学', tags: ['本科生', '在读'] },
-  { period: '2023 - 至今', role: '核心成员', org: 'HnuSec', tags: ['CTF', 'Web Security'] },
+  { period: '2023 - 至今', role: '信息安全专业', org: '大学', tags: ['本科生', '在读'] },
   { period: '持续进行', role: '技术研究', org: '个人项目', tags: ['漏洞分析', '工程实践'] },
 ]
 
-const focuses = ['漏洞研究', 'AI4Sec', '开源实践', 'CTF 竞赛']
+const focuses = ['漏洞研究', 'Program', 'Dev', 'CTF']
 
 const links = [
   { name: 'GitHub', url: 'https://github.com/bx33661' },
