@@ -22,7 +22,6 @@
     "smoke:dist": "node scripts/smoke-dist.mjs",
     "content:new": "node scripts/content-new.mjs",
     "content:check": "node scripts/content-check.mjs",
-    "cyberchef:sync": "node scripts/sync-cyberchef.mjs",
     "astro": "astro",
     "format:check": "prettier --check .",
     "format": "prettier --write .",

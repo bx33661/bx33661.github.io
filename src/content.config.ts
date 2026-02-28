@@ -2,7 +2,7 @@ import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 import { SITE } from "@/config.ts";
 
-export const BLOG_PATH = "src/data/blog";
+export const BLOG_PATH = "src/content/blog";
 export const NOTES_PATH = "src/data/notes";
 export const GALLERY_PATH = "src/data/galleries";
 
@@ -11,8 +11,9 @@ const blog = defineCollection({
   schema: ({ image }) =>
     z.object({
       author: z.string().default(SITE.author),
-      pubDatetime: z.coerce.date(),
+      pubDatetime: z.coerce.date().optional(),
       modDatetime: z.coerce.date().optional().nullable(),
+      date: z.coerce.date().optional(),
       title: z.string(),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
@@ -25,7 +26,11 @@ const blog = defineCollection({
       slug: z.string().optional(),
       password: z.string().optional(),
       authors: z.array(z.string()).optional(),
-    }),
+    }).transform((data) => ({
+      ...data,
+      // Normalise: writers use `date`, theme code uses `pubDatetime`
+      pubDatetime: data.pubDatetime ?? data.date ?? new Date(0),
+    })),
 });
 
 const notes = defineCollection({
