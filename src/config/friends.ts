@@ -88,5 +88,12 @@ export const FRIEND_LINKS: FriendLink[] = [
     url: "https://jatopos.github.io",
     description: "一往无前虎山行，拨开云雾见光明。",
     avatar: "https://q1.qlogo.cn/g?b=qq&nk=3636469976&s=640"
+  },
+  {
+    name: "Boogipop",
+    url: "https://boogipop.com/",
+    description: "Are you still in pain?",
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=3576846231&spec=640&img_type=jpg",
+    tags: ["Web"]
   }
-]
+  ]
