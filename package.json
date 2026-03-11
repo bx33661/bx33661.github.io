@@ -28,16 +28,16 @@
     "prettier": "prettier --write **/*.{ts,tsx,js,jsx,css,md,mdx,json} --ignore-path .gitignore"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.13",
-    "@astrojs/react": "^4.2.1",
-    "@astrojs/rss": "^4.0.15",
-    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/mdx": "^5.0.0",
+    "@astrojs/react": "^5.0.0",
+    "@astrojs/rss": "^4.0.17",
+    "@astrojs/sitemap": "^3.7.1",
     "@radix-ui/react-scroll-area": "^1.2.3",
     "@radix-ui/react-separator": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.17.2",
+    "astro": "^6.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
@@ -59,8 +59,8 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.7",
     "@lhci/cli": "^0.15.1",
-    "@astrojs/check": "^0.9.6",
     "@pagefind/default-ui": "^1.4.0",
     "@shikijs/transformers": "^3.22.0",
     "@tailwindcss/typography": "^0.5.19",
