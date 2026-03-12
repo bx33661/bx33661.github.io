@@ -21,64 +21,176 @@ const projectCards = PROJECTS.map((item) => ({
   host: getHost(item.url),
   fallback: getFallbackText(item.name),
 }))
+
+// Separate featured project (first one with most stars or first one)
+const sortedProjects = [...projectCards].sort((a, b) => (b.stars ?? 0) - (a.stars ?? 0))
+const featuredProject = sortedProjects[0]
+const otherProjects = sortedProjects.slice(1)
 ---
 
 <Layout title="开源项目" description="BX的开源项目与工具展示" canonicalURL={currentUrl}>
   <Header />
 
   <main id="main-content" class="projects-main app-layout">
-    <!-- Top bar -->
-    <div class="fp-topbar">
-      <h1 class="fp-heading">Projects <span class="fp-total">{projectCards.length}</span></h1>
+    <!-- Hero Section -->
+    <div class="projects-hero">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="hero-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+              <path d="M9 18c-4.51 2-5-2-7-2"/>
+            </svg>
+          </span>
+          Open Source
+          <span class="hero-count">{projectCards.length}</span>
+        </h1>
+        <p class="hero-desc">探索我的开源项目和工具，致力于让技术更有趣、更实用</p>
+      </div>
     </div>
 
-    <!-- Projects Grid -->
-    <section aria-label="开源项目">
-      <div class="fp-grid">
-        {projectCards.map((project, index) => (
-          <a
-            class="fc"
-            href={project.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`访问 ${project.name}`}
-            style={`--i:${index}`}
-          >
-            <div class="fc-back" aria-hidden="true">
-              <div class="fc-avatar-area">
-                <span class="fc-avatar-fb">{project.fallback}</span>
-              </div>
-            </div>
-            <div class="fc-front">
-              <div class="fc-body">
-                <h3 class="fc-name">{project.name}</h3>
-                <p class="fc-desc">{project.description}</p>
-                {project.tags && project.tags.length > 0 && (
-                  <div class="fc-tag-row">
-                    {project.tags.map((tag) => <span class="fc-tag">{tag}</span>)}
-                  </div>
-                )}
-              </div>
-              <div class="fc-foot" style="justify-content: flex-end;">
-                 {project.stars !== undefined && (
-                   <span class="fc-star-pill" style="margin-right: auto;">
-                     <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
-                       <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
-                     </svg>
-                     {project.stars}
-                   </span>
-                 )}
-                <span class="fc-host-pill">
-                  <img class="fc-favicon" src={`https://www.google.com/s2/favicons?domain=${project.host}&sz=32`} alt="" width="14" height="14" loading="lazy" />
-                  {project.host}
+    <!-- Featured Project -->
+    {featuredProject && (
+      <section class="featured-section" aria-label="精选项目">
+        <h2 class="section-label">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/>
+          </svg>
+          Featured
+        </h2>
+        <a
+          class="featured-card"
+          href={featuredProject.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`访问 ${featuredProject.name}`}
+        >
+          <div class="featured-glow" aria-hidden="true"></div>
+          <div class="featured-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+              <path d="M9 18c-4.51 2-5-2-7-2"/>
+            </svg>
+          </div>
+          <div class="featured-content">
+            <div class="featured-header">
+              <h3 class="featured-name">{featuredProject.name}</h3>
+              {featuredProject.stars !== undefined && (
+                <span class="featured-stars">
+                  <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+                    <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/>
+                  </svg>
+                  {featuredProject.stars}
                 </span>
-                <span class="fc-arrow" aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-              </div>
+              )}
             </div>
-          </a>
-        ))}
+            <p class="featured-desc">{featuredProject.description}</p>
+            {featuredProject.tags && featuredProject.tags.length > 0 && (
+              <div class="featured-tags">
+                {featuredProject.tags.map((tag) => <span class="featured-tag">{tag}</span>)}
+              </div>
+            )}
+          </div>
+          <div class="featured-action">
+            <span class="featured-link">
+              <img class="featured-favicon" src={`https://www.google.com/s2/favicons?domain=${featuredProject.host}&sz=32`} alt="" width="16" height="16" loading="lazy" />
+              View on GitHub
+            </span>
+            <span class="featured-arrow" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4.5 11.5L11.5 4.5M11.5 4.5H6M11.5 4.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+        </a>
+      </section>
+    )}
+
+    <!-- Other Projects Grid -->
+    {otherProjects.length > 0 && (
+      <section aria-label="其他项目">
+        <h2 class="section-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="7" height="7" x="3" y="3" rx="1"/>
+            <rect width="7" height="7" x="14" y="3" rx="1"/>
+            <rect width="7" height="7" x="14" y="14" rx="1"/>
+            <rect width="7" height="7" x="3" y="14" rx="1"/>
+          </svg>
+          All Projects
+          <span class="section-count">{otherProjects.length}</span>
+        </h2>
+        <div class="projects-grid">
+          {otherProjects.map((project, index) => (
+            <a
+              class="project-card"
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`访问 ${project.name}`}
+              style={`--i:${index}`}
+            >
+              <div class="card-back" aria-hidden="true">
+                <div class="card-icon-area">
+                  <span class="card-icon">{project.fallback}</span>
+                </div>
+              </div>
+              <div class="card-front">
+                <div class="card-body">
+                  <h3 class="card-name">{project.name}</h3>
+                  <p class="card-desc">{project.description}</p>
+                  {project.tags && project.tags.length > 0 && (
+                    <div class="card-tags">
+                      {project.tags.map((tag) => <span class="card-tag">{tag}</span>)}
+                    </div>
+                  )}
+                </div>
+                <div class="card-footer">
+                  {project.stars !== undefined && (
+                    <span class="card-stars">
+                      <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                        <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/>
+                      </svg>
+                      {project.stars}
+                    </span>
+                  )}
+                  <span class="card-host">
+                    <img class="card-favicon" src={`https://www.google.com/s2/favicons?domain=${project.host}&sz=32`} alt="" width="14" height="14" loading="lazy" />
+                    {project.host}
+                  </span>
+                  <span class="card-arrow" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Call to Action -->
+    <section class="cta-section" aria-label="更多内容">
+      <div class="cta-card">
+        <div class="cta-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <div class="cta-content">
+          <h3 class="cta-title">More Coming Soon</h3>
+          <p class="cta-desc">更多开源项目正在路上，欢迎关注我的 GitHub</p>
+        </div>
+        <a
+          class="cta-button"
+          href="https://github.com/bx33661"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          Follow on GitHub
+        </a>
       </div>
     </section>
   </main>
@@ -88,83 +200,342 @@ const projectCards = PROJECTS.map((item) => ({
 
 <style>
   /*
-   * Projects page — theme-aware design reusing Friends page styles
+   * Projects page — enhanced theme-aware design
    */
 
   .projects-main {
-    --fc-bg:       color-mix(in srgb, var(--foreground) 4%, var(--background));
-    --fc-bg-hover: color-mix(in srgb, var(--foreground) 7%, var(--background));
-    --fc-border:   color-mix(in srgb, var(--foreground) 8%, transparent);
-    --fc-border-h: color-mix(in srgb, var(--accent) 30%, transparent);
-    --fc-glass:    color-mix(in srgb, var(--background) 85%, transparent);
-    --fc-glass-h:  color-mix(in srgb, var(--background) 90%, transparent);
-    --fc-text-1:   color-mix(in srgb, var(--foreground) 88%, transparent);
-    --fc-text-2:   color-mix(in srgb, var(--foreground) 55%, transparent);
-    --fc-text-3:   color-mix(in srgb, var(--foreground) 40%, transparent);
-    --fc-text-4:   color-mix(in srgb, var(--foreground) 28%, transparent);
-    --fc-sep:      color-mix(in srgb, var(--foreground) 7%, transparent);
-    --fc-pill-bg:  color-mix(in srgb, var(--accent) 8%, var(--background));
-    --fc-pill-bd:  color-mix(in srgb, var(--accent) 20%, transparent);
-    --fc-pill-fg:  color-mix(in srgb, var(--accent) 85%, var(--foreground));
-    --fc-glow:     color-mix(in srgb, var(--accent) 10%, transparent);
-    --fc-shadow:   color-mix(in srgb, var(--foreground) 8%, transparent);
-    
+    --p-bg:        color-mix(in srgb, var(--foreground) 4%, var(--background));
+    --p-bg-hover:  color-mix(in srgb, var(--foreground) 7%, var(--background));
+    --p-border:    color-mix(in srgb, var(--foreground) 8%, transparent);
+    --p-border-h:  color-mix(in srgb, var(--accent) 30%, transparent);
+    --p-glass:     color-mix(in srgb, var(--background) 85%, transparent);
+    --p-text-1:    color-mix(in srgb, var(--foreground) 92%, transparent);
+    --p-text-2:    color-mix(in srgb, var(--foreground) 65%, transparent);
+    --p-text-3:    color-mix(in srgb, var(--foreground) 45%, transparent);
+    --p-text-4:    color-mix(in srgb, var(--foreground) 28%, transparent);
+    --p-sep:       color-mix(in srgb, var(--foreground) 7%, transparent);
+    --p-pill-bg:   color-mix(in srgb, var(--accent) 8%, var(--background));
+    --p-pill-bd:   color-mix(in srgb, var(--accent) 20%, transparent);
+    --p-pill-fg:   color-mix(in srgb, var(--accent) 85%, var(--foreground));
+    --p-glow:      color-mix(in srgb, var(--accent) 12%, transparent);
+    --p-shadow:    color-mix(in srgb, var(--foreground) 8%, transparent);
+
     padding-top: 0.5rem;
     padding-bottom: 5rem;
   }
 
-  /* ===== Top bar ===== */
-  .fp-topbar {
+  /* ===== Hero Section ===== */
+  .projects-hero {
+    margin-bottom: 2.5rem;
+    padding: 1.5rem 0;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .hero-title {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-  }
-
-  .fp-heading {
+    gap: 0.625rem;
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: var(--foreground);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
 
-  .fp-total {
+  .hero-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--p-glow), color-mix(in srgb, var(--accent) 6%, transparent));
+    border: 1px solid var(--p-border-h);
+    color: var(--accent);
+  }
+
+  .hero-count {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    vertical-align: middle;
-    min-width: 1.5rem;
-    height: 1.5rem;
-    padding: 0 0.375rem;
+    min-width: 1.75rem;
+    height: 1.75rem;
+    padding: 0 0.5rem;
     border-radius: 9999px;
     background: color-mix(in srgb, var(--accent) 12%, transparent);
     color: var(--accent);
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     font-weight: 700;
-    margin-left: 0.375rem;
+    margin-left: 0.25rem;
   }
 
-  /* ===== Grid ===== */
-  .fp-grid {
+  .hero-desc {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--p-text-2);
+    max-width: 480px;
+  }
+
+  /* ===== Section Labels ===== */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.25rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--p-text-3);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .section-label svg {
+    opacity: 0.7;
+  }
+
+  .section-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.375rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    color: var(--p-pill-fg);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  /* ===== Featured Section ===== */
+  .featured-section {
+    margin-bottom: 3rem;
+  }
+
+  .featured-card {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent) 6%, var(--background)),
+      color-mix(in srgb, var(--accent) 2%, var(--background))
+    );
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .featured-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow: 
+      0 8px 32px -8px var(--p-shadow),
+      0 0 0 1px color-mix(in srgb, var(--accent) 15%, transparent);
+    transform: translateY(-3px);
+  }
+
+  .featured-glow {
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 60%;
+    height: 200%;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 70%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .featured-card:hover .featured-glow {
+    opacity: 1;
+  }
+
+  .featured-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--p-bg);
+    border: 1px solid var(--p-border);
+    color: var(--accent);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .featured-card:hover .featured-icon {
+    border-color: var(--p-border-h);
+    transform: scale(1.05);
+  }
+
+  .featured-content {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .featured-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .featured-name {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--p-text-1);
+    transition: color 0.2s ease;
+  }
+
+  .featured-card:hover .featured-name {
+    color: var(--foreground);
+  }
+
+  .featured-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 15%, transparent);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .featured-desc {
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--p-text-3);
+    transition: color 0.2s ease;
+  }
+
+  .featured-card:hover .featured-desc {
+    color: var(--p-text-2);
+  }
+
+  .featured-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .featured-tag {
+    display: inline-block;
+    padding: 0.1875rem 0.625rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
+    font-size: 0.75rem;
+    color: var(--p-pill-fg);
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .featured-card:hover .featured-tag {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .featured-action {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    align-self: flex-end;
+  }
+
+  .featured-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    background: var(--p-pill-bg);
+    border: 1px solid var(--p-pill-bd);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--p-pill-fg);
+    transition: all 0.2s ease;
+  }
+
+  .featured-card:hover .featured-link {
+    background: color-mix(in srgb, var(--accent) 12%, var(--background));
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+
+  .featured-favicon {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    object-fit: contain;
+    opacity: 0.8;
+  }
+
+  .featured-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    color: var(--p-text-4);
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+
+  .featured-card:hover .featured-arrow {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    transform: translate(2px, -2px);
+  }
+
+  /* ===== Projects Grid ===== */
+  .projects-grid {
     display: grid;
     gap: 1rem;
     grid-template-columns: 1fr;
   }
+
   @media (min-width: 560px) {
-    .fp-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 900px) {
-    .fp-grid { grid-template-columns: repeat(3, 1fr); }
+    .projects-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  /* ===== Card ===== */
+  @media (min-width: 900px) {
+    .projects-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ===== Project Card ===== */
   @keyframes cardIn {
-    from { opacity: 0; transform: translateY(10px) scale(0.97); }
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0)    scale(1); }
   }
 
-  .fc {
+  .project-card {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -172,52 +543,48 @@ const projectCards = PROJECTS.map((item) => ({
     color: inherit;
     border-radius: 1rem;
     overflow: hidden;
-    border: 1px solid var(--fc-border);
-    background: var(--fc-bg);
-    animation: cardIn 0.3s ease-out backwards;
-    animation-delay: calc(var(--i, 0) * 35ms);
-    transition:
-      border-color 0.3s ease,
-      box-shadow 0.3s ease,
-      transform 0.3s ease;
+    border: 1px solid var(--p-border);
+    background: var(--p-bg);
+    animation: cardIn 0.35s ease-out backwards;
+    animation-delay: calc(var(--i, 0) * 40ms);
+    transition: all 0.3s ease;
   }
 
-  .fc:hover {
-    border-color: var(--fc-border-h);
+  .project-card:hover {
+    border-color: var(--p-border-h);
     box-shadow:
-      0 4px 24px -4px var(--fc-shadow),
-      0 0 0 1px var(--fc-border-h);
-    transform: translateY(-2px);
+      0 6px 24px -6px var(--p-shadow),
+      0 0 0 1px var(--p-border-h);
+    transform: translateY(-3px);
   }
 
-  /* -- Back panel: avatar area ---------------------------------- */
-  .fc-back {
+  .card-back {
     position: relative;
-    height: 120px;
+    height: 100px;
     flex-shrink: 0;
-    background: var(--fc-bg);
+    background: var(--p-bg);
     overflow: hidden;
   }
 
-  /* Hover glow behind avatar */
-  .fc-back::after {
+  .card-back::after {
     content: '';
     position: absolute;
     inset: 0;
     opacity: 0;
     transition: opacity 0.4s ease;
     background: radial-gradient(
-      ellipse 70% 80% at 50% 50%,
-      var(--fc-glow),
+      ellipse 70% 90% at 50% 50%,
+      var(--p-glow),
       transparent 70%
     );
     pointer-events: none;
   }
-  .fc:hover .fc-back::after {
+
+  .project-card:hover .card-back::after {
     opacity: 1;
   }
 
-  .fc-avatar-area {
+  .card-icon-area {
     position: absolute;
     inset: 0;
     display: flex;
@@ -225,51 +592,50 @@ const projectCards = PROJECTS.map((item) => ({
     justify-content: center;
   }
 
-  .fc-avatar-fb {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
+  .card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
     display: grid;
     place-items: center;
-    background: var(--fc-bg-hover);
-    border: 2.5px solid var(--fc-border);
-    font-size: 1.75rem;
+    background: var(--p-bg-hover);
+    border: 2px solid var(--p-border);
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--fc-text-3);
-    box-shadow: 0 6px 20px var(--fc-shadow);
-    transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s ease;
+    color: var(--p-text-3);
+    box-shadow: 0 4px 16px var(--p-shadow);
+    transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
-  .fc:hover .fc-avatar-fb {
+  .project-card:hover .card-icon {
     transform: scale(1.08);
-    border-color: var(--fc-border-h);
+    border-color: var(--p-border-h);
+    color: var(--accent);
   }
 
-
-  /* -- Front panel ---------------------------------------------- */
-  .fc-front {
+  .card-front {
     position: relative;
     z-index: 2;
     flex: 1;
     display: flex;
     flex-direction: column;
-    background: var(--fc-glass);
+    background: var(--p-glass);
     backdrop-filter: blur(16px) saturate(1.1);
     -webkit-backdrop-filter: blur(16px) saturate(1.1);
-    border-top: 1px solid var(--fc-sep);
+    border-top: 1px solid var(--p-sep);
   }
 
-  .fc-body {
-    padding: 0.75rem 1rem 0.5rem;
+  .card-body {
+    padding: 0.75rem 1rem 0.625rem;
     flex: 1;
   }
 
-  .fc-name {
+  .card-name {
     margin: 0;
     font-size: 0.9375rem;
     font-weight: 600;
     line-height: 1.35;
-    color: var(--fc-text-1);
+    color: var(--p-text-1);
     transition: color 0.2s ease;
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -277,15 +643,15 @@ const projectCards = PROJECTS.map((item) => ({
     overflow: hidden;
   }
 
-  .fc:hover .fc-name {
+  .project-card:hover .card-name {
     color: var(--foreground);
   }
 
-  .fc-desc {
-    margin: 0.2rem 0 0;
+  .card-desc {
+    margin: 0.25rem 0 0;
     font-size: 0.8125rem;
-    line-height: 1.4;
-    color: var(--fc-text-3);
+    line-height: 1.45;
+    color: var(--p-text-3);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -294,70 +660,70 @@ const projectCards = PROJECTS.map((item) => ({
     transition: color 0.2s ease;
   }
 
-  .fc:hover .fc-desc {
-    color: var(--fc-text-2);
+  .project-card:hover .card-desc {
+    color: var(--p-text-2);
   }
 
-  .fc-tag-row {
+  .card-tags {
     display: flex;
-    gap: 0.375rem;
-    margin-top: 0.6rem;
-    overflow: hidden;
     flex-wrap: wrap;
+    gap: 0.3125rem;
+    margin-top: 0.5rem;
   }
 
-  .fc-tag {
+  .card-tag {
     display: inline-block;
     padding: 0.125rem 0.5rem;
     border-radius: 9999px;
     background: color-mix(in srgb, var(--accent) 8%, transparent);
     border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
     font-size: 0.6875rem;
-    color: var(--fc-pill-fg);
+    color: var(--p-pill-fg);
     white-space: nowrap;
     transition: all 0.2s ease;
   }
 
-  .fc:hover .fc-tag {
+  .project-card:hover .card-tag {
     background: color-mix(in srgb, var(--accent) 12%, transparent);
     border-color: color-mix(in srgb, var(--accent) 20%, transparent);
   }
 
-  /* -- Footer with host pill ------------------------------------ */
-  .fc-foot {
+  .card-footer {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    height: 38px;
-    padding: 0 0.75rem;
-    border-top: 1px solid var(--fc-sep);
+    height: 40px;
+    padding: 0 0.875rem;
+    border-top: 1px solid var(--p-sep);
   }
 
-  .fc-star-pill {
+  .card-stars {
     display: inline-flex;
     align-items: center;
-    gap: 0.375rem;
-    color: var(--fc-text-4);
+    gap: 0.3125rem;
+    color: var(--p-text-4);
     font-size: 0.75rem;
     font-weight: 600;
+    margin-right: auto;
+    transition: color 0.2s ease;
   }
 
-  .fc:hover .fc-star-pill {
-    color: var(--fc-text-2);
+  .project-card:hover .card-stars {
+    color: var(--accent);
   }
 
-  .fc-host-pill {
+  .card-host {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
     height: 1.5rem;
     padding: 0 0.625rem;
     border-radius: 9999px;
-    border: 1px solid var(--fc-pill-bd);
-    background: var(--fc-pill-bg);
+    border: 1px solid var(--p-pill-bd);
+    background: var(--p-pill-bg);
     font-size: 0.6875rem;
     font-weight: 500;
-    color: var(--fc-pill-fg);
+    color: var(--p-pill-fg);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -365,70 +731,198 @@ const projectCards = PROJECTS.map((item) => ({
     transition: all 0.2s ease;
   }
 
-  .fc:hover .fc-host-pill {
+  .project-card:hover .card-host {
     border-color: color-mix(in srgb, var(--accent) 35%, transparent);
     background: color-mix(in srgb, var(--accent) 12%, var(--background));
   }
 
-  .fc-favicon {
+  .card-favicon {
     width: 14px;
     height: 14px;
     border-radius: 2px;
     flex-shrink: 0;
     object-fit: contain;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
     opacity: 0.8;
   }
 
-  .fc-arrow {
+  .card-arrow {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 6px;
-    color: var(--fc-text-4);
+    color: var(--p-text-4);
     background: transparent;
     transition: all 0.2s ease;
   }
 
-  .fc:hover .fc-arrow {
+  .project-card:hover .card-arrow {
     color: var(--accent);
     background: color-mix(in srgb, var(--accent) 10%, transparent);
     transform: translate(1px, -1px);
   }
 
-  /* ===== Mobile ===== */
+  /* ===== CTA Section ===== */
+  .cta-section {
+    margin-top: 3rem;
+  }
+
+  .cta-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px dashed var(--p-border);
+    background: color-mix(in srgb, var(--foreground) 2%, var(--background));
+  }
+
+  .cta-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--p-bg);
+    border: 1px solid var(--p-border);
+    color: var(--p-text-3);
+    flex-shrink: 0;
+  }
+
+  .cta-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cta-title {
+    margin: 0 0 0.125rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--p-text-1);
+  }
+
+  .cta-desc {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--p-text-3);
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 9999px;
+    background: var(--foreground);
+    color: var(--background);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .cta-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  /* ===== Mobile Responsive ===== */
+  @media (max-width: 700px) {
+    .featured-card {
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+
+    .featured-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+    }
+
+    .featured-icon svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .featured-name {
+      font-size: 1.125rem;
+    }
+
+    .featured-action {
+      width: 100%;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--p-sep);
+      margin-top: 0.5rem;
+    }
+  }
+
   @media (max-width: 559px) {
-    .fp-heading {
+    .hero-title {
+      font-size: 1.5rem;
+    }
+
+    .hero-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+    }
+
+    .hero-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .hero-desc {
+      font-size: 0.875rem;
+    }
+
+    .card-back {
+      height: 88px;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
       font-size: 1.25rem;
+      border-radius: 12px;
     }
-    .fc-back {
-      height: 100px;
+
+    .card-body {
+      padding: 0.625rem 0.875rem 0.5rem;
     }
-    .fc-avatar-fb {
-      width: 60px;
-      height: 60px;
-      font-size: 1.375rem;
+
+    .card-footer {
+      padding: 0 0.75rem;
+      height: 36px;
     }
-    .fc-body {
-      padding: 0.625rem 0.75rem 0.375rem;
+
+    .cta-card {
+      flex-direction: column;
+      text-align: center;
+      gap: 0.875rem;
+      padding: 1.25rem;
     }
-    .fc-foot {
-      padding: 0 0.625rem;
-      height: 34px;
+
+    .cta-button {
+      width: 100%;
+      justify-content: center;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .fc {
+    .project-card,
+    .featured-card {
       animation: none !important;
       transition: none !important;
     }
-    .fc-avatar-fb {
+    .card-icon,
+    .featured-icon {
       transition: none !important;
     }
   }
