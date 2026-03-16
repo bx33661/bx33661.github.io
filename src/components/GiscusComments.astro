@@ -41,7 +41,7 @@ const giscusConfig = {
 
 {
   shouldRenderComments && (
-    <section class="comments-panel mt-10">
+    <section id="comments" class="comments-panel mt-10 scroll-mt-24">
       <div class="mb-4 flex items-center gap-3" aria-hidden="true">
         <div class="h-px flex-1 bg-linear-to-r from-accent/20 via-border/30 to-transparent"></div>
         <span class="font-cartograph text-[10px] tracking-widest text-accent/35 uppercase select-none">
@@ -92,6 +92,55 @@ const giscusConfig = {
       (() => {
         const host = document.querySelector("[data-giscus-host]");
         if (!host) return;
+
+        const commentsSection = host.closest(".comments-panel");
+        if (!commentsSection) return;
+
+        const storageKey = `bx:giscus:return:${window.location.pathname}`;
+        let lastGiscusInteractionAt = 0;
+
+        const markGiscusInteraction = () => {
+          lastGiscusInteractionAt = Date.now();
+        };
+
+        const persistReturnPosition = () => {
+          if (!lastGiscusInteractionAt) return;
+          if (Date.now() - lastGiscusInteractionAt > 15000) return;
+
+          window.sessionStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              path: window.location.pathname,
+              scrollY: window.scrollY,
+              ts: Date.now(),
+            })
+          );
+        };
+
+        const restoreReturnPosition = () => {
+          const raw = window.sessionStorage.getItem(storageKey);
+          if (!raw) return;
+
+          window.sessionStorage.removeItem(storageKey);
+
+          try {
+            const saved = JSON.parse(raw);
+            const isSamePage = saved?.path === window.location.pathname;
+            const isFresh = Date.now() - Number(saved?.ts || 0) < 10 * 60 * 1000;
+            const savedY = Number(saved?.scrollY);
+
+            if (!isSamePage || !isFresh || Number.isNaN(savedY)) return;
+
+            window.requestAnimationFrame(() => {
+              window.scrollTo({
+                top: Math.max(savedY, commentsSection.offsetTop - 24),
+                behavior: "auto",
+              });
+            });
+          } catch {
+            // Ignore malformed session state.
+          }
+        };
 
         const getCurrentTheme = () => {
           const theme = window.__BX_THEME__?.get?.();
@@ -144,6 +193,9 @@ const giscusConfig = {
           if (frame.dataset.bxGiscusBound === "true") return true;
 
           frame.dataset.bxGiscusBound = "true";
+          frame.addEventListener("mouseenter", markGiscusInteraction);
+          frame.addEventListener("pointerdown", markGiscusInteraction);
+          frame.addEventListener("focus", markGiscusInteraction);
           frame.addEventListener("load", () => {
             frame.dataset.bxGiscusLoaded = "true";
             syncGiscusTheme();
@@ -162,6 +214,22 @@ const giscusConfig = {
         if (!window.__BX_GISCUS_THEME_BOUND__) {
           window.addEventListener(themeChangeEvent, syncGiscusTheme);
           window.__BX_GISCUS_THEME_BOUND__ = true;
+        }
+
+        if (!window.__BX_GISCUS_RETURN_BOUND__) {
+          window.addEventListener("pagehide", persistReturnPosition);
+          document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "hidden") {
+              persistReturnPosition();
+            }
+          });
+          window.__BX_GISCUS_RETURN_BOUND__ = true;
+        }
+
+        if (document.readyState === "complete") {
+          restoreReturnPosition();
+        } else {
+          window.addEventListener("load", restoreReturnPosition, { once: true });
         }
       })();
     </script>
