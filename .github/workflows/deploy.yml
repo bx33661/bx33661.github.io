@@ -25,6 +25,20 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      SITE: ${{ vars.SITE }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.PUBLIC_GOOGLE_ANALYTICS_ID }}
+      PUBLIC_ENABLE_ANALYTICS: ${{ vars.PUBLIC_ENABLE_ANALYTICS }}
+      PUBLIC_GTM_ID: ${{ vars.PUBLIC_GTM_ID }}
+      PUBLIC_POSTHOG_KEY: ${{ vars.PUBLIC_POSTHOG_KEY }}
+      PUBLIC_POSTHOG_HOST: ${{ vars.PUBLIC_POSTHOG_HOST }}
+      PUBLIC_ENABLE_COMMENTS: ${{ vars.PUBLIC_ENABLE_COMMENTS }}
+      PUBLIC_ENABLE_SEARCH: ${{ vars.PUBLIC_ENABLE_SEARCH }}
+      PUBLIC_GISCUS_REPO: ${{ vars.PUBLIC_GISCUS_REPO }}
+      PUBLIC_GISCUS_REPO_ID: ${{ vars.PUBLIC_GISCUS_REPO_ID }}
+      PUBLIC_GISCUS_CATEGORY: ${{ vars.PUBLIC_GISCUS_CATEGORY }}
+      PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.PUBLIC_GISCUS_CATEGORY_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
