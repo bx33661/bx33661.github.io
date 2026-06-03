@@ -4,7 +4,7 @@ export const SITE = {
   profile: "https://github.com/bx33661",
   desc: "我是BX，欢迎来到我的博客！这里分享网络安全、CTF、Web安全等技术研究。",
   title: "BX",
-  ogImage: "logonew.jpg",
+  ogImage: "touxiang.png",
   lightAndDarkMode: true,
   postPerIndex: 6,
   postPerPage: 8,

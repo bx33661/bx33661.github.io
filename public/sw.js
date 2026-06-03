@@ -14,6 +14,10 @@ const STATIC_ASSETS = [
   '/favicon.ico',
   '/logo.ico',
   '/logo.png',
+  '/touxiang.png',
+  '/apple-touch-icon.png',
+  '/web-app-manifest-192x192.png',
+  '/web-app-manifest-512x512.png',
 ]
 
 // 安装 Service Worker
