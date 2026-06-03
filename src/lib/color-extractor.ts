@@ -94,7 +94,7 @@ export async function extractColors(imageUrl: string): Promise<string[]> {
         }
 
         resolve(distinctColors)
-      } catch (e) {
+      } catch {
         resolve(["#1a1a2e", "#16213e", "#0f3460"])
       }
     }

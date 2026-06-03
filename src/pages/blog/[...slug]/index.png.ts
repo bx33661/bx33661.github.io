@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { resolveLegacyPostSlug } from "@/utils/legacySlug";
 import { generateOgImageForPost } from "@/utils/generateOgImages";
 import { SITE } from "@/config.ts";
+import postFilter from "@/utils/postFilter";
 
 export async function getStaticPaths() {
   if (!SITE.dynamicOgImage) {
@@ -10,7 +11,7 @@ export async function getStaticPaths() {
   }
 
   const posts = await getCollection("blog").then(p =>
-    p.filter(({ data }) => !data.draft && !data.ogImage)
+    p.filter(post => postFilter(post) && !post.data.ogImage)
   );
 
   return posts.map(post => ({

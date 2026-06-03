@@ -1,0 +1,25 @@
+---
+const target = "/galleries/";
+
+export function getStaticPaths() {
+  return [
+    { params: { path: "algorithm-practice" } },
+    { params: { path: "fruit-guardians" } },
+    { params: { path: "the-marx-in-my-mind" } },
+  ];
+}
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>{target}</a>...</p>
+  </body>
+</html>

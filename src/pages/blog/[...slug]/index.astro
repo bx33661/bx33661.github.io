@@ -1,25 +1,23 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
+import { type CollectionEntry } from "astro:content";
 import PostDetails from "@/layouts/PostDetails.astro";
-import getSortedPosts from "@/utils/getSortedPosts";
-import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { getAllPosts, getAllPostSlugs } from "@/lib/data-utils";
 
 type Props = {
   post: CollectionEntry<"blog">;
 };
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
-  return posts.map((post) => ({
-    params: { slug: resolveLegacyPostSlug(post) },
+  const postSlugs = await getAllPostSlugs();
+  return postSlugs.map(({ slug, post }) => ({
+    params: { slug },
     props: { post },
   }));
 }
 
 const { post } = Astro.props as Props;
 
-const posts = await getCollection("blog");
-const sortedPosts = getSortedPosts(posts);
+const sortedPosts = await getAllPosts();
 ---
 
 <PostDetails post={post} posts={sortedPosts} />

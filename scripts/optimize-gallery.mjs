@@ -2,7 +2,7 @@ import fsp from 'node:fs/promises'
 import path from 'node:path'
 import sharp from 'sharp'
 
-const SOURCE_DIR = path.resolve('assets/gallery-source')
+const SOURCE_DIR = path.resolve('src/data/galleries')
 const OUTPUT_DIR = path.resolve('public/gallery/optimized')
 const SUPPORTED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png'])
 const TARGET_WIDTHS = [640, 960, 1280, 1600]
@@ -34,13 +34,33 @@ const ensureOutputDirectory = async () => {
   await fsp.mkdir(OUTPUT_DIR, { recursive: true })
 }
 
-const optimizeOneFile = async (fileName) => {
-  const sourceFile = path.join(SOURCE_DIR, fileName)
-  const baseName = stripExtension(fileName)
+const listSourceImages = async (dir = SOURCE_DIR) => {
+  const entries = await fsp.readdir(dir, { withFileTypes: true })
+  const imageFiles = []
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name)
+
+    if (entry.isDirectory()) {
+      imageFiles.push(...(await listSourceImages(fullPath)))
+      continue
+    }
+
+    if (entry.isFile() && SUPPORTED_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) {
+      imageFiles.push(path.relative(SOURCE_DIR, fullPath))
+    }
+  }
+
+  return imageFiles.sort((a, b) => a.localeCompare(b))
+}
+
+const optimizeOneFile = async (sourceRelativePath) => {
+  const sourceFile = path.join(SOURCE_DIR, sourceRelativePath)
+  const baseName = stripExtension(path.basename(sourceRelativePath))
   const sourceMetadata = await sharp(sourceFile).metadata()
 
   if (!sourceMetadata.width) {
-    throw new Error(`Unable to read width: ${fileName}`)
+    throw new Error(`Unable to read width: ${sourceRelativePath}`)
   }
 
   const widths = getRenditionWidths(sourceMetadata.width)
@@ -90,7 +110,7 @@ const optimizeOneFile = async (fileName) => {
 
   const sourceStat = await fsp.stat(sourceFile)
   return {
-    fileName,
+    fileName: sourceRelativePath,
     sourceBytes: sourceStat.size,
     outputBytes,
     generated,
@@ -100,11 +120,7 @@ const optimizeOneFile = async (fileName) => {
 const run = async () => {
   await ensureOutputDirectory()
 
-  const entries = await fsp.readdir(SOURCE_DIR, { withFileTypes: true })
-  const imageFiles = entries
-    .filter((entry) => entry.isFile())
-    .map((entry) => entry.name)
-    .filter((name) => SUPPORTED_EXTENSIONS.has(path.extname(name).toLowerCase()))
+  const imageFiles = await listSourceImages()
 
   let sourceTotal = 0
   let outputTotal = 0

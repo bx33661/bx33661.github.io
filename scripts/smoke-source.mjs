@@ -52,7 +52,7 @@ requireFile(path.join(repoRoot, 'public/site.webmanifest'))
 requireFile(path.join(repoRoot, 'astro.config.ts'))
 
 requireDirectoryHasFiles(
-  path.join(repoRoot, 'assets/gallery-source'),
+  path.join(repoRoot, 'src/data/galleries/bx-journey'),
   (name) => /\.(jpe?g|png)$/i.test(name),
 )
 requireDirectoryHasFiles(

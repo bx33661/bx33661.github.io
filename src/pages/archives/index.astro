@@ -1,19 +1,18 @@
 ---
-import { getCollection } from "astro:content";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
 import { SITE } from "@/config.ts";
 import Layout from "@/layouts/Layout.astro";
 import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { getAllPosts } from "@/lib/data-utils";
 
-const posts = await getCollection("blog", ({ data }) => !data.draft);
+const posts = await getAllPosts();
 const sortedPosts = posts
   .slice()
   .sort((a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf());
 
 const monthFormatter = new Intl.DateTimeFormat("zh-CN", { month: "long" });
-const dayFormatter = new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit" });
 
 const postMap = new Map<number, Map<number, typeof sortedPosts>>();
 

@@ -16,11 +16,6 @@
       "purpose": "maskable"
     },
     {
-      "src": "/logo.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
       "src": "/apple-touch-icon.png",
       "sizes": "180x180",
       "type": "image/png",
@@ -60,7 +55,7 @@
       "name": "相册精选",
       "short_name": "相册",
       "description": "查看我的风景照片与生活记录",
-      "url": "/album/",
+      "url": "/galleries/",
       "icons": [
         {
           "src": "/web-app-manifest-192x192.png",

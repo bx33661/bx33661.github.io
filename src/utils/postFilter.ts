@@ -7,15 +7,27 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const postFilter = ({ data }: CollectionEntry<"blog">) => {
+export const hasPasswordProtection = ({ data }: CollectionEntry<"blog">) =>
+  typeof data.password === "string" && data.password.trim().length > 0;
+
+export const isPublishTimePassed = ({ data }: CollectionEntry<"blog">) => {
   const pubDatetime = dayjs(data.pubDatetime).tz(
     data.timezone || SITE.timezone
   );
 
-  const isPublishTimePassed =
+  return (
     dayjs().tz(SITE.timezone).valueOf() >
-    pubDatetime.valueOf() - SITE.scheduledPostMargin;
-  return !data.draft && (import.meta.env.DEV || isPublishTimePassed);
+    pubDatetime.valueOf() - SITE.scheduledPostMargin
+  );
+};
+
+const postFilter = (post: CollectionEntry<"blog">) => {
+  const { data } = post;
+  return (
+    !data.draft &&
+    !hasPasswordProtection(post) &&
+    (import.meta.env.DEV || isPublishTimePassed(post))
+  );
 };
 
 export default postFilter;

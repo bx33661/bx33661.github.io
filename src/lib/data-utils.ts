@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content'
 import { withCache } from './cache-utils'
+import postFilter from '@/utils/postFilter'
 
 function getBlogDate(post: CollectionEntry<'blog'>): Date {
   const maybe = post.data as { pubDatetime?: Date; date?: Date }
@@ -46,10 +47,10 @@ function ensureUniqueSlug<T extends { id: string }>(
 }
 
 export async function getAllPosts(): Promise<CollectionEntry<'blog'>[]> {
-  return withCache('all-posts', async () => {
+  return withCache('all-public-posts', async () => {
     const posts = await getCollection('blog')
     return posts
-      .filter((post) => !post.data.draft)
+      .filter(postFilter)
       .sort((a, b) => getBlogDate(b).valueOf() - getBlogDate(a).valueOf())
   })
 }

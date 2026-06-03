@@ -1,5 +1,4 @@
 ---
-import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
@@ -8,8 +7,9 @@ import IconHash from "@/assets/icons/IconHash.svg";
 import getUniqueTags from "@/utils/getUniqueTags";
 import getPostsByTag from "@/utils/getPostsByTag";
 import { SITE } from "@/config.ts";
+import { getAllPosts } from "@/lib/data-utils";
 
-const posts = await getCollection("blog");
+const posts = await getAllPosts();
 
 const tags = getUniqueTags(posts);
 const tagsWithCount = tags.map(({ tag, tagName }) => ({

@@ -38,3 +38,10 @@ public/pagefind
 
 # third-party bundles
 public/vendor/cyberchef/
+
+# keep npm as the single package manager in CI
+bun.lock
+pnpm-lock.yaml
+
+# editor-exported scratch images
+assets/c__Users_*_workspaceStorage_*_images_*.png

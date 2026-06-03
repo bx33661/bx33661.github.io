@@ -1,8 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 
-const CONTENT_ROOT = path.resolve('src/content')
-const COLLECTIONS = ['blog', 'notes']
+const PUBLIC_ROOT = path.resolve('public')
+const PROTECTED_ASSET_ROOT = path.resolve('assets/protected')
+const COLLECTION_PATHS = {
+  blog: path.resolve('src/content/blog'),
+  notes: path.resolve('src/data/notes'),
+}
+const COLLECTIONS = Object.keys(COLLECTION_PATHS)
 
 const REQUIRED_FIELDS = {
   blog: ['title', 'description', 'date'],
@@ -49,6 +54,36 @@ function getScalarValue(frontmatter, key) {
 
 function stripQuotes(value) {
   return value.replace(/^['"`](.*)['"`]$/, '$1').trim()
+}
+
+function publicPathToFilePath(value) {
+  const decodedPath = decodeURIComponent(value.split(/[?#]/, 1)[0])
+  return path.resolve(PUBLIC_ROOT, decodedPath.replace(/^\/+/, ''))
+}
+
+function resolveLocalImagePath(collection, slug, imagePath) {
+  if (/^https?:\/\//i.test(imagePath)) {
+    return null
+  }
+
+  if (imagePath.startsWith('/')) {
+    const publicPath = publicPathToFilePath(imagePath)
+    if (fs.existsSync(publicPath)) {
+      return publicPath
+    }
+
+    if (collection === 'blog' && imagePath.startsWith(`/blog/${slug}/`)) {
+      const fileName = path.basename(publicPath)
+      const protectedPath = path.resolve(PROTECTED_ASSET_ROOT, 'blog', slug, fileName)
+      if (fs.existsSync(protectedPath)) {
+        return protectedPath
+      }
+    }
+
+    return publicPath
+  }
+
+  return null
 }
 
 function hasNonEmptyArray(frontmatter, key) {
@@ -105,16 +140,21 @@ function createDeterministicSlug(source, prefix) {
 }
 
 function resolveCollection(filePath) {
-  const rel = path.relative(CONTENT_ROOT, filePath)
-  const [collection] = rel.split(path.sep)
-  return COLLECTIONS.includes(collection) ? collection : null
+  for (const [collection, collectionDir] of Object.entries(COLLECTION_PATHS)) {
+    const rel = path.relative(collectionDir, filePath)
+    if (rel && !rel.startsWith('..') && !path.isAbsolute(rel)) {
+      return collection
+    }
+  }
+
+  return null
 }
 
 function resolveSlugForFile(collection, filePath, frontmatter) {
   const slugRaw = stripQuotes(getScalarValue(frontmatter, 'slug'))
   if (slugRaw) return slugRaw
 
-  const relFromCollection = path.relative(path.join(CONTENT_ROOT, collection), filePath)
+  const relFromCollection = path.relative(COLLECTION_PATHS[collection], filePath)
   const prefix = collection === 'notes' ? 'note' : 'post'
   return createDeterministicSlug(relFromCollection, prefix)
 }
@@ -152,6 +192,7 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
   }
 
   if (collection === 'blog' || collection === 'notes') {
+    const slug = resolveSlugForFile(collection, filePath, frontmatter)
     const date = parseDateValue(frontmatter, 'date')
     if (!date) {
       errors.push(`${relPath}: invalid "date", expected a parseable date`)
@@ -170,6 +211,24 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
     }
     if (collection === 'blog' && !hasNonEmptyArray(frontmatter, 'authors')) {
       warnings.push(`${relPath}: missing/empty authors`)
+    }
+
+    const cover = stripQuotes(getScalarValue(frontmatter, 'cover'))
+    const resolvedCover = cover ? resolveLocalImagePath(collection, slug, cover) : null
+    if (resolvedCover && !fs.existsSync(resolvedCover)) {
+      warnings.push(`${relPath}: local cover not found -> ${cover}`)
+    }
+
+    const markdownImagePattern = /!\[[^\]]*]\(([^)]+)\)/g
+    for (const match of raw.matchAll(markdownImagePattern)) {
+      const imagePath = stripQuotes(match[1].trim())
+      if (!imagePath || /^https?:\/\//i.test(imagePath)) {
+        continue
+      }
+      const resolvedImage = resolveLocalImagePath(collection, slug, imagePath)
+      if (resolvedImage && !fs.existsSync(resolvedImage)) {
+        warnings.push(`${relPath}: local image not found -> ${imagePath}`)
+      }
     }
   }
 
@@ -218,17 +277,12 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
 }
 
 function main() {
-  if (!fs.existsSync(CONTENT_ROOT)) {
-    console.error(`[FAIL] Content root not found: ${CONTENT_ROOT}`)
-    process.exit(1)
-  }
-
   const errors = []
   const warnings = []
   const slugRegistry = new Map()
 
   for (const collection of COLLECTIONS) {
-    const collectionDir = path.join(CONTENT_ROOT, collection)
+    const collectionDir = COLLECTION_PATHS[collection]
     if (!fs.existsSync(collectionDir)) continue
     const files = walkMarkdownFiles(collectionDir)
     for (const filePath of files) {

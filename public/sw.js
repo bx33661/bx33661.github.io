@@ -7,13 +7,10 @@ const IMAGE_CACHE = 'bx-blog-images-v1.2.0'
 const STATIC_ASSETS = [
   '/offline/',
   '/site.webmanifest',
-  '/logo.svg',
   '/fonts/ClashDisplay-Semibold.woff2',
   '/fonts/GeistVF.woff2',
   '/fonts/GeistMonoVF.woff2',
   '/favicon.ico',
-  '/logo.ico',
-  '/logo.png',
   '/touxiang.png',
   '/apple-touch-icon.png',
   '/web-app-manifest-192x192.png',
@@ -124,6 +121,7 @@ async function handleRequest(request) {
     if (
       request.destination === 'document' ||
       url.pathname.startsWith('/blog/') ||
+      url.pathname.startsWith('/galleries/') ||
       url.pathname.startsWith('/album/') ||
       url.pathname.startsWith('/notes/') ||
       url.pathname.startsWith('/tags/')
