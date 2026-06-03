@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 
 const PUBLIC_ROOT = path.resolve('public')
-const PROTECTED_ASSET_ROOT = path.resolve('assets/protected')
 const COLLECTION_PATHS = {
   blog: path.resolve('src/content/blog'),
   notes: path.resolve('src/data/notes'),
@@ -61,7 +60,7 @@ function publicPathToFilePath(value) {
   return path.resolve(PUBLIC_ROOT, decodedPath.replace(/^\/+/, ''))
 }
 
-function resolveLocalImagePath(collection, slug, imagePath) {
+function resolveLocalImagePath(imagePath) {
   if (/^https?:\/\//i.test(imagePath)) {
     return null
   }
@@ -70,14 +69,6 @@ function resolveLocalImagePath(collection, slug, imagePath) {
     const publicPath = publicPathToFilePath(imagePath)
     if (fs.existsSync(publicPath)) {
       return publicPath
-    }
-
-    if (collection === 'blog' && imagePath.startsWith(`/blog/${slug}/`)) {
-      const fileName = path.basename(publicPath)
-      const protectedPath = path.resolve(PROTECTED_ASSET_ROOT, 'blog', slug, fileName)
-      if (fs.existsSync(protectedPath)) {
-        return protectedPath
-      }
     }
 
     return publicPath
@@ -192,7 +183,6 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
   }
 
   if (collection === 'blog' || collection === 'notes') {
-    const slug = resolveSlugForFile(collection, filePath, frontmatter)
     const date = parseDateValue(frontmatter, 'date')
     if (!date) {
       errors.push(`${relPath}: invalid "date", expected a parseable date`)
@@ -214,7 +204,7 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
     }
 
     const cover = stripQuotes(getScalarValue(frontmatter, 'cover'))
-    const resolvedCover = cover ? resolveLocalImagePath(collection, slug, cover) : null
+    const resolvedCover = cover ? resolveLocalImagePath(cover) : null
     if (resolvedCover && !fs.existsSync(resolvedCover)) {
       warnings.push(`${relPath}: local cover not found -> ${cover}`)
     }
@@ -225,7 +215,7 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
       if (!imagePath || /^https?:\/\//i.test(imagePath)) {
         continue
       }
-      const resolvedImage = resolveLocalImagePath(collection, slug, imagePath)
+      const resolvedImage = resolveLocalImagePath(imagePath)
       if (resolvedImage && !fs.existsSync(resolvedImage)) {
         warnings.push(`${relPath}: local image not found -> ${imagePath}`)
       }

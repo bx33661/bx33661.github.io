@@ -7,9 +7,6 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export const hasPasswordProtection = ({ data }: CollectionEntry<"blog">) =>
-  typeof data.password === "string" && data.password.trim().length > 0;
-
 export const isPublishTimePassed = ({ data }: CollectionEntry<"blog">) => {
   const pubDatetime = dayjs(data.pubDatetime).tz(
     data.timezone || SITE.timezone
@@ -23,11 +20,7 @@ export const isPublishTimePassed = ({ data }: CollectionEntry<"blog">) => {
 
 const postFilter = (post: CollectionEntry<"blog">) => {
   const { data } = post;
-  return (
-    !data.draft &&
-    !hasPasswordProtection(post) &&
-    (import.meta.env.DEV || isPublishTimePassed(post))
-  );
+  return !data.draft && (import.meta.env.DEV || isPublishTimePassed(post));
 };
 
 export default postFilter;

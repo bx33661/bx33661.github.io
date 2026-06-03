@@ -13,7 +13,6 @@ authors:
 draft: false
 slug: "ethereum-dex-sepolia"
 cover: "/blog/ethereum-dex-sepolia/image.png"
-password: "33661"
 ---
 <meta name="referrer" content="no-referrer">
 

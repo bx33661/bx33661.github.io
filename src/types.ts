@@ -26,7 +26,6 @@ export interface BlogPost {
   authors?: string[]
   draft?: boolean
   slug?: string
-  password?: string
 }
 
 // 项目相关类型
