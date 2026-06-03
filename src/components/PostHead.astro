@@ -1,6 +1,7 @@
 ---
 import { SITE } from '@/consts'
 import type { CollectionEntry } from 'astro:content'
+import { getTagPath } from '@/utils/tagPath'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -104,4 +105,4 @@ const ogLocale = SITE.locale.replace('-', '_')
 
 <link rel="prefetch" href="/blog/" />
 {post?.data.tags &&
-  post.data.tags.map((tag) => <link rel="prefetch" href={`/tags/${encodeURIComponent(tag)}/`} />)}
+  post.data.tags.map((tag) => <link rel="prefetch" href={getTagPath(tag)} />)}

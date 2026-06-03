@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Hash, Calendar, Clock, Eye } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn, readingTimeMinutes } from '@/lib/utils'
+import { getTagSlug } from '@/utils/tagPath'
 
 interface SearchCardEntry {
   id: string
@@ -39,7 +40,7 @@ const BlogCardJSX = memo(
     index = 0,
     priority = false,
     basePath = '/blog',
-    tagLinkBase = '/tags',
+    tagLinkBase = '/blog/tags',
   }: BlogCardProps) => {
     const [isHovered, setIsHovered] = useState(false)
 
@@ -147,7 +148,7 @@ const BlogCardJSX = memo(
                           tagLinkBase
                             ? (e) => {
                                 e.preventDefault()
-                                window.location.href = `${normalizeBasePath(tagLinkBase)}/${encodeURIComponent(tag)}`
+                                window.location.href = `${normalizeBasePath(tagLinkBase)}/${encodeURIComponent(getTagSlug(tag))}`
                               }
                             : undefined
                         }

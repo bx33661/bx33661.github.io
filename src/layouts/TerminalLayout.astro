@@ -30,7 +30,7 @@ const currentYear = new Date().getFullYear()
 
 const navItems = [
   { href: '/blog/', label: 'Blog' },
-  { href: '/tags/', label: 'Tags' },
+  { href: '/blog/tags/', label: 'Tags' },
   { href: '/notes/', label: 'Notes' },
   { href: '/galleries/', label: 'Album' },
   { href: '/friends/', label: 'Friends' },
@@ -39,6 +39,12 @@ const navItems = [
 
 const isActive = (href: string) => {
   if (href === '/') return currentPath === '/'
+  if (href === '/blog/') {
+    return (
+      (currentPath === href || currentPath.startsWith(href)) &&
+      !currentPath.startsWith('/blog/tags/')
+    )
+  }
   return currentPath === href || currentPath.startsWith(href)
 }
 ---

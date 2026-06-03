@@ -1,13 +1,8 @@
 ---
 import type { GetStaticPathsOptions } from "astro";
-import Main from "@/layouts/Main.astro";
-import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
-import Card from "@/components/Card.astro";
-import Pagination from "@/components/Pagination.astro";
-import getUniqueTags from "@/utils/getUniqueTags";
 import getPostsByTag from "@/utils/getPostsByTag";
+import getUniqueTags from "@/utils/getUniqueTags";
+import { getTagPath } from "@/utils/tagPath";
 import { SITE } from "@/config.ts";
 import { getAllPosts } from "@/lib/data-utils";
 
@@ -15,36 +10,31 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const posts = await getAllPosts();
   const tags = getUniqueTags(posts);
 
-  return tags.flatMap(({ tag, tagName }) => {
-    const tagPosts = getPostsByTag(posts, tag);
-
-    return paginate(tagPosts, {
+  return tags.flatMap(({ tag }) =>
+    paginate(getPostsByTag(posts, tag), {
       params: { tag },
-      props: { tagName },
+      props: { tag },
       pageSize: SITE.postPerPage,
-    });
-  });
+    })
+  );
 }
 
-const params = Astro.params;
-const { tag } = params;
-const { page, tagName } = Astro.props;
+const { tag } = Astro.props;
+const page = Astro.params.page;
+const tagPath = getTagPath(tag);
+const target = page ? `${tagPath}${page}/` : tagPath;
 ---
 
-<Layout title={`Tag: ${tagName} | ${SITE.title}`}>
-  <Header />
-  <Main
-    pageTitle={[`Tag:`, `${tagName}`]}
-    titleTransition={tag}
-    pageDesc={`All the articles with the tag "${tagName}".`}
-  >
-    <h1 slot="title" transition:name={tag}>{`Tag:${tag}`}</h1>
-    <ul>
-      {page.data.map(data => <Card {...data} />)}
-    </ul>
-  </Main>
-
-  <Pagination {page} />
-
-  <Footer noMarginTop={page.lastPage > 1} />
-</Layout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>{target}</a>...</p>
+  </body>
+</html>

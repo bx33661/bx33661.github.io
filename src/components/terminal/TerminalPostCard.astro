@@ -1,6 +1,7 @@
 ---
 import { formatDate, readingTime } from '@/lib/utils'
 import type { CollectionEntry } from 'astro:content'
+import { getTagPath } from '@/utils/tagPath'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -31,7 +32,7 @@ const estimatedReadTime = readingTime(post.body || '')
 
   {tags.length > 0 && (
     <span class="post-tags">
-      {tags.map((tag) => <a href={`/tags/${encodeURIComponent(tag)}/`}>{tag}</a>)}
+      {tags.map((tag) => <a href={getTagPath(tag)}>{tag}</a>)}
     </span>
   )}
 

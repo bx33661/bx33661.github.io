@@ -59,7 +59,7 @@ function clearSearchHistory(historyKey) {
   }
 }
 
-function Search({ searchList, initialPosts, basePath = '/blog', tagLinkBase = '/tags' }) {
+function Search({ searchList, initialPosts, basePath = '/blog', tagLinkBase = '/blog/tags' }) {
   const [query, setQuery] = useState('')
   const [filteredPosts, setFilteredPosts] = useState(initialPosts)
   const [isSearching, setIsSearching] = useState(false)

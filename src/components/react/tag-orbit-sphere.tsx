@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { getTagPath } from '@/utils/tagPath'
 
 interface TagOrbitItem {
   tag: string
@@ -105,7 +106,7 @@ export default function TagOrbitSphere({ tags, relations = [], maxNodes = 72 }: 
 
       return {
         ...item,
-        href: `/tags/${encodeURIComponent(item.tag)}/`,
+        href: getTagPath(item.tag),
         weight,
         x: Math.cos(theta) * r,
         y,
@@ -640,7 +641,7 @@ export default function TagOrbitSphere({ tags, relations = [], maxNodes = 72 }: 
 
       <div className="tag-orbit-quick-links">
         {quickTags.map((item) => (
-          <a key={item.tag} href={`/tags/${encodeURIComponent(item.tag)}/`}>
+          <a key={item.tag} href={getTagPath(item.tag)}>
             #{item.tag}
             <small>{item.count}</small>
           </a>

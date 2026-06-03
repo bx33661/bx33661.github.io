@@ -13,6 +13,7 @@ import GiscusComments from "@/components/GiscusComments.astro";
 import { getPath } from "@/utils/getPath";
 import { createDeterministicSlug, resolveLegacyPostSlug } from "@/utils/legacySlug";
 import { slugifyStr } from "@/utils/slugify";
+import { getTagPath } from "@/utils/tagPath";
 import { SITE } from "@/config.ts";
 
 type Props = {
@@ -107,7 +108,7 @@ const nextPost =
         {
           tags.map((tag: string) => (
             <a
-              href={`/tags/${slugifyStr(tag)}/`}
+              href={getTagPath(tag)}
               class="post-tag-badge inline-flex items-center gap-1 rounded-full border border-accent/20 bg-accent/5 px-2.5 py-0.5 font-cartograph text-xs text-accent transition-all duration-200 hover:border-accent/40 hover:bg-accent/10"
             >
               <span class="opacity-50">#</span>
@@ -226,7 +227,7 @@ const nextPost =
         {
           tags.map((tag: string) => (
             <a
-              href={`/tags/${slugifyStr(tag)}/`}
+              href={getTagPath(tag)}
               class="inline-flex items-center gap-1 rounded-full border border-border/25 bg-muted/10 px-2.5 py-1 font-cartograph text-xs transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 hover:text-accent"
             >
               <span class="opacity-40">#</span>

@@ -7,6 +7,7 @@ import {
   getAllPostSlugs,
   getAllTags,
 } from "@/lib/data-utils";
+import { TAG_PATH_PREFIX, getTagPath } from "@/utils/tagPath";
 
 function buildUrl(baseUrl: string, path: string): string {
   return `${baseUrl}${path}`;
@@ -73,7 +74,7 @@ export async function GET(context: APIContext) {
         priority: "0.6",
       },
       {
-        url: buildUrl(baseUrl, "/tags/"),
+        url: buildUrl(baseUrl, `${TAG_PATH_PREFIX}/`),
         lastmod: now,
         changefreq: "weekly",
         priority: "0.6",
@@ -131,7 +132,7 @@ export async function GET(context: APIContext) {
     );
 
     const tagUrls = Array.from(tags, ([tag]) => ({
-      url: buildUrl(baseUrl, `/tags/${encodePathSegment(tag)}/`),
+      url: buildUrl(baseUrl, getTagPath(tag)),
       lastmod: now,
       changefreq: "weekly",
       priority: "0.5",

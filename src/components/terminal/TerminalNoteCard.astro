@@ -1,6 +1,7 @@
 ---
 import { formatDate } from '@/lib/utils'
 import type { CollectionEntry } from 'astro:content'
+import { getTagPath } from '@/utils/tagPath'
 
 interface Props {
   note: CollectionEntry<'notes'>
@@ -23,7 +24,7 @@ const { note, slug } = Astro.props
 
   {note.data.tags && note.data.tags.length > 0 && (
     <span class="post-tags">
-      {note.data.tags.map((tag) => <a href={`/tags/${encodeURIComponent(tag)}/`}>{tag}</a>)}
+      {note.data.tags.map((tag) => <a href={getTagPath(tag)}>{tag}</a>)}
     </span>
   )}
 
