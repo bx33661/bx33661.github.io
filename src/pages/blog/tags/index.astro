@@ -13,13 +13,17 @@ import { getAllPosts } from "@/lib/data-utils";
 const posts = await getAllPosts();
 
 const tags = getUniqueTags(posts);
-const tagsWithCount = tags.map(({ tag, tagName }) => ({
-  tag,
-  tagName,
-  count: getPostsByTag(posts, tag).length,
-}));
+const tagsWithCount = tags
+  .map(({ tag, tagName }) => ({
+    tag,
+    tagName,
+    count: getPostsByTag(posts, tag).length,
+  }))
+  // 收敛标签云：只展示文章数 >= 2 的标签，过滤掉 117 个单篇薄标签
+  .filter(t => t.count >= 2)
+  .sort((a, b) => b.count - a.count || a.tagName.localeCompare(b.tagName));
 
-const maxCount = Math.max(...tagsWithCount.map(t => t.count));
+const maxCount = Math.max(...tagsWithCount.map(t => t.count), 1);
 ---
 
 <Layout title={`标签 | ${SITE.title}`}>

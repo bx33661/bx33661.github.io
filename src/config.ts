@@ -8,6 +8,8 @@ export const SITE = {
   lightAndDarkMode: true,
   postPerIndex: 6,
   postPerPage: 8,
+  // 文章数低于此值的标签页加 noindex、移出 sitemap，避免薄聚合页稀释索引质量
+  tagIndexMinPosts: 3,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
   showArchives: true,
   showGalleries: true,

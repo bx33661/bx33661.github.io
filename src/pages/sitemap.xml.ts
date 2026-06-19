@@ -131,12 +131,22 @@ export async function GET(context: APIContext) {
       }),
     );
 
-    const tagUrls = Array.from(tags, ([tag]) => ({
-      url: buildUrl(baseUrl, getTagPath(tag)),
+    // 按 slug 路径聚合（合并大小写变体），只收录文章数达标的可索引标签页；
+    // 薄标签页已 noindex，不应进 sitemap，否则给搜索引擎发矛盾信号。
+    const tagCountByPath = new Map<string, number>();
+    for (const [tag, count] of tags) {
+      const path = getTagPath(tag);
+      tagCountByPath.set(path, (tagCountByPath.get(path) ?? 0) + count);
+    }
+    const tagUrls = Array.from(tagCountByPath, ([path, count]) => ({
+      url: buildUrl(baseUrl, path),
       lastmod: now,
       changefreq: "weekly",
-      priority: "0.5",
-    }));
+      priority: count >= 5 ? "0.6" : "0.5",
+    })).filter(entry => {
+      const path = entry.url.replace(baseUrl, "");
+      return (tagCountByPath.get(path) ?? 0) >= SITE.tagIndexMinPosts;
+    });
 
     const allUrls = [
       ...staticPages,
