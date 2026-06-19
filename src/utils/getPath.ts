@@ -25,7 +25,7 @@ export function getPath(
   const basePath = includeBase ? "/blog" : "";
 
   if (customSlug) {
-    return [basePath, customSlug].join("/");
+    return `${[basePath, customSlug].join("/")}/`;
   }
 
   const blogId = id.split("/");
@@ -33,8 +33,8 @@ export function getPath(
 
   // If not inside the sub-dir, simply return the file path
   if (!pathSegments || pathSegments.length < 1) {
-    return [basePath, slug].join("/");
+    return `${[basePath, slug].join("/")}/`;
   }
 
-  return [basePath, ...pathSegments, slug].join("/");
+  return `${[basePath, ...pathSegments, slug].join("/")}/`;
 }
