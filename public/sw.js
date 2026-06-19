@@ -123,8 +123,7 @@ async function handleRequest(request) {
       url.pathname.startsWith('/blog/') ||
       url.pathname.startsWith('/galleries/') ||
       url.pathname.startsWith('/album/') ||
-      url.pathname.startsWith('/notes/') ||
-      url.pathname.startsWith('/tags/')
+      url.pathname.startsWith('/notes/')
     ) {
       return await networkFirst(request, DYNAMIC_CACHE, 0)
     }
