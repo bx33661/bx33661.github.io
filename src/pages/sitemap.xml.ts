@@ -100,18 +100,6 @@ export async function GET(context: APIContext) {
       priority: "0.7",
     }));
 
-    const blogPageSize = 10;
-    const blogPageCount = Math.ceil(allPosts.length / blogPageSize);
-    const blogPages = Array.from(
-      { length: Math.max(blogPageCount - 1, 0) },
-      (_, index) => ({
-        url: buildUrl(baseUrl, `/blog/${index + 2}/`),
-        lastmod: now,
-        changefreq: "weekly",
-        priority: "0.6",
-      }),
-    );
-
     const notes = noteSlugs.map(({ slug, note }) => ({
       url: buildUrl(baseUrl, `/notes/${encodePathSegment(slug)}/`),
       lastmod: note.data.date.toISOString(),
@@ -151,7 +139,6 @@ export async function GET(context: APIContext) {
     const allUrls = [
       ...staticPages,
       ...blogPosts,
-      ...blogPages,
       ...notes,
       ...notePages,
       ...tagUrls,

@@ -17,7 +17,7 @@ const { page } = Astro.props;
 const noteEntries = page.data as NoteWithSlug[];
 ---
 
-<Layout title={`Notes List | ${SITE.title}`} canonicalURL={Astro.url.toString()}>
+<Layout title={`Notes List | ${SITE.title}`} canonicalURL={Astro.url.toString()} noindex={page.currentPage > 1}>
   <Header />
   <Breadcrumb />
   <main id="main-content" class="app-layout pb-6">

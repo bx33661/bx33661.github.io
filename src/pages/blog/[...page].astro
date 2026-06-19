@@ -21,7 +21,7 @@ const totalPosts = page.total;
 const pageData = page.data as CollectionEntry<"blog">[];
 ---
 
-<Layout title={`Blog | ${SITE.title}`} canonicalURL={Astro.url.toString()}>
+<Layout title={`Blog | ${SITE.title}`} canonicalURL={Astro.url.toString()} noindex={page.currentPage > 1}>
   <Header />
   <Breadcrumb />
   <main id="main-content" class="app-layout pb-4">
