@@ -19,7 +19,7 @@
 
 ---
 
-## ✨ 站点一览
+## 站点一览
 
 | 模块 | 路径 | 说明 |
 |------|------|------|
@@ -29,9 +29,9 @@
 | 搜索 | [`/search/`](https://www.bx33661.com/search/) | Pagefind 全文检索 |
 | 友链 | [`/friends/`](https://www.bx33661.com/friends/) | 朋友与组织 |
 
-技术栈：**Astro 6** · React · Tailwind CSS 4 · Pagefind · GitHub Actions
+技术栈：Astro 6 · React · Tailwind CSS 4 · Pagefind · GitHub Actions
 
-## 🚀 快速开始
+## 快速开始
 
 ```bash
 # 环境：Node.js ≥ 22.12
@@ -44,7 +44,7 @@ npm run build          # dist/ + Pagefind
 npm run preview
 ```
 
-## 📜 常用脚本
+## 常用脚本
 
 | 命令 | 说明 |
 |------|------|
@@ -56,7 +56,7 @@ npm run preview
 | `npm run gallery:optimize` | 相册多尺寸优化 |
 | `npm run baidu:push` | 百度收录推送（需 token） |
 
-## ⚙️ 环境变量
+## 环境变量
 
 详见 [`.env.example`](./.env.example)。
 
@@ -66,11 +66,11 @@ npm run preview
 | `PUBLIC_ENABLE_ANALYTICS` | 分析开关 |
 | `PUBLIC_ENABLE_COMMENTS` | Giscus 评论开关 |
 | `PUBLIC_GISCUS_*` | Giscus 配置 |
-| `BAIDU_PUSH_TOKEN` | 百度推送 token（**勿提交**） |
+| `BAIDU_PUSH_TOKEN` | 百度推送 token（勿提交） |
 
-CI 从 GitHub **Variables / Secrets** 注入；百度 token 使用 `secrets.BAIDU_PUSH_TOKEN`。
+CI 从 GitHub Variables / Secrets 注入；百度 token 使用 `secrets.BAIDU_PUSH_TOKEN`。
 
-## 📁 结构
+## 结构
 
 ```text
 src/
@@ -86,31 +86,31 @@ scripts/           # smoke / SEO / 内容工具
 docs/              # 部署说明与仓库视觉素材
 ```
 
-## 🌐 部署
+## 部署
 
 推送到 `main` 后，Actions 会：
 
 1. `npm ci` → `check` → `build` → `smoke:dist`
-2. 部署 `dist/` 到 **GitHub Pages**
+2. 部署 `dist/` 到 GitHub Pages
 3. 可选：百度 URL 推送
 
 - 自定义域名：`public/CNAME` → `www.bx33661.com`
 - 边缘 301 / 安全头：见 [`docs/EDGE_SETUP.md`](./docs/EDGE_SETUP.md)
 
-## 🖼️ 仓库社交预览图
+## 仓库社交预览图
 
 生成了 `docs/github-social.png`（1280×640）。若 About 区缩略图未更新，在仓库：
 
 **Settings → General → Social preview → Edit → Upload image**  
 选择 `docs/github-social.png` 即可。
 
-## 📝 内容约定
+## 内容约定
 
 - 博客：`src/content/blog/`
 - 笔记：`src/content/notes/`
 - 图片优先放 `public/`；文件名建议 kebab-case，避免空格
 
-## 📬 联系
+## 联系
 
 - 站点：<https://www.bx33661.com>
 - 邮件：bx33661@gmail.com
