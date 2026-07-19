@@ -17,7 +17,7 @@ export const SITE = {
   /** Alias of desc for components that still read SITE.description. */
   description: SITE_DESCRIPTION,
   title: "BX",
-  ogImage: "touxiang.png",
+  ogImage: "touxiang-512.png",
   lightAndDarkMode: true,
   postPerIndex: 6,
   postPerPage: 8,

@@ -69,12 +69,12 @@ export async function GET(context: APIContext) {
       loc: `${baseUrl}/`,
       image: [
         {
-          loc: `${baseUrl}/touxiang.png`,
+          loc: `${baseUrl}/touxiang-512.png`,
           title: `${SITE.title} - Site Image`,
           caption: SITE.desc,
         },
         {
-          loc: `${baseUrl}/touxiang.png`,
+          loc: `${baseUrl}/touxiang-192.png`,
           title: `${SITE.title} Logo`,
           caption: `${SITE.title}网站标志`,
         },

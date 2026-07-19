@@ -1,7 +1,7 @@
-const CACHE_NAME = 'bx-blog-v1.2.0'
-const STATIC_CACHE = 'bx-blog-static-v1.2.0'
-const DYNAMIC_CACHE = 'bx-blog-dynamic-v1.2.0'
-const IMAGE_CACHE = 'bx-blog-images-v1.2.0'
+const CACHE_NAME = 'bx-blog-v1.3.0'
+const STATIC_CACHE = 'bx-blog-static-v1.3.0'
+const DYNAMIC_CACHE = 'bx-blog-dynamic-v1.3.0'
+const IMAGE_CACHE = 'bx-blog-images-v1.3.0'
 
 // 需要缓存的静态资源
 const STATIC_ASSETS = [
@@ -11,7 +11,8 @@ const STATIC_ASSETS = [
   '/fonts/GeistVF.woff2',
   '/fonts/GeistMonoVF.woff2',
   '/favicon.ico',
-  '/touxiang.png',
+  '/touxiang-64.png',
+  '/touxiang-192.png',
   '/apple-touch-icon.png',
   '/web-app-manifest-192x192.png',
   '/web-app-manifest-512x512.png',

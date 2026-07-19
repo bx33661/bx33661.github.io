@@ -66,9 +66,20 @@ const structuredData = pubDatetime
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/png" href="/touxiang.png" />
-    <link rel="shortcut icon" href="/touxiang.png" />
+    <link rel="icon" type="image/png" href="/touxiang-192.png" />
+    <link rel="shortcut icon" href="/touxiang-192.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {
+      Astro.url.pathname === "/" && (
+        <link
+          rel="preload"
+          as="image"
+          href="/touxiang-512.png"
+          type="image/png"
+          fetchpriority="high"
+        />
+      )
+    }
     <link rel="canonical" href={canonicalURL} />
     <meta name="robots" content={`${noindex ? "noindex" : "index"}, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1`} />
     <meta name="baidu-site-verification" content="codeva-INhoFW40MU" />
