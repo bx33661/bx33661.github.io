@@ -2,7 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import { SITE } from "@/consts";
+import { SITE } from "@/config.ts";
 import { GALLERY_IMAGES, buildGalleryImageSources } from "@/data/gallery";
 
 const currentUrl = Astro.url.toString();
@@ -81,7 +81,7 @@ const links = [
                     <div class="profile-header">
                         <div class="profile-avatar-wrap">
                             <img
-                                src="/touxiang.png"
+                                src="/touxiang-192.png"
                                 alt="BX Avatar"
                                 class="profile-avatar"
                                 loading="eager"

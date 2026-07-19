@@ -3,7 +3,6 @@ import type { APIContext } from "astro";
 import {
   getAllNotes,
   getAllNoteSlugs,
-  getAllPosts,
   getAllPostSlugs,
   getAllTags,
 } from "@/lib/data-utils";
@@ -21,7 +20,6 @@ export async function GET(context: APIContext) {
   try {
     const postSlugs = await getAllPostSlugs();
     const noteSlugs = await getAllNoteSlugs();
-    const allPosts = await getAllPosts();
     const allNotes = await getAllNotes();
     const tags = await getAllTags();
     const site = context.site ?? SITE.website;
@@ -78,12 +76,6 @@ export async function GET(context: APIContext) {
         lastmod: now,
         changefreq: "weekly",
         priority: "0.6",
-      },
-      {
-        url: buildUrl(baseUrl, "/tools/"),
-        lastmod: now,
-        changefreq: "weekly",
-        priority: "0.5",
       },
       {
         url: buildUrl(baseUrl, "/notes/list/"),

@@ -1,70 +1,18 @@
 ---
-import Layout from '@/layouts/Layout.astro'
-import Header from '@/components/Header.astro'
-import Footer from '@/components/Footer.astro'
-import { GALLERY_IMAGES, buildGalleryImageSources } from '@/data/gallery'
-
-const currentUrl = Astro.url.toString()
-const BENTO_GALLERY_SIZES = '(max-width: 767px) 96vw, (max-width: 1080px) 48vw, 25vw'
-
-const galleryImages = GALLERY_IMAGES.map((item) => ({
-  ...buildGalleryImageSources(item),
-}))
+// Legacy gallery route — redirect to canonical /galleries/
+const target = "/galleries/";
 ---
 
-<Layout title="Bento" description="记录生活与旅途中的一些片段。" canonicalURL={currentUrl}>
-  <Header />
-
-  <main id="main-content" class="app-layout pb-10">
-
-  <div class="page">
-    <h1>相册</h1>
-    <p>共 {galleryImages.length} 张照片。</p>
-  </div>
-
-  <div class="gallery-grid">
-    {galleryImages.map((image) => (
-      <figure class="gallery-item">
-        <a href={image.originalSrc} target="_blank" rel="noopener noreferrer" aria-label={`查看大图：${image.title}`}>
-          <picture>
-            <source type="image/avif" srcset={image.avifSrcSet} sizes={BENTO_GALLERY_SIZES} />
-            <source type="image/webp" srcset={image.webpSrcSet} sizes={BENTO_GALLERY_SIZES} />
-            <img
-              src={image.optimizedSrc}
-              srcset={image.jpgSrcSet}
-              sizes={BENTO_GALLERY_SIZES}
-              alt={image.alt}
-              loading="lazy"
-              decoding="async"
-              width={image.width}
-              height={image.height}
-            />
-          </picture>
-        </a>
-        <figcaption>{image.title} :: {image.date}</figcaption>
-      </figure>
-    ))}
-  </div>
-  </main>
-
-  <Footer />
-</Layout>
-
-<style>
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin-top: 20px;
-  }
-
-  .gallery-item {
-    margin: 0;
-  }
-
-  .gallery-item figcaption {
-    margin-top: 8px;
-    font-size: 0.9rem;
-    color: color-mix(in srgb, var(--foreground) 70%, transparent);
-  }
-</style>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>{target}</a>...</p>
+  </body>
+</html>

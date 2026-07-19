@@ -1,39 +1,50 @@
 ---
-import Layout from '@/layouts/Layout.astro'
-import PageHead from '@/components/PageHead.astro'
+import Layout from "@/layouts/Layout.astro";
 ---
 
-<Layout>
-  <PageHead
-    slot="head"
-    title="离线模式"
-    description="您当前处于离线状态，请检查网络连接。"
-    noindex={true}
-  />
-
-  <div class="page">
-    <h1>离线模式</h1>
-    <p>当前网络未连接。你仍可以访问已缓存内容。</p>
-    <p>
-      <a href="/" class="button">返回首页</a>
-      <span> </span>
-      <a href="/blog/" class="button">浏览博客</a>
+<Layout
+  title="离线模式"
+  description="您当前处于离线状态，请检查网络连接。"
+  noindex={true}
+>
+  <main id="main-content" class="page mx-auto max-w-2xl px-4 py-16 text-center">
+    <h1 class="mb-4 text-2xl font-semibold">离线模式</h1>
+    <p class="mb-6 text-muted-foreground">
+      当前网络未连接。你仍可以访问已缓存内容。
     </p>
-    <p><button onclick="location.reload()">重新连接</button></p>
-    <p id="network-status">检测网络状态中...</p>
-  </div>
+    <p class="mb-4 flex flex-wrap items-center justify-center gap-3">
+      <a href="/" class="button rounded-md border px-4 py-2 hover:bg-accent/10"
+        >返回首页</a
+      >
+      <a
+        href="/blog/"
+        class="button rounded-md border px-4 py-2 hover:bg-accent/10"
+        >浏览博客</a
+      >
+    </p>
+    <p class="mb-4">
+      <button
+        type="button"
+        class="rounded-md bg-accent px-4 py-2 text-background"
+        onclick="location.reload()">重新连接</button
+      >
+    </p>
+    <p id="network-status" class="text-sm text-muted-foreground">
+      检测网络状态中...
+    </p>
+  </main>
 
   <script>
     function updateNetworkStatus() {
-      const statusEl = document.getElementById('network-status')
-      if (!statusEl) return
+      const statusEl = document.getElementById("network-status");
+      if (!statusEl) return;
       statusEl.textContent = navigator.onLine
-        ? '网络已连接，可点击“重新连接”刷新页面'
-        : '网络未连接'
+        ? "网络已连接，可点击“重新连接”刷新页面"
+        : "网络未连接";
     }
 
-    window.addEventListener('online', updateNetworkStatus)
-    window.addEventListener('offline', updateNetworkStatus)
-    updateNetworkStatus()
+    window.addEventListener("online", updateNetworkStatus);
+    window.addEventListener("offline", updateNetworkStatus);
+    updateNetworkStatus();
   </script>
 </Layout>

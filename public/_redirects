@@ -2,5 +2,9 @@
 /projects/ /galleries/ 301
 /projects/* /galleries/ 301
 
+# 旧 bento 相册页迁到 galleries
+/bento /galleries/ 301
+/bento/ /galleries/ 301
+
 # 标签路由已统一到 /blog/tags 下，旧 /tags 链接 301 迁移
 /tags/* /blog/tags/:splat 301

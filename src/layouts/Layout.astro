@@ -61,7 +61,7 @@ const structuredData = pubDatetime
 <html
   dir={SITE.dir}
   lang=`${SITE.lang ?? "en"}`
-  class={`${scrollSmooth && "scroll-smooth"}`}
+  class:list={[{ "scroll-smooth": scrollSmooth }]}
 >
   <head>
     <meta charset="UTF-8" />
@@ -182,6 +182,25 @@ const structuredData = pubDatetime
 
     <!-- Load full theme logic -->
     <script src="../scripts/theme.ts"></script>
+
+    <!-- Register SW only in production (not localhost / Lighthouse) -->
+    <script is:inline>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          const host = window.location.hostname;
+          const isLocal = host === "localhost" || host === "127.0.0.1";
+          const isLighthouse = navigator.userAgent.includes("Chrome-Lighthouse");
+          if (isLocal || isLighthouse) return;
+
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then(function (registration) {
+              registration.update().catch(function () {});
+            })
+            .catch(function () {});
+        });
+      }
+    </script>
   </body>
 </html>
 

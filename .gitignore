@@ -1,6 +1,9 @@
 # Copilot related files
 .github/copilot-instructions.md
 
+# Local agent / IDE settings
+.claude/
+
 # build output
 dist/
 

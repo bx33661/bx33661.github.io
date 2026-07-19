@@ -34,37 +34,37 @@ export const SHARE_LINKS: Social[] = [
   {
     name: "WhatsApp",
     href: "https://wa.me/?text=",
-    linkTitle: `Envia este post por WhatsApp`,
+    linkTitle: `通过 WhatsApp 分享这篇文章`,
     icon: IconWhatsapp,
   },
   {
     name: "Facebook",
     href: "https://www.facebook.com/sharer.php?u=",
-    linkTitle: `Comparte este post en Facebook`,
+    linkTitle: `分享到 Facebook`,
     icon: IconFacebook,
   },
   {
     name: "X",
     href: "https://x.com/intent/post?url=",
-    linkTitle: `Comparte este post en X`,
+    linkTitle: `分享到 X`,
     icon: IconBrandX,
   },
   {
     name: "Telegram",
     href: "https://t.me/share/url?url=",
-    linkTitle: `Comparte este post por Telegram`,
+    linkTitle: `通过 Telegram 分享这篇文章`,
     icon: IconTelegram,
   },
   {
     name: "Pinterest",
     href: "https://pinterest.com/pin/create/button/?url=",
-    linkTitle: `Comparte este post en Pinterest`,
+    linkTitle: `分享到 Pinterest`,
     icon: IconPinterest,
   },
   {
     name: "Mail",
     href: "mailto:?subject=See%20this%20post&body=",
-    linkTitle: `Envia este post por correo`,
+    linkTitle: `通过邮件分享这篇文章`,
     icon: IconMail,
   },
 ] as const;
