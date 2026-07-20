@@ -10,10 +10,18 @@ interface ArtworkCardProps {
   currentIndex: number
 }
 
-export function ArtworkCard({ artwork, isActive, dragOffset, index, currentIndex }: ArtworkCardProps) {
+export function ArtworkCard({
+  artwork,
+  isActive,
+  dragOffset,
+  index,
+  currentIndex,
+}: ArtworkCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const distance = index - currentIndex
   const parallaxOffset = dragOffset * (0.1 * (distance + 1))
+  // Only the active card and immediate neighbors need to decode pixels.
+  const shouldLoad = Math.abs(distance) <= 1
 
   return (
     <motion.div
@@ -34,7 +42,10 @@ export function ArtworkCard({ artwork, isActive, dragOffset, index, currentIndex
         className="artwork-card"
         animate={{
           y: isHovered && isActive ? -10 : 0,
-          boxShadow: isHovered && isActive ? "0 40px 80px -20px rgba(0,0,0,0.8)" : "0 20px 40px -10px rgba(0,0,0,0.5)",
+          boxShadow:
+            isHovered && isActive
+              ? "0 40px 80px -20px rgba(0,0,0,0.8)"
+              : "0 20px 40px -10px rgba(0,0,0,0.5)",
         }}
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
@@ -43,17 +54,30 @@ export function ArtworkCard({ artwork, isActive, dragOffset, index, currentIndex
 
         {/* Image container */}
         <div className="artwork-card-image-container">
-          <motion.img
-            src={artwork.image}
-            alt={artwork.title}
-            className="artwork-card-image"
-            animate={{
-              scale: isHovered && isActive ? 1.05 : 1,
-            }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            crossOrigin="anonymous"
-            draggable={false}
-          />
+          {shouldLoad ? (
+            <motion.img
+              src={artwork.image}
+              srcSet={artwork.srcSet}
+              sizes={artwork.sizes || "500px"}
+              alt={artwork.title}
+              width={artwork.width}
+              height={artwork.height}
+              className="artwork-card-image"
+              loading={isActive ? "eager" : "lazy"}
+              decoding="async"
+              fetchPriority={isActive ? "high" : "low"}
+              animate={{
+                scale: isHovered && isActive ? 1.05 : 1,
+              }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              draggable={false}
+            />
+          ) : (
+            <div
+              className="artwork-card-image artwork-card-image--placeholder"
+              aria-hidden="true"
+            />
+          )}
 
           {/* Gradient overlay for text - only at bottom */}
           <motion.div

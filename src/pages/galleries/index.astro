@@ -7,18 +7,42 @@ import { GALLERY_IMAGES, buildGalleryImageSources } from "@/data/gallery";
 import Layout from "@/layouts/Layout.astro";
 import "@/styles/art-gallery-slider.css";
 
-// Build image sources with optimized paths
+// Card display is ~350–500px — never feed the slider full w1600 assets.
+const CARD_MAX_WIDTH = 960
+const THUMB_WIDTH = 640
+
+const pickWidth = (widths: number[], target: number) =>
+  widths.find((w) => w >= target) ?? widths[widths.length - 1]
+
+const buildCardSrcSet = (baseName: string, widths: number[], format: "webp" | "jpg") =>
+  widths
+    .filter((w) => w <= CARD_MAX_WIDTH)
+    .map((w) => `/gallery/optimized/${baseName}-w${w}.${format} ${w}w`)
+    .join(", ")
+
 const galleryImages = GALLERY_IMAGES.map((item) => {
-  const sources = buildGalleryImageSources(item);
+  const sources = buildGalleryImageSources(item)
+  const baseName = item.file.replace(/\.[^.]+$/, "")
+  const widths = sources.renditionWidths
+  const displayWidth = pickWidth(widths, CARD_MAX_WIDTH)
+  const thumbWidth = pickWidth(widths, THUMB_WIDTH)
+  const cardSrcSet =
+    buildCardSrcSet(baseName, widths, "webp") ||
+    buildCardSrcSet(baseName, widths, "jpg")
+
   return {
-    src: sources.optimizedSrc,
+    src: `/gallery/optimized/${baseName}-w${displayWidth}.jpg`,
+    srcSet: cardSrcSet,
+    sizes: "(max-width: 768px) 350px, 500px",
+    thumb: `/gallery/optimized/${baseName}-w${thumbWidth}.jpg`,
     alt: item.alt,
     title: item.title,
     date: item.date,
     width: item.width,
     height: item.height,
-  };
-});
+  }
+})
+
 
 const toGallerySlug = (id: string) =>
   id
@@ -45,7 +69,7 @@ const galleryLinks = galleries
     <div class="gallery-fullscreen-container">
       {
         galleryImages.length > 0 ? (
-          <ArtGallerySlider images={galleryImages} client:load />
+          <ArtGallerySlider images={galleryImages} client:idle />
         ) : (
           <div class="gallery-empty-state">
             <svg

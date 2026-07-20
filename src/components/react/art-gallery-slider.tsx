@@ -5,11 +5,17 @@ import { NavigationDots } from "./navigation-dots"
 import { useSliderNavigation } from "@/hooks/use-slider-navigation"
 import { useSliderDrag } from "@/hooks/use-slider-drag"
 import { useSliderWheel } from "@/hooks/use-slider-wheel"
-import { useColorExtraction, useCurrentColors } from "@/hooks/use-color-extraction"
+import {
+  useColorExtraction,
+  useCurrentColors,
+} from "@/hooks/use-color-extraction"
 import type { Artwork } from "@/types/artwork"
 
 interface GalleryImage {
   src: string
+  srcSet?: string
+  sizes?: string
+  thumb?: string
   alt: string
   title: string
   date: string
@@ -25,15 +31,21 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
   const sliderRef = useRef<HTMLDivElement>(null)
 
   // Transform gallery images to artwork format
-  const artworks: Artwork[] = useMemo(() => 
-    images.map((img, index) => ({
-      id: index + 1,
-      title: img.title,
-      artist: new Date(img.date).getFullYear().toString(),
-      year: new Date(img.date).getFullYear(),
-      image: img.src,
-    })),
-    [images]
+  const artworks: Artwork[] = useMemo(
+    () =>
+      images.map((img, index) => ({
+        id: index + 1,
+        title: img.title,
+        artist: new Date(img.date).getFullYear().toString(),
+        year: new Date(img.date).getFullYear(),
+        image: img.src,
+        srcSet: img.srcSet,
+        sizes: img.sizes,
+        thumb: img.thumb,
+        width: img.width,
+        height: img.height,
+      })),
+    [images],
   )
 
   const { currentIndex, goToNext, goToPrev, goToSlide } = useSliderNavigation({
@@ -41,10 +53,11 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
     enableKeyboard: true,
   })
 
-  const { isDragging, dragX, handleDragStart, handleDragMove, handleDragEnd } = useSliderDrag({
-    onSwipeLeft: goToNext,
-    onSwipeRight: goToPrev,
-  })
+  const { isDragging, dragX, handleDragStart, handleDragMove, handleDragEnd } =
+    useSliderDrag({
+      onSwipeLeft: goToNext,
+      onSwipeRight: goToPrev,
+    })
 
   useSliderWheel({
     sliderRef,
@@ -52,7 +65,8 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
     onScrollRight: goToPrev,
   })
 
-  const colors = useColorExtraction(artworks)
+  // Only sample palette for active ±1 — not every image on mount.
+  const colors = useColorExtraction(artworks, currentIndex)
   const currentColors = useCurrentColors(colors, artworks[currentIndex]?.id)
 
   return (
@@ -61,10 +75,10 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
-          initial={{ opacity: 0, scale: 1.1 }}
+          initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
           className="gallery-background"
           style={{
             background: `
@@ -77,7 +91,7 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
         />
       </AnimatePresence>
 
-      {/* Blur overlay */}
+      {/* Soft veil — CSS blur kept light; heavy 120px backdrop was a GPU killer */}
       <div className="gallery-blur-overlay" />
 
       {/* Counter - moved to top right */}
@@ -87,15 +101,19 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
         transition={{ delay: 0.3 }}
         className="gallery-counter"
       >
-        <span className="gallery-counter-current">{String(currentIndex + 1).padStart(2, "0")}</span>
+        <span className="gallery-counter-current">
+          {String(currentIndex + 1).padStart(2, "0")}
+        </span>
         <span className="gallery-counter-separator">/</span>
-        <span className="gallery-counter-total">{String(artworks.length).padStart(2, "0")}</span>
+        <span className="gallery-counter-total">
+          {String(artworks.length).padStart(2, "0")}
+        </span>
       </motion.div>
 
       {/* Slider */}
       <div
         ref={sliderRef}
-        className={`gallery-slider ${isDragging ? 'is-dragging' : ''}`}
+        className={`gallery-slider ${isDragging ? "is-dragging" : ""}`}
         onMouseDown={handleDragStart}
         onMouseMove={handleDragMove}
         onMouseUp={handleDragEnd}
@@ -107,9 +125,16 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
         <motion.div
           className="gallery-slider-track"
           animate={{
-            x: typeof window !== 'undefined' ? -currentIndex * (window.innerWidth > 768 ? 564 : 432) + dragX : 0,
+            x:
+              typeof window !== "undefined"
+                ? -currentIndex * (window.innerWidth > 768 ? 564 : 432) + dragX
+                : 0,
           }}
-          transition={isDragging ? { duration: 0 } : { duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+          transition={
+            isDragging
+              ? { duration: 0 }
+              : { duration: 0.6, ease: [0.32, 0.72, 0, 1] }
+          }
         >
           {artworks.map((artwork, index) => (
             <ArtworkCard
@@ -125,7 +150,12 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
       </div>
 
       {/* Navigation dots */}
-      <NavigationDots total={artworks.length} current={currentIndex} onSelect={goToSlide} colors={currentColors} />
+      <NavigationDots
+        total={artworks.length}
+        current={currentIndex}
+        onSelect={goToSlide}
+        colors={currentColors}
+      />
 
       {/* Keyboard hint */}
       <motion.div

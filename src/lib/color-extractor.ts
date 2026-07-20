@@ -1,19 +1,37 @@
+const colorCache = new Map<string, string[]>()
+const DEFAULT_PALETTE = ["#1a1a2e", "#16213e", "#0f3460"]
+
+/**
+ * Extract a 3-color palette from an image URL.
+ * Always sample from a tiny decode target — callers should pass a small thumb
+ * (e.g. w640). Results are memoized per URL for the page lifetime.
+ */
 export async function extractColors(imageUrl: string): Promise<string[]> {
+  const cached = colorCache.get(imageUrl)
+  if (cached) return cached
+
   return new Promise((resolve) => {
     const img = new Image()
+    img.decoding = "async"
+    // Same-origin gallery assets; avoid CORS taint without needing credentials.
     img.crossOrigin = "anonymous"
+
+    const finish = (colors: string[]) => {
+      colorCache.set(imageUrl, colors)
+      resolve(colors)
+    }
 
     img.onload = () => {
       const canvas = document.createElement("canvas")
-      const ctx = canvas.getContext("2d")
+      const ctx = canvas.getContext("2d", { willReadFrequently: true })
 
       if (!ctx) {
-        resolve(["#1a1a2e", "#16213e", "#0f3460"])
+        finish([...DEFAULT_PALETTE])
         return
       }
 
       // Sample at a smaller size for performance
-      const sampleSize = 50
+      const sampleSize = 32
       canvas.width = sampleSize
       canvas.height = sampleSize
 
@@ -24,7 +42,10 @@ export async function extractColors(imageUrl: string): Promise<string[]> {
         const pixels = imageData.data
 
         // Collect colors with their frequency
-        const colorMap = new Map<string, { count: number; r: number; g: number; b: number }>()
+        const colorMap = new Map<
+          string,
+          { count: number; r: number; g: number; b: number }
+        >()
 
         for (let i = 0; i < pixels.length; i += 4) {
           const r = Math.min(255, Math.round(pixels[i] / 32) * 32)
@@ -73,7 +94,11 @@ export async function extractColors(imageUrl: string): Promise<string[]> {
         if (distinctColors.length === 0 && sortedColors.length > 0) {
           const topColor = sortedColors[0]
           distinctColors.push(
-            rgbToHex(Math.max(0, topColor.r - 60), Math.max(0, topColor.g - 60), Math.max(0, topColor.b - 60)),
+            rgbToHex(
+              Math.max(0, topColor.r - 60),
+              Math.max(0, topColor.g - 60),
+              Math.max(0, topColor.b - 60),
+            ),
           )
         }
 
@@ -93,14 +118,14 @@ export async function extractColors(imageUrl: string): Promise<string[]> {
           }
         }
 
-        resolve(distinctColors)
+        finish(distinctColors)
       } catch {
-        resolve(["#1a1a2e", "#16213e", "#0f3460"])
+        finish([...DEFAULT_PALETTE])
       }
     }
 
     img.onerror = () => {
-      resolve(["#1a1a2e", "#16213e", "#0f3460"])
+      finish([...DEFAULT_PALETTE])
     }
 
     img.src = imageUrl

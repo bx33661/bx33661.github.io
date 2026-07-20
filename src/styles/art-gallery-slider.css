@@ -18,9 +18,10 @@
 .gallery-blur-overlay {
   position: absolute;
   inset: 0;
-  backdrop-filter: blur(120px);
-  -webkit-backdrop-filter: blur(120px);
+  /* Soft veil only — 120px full-viewport backdrop-filter was a major GPU cost. */
+  background: rgba(0, 0, 0, 0.18);
   z-index: 1;
+  pointer-events: none;
 }
 
 /* Counter - positioned top right under navigation */
@@ -130,6 +131,12 @@
   object-fit: cover;
   user-select: none;
   -webkit-user-drag: none;
+  background: #141414;
+}
+
+.artwork-card-image--placeholder {
+  display: block;
+  background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
 }
 
 .artwork-card-gradient {
