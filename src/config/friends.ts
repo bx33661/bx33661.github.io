@@ -36,7 +36,7 @@ export const ORGANIZATION_LINKS: OrganizationLink[] = [
 export const FRIEND_LINKS: FriendLink[] = [
   {
     name: "Bx",
-    url: "http://www.bx33661.com",
+    url: "https://www.bx33661.com",
     description: "见证星辰大海",
     avatar: "https://q1.qlogo.cn/g?b=qq&nk=1811753380&s=640",
   },
@@ -73,13 +73,6 @@ export const FRIEND_LINKS: FriendLink[] = [
     avatar: "https://q1.qlogo.cn/g?b=qq&nk=1193087005&s=640",
   },
   {
-    name: "Natro92",
-    url: "https://natro92.fun",
-    description: "Carpe diem.",
-    avatar:
-      "https://berial123.oss-cn-beijing.aliyuncs.com/img/860dd94f08a30cf4a8b7fd9685aed42.webp",
-  },
-  {
     name: "m1n9",
     url: "https://mi1n9.github.io/",
     description: "苍山负雪，明烛天南",
@@ -107,5 +100,73 @@ export const FRIEND_LINKS: FriendLink[] = [
     avatar:
       "https://q.qlogo.cn/headimg_dl?dst_uin=3515902077&spec=640&img_type=jpg",
     tags: ["安卓"],
+  },
+];
+
+/**
+ * HnuSec members with a personal site.
+ * Sourced from https://www.hnusec.com/members (checked 2026-07-20).
+ * Skipped: no personal blog, dead host, GitHub profile-only, Natro92,
+ * CrazyCat / water / Shin (manual).
+ */
+export const HNUSEC_MEMBER_LINKS: FriendLink[] = [
+  {
+    name: "chrizsty",
+    url: "https://blog.chrizsty.cn/",
+    description: "Hello",
+    avatar:
+      "https://blog.chrizsty.cn/wp-content/uploads/2025/06/b_7d13bfcfe9ef52a8c15380752054edf5.jpg",
+    tags: ["2024", "Web"],
+  },
+  {
+    name: "Q1uJu",
+    url: "https://q1uju.cc/",
+    description: "原穹舟鸣",
+    avatar: "https://www.q1uju.cc/assets/fac4.jpg",
+    tags: ["2024", "Crypto"],
+  },
+  {
+    name: "FloatingRaft",
+    url: "https://floatingraft.github.io/",
+    description: "似舟漂不定，如梗泛何从",
+    avatar:
+      "https://q.qlogo.cn/headimg_dl?dst_uin=2184582457&spec=640&img_type=jpg",
+    tags: ["2024", "Misc"],
+  },
+  {
+    name: "Monday",
+    url: "https://www.mondaying.cn/",
+    description: "周1不放假~",
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=2792663789&s=640",
+    tags: ["2023", "Crypto"],
+  },
+  {
+    name: "AndreiLavig",
+    url: "https://andreilavig.github.io/",
+    description: "A blog about programming, technology, and life.",
+    avatar: "https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png",
+    tags: ["2023", "Pwn"],
+  },
+  {
+    name: "CFIT",
+    url: "https://cfitsec.cn/",
+    description: "Vivala CFIT!",
+    avatar:
+      "https://cfit.oss-cn-beijing.aliyuncs.com/uploads/2024/09/02/X1w92Vrz_cfitpinkicon.png",
+    tags: ["2023", "Crypto"],
+  },
+  {
+    name: "Tree",
+    url: "https://treesec.cn/",
+    description: "满船清梦压星河",
+    avatar: "https://s2.loli.net/2024/05/19/KLAiaqNCOJSZBRc.jpg",
+    tags: ["2022", "Reverse"],
+  },
+  {
+    name: "walt",
+    url: "https://blog.waltchans.com/",
+    description: "粥p",
+    avatar: "https://q1.qlogo.cn/g?b=qq&nk=1420970368&s=640",
+    tags: ["2022", "Pwn"],
   },
 ];
