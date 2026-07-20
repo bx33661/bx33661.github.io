@@ -879,87 +879,175 @@ html[data-chrome="crt"] .site-backdrop {
 .crt-prose {
   border: 1px solid var(--crt-border-col);
   background: var(--crt-paper);
-  padding: 1.45rem 1.35rem 2rem;
+  padding: 1.55rem 1.45rem 2.1rem;
   color: var(--crt-brown);
   font-size: 0.95rem;
   line-height: 1.75;
 }
 
-.crt-prose :global(h2) {
+/* Markdown headings — plain CSS (not Astro :global) */
+.crt-prose :is(h1, h2, h3, h4) {
   font-family: var(--font-crt-display);
-  font-size: 1.8rem;
+  font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--crt-brown-bright);
   text-shadow: var(--crt-glow-sm);
-  margin: 1.7rem 0 0.65rem;
-  border-bottom: 1px solid var(--crt-border-col);
-  padding-bottom: 0.35rem;
-  font-weight: 400;
-  line-height: 1;
+  line-height: 1.05;
 }
 
-.crt-prose :global(h2:first-child) {
+.crt-prose h1 {
+  font-size: 2.1rem;
+  margin: 0 0 0.85rem;
+}
+
+.crt-prose h2 {
+  font-size: 1.75rem;
+  margin: 1.85rem 0 0.7rem;
+  border-bottom: 1px solid var(--crt-border-col);
+  padding-bottom: 0.4rem;
+}
+
+.crt-prose h2:first-child {
   margin-top: 0;
 }
 
-.crt-prose :global(p) {
-  margin: 0.7rem 0;
+.crt-prose h3 {
+  font-size: 1.35rem;
+  margin: 1.35rem 0 0.5rem;
+  letter-spacing: 0.08em;
 }
 
-.crt-prose :global(p),
-.crt-prose :global(li) {
+.crt-prose h4 {
+  font-size: 1.1rem;
+  margin: 1.1rem 0 0.4rem;
+  color: var(--crt-brown);
+  text-shadow: none;
+}
+
+.crt-prose p {
+  margin: 0.7rem 0;
   color: var(--crt-brown);
 }
 
-.crt-prose :global(a) {
+/* Tailwind preflight kills list markers — restore explicitly */
+.crt-prose ul {
+  list-style-type: disc;
+  list-style-position: outside;
+  margin: 0.55rem 0 0.9rem;
+  padding-left: 1.4rem;
+}
+
+.crt-prose ol {
+  list-style-type: decimal;
+  list-style-position: outside;
+  margin: 0.55rem 0 0.9rem;
+  padding-left: 1.4rem;
+}
+
+.crt-prose li {
+  margin: 0.35rem 0;
+  padding-left: 0.2rem;
+  color: var(--crt-brown);
+  line-height: 1.65;
+}
+
+.crt-prose li::marker {
+  color: var(--crt-amber);
+  font-weight: 600;
+}
+
+.crt-prose ul ul,
+.crt-prose ol ol,
+.crt-prose ul ol,
+.crt-prose ol ul {
+  margin: 0.25rem 0 0.35rem;
+}
+
+.crt-prose a {
   color: var(--crt-brown-bright);
   text-decoration: underline;
+  text-decoration-style: dashed;
   text-underline-offset: 3px;
 }
 
-.crt-prose :global(a:hover) {
+.crt-prose a:hover {
   text-shadow: var(--crt-glow-sm);
+  text-decoration-style: solid;
 }
 
-.crt-prose :global(code) {
+.crt-prose code {
   font-family: var(--font-crt-mono);
   font-size: 0.88em;
   border: 1px solid var(--crt-border-col);
-  padding: 0.05rem 0.3rem;
+  padding: 0.08rem 0.35rem;
   background: color-mix(in srgb, var(--crt-brown) 6%, var(--crt-bg));
+  color: var(--crt-brown-bright);
+  border-radius: 0;
 }
 
-.crt-prose :global(pre) {
+.crt-prose pre {
   border: 1px solid var(--crt-border-col);
   background: #1a120c !important;
-  padding: 1rem;
+  padding: 1rem 1.05rem;
   overflow-x: auto;
   margin: 1rem 0;
+  border-radius: 0;
 }
 
-.crt-prose :global(pre code) {
+.crt-prose pre code {
   border: 0;
   background: transparent;
   padding: 0;
   color: #e8c48a;
+  font-size: 0.86em;
+  line-height: 1.55;
 }
 
-.crt-prose :global(ul),
-.crt-prose :global(ol) {
-  padding-left: 1.2rem;
-  margin: 0.65rem 0;
-}
-
-.crt-prose :global(strong) {
+.crt-prose strong {
   color: var(--crt-brown-bright);
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.crt-prose :global(hr) {
+.crt-prose em {
+  font-style: italic;
+  color: var(--crt-brown);
+}
+
+.crt-prose blockquote {
+  margin: 1rem 0;
+  padding: 0.55rem 0 0.55rem 1rem;
+  border-left: 2px solid var(--crt-border-col);
+  color: var(--crt-brown-dim);
+}
+
+.crt-prose hr {
   border: 0;
   border-top: 1px solid var(--crt-border-col);
   margin: 1.5rem 0;
+}
+
+.crt-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.88rem;
+}
+
+.crt-prose th,
+.crt-prose td {
+  border: 1px solid var(--crt-border-col);
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+}
+
+.crt-prose th {
+  background: color-mix(in srgb, var(--crt-brown) 6%, var(--crt-bg));
+  color: var(--crt-brown-bright);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
 }
 
 /* footer */
