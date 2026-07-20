@@ -3,6 +3,7 @@
 
 # Local agent / IDE settings
 .claude/
+.superpowers/
 
 # build output
 dist/
