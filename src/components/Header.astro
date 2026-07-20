@@ -37,9 +37,6 @@ const isGalleryQuickActive =
 
 const siteLogo = "/touxiang-64.png";
 const brandText = SITE.title.trim();
-const brandSplitIndex = Math.max(1, Math.floor(brandText.length / 2));
-const brandHead = brandText.slice(0, brandSplitIndex);
-const brandTail = brandText.slice(brandSplitIndex);
 ---
 
 <a
@@ -72,11 +69,7 @@ const brandTail = brandText.slice(brandSplitIndex);
           loading="eager"
           decoding="async"
         />
-        <span class="nav-logo-word" aria-label={SITE.title}>
-          <span>{brandHead}</span>
-          {brandTail && <span class="nav-logo-brace" aria-hidden="true">{`{}`}</span>}
-          <span>{brandTail}</span>
-        </span>
+        <span class="nav-logo-word">{brandText}</span>
       </a>
 
       <!-- Nav area -->
@@ -340,11 +333,6 @@ const brandTail = brandText.slice(brandSplitIndex);
     align-items: baseline;
     letter-spacing: 0.01em;
     color: color-mix(in srgb, var(--foreground) 94%, transparent);
-  }
-
-  .nav-logo-brace {
-    margin: 0 0.08em;
-    color: color-mix(in srgb, var(--accent) 72%, #b86167);
   }
 
   .group:hover .site-brand-logo {
