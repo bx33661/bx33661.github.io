@@ -6,6 +6,7 @@ import { SITE } from "@/config.ts";
 export const BLOG_PATH = "src/content/blog";
 export const NOTES_PATH = "src/data/notes";
 export const GALLERY_PATH = "src/data/galleries";
+export const PROJECTS_PATH = "src/content/projects";
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${BLOG_PATH}` }),
@@ -62,4 +63,24 @@ const galleries = defineCollection({
     }),
 });
 
-export const collections = { blog, notes, galleries };
+const projects = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${PROJECTS_PATH}` }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      pubDatetime: z.coerce.date(),
+      modDatetime: z.coerce.date().optional().nullable(),
+      tags: z.array(z.string()).default([]),
+      status: z.enum(["active", "wip", "archived"]).default("active"),
+      repo: z.string().url(),
+      demo: z.string().url().optional(),
+      cover: image().optional(),
+      order: z.number().optional(),
+      featured: z.boolean().optional(),
+      draft: z.boolean().optional(),
+      slug: z.string().optional(),
+    }),
+});
+
+export const collections = { blog, notes, galleries, projects };

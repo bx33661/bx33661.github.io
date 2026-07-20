@@ -32,12 +32,22 @@ for (const file of requiredFiles) {
   requireBuiltFile(file);
 }
 
-const projectsRedirectFile = requireBuiltFile("projects/index.html");
-if (fs.existsSync(projectsRedirectFile)) {
-  const content = fs.readFileSync(projectsRedirectFile, "utf8");
-  if (!/\/galleries\/?/.test(content)) {
+const projectsIndexFile = requireBuiltFile("projects/index.html");
+if (fs.existsSync(projectsIndexFile)) {
+  const content = fs.readFileSync(projectsIndexFile, "utf8");
+  if (/http-equiv=["']refresh["']/i.test(content) && /\/galleries\/?/.test(content)) {
     failures.push(
-      "dist/projects/index.html does not contain redirect target /galleries",
+      "dist/projects/index.html still redirects to /galleries (expected real projects list)",
+    );
+  }
+  if (!/oh-my-vul|Wireshark-MCP|PureAutoCodeQL/i.test(content)) {
+    failures.push(
+      "dist/projects/index.html does not list expected project titles",
+    );
+  }
+  if (!/href="\/projects\/[^"/]+\//.test(content)) {
+    failures.push(
+      "dist/projects/index.html does not contain project detail links",
     );
   }
 }

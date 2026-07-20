@@ -5,12 +5,14 @@ const PUBLIC_ROOT = path.resolve('public')
 const COLLECTION_PATHS = {
   blog: path.resolve('src/content/blog'),
   notes: path.resolve('src/data/notes'),
+  projects: path.resolve('src/content/projects'),
 }
 const COLLECTIONS = Object.keys(COLLECTION_PATHS)
 
 const REQUIRED_FIELDS = {
   blog: ['title', 'description', 'date'],
   notes: ['title', 'description', 'date'],
+  projects: ['title', 'description', 'pubDatetime', 'repo'],
 }
 
 function walkMarkdownFiles(rootDir) {
@@ -146,7 +148,8 @@ function resolveSlugForFile(collection, filePath, frontmatter) {
   if (slugRaw) return slugRaw
 
   const relFromCollection = path.relative(COLLECTION_PATHS[collection], filePath)
-  const prefix = collection === 'notes' ? 'note' : 'post'
+  const prefix =
+    collection === 'notes' ? 'note' : collection === 'projects' ? 'project' : 'post'
   return createDeterministicSlug(relFromCollection, prefix)
 }
 
@@ -223,38 +226,54 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
   }
 
   if (collection === 'projects') {
-    const link = stripQuotes(getScalarValue(frontmatter, 'link'))
-    if (link) {
+    const pubDatetime = parseDateValue(frontmatter, 'pubDatetime')
+    if (!pubDatetime) {
+      errors.push(`${relPath}: invalid "pubDatetime", expected a parseable date`)
+    }
+
+    const repo = stripQuotes(getScalarValue(frontmatter, 'repo'))
+    if (repo) {
       try {
-        new URL(link)
+        new URL(repo)
       } catch {
-        errors.push(`${relPath}: invalid project link URL "${link}"`)
+        errors.push(`${relPath}: invalid project repo URL "${repo}"`)
       }
     }
 
-    const startDateRaw = stripQuotes(getScalarValue(frontmatter, 'startDate'))
-    if (startDateRaw) {
-      const parsed = new Date(startDateRaw)
-      if (Number.isNaN(parsed.getTime())) {
-        errors.push(`${relPath}: invalid "startDate"`)
+    const demo = stripQuotes(getScalarValue(frontmatter, 'demo'))
+    if (demo) {
+      try {
+        new URL(demo)
+      } catch {
+        errors.push(`${relPath}: invalid project demo URL "${demo}"`)
       }
     }
 
-    const image = stripQuotes(getScalarValue(frontmatter, 'image'))
-    if (image && !/^https?:\/\//i.test(image)) {
-      const resolvedImage = path.resolve(path.dirname(filePath), image)
-      if (!fs.existsSync(resolvedImage)) {
-        warnings.push(`${relPath}: local image not found -> ${image}`)
-      }
+    const status = stripQuotes(getScalarValue(frontmatter, 'status'))
+    if (status && !['active', 'wip', 'archived'].includes(status)) {
+      errors.push(
+        `${relPath}: invalid "status" "${status}", expected active|wip|archived`,
+      )
+    }
+
+    const title = stripQuotes(getScalarValue(frontmatter, 'title'))
+    const description = stripQuotes(getScalarValue(frontmatter, 'description'))
+    if (title && title.length > 80) {
+      warnings.push(`${relPath}: title is long (${title.length} chars), consider <= 80`)
+    }
+    if (description && (description.length < 40 || description.length > 180)) {
+      warnings.push(
+        `${relPath}: description length is ${description.length}, recommended 40-180`,
+      )
     }
   }
 
   const draftRaw = getScalarValue(frontmatter, 'draft')
-  if (draftRaw && !isTruthyFalse(draftRaw) && collection !== 'projects') {
+  if (draftRaw && !isTruthyFalse(draftRaw)) {
     warnings.push(`${relPath}: draft is not false, page may be hidden in production`)
   }
 
-  if (collection === 'blog' || collection === 'notes') {
+  if (collection === 'blog' || collection === 'notes' || collection === 'projects') {
     const slug = resolveSlugForFile(collection, filePath, frontmatter)
     const key = `${collection}:${slug}`
     const existing = slugRegistry.get(key)

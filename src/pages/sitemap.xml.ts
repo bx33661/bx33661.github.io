@@ -6,6 +6,7 @@ import {
   getAllPostSlugs,
   getAllTags,
 } from "@/lib/data-utils";
+import { getAllProjectsWithSlugs } from "@/utils/projects";
 import { TAG_PATH_PREFIX, getTagPath } from "@/utils/tagPath";
 
 function buildUrl(baseUrl: string, path: string): string {
@@ -21,6 +22,7 @@ export async function GET(context: APIContext) {
     const postSlugs = await getAllPostSlugs();
     const noteSlugs = await getAllNoteSlugs();
     const allNotes = await getAllNotes();
+    const projectSlugs = await getAllProjectsWithSlugs();
     const tags = await getAllTags();
     const site = context.site ?? SITE.website;
     const baseUrl = site.toString().endsWith("/")
@@ -43,6 +45,12 @@ export async function GET(context: APIContext) {
       },
       {
         url: buildUrl(baseUrl, "/notes/"),
+        lastmod: now,
+        changefreq: "weekly",
+        priority: "0.8",
+      },
+      {
+        url: buildUrl(baseUrl, "/projects/"),
         lastmod: now,
         changefreq: "weekly",
         priority: "0.8",
@@ -99,6 +107,15 @@ export async function GET(context: APIContext) {
       priority: "0.6",
     }));
 
+    const projects = projectSlugs.map(({ slug, project }) => ({
+      url: buildUrl(baseUrl, `/projects/${encodePathSegment(slug)}/`),
+      lastmod: (
+        project.data.modDatetime ?? project.data.pubDatetime
+      ).toISOString(),
+      changefreq: "monthly",
+      priority: "0.7",
+    }));
+
     const notesPageSize = 10;
     const notesPageCount = Math.ceil(allNotes.length / notesPageSize);
     const notePages = Array.from(
@@ -132,6 +149,7 @@ export async function GET(context: APIContext) {
       ...staticPages,
       ...blogPosts,
       ...notes,
+      ...projects,
       ...notePages,
       ...tagUrls,
     ];

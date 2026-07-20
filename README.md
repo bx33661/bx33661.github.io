@@ -25,6 +25,7 @@
 |------|------|------|
 | 博客 | [`/blog/`](https://www.bx33661.com/blog/) | 安全研究、CTF、工程笔记 |
 | Notes | [`/notes/`](https://www.bx33661.com/notes/) | 短记录与学习备忘 |
+| Projects | [`/projects/`](https://www.bx33661.com/projects/) | 安全研究与工具展柜 |
 | 相册 | [`/galleries/`](https://www.bx33661.com/galleries/) | 图片画廊 |
 | 搜索 | [`/search/`](https://www.bx33661.com/search/) | Pagefind 全文检索 |
 | 友链 | [`/friends/`](https://www.bx33661.com/friends/) | 朋友与组织 |

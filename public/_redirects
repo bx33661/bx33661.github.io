@@ -1,7 +1,3 @@
-/projects /galleries/ 301
-/projects/ /galleries/ 301
-/projects/* /galleries/ 301
-
 # 旧 bento 相册页迁到 galleries
 /bento /galleries/ 301
 /bento/ /galleries/ 301

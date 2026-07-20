@@ -60,15 +60,20 @@ requireDirectoryHasFiles(
   (name) => /\.(avif|webp|jpg)$/i.test(name),
 )
 
-assertNoText(
-  path.join(repoRoot, 'public/sw.js'),
-  /\/projects\b/,
-  'stale projects route still present in service worker',
+assertHasText(
+  path.join(repoRoot, 'src/pages/projects/index.astro'),
+  /getAllProjectsWithSlugs|ProjectCard/,
+  'projects list page missing collection wiring',
+)
+assertHasText(
+  path.join(repoRoot, 'src/content.config.ts'),
+  /projects\s*=\s*defineCollection/,
+  'projects content collection not defined',
 )
 assertNoText(
-  path.join(repoRoot, 'public/site.webmanifest'),
-  /"url"\s*:\s*"\/projects\/?"/,
-  'stale projects shortcut still present in manifest',
+  path.join(repoRoot, 'public/_redirects'),
+  /^\/projects(?:\/|\s|\*)/m,
+  'stale projects → galleries redirect still present in public/_redirects',
 )
 assertHasText(
   path.join(repoRoot, 'astro.config.ts'),

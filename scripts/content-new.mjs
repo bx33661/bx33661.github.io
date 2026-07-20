@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-const VALID_TYPES = new Set(['blog', 'notes'])
+const VALID_TYPES = new Set(['blog', 'notes', 'projects'])
 
 function parseArgs(argv) {
   const args = {
@@ -135,8 +135,44 @@ slug: "${slug}"
 `
 }
 
+function buildProjectsTemplate({ title, description, date, slug }) {
+  const safeTitle = escapeDoubleQuotes(title)
+  const safeDesc = escapeDoubleQuotes(
+    description || 'One-line research/tooling summary for the project card.',
+  )
+  return `---
+title: "${safeTitle}"
+description: "${safeDesc}"
+pubDatetime: ${date}
+tags:
+  - "security"
+status: "active"
+repo: "https://github.com/bx33661/example"
+order: 10
+featured: false
+draft: true
+slug: "${slug}"
+---
+
+## Overview
+
+## Problem
+
+## Approach
+
+## Highlights
+
+-
+
+## Stack
+
+## Links
+`
+}
+
 function buildTemplate(type, payload) {
   if (type === 'blog') return buildBlogTemplate(payload)
+  if (type === 'projects') return buildProjectsTemplate(payload)
   return buildNotesTemplate(payload)
 }
 
@@ -162,13 +198,16 @@ function main() {
   }
 
   const date = resolveDate(args.date)
-  const slug = toSlug(String(args.slug || title), type === 'notes' ? 'note' : 'post')
-  const targetDir = path.resolve('src/content', type)
+  const slugPrefix = type === 'notes' ? 'note' : type === 'projects' ? 'project' : 'post'
+  const slug = toSlug(String(args.slug || title), slugPrefix)
+  const targetDir =
+    type === 'notes'
+      ? path.resolve('src/data/notes')
+      : path.resolve('src/content', type)
   const targetPath = path.join(targetDir, `${slug}.${ext}`)
 
   if (!fs.existsSync(targetDir)) {
-    console.error(`[FAIL] Collection directory not found: ${targetDir}`)
-    process.exit(1)
+    fs.mkdirSync(targetDir, { recursive: true })
   }
 
   if (fs.existsSync(targetPath)) {

@@ -1,0 +1,73 @@
+---
+import { render } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import ProjectHero from "@/components/ProjectHero.astro";
+import { SITE } from "@/config.ts";
+import { getAllProjectsWithSlugs, type ProjectEntry } from "@/utils/projects";
+
+export async function getStaticPaths() {
+  const projects = await getAllProjectsWithSlugs();
+  return projects.map(({ project, slug }) => ({
+    params: { slug },
+    props: { project, slug },
+  }));
+}
+
+type Props = {
+  project: ProjectEntry;
+  slug: string;
+};
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const currentUrl = Astro.url.toString();
+---
+
+<Layout
+  title={`${project.data.title} | ${SITE.title}`}
+  description={project.data.description}
+  pubDatetime={project.data.pubDatetime}
+  modDatetime={project.data.modDatetime}
+  canonicalURL={currentUrl}
+>
+  <Header />
+
+  <main id="main-content" class="app-layout pb-12 pt-4">
+    <div class="mb-4">
+      <a
+        href="/projects/"
+        class="project-back inline-flex items-center gap-1.5 rounded-lg border border-border/30 bg-muted/10 px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 hover:text-accent"
+      >
+        <svg
+          class="size-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"
+          ></path>
+        </svg>
+        Projects
+      </a>
+    </div>
+
+    <article>
+      <ProjectHero project={project} />
+      <div class="app-prose w-full max-w-app project-body">
+        <Content />
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .project-body :global(h2) {
+    margin-top: 2rem;
+  }
+</style>

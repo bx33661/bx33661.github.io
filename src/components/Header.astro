@@ -114,6 +114,13 @@ const brandText = SITE.title.trim();
           </li>
           <li>
             <a
+              href="/projects/"
+              class:list={["nav-link", { "nav-active": isActive("/projects") }]}
+              >Projects</a
+            >
+          </li>
+          <li>
+            <a
               href="/about/"
               class:list={["nav-link", { "nav-active": isActive("/about") }]}
               >About</a
@@ -234,9 +241,17 @@ const brandText = SITE.title.trim();
           <span>Notes</span>
         </a>
         <a
+          href="/projects/"
+          class:list={["mobile-nav-link", { active: isActive("/projects") }]}
+          style="--i:3"
+        >
+          <span class="mobile-nav-indicator" />
+          <span>Projects</span>
+        </a>
+        <a
           href="/about/"
           class:list={["mobile-nav-link", { active: isActive("/about") }]}
-          style="--i:3"
+          style="--i:4"
         >
           <span class="mobile-nav-indicator" />
           <span>About</span>
@@ -244,7 +259,7 @@ const brandText = SITE.title.trim();
         <a
           href="/friends/"
           class:list={["mobile-nav-link", { active: isActive("/friends") }]}
-          style="--i:4"
+          style="--i:5"
         >
           <span class="mobile-nav-indicator" />
           <span>Friends</span>
@@ -252,7 +267,7 @@ const brandText = SITE.title.trim();
         <a
           href="/search/"
           class:list={["mobile-nav-link", { active: isActive("/search") }]}
-          style="--i:5"
+          style="--i:6"
         >
           <span class="mobile-nav-indicator" />
           <span>Search</span>
@@ -260,7 +275,7 @@ const brandText = SITE.title.trim();
         <a
           href="/archives/"
           class:list={["mobile-nav-link", { active: isArchiveQuickActive }]}
-          style="--i:6"
+          style="--i:7"
         >
           <span class="mobile-nav-indicator" />
           <span>Archives</span>
@@ -268,7 +283,7 @@ const brandText = SITE.title.trim();
         <a
           href="/galleries/"
           class:list={["mobile-nav-link", { active: isGalleryQuickActive }]}
-          style="--i:7"
+          style="--i:8"
         >
           <span class="mobile-nav-indicator" />
           <span>Galleries</span>
