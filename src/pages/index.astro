@@ -12,12 +12,14 @@ import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config.ts";
 import { SOCIALS } from "@/constants";
 import IntroAudio from "@/components/IntroAudio.astro";
+import { getProjectRoots } from "@/utils/projects";
 
 const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+const projectRoots = await getProjectRoots();
 ---
 
 <Layout>
@@ -119,7 +121,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
         </div>
         <span
           class="font-cartograph text-[11px] tracking-wider text-accent/40 uppercase select-none"
-          >// posts</span
+          >// work</span
         >
         <div
           class="h-px flex-1 bg-linear-to-r from-transparent via-border/60 to-transparent"
@@ -127,6 +129,64 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
         </div>
       </div>
     </section>
+
+    <!-- ═══════════════════ PROJECTS ═══════════════════ -->
+    {
+      projectRoots.length > 0 && (
+        <section id="projects" class="pb-8 pt-2">
+          <div class="mb-5 flex items-center gap-3">
+            <h2 class="text-sm font-bold tracking-widest text-accent uppercase">
+              Selected Work
+            </h2>
+            <div class="h-px flex-1 bg-border/20" />
+            <a
+              href="/projects/"
+              class="font-cartograph text-xs text-foreground/50 transition-colors hover:text-accent"
+            >
+              全部项目 →
+            </a>
+          </div>
+          <ul class="grid gap-3 sm:grid-cols-3">
+            {projectRoots.slice(0, 3).map((doc) => (
+              <li>
+                <a
+                  href={`/projects/${doc.hrefPath}/`}
+                  class="group flex h-full flex-col rounded-2xl border border-border/25 bg-muted/5 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/35 hover:bg-accent/5 hover:shadow-lg hover:shadow-accent/10"
+                >
+                  <span class="font-cartograph text-[10px] tracking-wider text-accent/60 uppercase">
+                    {doc.entry.data.workId || "PROJECT"}
+                  </span>
+                  <span class="mt-1 text-base font-semibold text-foreground transition-colors group-hover:text-accent">
+                    {doc.entry.data.title}
+                  </span>
+                  <span class="mt-2 line-clamp-2 text-sm leading-relaxed text-foreground/55">
+                    {doc.entry.data.description}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <div
+      class="relative z-10 mb-6 flex items-center gap-3"
+      aria-hidden="true"
+    >
+      <div
+        class="h-px flex-1 bg-linear-to-r from-transparent via-border/60 to-transparent"
+      >
+      </div>
+      <span
+        class="font-cartograph text-[11px] tracking-wider text-accent/40 uppercase select-none"
+        >// posts</span
+      >
+      <div
+        class="h-px flex-1 bg-linear-to-r from-transparent via-border/60 to-transparent"
+      >
+      </div>
+    </div>
 
     <!-- ═══════════════════ FEATURED ═══════════════════ -->
     {
@@ -191,7 +251,14 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
     }
 
     <!-- ═══════════════════ CTA ═══════════════════ -->
-    <div class="my-10 flex justify-center">
+    <div class="my-10 flex flex-wrap justify-center gap-3">
+      <LinkButton
+        href="/projects/"
+        class="group inline-flex items-center gap-2 rounded-xl border border-accent/40 bg-accent/10 px-6 py-3 font-medium transition-all duration-300 hover:border-accent/60 hover:bg-accent/15 hover:shadow-lg hover:shadow-accent/10"
+      >
+        研究项目 / Docs
+        <IconArrowRight class="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+      </LinkButton>
       <LinkButton
         href="/blog/"
         class="group inline-flex items-center gap-2 rounded-xl border border-border/40 bg-muted/10 px-6 py-3 font-medium transition-all duration-300 hover:border-accent/50 hover:bg-accent/5 hover:shadow-lg hover:shadow-accent/5"

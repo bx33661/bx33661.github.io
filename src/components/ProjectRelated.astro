@@ -1,0 +1,51 @@
+---
+import { getCollection } from "astro:content";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { getPath } from "@/utils/getPath";
+
+type Props = {
+  slugs?: string[];
+};
+
+const { slugs = [] } = Astro.props;
+const wanted = slugs.map((s) => s.trim()).filter(Boolean);
+
+type Item = { title: string; href: string; description: string; key: string };
+const found = new Map<string, Item>();
+
+if (wanted.length > 0) {
+  const all = await getCollection("blog", ({ data }) => !data.draft);
+  for (const post of all) {
+    const slug = resolveLegacyPostSlug(post);
+    const keys = [slug, post.id, post.data.slug].filter(Boolean) as string[];
+    const hit = wanted.find((w) => keys.includes(w));
+    if (!hit || found.has(hit)) continue;
+    found.set(hit, {
+      key: hit,
+      title: post.data.title,
+      description: post.data.description,
+      href: getPath(post.id, post.filePath, true, slug),
+    });
+  }
+}
+
+const posts = wanted.map((w) => found.get(w)).filter(Boolean) as Item[];
+---
+
+{
+  posts.length > 0 && (
+    <section class="crt-related" aria-label="Related posts">
+      <div class="crt-related-label">RELATED POSTS</div>
+      <ul class="crt-related-list">
+        {posts.map((p) => (
+          <li>
+            <a class="crt-related-card" href={p.href}>
+              <span class="crt-related-title">{p.title}</span>
+              <span class="crt-related-desc">{p.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

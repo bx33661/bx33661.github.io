@@ -1,22 +1,33 @@
 ---
 title: "Highlights"
-description: "oh-my-vul 的关键能力摘要。"
+description: "oh-my-vul 要点、技术栈与相关链接。"
 navLabel: "Highlights"
-order: 30
+order: 50
 draft: false
 ---
 
-## Highlights
+## 要点
 
-- 结构化 finding 与侧车证据，而不是纯自然语言结论
-- 本地复现门禁：过不了 repro 的条目不轻易进入披露稿
-- 多格式 advisory 草稿（Markdown / OSV 等方向）
-- 可与 Claude Code Skills 工作流直接组合
+- **Evidence-first**：finding 是对象，不是一段漂亮总结  
+- **复现门禁**：没有 observed result，就不该轻易 confirmed  
+- **状态机**：模型提建议，程序管晋级  
+- **provenance**：报告与证据绑定，模板换了事实不换  
+- **可回放**：`.omv/` 是研究记忆，不是临时缓存  
 
 ## Stack
 
-TypeScript · Python · Node.js CLI · Ink TUI · Claude Code / Codex Skills
+| 部分 | 技术 |
+|------|------|
+| CLI / Contracts | TypeScript, Node.js 22+ |
+| TUI | Ink |
+| Agent 侧 | Claude Code Skills, Codex |
+| 辅助 | Python（部分工具链） |
 
-## Links
+## 仓库与文章
 
-- 仓库：<https://github.com/bx33661/oh-my-vul>
+- GitHub：<https://github.com/bx33661/oh-my-vul>
+- 设计长文：[oh-my-vul 1.0 设计与实践](/blog/oh-my-vul-1-0/)
+
+## 一句话
+
+> 让 Agent 负责理解代码，让程序负责约束状态，让研究员保留最后的判断权。

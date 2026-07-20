@@ -4,6 +4,8 @@ import Layout from "@/layouts/Layout.astro";
 import CrtShell from "@/components/CrtShell.astro";
 import ProjectDocsShell from "@/components/ProjectDocsShell.astro";
 import ProjectHero from "@/components/ProjectHero.astro";
+import ProjectToc from "@/components/ProjectToc.astro";
+import ProjectRelated from "@/components/ProjectRelated.astro";
 import { SITE } from "@/config.ts";
 import {
   getAllProjectDocs,
@@ -26,7 +28,7 @@ type Props = { doc: ProjectDoc };
 const { doc } = Astro.props;
 const siblings = await getProjectDocs(doc.projectKey);
 const rootMeta = getRootMeta(siblings);
-const { Content } = await render(doc.entry);
+const { Content, headings } = await render(doc.entry);
 const currentUrl = Astro.url.toString();
 
 const projectTitle = rootMeta?.title ?? doc.projectKey;
@@ -35,7 +37,14 @@ const pageTitle = doc.isRoot
   ? `${projectTitle} | ${SITE.title}`
   : `${doc.entry.data.title} · ${projectTitle} | ${SITE.title}`;
 
-// Prev / next within the same project docs library
+const relatedSlugs =
+  doc.entry.data.relatedPosts ?? rootMeta?.relatedPosts ?? [];
+
+// Prefer build-time headings for TOC when available
+const tocHeadings = (headings ?? []).filter(
+  (h) => h.depth === 2 || h.depth === 3,
+);
+
 const idx = siblings.findIndex((d) => d.hrefPath === doc.hrefPath);
 const prev = idx > 0 ? siblings[idx - 1] : null;
 const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : null;
@@ -77,9 +86,35 @@ const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : null;
           )
         }
 
-        <div class="crt-prose">
-          <Content />
+        <div class="crt-doc-body">
+          {
+            tocHeadings.length >= 2 ? (
+              <nav class="crt-toc" aria-label="On this page">
+                <div class="crt-toc-label">ON THIS PAGE</div>
+                <ol class="crt-toc-list">
+                  {tocHeadings.map((h) => (
+                    <li
+                      class:list={[
+                        "crt-toc-item",
+                        h.depth === 3 && "crt-toc-item--h3",
+                      ]}
+                    >
+                      <a href={`#${h.slug}`}>{h.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            ) : (
+              <ProjectToc />
+            )
+          }
+
+          <div class="crt-prose">
+            <Content />
+          </div>
         </div>
+
+        <ProjectRelated slugs={relatedSlugs} />
 
         <nav class="crt-doc-pager" aria-label="Adjacent pages">
           {

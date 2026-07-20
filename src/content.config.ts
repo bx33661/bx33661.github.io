@@ -88,6 +88,8 @@ const projects = defineCollection({
       slug: z.string().optional(),
       /** Sidebar label override (defaults to title; root shows as Overview) */
       navLabel: z.string().optional(),
+      /** Blog post slugs to surface as related reading */
+      relatedPosts: z.array(z.string()).optional(),
     }),
 });
 

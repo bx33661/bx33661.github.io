@@ -1,17 +1,17 @@
 ---
 title: "Highlights"
-description: "PureAutoCodeQL 能力要点。"
+description: "PureAutoCodeQL 要点、技术栈与链接。"
 navLabel: "Highlights"
-order: 30
+order: 50
 draft: false
 ---
 
-## Highlights
+## 要点
 
-- 把「情报 → 查询 → 路径」串成可跑通的研究管道
-- 结构化产物便于二次审计，而不是只留一段聊天总结
-- 覆盖多种目标语言与导入方式
-- 适合 CVE 复现、查询草稿加速、教学演示
+- **情报 → 查询 → 路径** 端到端管道  
+- 结构化产物（Markdown / SARIF / JSON），便于二次审计  
+- 多语言目标与可插拔 LLM  
+- CLI + 可选本地 API，适合研究与编排  
 
 ## Stack
 
@@ -20,3 +20,8 @@ Python · CodeQL · FastAPI · uv · SARIF · LLM providers
 ## Links
 
 - 仓库：<https://github.com/Fruit-Guardians/PureAutoCodeql>
+- Org：<https://github.com/Fruit-Guardians>
+
+## 一句话
+
+> 用流水线加速 CodeQL 草稿，用 SARIF 留下可核对的路径，而不是只留下一段聊天。

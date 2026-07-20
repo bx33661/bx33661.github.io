@@ -565,6 +565,157 @@ html[data-chrome="crt"] .site-backdrop {
   margin: 0;
 }
 
+/* body row: TOC + prose */
+.crt-doc-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (min-width: 1100px) {
+  .crt-doc-body {
+    grid-template-columns: minmax(0, 1fr) 12.5rem;
+  }
+
+  .crt-doc-body .crt-toc {
+    order: 2;
+  }
+
+  .crt-doc-body .crt-prose {
+    order: 1;
+  }
+}
+
+.crt-toc {
+  border: 1px solid var(--crt-border-col);
+  background: var(--crt-paper);
+  padding: 0.85rem 0.9rem 1rem;
+}
+
+@media (min-width: 1100px) {
+  .crt-toc {
+    position: sticky;
+    top: 4.5rem;
+  }
+}
+
+.crt-toc-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--crt-brown-dim);
+  margin-bottom: 0.55rem;
+}
+
+.crt-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.crt-toc-item a {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--crt-brown-dim);
+  text-decoration: none;
+  padding: 0.2rem 0;
+  border-left: 2px solid transparent;
+  padding-left: 0.45rem;
+}
+
+.crt-toc-item a:hover {
+  color: var(--crt-brown-bright);
+  text-shadow: var(--crt-glow-sm);
+  border-left-color: var(--crt-amber);
+}
+
+.crt-toc-item--h3 a {
+  padding-left: 0.95rem;
+  font-size: 0.68rem;
+}
+
+/* related posts */
+.crt-related {
+  border: 1px solid var(--crt-border-col);
+  background: var(--crt-paper);
+  padding: 0.95rem 1rem 1.05rem;
+}
+
+.crt-related-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--crt-brown-dim);
+  margin-bottom: 0.65rem;
+}
+
+.crt-related-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.crt-related-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--crt-border-col);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.crt-related-card:hover {
+  border-color: var(--crt-brown);
+  background: rgba(122, 74, 30, 0.05);
+  box-shadow: var(--crt-glow-sm);
+}
+
+.crt-related-title {
+  font-family: var(--font-crt-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--crt-brown-bright);
+  line-height: 1.1;
+}
+
+.crt-related-desc {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--crt-brown-dim);
+}
+
+/* mobile: horizontal scroll for docs sidebar nav feels heavy — keep stacked */
+@media (max-width: 899px) {
+  .crt-docs-side {
+    position: static;
+  }
+
+  .crt-docs-nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .crt-docs-nav-link {
+    border: 1px solid var(--crt-border-col);
+    padding: 0.35rem 0.55rem;
+  }
+}
+
 .crt-section-label {
   font-size: 0.68rem;
   letter-spacing: 0.28em;
