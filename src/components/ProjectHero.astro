@@ -28,9 +28,9 @@ const displayTags = tags.map((t) => t.toUpperCase());
 ---
 
 <header class="crt-hero">
-  {
-    cover && (
-      <div class="crt-hero-media">
+  <div class="crt-hero-media">
+    {
+      cover ? (
         <Image
           src={cover}
           alt=""
@@ -38,14 +38,20 @@ const displayTags = tags.map((t) => t.toUpperCase());
           sizes="(max-width: 768px) 100vw, 72rem"
           loading="eager"
         />
-        <div class="crt-card-scan" aria-hidden="true" />
-      </div>
-    )
-  }
+      ) : (
+        <div class="crt-hero-fallback" aria-hidden="true">
+          <span>+ {title.toUpperCase()}</span>
+        </div>
+      )
+    }
+    <div class="crt-card-scan" aria-hidden="true"></div>
+  </div>
 
   <div class="crt-hero-body">
     <div class="crt-hero-kicker">
-      {workId} · {categoryLabel} · {status.toUpperCase()}
+      {workId}&nbsp;&nbsp;·&nbsp;&nbsp;{categoryLabel}&nbsp;&nbsp;·&nbsp;&nbsp;{
+        status.toUpperCase()
+      }
     </div>
     <h1 class="crt-hero-title">{title}</h1>
     <p class="crt-hero-desc">{description}</p>
@@ -81,6 +87,7 @@ const displayTags = tags.map((t) => t.toUpperCase());
           </a>
         )
       }
+      <a class="crt-btn" href="/projects/">ALL WORK</a>
     </div>
   </div>
 </header>

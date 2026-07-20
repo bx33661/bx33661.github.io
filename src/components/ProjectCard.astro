@@ -9,7 +9,7 @@ type Props = {
   index?: number;
 };
 
-const { project, slug, workId } = Astro.props;
+const { project, slug, workId, index = 0 } = Astro.props;
 const { title, description, tags, cover, category, pubDatetime, status } =
   project.data;
 
@@ -20,7 +20,7 @@ const categoryLabel =
 
 const detailHref = `/projects/${slug}/`;
 const displayTags = tags.slice(0, 4).map((t) => t.toUpperCase());
-const monogram = title.trim().slice(0, 1).toUpperCase() || "P";
+const tone = String(index % 3);
 ---
 
 <a class="crt-card" href={detailHref} aria-label={`Open project ${title}`}>
@@ -31,30 +31,28 @@ const monogram = title.trim().slice(0, 1).toUpperCase() || "P";
           src={cover}
           alt=""
           widths={[640, 960, 1200]}
-          sizes="(max-width: 768px) 100vw, 50vw"
-          loading="lazy"
+          sizes="(max-width: 820px) 100vw, 50vw"
+          loading={index < 2 ? "eager" : "lazy"}
         />
       ) : (
-        <div class="crt-card-fallback" aria-hidden="true">
+        <div class="crt-card-fallback" data-tone={tone} aria-hidden="true">
           <div class="crt-card-fallback-bar">
             <span>SESSION // {workId}</span>
             <span>{status.toUpperCase()}</span>
           </div>
           <div class="crt-card-fallback-title">
-            <span style="opacity:0.55;margin-right:0.35rem">+</span>
+            <span class="plus">+</span>
             {title.toUpperCase()}
           </div>
-          <div class="crt-card-fallback-grid">
-            <div class="crt-card-fallback-cell" />
-            <div class="crt-card-fallback-cell" />
-            <div class="crt-card-fallback-cell" />
-            <div class="crt-card-fallback-cell" />
-            <div class="crt-card-fallback-cell" />
+          <div class="crt-card-fallback-body">
+            <div class="crt-card-fallback-block tall" />
+            <div class="crt-card-fallback-block" />
+            <div class="crt-card-fallback-block" />
+            <div class="crt-card-fallback-block wide" />
           </div>
-          <div
-            style="position:absolute;inset:auto 1.1rem 1rem auto;font-family:var(--font-crt-display);font-size:3rem;opacity:0.12;color:#f0d2a0"
-          >
-            {monogram}
+          <div class="crt-card-fallback-foot">
+            <span>PHOSPHOR / READ-ONLY</span>
+            <span>{year}</span>
           </div>
         </div>
       )

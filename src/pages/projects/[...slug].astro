@@ -14,7 +14,9 @@ export async function getStaticPaths() {
     props: {
       project,
       slug,
-      workId: project.data.workId?.trim() || `WRK_${String(index + 1).padStart(3, "0")}`,
+      workId:
+        project.data.workId?.trim() ||
+        `WRK_${String(index + 1).padStart(3, "0")}`,
     },
   }));
 }
@@ -36,6 +38,7 @@ const currentUrl = Astro.url.toString();
   pubDatetime={project.data.pubDatetime}
   modDatetime={project.data.modDatetime}
   canonicalURL={currentUrl}
+  chrome="crt"
 >
   <CrtShell active="projects">
     <main id="main-content" class="crt-frame">

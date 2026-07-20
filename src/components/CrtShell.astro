@@ -1,54 +1,147 @@
 ---
 /**
  * CRT portfolio chrome for /projects pages only.
- * Site Header/Footer are intentionally replaced so the page can
- * fully inhabit the warm-phosphor look from retro-crt-portfolio.
+ * Replaces the normal Header/Footer so the page fully owns the
+ * warm-phosphor look from retro-crt-portfolio.
  */
 import { SITE } from "@/config.ts";
 
 type Props = {
-  active?: "projects" | "home" | "about" | "blog";
+  active?: "projects" | "home" | "about" | "blog" | "friends";
 };
 
 const { active = "projects" } = Astro.props;
 const year = new Date().getFullYear();
+
+// Prefer real domain (www.bx33661.com), not "BX.COM"
+const brandHost = (() => {
+  try {
+    return new URL(SITE.website).hostname.replace(/^www\./, "").toUpperCase();
+  } catch {
+    return `${SITE.title.toUpperCase()}.COM`;
+  }
+})();
+
+const nav = [
+  { id: "home", label: "HOME", href: "/" },
+  { id: "projects", label: "WORK", href: "/projects/" },
+  { id: "blog", label: "POSTS", href: "/blog/" },
+  { id: "about", label: "ABOUT", href: "/about/" },
+  { id: "friends", label: "LINKS", href: "/friends/" },
+] as const;
 ---
 
-<div class="crt-skin crt-flicker">
+<div class="crt-skin">
+  <!-- viewport-fixed phosphor effects -->
+  <div class="crt-fx" aria-hidden="true">
+    <div class="crt-fx-scan"></div>
+    <div class="crt-fx-vignette"></div>
+    <div class="crt-fx-grain"></div>
+  </div>
+
   <header class="crt-topbar">
-    <a class="crt-brand" href="/">
-      <span class="crt-brand-play" aria-hidden="true">▶</span>
-      <span>{SITE.title.toUpperCase()}.COM</span>
-    </a>
+    <div class="crt-topbar-inner">
+      <a class="crt-brand" href="/">
+        <span class="crt-brand-play" aria-hidden="true">▶</span>
+        <span>{brandHost}</span>
+      </a>
 
-    <nav class="crt-nav" aria-label="CRT navigation">
-      <a href="/" aria-current={active === "home" ? "page" : undefined}>HOME</a>
-      <a
-        href="/projects/"
-        aria-current={active === "projects" ? "page" : undefined}>WORK</a
-      >
-      <a href="/blog/" aria-current={active === "blog" ? "page" : undefined}
-        >POSTS</a
-      >
-      <a href="/about/" aria-current={active === "about" ? "page" : undefined}
-        >ABOUT</a
-      >
-      <a href="/friends/">LINKS</a>
+      <nav class="crt-nav" aria-label="Primary">
+        {
+          nav.map((item) => (
+            <a
+              href={item.href}
+              aria-current={active === item.id ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="crt-topbar-right">
+        <div class="crt-online" title="System online">
+          <span class="crt-online-dot" aria-hidden="true"></span>
+          ONLINE
+        </div>
+        <button
+          type="button"
+          class="crt-menu-btn"
+          id="crt-menu-btn"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="crt-mobile-nav"
+        >
+          ≡
+        </button>
+      </div>
+    </div>
+
+    <nav
+      class="crt-mobile-nav"
+      id="crt-mobile-nav"
+      aria-label="Mobile"
+      hidden
+    >
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={active === item.id ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
     </nav>
-
-    <div class="crt-online" title="System online">ONLINE</div>
   </header>
 
   <slot />
 
   <footer class="crt-footer">
-    <span>&copy; {year} {SITE.author.toUpperCase()} — RESEARCH TERMINAL</span>
-    <span>
-      <a href="/">RETURN_HOME</a>
-      &nbsp;·&nbsp;
-      <a href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer"
-        >GITHUB</a
-      >
-    </span>
+    <div class="crt-footer-inner">
+      <span>&copy; {year} {SITE.author.toUpperCase()} — RESEARCH TERMINAL</span>
+      <span>
+        <a href="/">RETURN_HOME</a>
+        &nbsp;·&nbsp;
+        <a
+          href={SITE.profile}
+          target="_blank"
+          rel="noopener noreferrer">GITHUB</a
+        >
+        &nbsp;·&nbsp;
+        <a href="/blog/">POSTS</a>
+      </span>
+    </div>
   </footer>
 </div>
+
+<script>
+  function bindCrtMenu() {
+    const btn = document.getElementById("crt-menu-btn");
+    const panel = document.getElementById("crt-mobile-nav");
+    if (!(btn instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) {
+      return;
+    }
+
+    const setOpen = (open: boolean) => {
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      panel.classList.toggle("is-open", open);
+      if (open) panel.removeAttribute("hidden");
+      else panel.setAttribute("hidden", "");
+    };
+
+    btn.onclick = () => {
+      const open = btn.getAttribute("aria-expanded") !== "true";
+      setOpen(open);
+    };
+
+    panel.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => setOpen(false));
+    });
+  }
+
+  bindCrtMenu();
+  document.addEventListener("astro:page-load", bindCrtMenu);
+</script>

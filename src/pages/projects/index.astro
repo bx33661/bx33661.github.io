@@ -9,7 +9,7 @@ import "@/styles/crt-projects.css";
 const currentUrl = Astro.url.toString();
 const projects = await getAllProjectsWithSlugs();
 const pageDescription =
-  "SELECTED_WORK — 安全研究与工程工具终端。选做的、可讲清的几件事。";
+  "Selected security research and tooling — oh-my-vul, Wireshark-MCP, PureAutoCodeQL.";
 
 function formatWorkId(index: number, explicit?: string) {
   if (explicit?.trim()) return explicit.trim().toUpperCase();
@@ -21,16 +21,17 @@ function formatWorkId(index: number, explicit?: string) {
   title={`Projects | ${SITE.title}`}
   description={pageDescription}
   canonicalURL={currentUrl}
+  chrome="crt"
 >
   <CrtShell active="projects">
     <main id="main-content" class="crt-frame">
-      <div class="crt-section-label">
+      <p class="crt-section-label">
         -- SECTION 03 -----------------------------------------------
-      </div>
+      </p>
       <h1 class="crt-title">SELECTED_WORK</h1>
-      <div class="crt-meta">
-        {projects.length} PROJECTS — SORTED BY ORDER ASC
-      </div>
+      <p class="crt-meta">
+        {projects.length} PROJECTS — SORTED BY DATE DESC
+      </p>
 
       {
         projects.length > 0 ? (
@@ -43,14 +44,21 @@ function formatWorkId(index: number, explicit?: string) {
                 workId={formatWorkId(index, project.data.workId)}
               />
             ))}
-            <a class="crt-more" href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer">
-              <div class="crt-more-title">SEE ALL ON GITHUB</div>
+            <a
+              class="crt-more"
+              href="https://github.com/bx33661?tab=repositories"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div class="crt-more-title">SEE ALL PROJECTS</div>
               <div class="crt-more-sub">github.com/bx33661</div>
               <div class="crt-more-arrow" aria-hidden="true">▶</div>
             </a>
           </section>
         ) : (
-          <p class="crt-meta" style="margin-top:2rem">NO PROJECTS LOADED.</p>
+          <p class="crt-meta" style="margin-top:2rem">
+            NO PROJECTS LOADED.
+          </p>
         )
       }
     </main>

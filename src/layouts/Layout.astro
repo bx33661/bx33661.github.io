@@ -15,6 +15,8 @@ type Props = {
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
   noindex?: boolean;
+  /** "crt" strips global blog chrome (backdrop/search) for projects terminal skin */
+  chrome?: "default" | "crt";
 };
 
 const {
@@ -28,7 +30,10 @@ const {
   modDatetime,
   scrollSmooth = false,
   noindex = false,
+  chrome = "default",
 } = Astro.props;
+
+const isCrtChrome = chrome === "crt";
 
 const socialImageURL = new URL(ogImage, Astro.url);
 
@@ -61,7 +66,8 @@ const structuredData = pubDatetime
 <html
   dir={SITE.dir}
   lang=`${SITE.lang ?? "en"}`
-  class:list={[{ "scroll-smooth": scrollSmooth }]}
+  class:list={[{ "scroll-smooth": scrollSmooth }, { "crt-html": isCrtChrome }]}
+  data-chrome={isCrtChrome ? "crt" : "default"}
 >
   <head>
     <meta charset="UTF-8" />
@@ -69,6 +75,27 @@ const structuredData = pubDatetime
     <link rel="icon" type="image/png" href="/touxiang-192.png" />
     <link rel="shortcut icon" href="/touxiang-192.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {
+      isCrtChrome && (
+        <>
+          <link
+            rel="preload"
+            href="/fonts/crt/vt323.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin="anonymous"
+          />
+          <link
+            rel="preload"
+            href="/fonts/crt/share-tech-mono.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin="anonymous"
+          />
+          <meta name="theme-color" content="#f5ede0" />
+        </>
+      )
+    }
     {
       Astro.url.pathname === "/" && (
         <link
@@ -144,13 +171,25 @@ const structuredData = pubDatetime
       href={new URL("rss.xml", Astro.site)}
     />
 
-    <meta name="theme-color" content="" />
+    {!isCrtChrome && <meta name="theme-color" content="" />}
 
     <ClientRouter />
 
     <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
-    <script is:inline>
+    <script is:inline define:vars={{ isCrtChrome }}>
       (function () {
+        // CRT projects pages always lock to light phosphor skin
+        if (isCrtChrome) {
+          document.firstElementChild?.setAttribute("data-theme", "light");
+          document.firstElementChild?.setAttribute("data-chrome", "crt");
+          window.theme = {
+            themeValue: "light",
+            getTheme: () => "light",
+            setTheme: () => {},
+          };
+          return;
+        }
+
         const initialColorScheme = ""; // "light" | "dark"
         const currentTheme = localStorage.getItem("theme");
 
@@ -178,21 +217,24 @@ const structuredData = pubDatetime
       })();
     </script>
   </head>
-  <body>
-    <!-- Global decorative backdrop (grid, glow, cursor glow, noise) -->
-    <div class="site-backdrop pointer-events-none" aria-hidden="true">
-      <div class="site-grid"></div>
-      <div class="site-glow"></div>
-      <div class="site-cursor-glow"></div>
-      <div class="site-grain"></div>
-    </div>
+  <body class:list={[{ "crt-body": isCrtChrome }]}>
+    {
+      !isCrtChrome && (
+        <div class="site-backdrop pointer-events-none" aria-hidden="true">
+          <div class="site-grid"></div>
+          <div class="site-glow"></div>
+          <div class="site-cursor-glow"></div>
+          <div class="site-grain"></div>
+        </div>
+      )
+    }
 
     <slot />
 
-    <SearchModal />
+    {!isCrtChrome && <SearchModal />}
 
-    <!-- Load full theme logic -->
-    <script src="../scripts/theme.ts"></script>
+    {/* Load full theme logic only for normal chrome */}
+    {!isCrtChrome && <script src="../scripts/theme.ts"></script>}
 
     <!-- Register SW only in production (not localhost / Lighthouse) -->
     <script is:inline>
