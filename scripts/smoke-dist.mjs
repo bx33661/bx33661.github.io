@@ -52,6 +52,23 @@ if (fs.existsSync(projectsIndexFile)) {
   }
 }
 
+// Docs-library: root + at least one child page should exist
+const omvRoot = requireBuiltFile("projects/oh-my-vul/index.html");
+const omvChild = path.join(distDir, "projects/oh-my-vul/problem/index.html");
+if (fs.existsSync(omvRoot)) {
+  const content = fs.readFileSync(omvRoot, "utf8");
+  if (!/crt-docs|PAGES|Overview/i.test(content)) {
+    failures.push(
+      "dist/projects/oh-my-vul/index.html missing docs-library chrome",
+    );
+  }
+}
+if (!fs.existsSync(omvChild)) {
+  failures.push(
+    "dist/projects/oh-my-vul/problem/index.html missing (docs child page)",
+  );
+}
+
 const albumIndex = requireBuiltFile("album/index.html");
 if (fs.existsSync(albumIndex)) {
   const content = fs.readFileSync(albumIndex, "utf8");

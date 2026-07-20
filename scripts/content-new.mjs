@@ -153,22 +153,17 @@ repo: "https://github.com/bx33661/example"
 order: 10
 featured: false
 draft: true
-slug: "${slug}"
+navLabel: "Overview"
 ---
 
 ## Overview
 
-## Problem
+Write the landing page for this project docs library.
 
-## Approach
+## Next
 
-## Highlights
-
--
-
-## Stack
-
-## Links
+- Add child pages as \`src/content/projects/${slug}/problem.md\` etc.
+- Set \`navLabel\` + \`order\` on each child for the sidebar.
 `
 }
 
@@ -202,14 +197,21 @@ function main() {
   const date = resolveDate(args.date)
   const slugPrefix = type === 'notes' ? 'note' : type === 'projects' ? 'project' : 'post'
   const slug = toSlug(String(args.slug || title), slugPrefix)
-  const targetDir =
-    type === 'notes'
-      ? path.resolve('src/data/notes')
-      : path.resolve('src/content', type)
-  const targetPath = path.join(targetDir, `${slug}.${ext}`)
 
-  if (!fs.existsSync(targetDir)) {
-    fs.mkdirSync(targetDir, { recursive: true })
+  let targetPath
+  if (type === 'notes') {
+    const targetDir = path.resolve('src/data/notes')
+    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true })
+    targetPath = path.join(targetDir, `${slug}.${ext}`)
+  } else if (type === 'projects') {
+    // Create a docs-library folder with index.md
+    const targetDir = path.resolve('src/content/projects', slug)
+    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true })
+    targetPath = path.join(targetDir, `index.${ext}`)
+  } else {
+    const targetDir = path.resolve('src/content', type)
+    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true })
+    targetPath = path.join(targetDir, `${slug}.${ext}`)
   }
 
   if (fs.existsSync(targetPath)) {
@@ -226,6 +228,9 @@ function main() {
 
   fs.writeFileSync(targetPath, template, 'utf8')
   console.log(`[OK] Created ${targetPath}`)
+  if (type === 'projects') {
+    console.log(`[HINT] Add more pages under src/content/projects/${slug}/`)
+  }
   console.log(`[NEXT] Run: npm run content:check`)
 }
 

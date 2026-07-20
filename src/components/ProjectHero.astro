@@ -2,25 +2,30 @@
 import type { CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 
+type ProjectData = CollectionEntry<"projects">["data"];
+
 type Props = {
   project: CollectionEntry<"projects">;
   workId: string;
+  /** Prefer root meta when rendering overview */
+  meta?: ProjectData;
 };
 
-const { project, workId } = Astro.props;
+const { project, workId, meta } = Astro.props;
+const data = meta ?? project.data;
 const {
   title,
   description,
-  tags,
-  status,
+  tags = [],
+  status = "active",
   repo,
   demo,
   cover,
   category,
   pubDatetime,
-} = project.data;
+} = data;
 
-const year = pubDatetime.getFullYear();
+const year = pubDatetime ? pubDatetime.getFullYear() : new Date().getFullYear();
 const categoryLabel =
   category?.trim() ||
   `${status === "wip" ? "WIP" : status === "archived" ? "ARCHIVE" : "TOOLING"} — ${year}`;
@@ -67,14 +72,18 @@ const displayTags = tags.map((t) => t.toUpperCase());
     }
 
     <div class="crt-hero-actions">
-      <a
-        class="crt-btn crt-btn--primary"
-        href={repo}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        ▶ GITHUB
-      </a>
+      {
+        repo && (
+          <a
+            class="crt-btn crt-btn--primary"
+            href={repo}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ▶ GITHUB
+          </a>
+        )
+      }
       {
         demo && (
           <a

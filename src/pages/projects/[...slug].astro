@@ -2,54 +2,115 @@
 import { render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import CrtShell from "@/components/CrtShell.astro";
+import ProjectDocsShell from "@/components/ProjectDocsShell.astro";
 import ProjectHero from "@/components/ProjectHero.astro";
 import { SITE } from "@/config.ts";
-import { getAllProjectsWithSlugs, type ProjectEntry } from "@/utils/projects";
+import {
+  getAllProjectDocs,
+  getProjectDocs,
+  getRootMeta,
+  type ProjectDoc,
+} from "@/utils/projects";
 import "@/styles/crt-projects.css";
 
 export async function getStaticPaths() {
-  const projects = await getAllProjectsWithSlugs();
-  return projects.map(({ project, slug }, index) => ({
-    params: { slug },
-    props: {
-      project,
-      slug,
-      workId:
-        project.data.workId?.trim() ||
-        `WRK_${String(index + 1).padStart(3, "0")}`,
-    },
+  const all = await getAllProjectDocs();
+  return all.map((doc) => ({
+    params: { slug: doc.hrefPath },
+    props: { doc },
   }));
 }
 
-type Props = {
-  project: ProjectEntry;
-  slug: string;
-  workId: string;
-};
+type Props = { doc: ProjectDoc };
 
-const { project, workId } = Astro.props;
-const { Content } = await render(project);
+const { doc } = Astro.props;
+const siblings = await getProjectDocs(doc.projectKey);
+const rootMeta = getRootMeta(siblings);
+const { Content } = await render(doc.entry);
 const currentUrl = Astro.url.toString();
+
+const projectTitle = rootMeta?.title ?? doc.projectKey;
+const workId = rootMeta?.workId?.trim() || "WRK";
+const pageTitle = doc.isRoot
+  ? `${projectTitle} | ${SITE.title}`
+  : `${doc.entry.data.title} · ${projectTitle} | ${SITE.title}`;
+
+// Prev / next within the same project docs library
+const idx = siblings.findIndex((d) => d.hrefPath === doc.hrefPath);
+const prev = idx > 0 ? siblings[idx - 1] : null;
+const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : null;
 ---
 
 <Layout
-  title={`${project.data.title} | ${SITE.title}`}
-  description={project.data.description}
-  pubDatetime={project.data.pubDatetime}
-  modDatetime={project.data.modDatetime}
+  title={pageTitle}
+  description={doc.entry.data.description}
+  pubDatetime={rootMeta?.pubDatetime ?? doc.entry.data.pubDatetime}
+  modDatetime={doc.entry.data.modDatetime ?? rootMeta?.modDatetime}
   canonicalURL={currentUrl}
   chrome="crt"
 >
   <CrtShell active="projects">
-    <main id="main-content" class="crt-frame">
-      <a class="crt-back" href="/projects/">◀ BACK_TO_WORK</a>
+    <main id="main-content" class="crt-frame crt-frame--docs">
+      <ProjectDocsShell
+        docs={siblings}
+        currentPath={doc.hrefPath}
+        projectTitle={projectTitle}
+        projectKey={doc.projectKey}
+      >
+        {
+          doc.isRoot ? (
+            <ProjectHero
+              project={doc.entry}
+              workId={workId}
+              meta={rootMeta ?? doc.entry.data}
+            />
+          ) : (
+            <header class="crt-doc-pagehead">
+              <div class="crt-doc-kicker">
+                {workId}&nbsp;&nbsp;·&nbsp;&nbsp;{projectTitle.toUpperCase()}
+              </div>
+              <h1 class="crt-doc-title">{doc.entry.data.title}</h1>
+              {doc.entry.data.description && (
+                <p class="crt-doc-desc">{doc.entry.data.description}</p>
+              )}
+            </header>
+          )
+        }
 
-      <article>
-        <ProjectHero project={project} workId={workId} />
         <div class="crt-prose">
           <Content />
         </div>
-      </article>
+
+        <nav class="crt-doc-pager" aria-label="Adjacent pages">
+          {
+            prev ? (
+              <a class="crt-doc-pager-link" href={`/projects/${prev.hrefPath}/`}>
+                <span class="crt-doc-pager-dir">◀ PREV</span>
+                <span class="crt-doc-pager-name">
+                  {prev.isRoot ? "Overview" : prev.entry.data.title}
+                </span>
+              </a>
+            ) : (
+              <span />
+            )
+          }
+          {
+            next ? (
+              <a
+                class="crt-doc-pager-link crt-doc-pager-link--next"
+                href={`/projects/${next.hrefPath}/`}
+              >
+                <span class="crt-doc-pager-dir">NEXT ▶</span>
+                <span class="crt-doc-pager-name">
+                  {next.isRoot ? "Overview" : next.entry.data.title}
+                </span>
+              </a>
+            ) : (
+              <span />
+            )
+          }
+        </nav>
+      </ProjectDocsShell>
     </main>
   </CrtShell>
 </Layout>

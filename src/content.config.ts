@@ -69,21 +69,25 @@ const projects = defineCollection({
     z.object({
       title: z.string(),
       description: z.string(),
-      pubDatetime: z.coerce.date(),
+      // Project-root fields (optional on child docs; validated in content-check for roots)
+      pubDatetime: z.coerce.date().optional(),
       modDatetime: z.coerce.date().optional().nullable(),
       tags: z.array(z.string()).default([]),
-      /** e.g. "TOOLING — 2026" under the title */
+      /** e.g. "TOOLING — 2026" under the title on cards */
       category: z.string().optional(),
-      /** e.g. WRK_001 — auto-filled in UI if omitted */
+      /** e.g. WRK_001 */
       workId: z.string().optional(),
       status: z.enum(["active", "wip", "archived"]).default("active"),
-      repo: z.string().url(),
+      repo: z.string().url().optional(),
       demo: z.string().url().optional(),
       cover: image().optional(),
+      /** Card sort among projects (root) OR sidebar order among docs (child) */
       order: z.number().optional(),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
       slug: z.string().optional(),
+      /** Sidebar label override (defaults to title; root shows as Overview) */
+      navLabel: z.string().optional(),
     }),
 });
 

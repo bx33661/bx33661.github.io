@@ -3,13 +3,13 @@ import Layout from "@/layouts/Layout.astro";
 import CrtShell from "@/components/CrtShell.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import { SITE } from "@/config.ts";
-import { getAllProjectsWithSlugs } from "@/utils/projects";
+import { getProjectRoots } from "@/utils/projects";
 import "@/styles/crt-projects.css";
 
 const currentUrl = Astro.url.toString();
-const projects = await getAllProjectsWithSlugs();
+const roots = await getProjectRoots();
 const pageDescription =
-  "Selected security research and tooling — oh-my-vul, Wireshark-MCP, PureAutoCodeQL.";
+  "Selected security research and tooling — each project is a small docs library.";
 
 function formatWorkId(index: number, explicit?: string) {
   if (explicit?.trim()) return explicit.trim().toUpperCase();
@@ -30,18 +30,18 @@ function formatWorkId(index: number, explicit?: string) {
       </p>
       <h1 class="crt-title">SELECTED_WORK</h1>
       <p class="crt-meta">
-        {projects.length} PROJECTS — SORTED BY DATE DESC
+        {roots.length} PROJECTS — EACH IS A DOCS LIBRARY
       </p>
 
       {
-        projects.length > 0 ? (
+        roots.length > 0 ? (
           <section class="crt-grid" aria-label="Selected work">
-            {projects.map(({ project, slug }, index) => (
+            {roots.map((doc, index) => (
               <ProjectCard
-                project={project}
-                slug={slug}
+                project={doc.entry}
+                slug={doc.hrefPath}
                 index={index}
-                workId={formatWorkId(index, project.data.workId)}
+                workId={formatWorkId(index, doc.entry.data.workId)}
               />
             ))}
             <a
@@ -52,7 +52,9 @@ function formatWorkId(index: number, explicit?: string) {
             >
               <div class="crt-more-title">SEE ALL PROJECTS</div>
               <div class="crt-more-sub">github.com/bx33661</div>
-              <div class="crt-more-arrow" aria-hidden="true">▶</div>
+              <div class="crt-more-arrow" aria-hidden="true">
+                ▶
+              </div>
             </a>
           </section>
         ) : (

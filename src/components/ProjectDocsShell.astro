@@ -1,0 +1,61 @@
+---
+/**
+ * Docs-library shell inside a single project:
+ * left sidebar (pages) + main article. CRT styled.
+ */
+import type { ProjectDoc } from "@/utils/projects";
+import { getDocNavLabel } from "@/utils/projects";
+
+type Props = {
+  docs: ProjectDoc[];
+  currentPath: string;
+  projectTitle: string;
+  projectKey: string;
+};
+
+const { docs, currentPath, projectTitle, projectKey } = Astro.props;
+
+const items = docs.map((d) => ({
+  href: `/projects/${d.hrefPath}/`,
+  path: d.hrefPath,
+  label: getDocNavLabel(d),
+  isRoot: d.isRoot,
+  active: d.hrefPath === currentPath,
+}));
+---
+
+<div class="crt-docs">
+  <aside class="crt-docs-side" aria-label={`${projectTitle} documentation`}>
+    <div class="crt-docs-side-head">
+      <a class="crt-docs-side-home" href="/projects/">◀ WORK</a>
+      <div class="crt-docs-side-title">{projectTitle}</div>
+      <div class="crt-docs-side-key">{projectKey}</div>
+    </div>
+
+    <nav class="crt-docs-nav">
+      <div class="crt-docs-nav-label">PAGES</div>
+      <ul class="crt-docs-nav-list">
+        {
+          items.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={["crt-docs-nav-link", { active: item.active }]}
+                aria-current={item.active ? "page" : undefined}
+              >
+                <span class="crt-docs-nav-mark" aria-hidden="true">
+                  {item.isRoot ? "■" : "·"}
+                </span>
+                <span>{item.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="crt-docs-main">
+    <slot />
+  </div>
+</div>

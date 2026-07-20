@@ -2,6 +2,8 @@
 import type { CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 
+type ProjectData = CollectionEntry<"projects">["data"];
+
 type Props = {
   project: CollectionEntry<"projects">;
   slug: string;
@@ -10,10 +12,18 @@ type Props = {
 };
 
 const { project, slug, workId, index = 0 } = Astro.props;
-const { title, description, tags, cover, category, pubDatetime, status } =
-  project.data;
+const data = project.data as ProjectData;
+const {
+  title,
+  description,
+  tags = [],
+  cover,
+  category,
+  pubDatetime,
+  status = "active",
+} = data;
 
-const year = pubDatetime.getFullYear();
+const year = pubDatetime ? pubDatetime.getFullYear() : new Date().getFullYear();
 const categoryLabel =
   category?.trim() ||
   `${status === "wip" ? "WIP" : status === "archived" ? "ARCHIVE" : "TOOLING"} — ${year}`;
@@ -51,7 +61,7 @@ const tone = String(index % 3);
             <div class="crt-card-fallback-block wide" />
           </div>
           <div class="crt-card-fallback-foot">
-            <span>PHOSPHOR / READ-ONLY</span>
+            <span>DOCS LIBRARY</span>
             <span>{year}</span>
           </div>
         </div>

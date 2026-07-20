@@ -12,7 +12,7 @@ const COLLECTIONS = Object.keys(COLLECTION_PATHS)
 const REQUIRED_FIELDS = {
   blog: ['title', 'description', 'date'],
   notes: ['title', 'description', 'date'],
-  projects: ['title', 'description', 'pubDatetime', 'repo'],
+  projects: ['title', 'description'],
 }
 
 function walkMarkdownFiles(rootDir) {
@@ -226,17 +226,40 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
   }
 
   if (collection === 'projects') {
-    const pubDatetime = parseDateValue(frontmatter, 'pubDatetime')
-    if (!pubDatetime) {
-      errors.push(`${relPath}: invalid "pubDatetime", expected a parseable date`)
-    }
+    // Root = index.md inside project folder, OR a flat .md directly under projects/
+    const relToProjects = path.relative(COLLECTION_PATHS.projects, filePath)
+    const parts = relToProjects.split(path.sep)
+    const base = parts[parts.length - 1] || ''
+    const isProjectRoot =
+      (parts.length === 1 && /\.(md|mdx)$/i.test(base)) ||
+      (parts.length === 2 && /^index\.(md|mdx)$/i.test(base))
 
-    const repo = stripQuotes(getScalarValue(frontmatter, 'repo'))
-    if (repo) {
-      try {
-        new URL(repo)
-      } catch {
-        errors.push(`${relPath}: invalid project repo URL "${repo}"`)
+    if (isProjectRoot) {
+      const pubDatetime = parseDateValue(frontmatter, 'pubDatetime')
+      if (!pubDatetime) {
+        errors.push(
+          `${relPath}: project root requires parseable "pubDatetime"`,
+        )
+      }
+
+      const repo = stripQuotes(getScalarValue(frontmatter, 'repo'))
+      if (!repo) {
+        errors.push(`${relPath}: project root requires "repo" URL`)
+      } else {
+        try {
+          new URL(repo)
+        } catch {
+          errors.push(`${relPath}: invalid project repo URL "${repo}"`)
+        }
+      }
+    } else {
+      const repo = stripQuotes(getScalarValue(frontmatter, 'repo'))
+      if (repo) {
+        try {
+          new URL(repo)
+        } catch {
+          errors.push(`${relPath}: invalid project repo URL "${repo}"`)
+        }
       }
     }
 
@@ -261,7 +284,11 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
     if (title && title.length > 80) {
       warnings.push(`${relPath}: title is long (${title.length} chars), consider <= 80`)
     }
-    if (description && (description.length < 40 || description.length > 180)) {
+    if (
+      isProjectRoot &&
+      description &&
+      (description.length < 40 || description.length > 180)
+    ) {
       warnings.push(
         `${relPath}: description length is ${description.length}, recommended 40-180`,
       )

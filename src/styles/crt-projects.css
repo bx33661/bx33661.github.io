@@ -341,6 +341,230 @@ html[data-chrome="crt"] .site-backdrop {
   padding: 2.75rem 1.35rem 4.5rem;
 }
 
+.crt-frame--docs {
+  max-width: 78rem;
+  padding-top: 1.75rem;
+}
+
+/* ---- project docs library (sidebar + article) ---- */
+.crt-docs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .crt-docs {
+    grid-template-columns: 15.5rem minmax(0, 1fr);
+    gap: 1.35rem;
+  }
+}
+
+.crt-docs-side {
+  border: 1px solid var(--crt-border-col);
+  background: var(--crt-paper);
+  position: sticky;
+  top: 4.25rem;
+}
+
+.crt-docs-side-head {
+  padding: 0.95rem 1rem 0.85rem;
+  border-bottom: 1px solid var(--crt-border-col);
+}
+
+.crt-docs-side-home {
+  display: inline-block;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--crt-brown-dim);
+  text-decoration: none;
+  margin-bottom: 0.55rem;
+}
+
+.crt-docs-side-home:hover {
+  color: var(--crt-brown-bright);
+  text-shadow: var(--crt-glow-sm);
+}
+
+.crt-docs-side-title {
+  font-family: var(--font-crt-display);
+  font-size: 1.45rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--crt-brown-bright);
+  text-shadow: var(--crt-glow-sm);
+  line-height: 1;
+}
+
+.crt-docs-side-key {
+  margin-top: 0.35rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--crt-brown-dim);
+}
+
+.crt-docs-nav {
+  padding: 0.75rem 0.55rem 0.9rem;
+}
+
+.crt-docs-nav-label {
+  padding: 0 0.55rem 0.45rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--crt-brown-dim);
+}
+
+.crt-docs-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.crt-docs-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.55rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--crt-brown-dim);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition:
+    color 0.12s ease,
+    background 0.12s ease,
+    border-color 0.12s ease,
+    text-shadow 0.12s ease;
+}
+
+.crt-docs-nav-link:hover {
+  color: var(--crt-brown-bright);
+  background: rgba(122, 74, 30, 0.05);
+}
+
+.crt-docs-nav-link.active {
+  color: var(--crt-brown-bright);
+  border-color: var(--crt-border-col);
+  background: rgba(122, 74, 30, 0.08);
+  text-shadow: var(--crt-glow-sm);
+}
+
+.crt-docs-nav-mark {
+  width: 0.75rem;
+  text-align: center;
+  opacity: 0.7;
+  font-size: 0.7rem;
+}
+
+.crt-docs-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.crt-doc-pagehead {
+  border: 1px solid var(--crt-border-col);
+  background: var(--crt-paper);
+  padding: 1.2rem 1.3rem 1.25rem;
+}
+
+.crt-doc-kicker {
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--crt-brown-dim);
+  margin-bottom: 0.5rem;
+}
+
+.crt-doc-title {
+  margin: 0;
+  font-family: var(--font-crt-display);
+  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--crt-brown-bright);
+  text-shadow: var(--crt-glow);
+  line-height: 0.95;
+  font-weight: 400;
+}
+
+.crt-doc-desc {
+  margin: 0.7rem 0 0;
+  max-width: 42rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--crt-brown);
+}
+
+.crt-doc-pager {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .crt-doc-pager {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.crt-doc-pager-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border: 1px solid var(--crt-border-col);
+  background: var(--crt-paper);
+  padding: 0.85rem 1rem;
+  text-decoration: none;
+  color: var(--crt-brown);
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.crt-doc-pager-link:hover {
+  border-color: var(--crt-brown);
+  background: rgba(122, 74, 30, 0.05);
+  box-shadow: var(--crt-glow-sm);
+}
+
+.crt-doc-pager-link--next {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.crt-doc-pager-dir {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--crt-brown-dim);
+}
+
+.crt-doc-pager-name {
+  font-family: var(--font-crt-display);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--crt-brown-bright);
+  line-height: 1;
+}
+
+/* On docs pages, hero sits inside main column */
+.crt-docs-main .crt-hero {
+  margin-bottom: 0;
+}
+
+.crt-docs-main .crt-prose {
+  margin: 0;
+}
+
 .crt-section-label {
   font-size: 0.68rem;
   letter-spacing: 0.28em;
