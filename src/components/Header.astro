@@ -133,13 +133,6 @@ const brandText = SITE.title.trim();
               >Friends</a
             >
           </li>
-          <li>
-            <a
-              href="/search/"
-              class:list={["nav-link", { "nav-active": isActive("/search") }]}
-              title="Search page">Search</a
-            >
-          </li>
 
           {
             (SITE.showArchives || SITE.showGalleries) && (
@@ -265,17 +258,9 @@ const brandText = SITE.title.trim();
           <span>Friends</span>
         </a>
         <a
-          href="/search/"
-          class:list={["mobile-nav-link", { active: isActive("/search") }]}
-          style="--i:6"
-        >
-          <span class="mobile-nav-indicator" />
-          <span>Search</span>
-        </a>
-        <a
           href="/archives/"
           class:list={["mobile-nav-link", { active: isArchiveQuickActive }]}
-          style="--i:7"
+          style="--i:6"
         >
           <span class="mobile-nav-indicator" />
           <span>Archives</span>
@@ -283,7 +268,7 @@ const brandText = SITE.title.trim();
         <a
           href="/galleries/"
           class:list={["mobile-nav-link", { active: isGalleryQuickActive }]}
-          style="--i:8"
+          style="--i:7"
         >
           <span class="mobile-nav-indicator" />
           <span>Galleries</span>

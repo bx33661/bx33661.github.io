@@ -3,7 +3,6 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
-import IconHash from "@/assets/icons/IconHash.svg";
 import getUniqueTags from "@/utils/getUniqueTags";
 import getPostsByTag from "@/utils/getPostsByTag";
 import { getTagPath } from "@/utils/tagPath";
@@ -12,479 +11,236 @@ import { getAllPosts } from "@/lib/data-utils";
 
 const posts = await getAllPosts();
 
-const tags = getUniqueTags(posts);
-const tagsWithCount = tags
+const tagsWithCount = getUniqueTags(posts)
   .map(({ tag, tagName }) => ({
     tag,
     tagName,
     count: getPostsByTag(posts, tag).length,
   }))
-  // 收敛标签云：只展示文章数 >= 2 的标签，过滤掉 117 个单篇薄标签
-  .filter(t => t.count >= 2)
-  .sort((a, b) => b.count - a.count || a.tagName.localeCompare(b.tagName));
+  .sort(
+    (a, b) =>
+      b.count - a.count || a.tagName.localeCompare(b.tagName, "zh-CN"),
+  );
 
-const maxCount = Math.max(...tagsWithCount.map(t => t.count), 1);
+const maxCount = Math.max(...tagsWithCount.map((t) => t.count), 1);
+const multiCount = tagsWithCount.filter((t) => t.count >= 2).length;
+const singleCount = tagsWithCount.filter((t) => t.count === 1).length;
+
+/** Map post count → visual weight 1–5 for the cloud. */
+const levelOf = (count: number) => {
+  if (maxCount <= 1) return 1;
+  const t = count / maxCount;
+  if (t >= 0.8) return 5;
+  if (t >= 0.5) return 4;
+  if (t >= 0.3) return 3;
+  if (count >= 2) return 2;
+  return 1;
+};
 ---
 
-<Layout title={`标签 | ${SITE.title}`}>
+<Layout
+  title={`标签 | ${SITE.title}`}
+  description="按主题浏览博客全部文章标签。"
+>
   <Header />
   <Breadcrumb />
-  <main id="main-content" class="app-layout pb-12">
-    <!-- Hero with mouse-tracking aurora -->
-    <div class="tags-hero" data-aurora-hero>
-      <div class="aurora-orb aurora-orb-1"></div>
-      <div class="aurora-orb aurora-orb-2"></div>
-      <div class="aurora-orb aurora-orb-3"></div>
-      <div class="aurora-mouse-follow" data-aurora-mouse></div>
-      <div class="relative z-10">
-        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
-          <span class="glow-text">标签</span>
-        </h1>
-        <p class="mt-3 max-w-lg text-foreground/70 italic">
-          按主题浏览全部内容，每个标签都是一条清晰的学习路径。
-        </p>
-        <div class="mt-4 flex items-center gap-2 text-sm text-foreground/50">
-          <span class="hero-badge">
-            {tagsWithCount.length} 个标签
-          </span>
-          <span class="hero-badge">
-            {posts.length} 篇文章
-          </span>
-        </div>
-      </div>
-    </div>
 
-    <div class="tags-grid">
-      {
-        tagsWithCount.map(({ tag, tagName, count }) => {
-          const intensity = count / maxCount;
-          return (
-            <a
-              href={getTagPath(tag)}
-              transition:name={tag}
-              class="tag-card group"
-              data-tag-card
-            >
-              <div class="tag-aurora" data-tag-aurora />
-              <div class="tag-border-glow" data-tag-border />
-              <div class="tag-content">
-                <div class="flex items-center gap-1.5">
-                  <IconHash class="size-5 text-accent opacity-60 transition-opacity group-hover:opacity-100" />
-                  <span class="tag-name">{tagName}</span>
-                </div>
-                <div class="tag-count">
-                  <span class="tag-count-number">{count}</span>
-                  <span class="tag-count-label">
-                    {count === 1 ? "篇文章" : "篇文章"}
-                  </span>
-                </div>
-              </div>
-              <div class="tag-bar">
-                <div
-                  class="tag-bar-fill"
-                  style={`width: ${Math.max(intensity * 100, 8)}%`}
-                />
-              </div>
-            </a>
-          );
-        })
-      }
-    </div>
+  <main id="main-content" class="app-layout tags-main">
+    <header class="tags-head">
+      <h1 class="tags-title">标签</h1>
+      <p class="tags-desc">
+        按主题浏览全部文章。字号越大，相关文章越多。
+      </p>
+      <p class="tags-meta">
+        <span>{tagsWithCount.length} 个标签</span>
+        <span aria-hidden="true">·</span>
+        <span>{posts.length} 篇文章</span>
+        <span aria-hidden="true">·</span>
+        <span>{multiCount} 常用 / {singleCount} 单次</span>
+      </p>
+    </header>
+
+    {
+      tagsWithCount.length > 0 ? (
+        <ul class="tag-cloud" role="list">
+          {tagsWithCount.map(({ tag, tagName, count }) => (
+            <li>
+              <a
+                href={getTagPath(tag)}
+                transition:name={tag}
+                class:list={[
+                  "cloud-tag",
+                  `lv-${levelOf(count)}`,
+                  count === 1 && "is-once",
+                ]}
+                title={`${tagName} · ${count} 篇`}
+              >
+                <span class="cloud-hash" aria-hidden="true">
+                  #
+                </span>
+                <span class="cloud-name">{tagName}</span>
+                <span class="cloud-n">{count}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="tags-empty">暂时还没有标签。</p>
+      )
+    }
   </main>
+
   <Footer />
 </Layout>
 
-<script>
-  let tagsCleanup: AbortController | null = null;
-
-  document.addEventListener("astro:page-load", () => {
-    // Cleanup previous listeners
-    if (tagsCleanup) tagsCleanup.abort();
-    tagsCleanup = new AbortController();
-    const { signal } = tagsCleanup;
-
-    // Hero mouse-follow aurora
-    const hero = document.querySelector("[data-aurora-hero]") as HTMLElement;
-    const heroMouse = document.querySelector(
-      "[data-aurora-mouse]"
-    ) as HTMLElement;
-    if (hero && heroMouse) {
-      hero.addEventListener(
-        "mousemove",
-        e => {
-          requestAnimationFrame(() => {
-            const rect = hero.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            heroMouse.style.setProperty("--mx", `${x}px`);
-            heroMouse.style.setProperty("--my", `${y}px`);
-            heroMouse.style.opacity = "1";
-          });
-        },
-        { signal }
-      );
-      hero.addEventListener(
-        "mouseleave",
-        () => {
-          heroMouse.style.opacity = "0";
-        },
-        { signal }
-      );
-    }
-
-    // Tag cards mouse-follow aurora
-    const tagCards = document.querySelectorAll("[data-tag-card]");
-    tagCards.forEach(card => {
-      const aurora = card.querySelector("[data-tag-aurora]") as HTMLElement;
-      const border = card.querySelector("[data-tag-border]") as HTMLElement;
-      if (!aurora || !border) return;
-
-      card.addEventListener(
-        "mousemove",
-        e => {
-          requestAnimationFrame(() => {
-            const rect = (card as HTMLElement).getBoundingClientRect();
-            const x = (e as MouseEvent).clientX - rect.left;
-            const y = (e as MouseEvent).clientY - rect.top;
-            aurora.style.setProperty("--mx", `${x}px`);
-            aurora.style.setProperty("--my", `${y}px`);
-            aurora.style.opacity = "1";
-            border.style.setProperty("--mx", `${x}px`);
-            border.style.setProperty("--my", `${y}px`);
-            border.style.opacity = "1";
-          });
-        },
-        { signal }
-      );
-
-      card.addEventListener(
-        "mouseleave",
-        () => {
-          aurora.style.opacity = "0";
-          border.style.opacity = "0";
-        },
-        { signal }
-      );
-    });
-  });
-</script>
-
 <style>
-  /* ===== Hero ===== */
-  .tags-hero {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1.5rem;
-    padding: 2.5rem 2rem;
-    margin-bottom: 2.5rem;
-    background: color-mix(
-      in srgb,
-      var(--color-foreground) 3%,
-      var(--color-background)
-    );
-    border: 1px solid color-mix(in srgb, var(--color-accent) 12%, transparent);
+  .tags-main {
+    padding-bottom: 4rem;
   }
 
-  @media (min-width: 640px) {
-    .tags-hero {
-      padding: 3rem 3rem;
-    }
+  .tags-head {
+    margin: 0.25rem 0 1.75rem;
+    max-width: 40rem;
   }
 
-  /* Floating aurora orbs */
-  .aurora-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    pointer-events: none;
-    will-change: transform;
-  }
-
-  .aurora-orb-1 {
-    width: 300px;
-    height: 300px;
-    top: -30%;
-    left: -10%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 25%, transparent),
-      transparent 70%
-    );
-    animation: orb-drift-1 7s ease-in-out infinite alternate;
-  }
-
-  .aurora-orb-2 {
-    width: 250px;
-    height: 250px;
-    top: 10%;
-    right: -5%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-border) 20%, transparent),
-      transparent 70%
-    );
-    animation: orb-drift-2 9s ease-in-out infinite alternate;
-  }
-
-  .aurora-orb-3 {
-    width: 200px;
-    height: 200px;
-    bottom: -20%;
-    left: 40%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 12%, transparent),
-      transparent 70%
-    );
-    animation: orb-drift-3 11s ease-in-out infinite alternate;
-  }
-
-  @keyframes orb-drift-1 {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    100% {
-      transform: translate(40px, 20px) scale(1.2);
-    }
-  }
-  @keyframes orb-drift-2 {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    100% {
-      transform: translate(-30px, 30px) scale(1.15);
-    }
-  }
-  @keyframes orb-drift-3 {
-    0% {
-      transform: translate(0, 0) scale(1);
-    }
-    100% {
-      transform: translate(20px, -25px) scale(1.1);
-    }
-  }
-
-  /* Mouse aurora follower inside hero */
-  .aurora-mouse-follow {
-    position: absolute;
-    width: 350px;
-    height: 350px;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 18%, transparent),
-      color-mix(in srgb, var(--color-border) 8%, transparent) 40%,
-      transparent 70%
-    );
-    filter: blur(50px);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    transform: translate(
-      calc(var(--mx, 0px) - 175px),
-      calc(var(--my, 0px) - 175px)
-    );
-    will-change: transform;
-    z-index: 1;
-  }
-
-  .glow-text {
-    background: linear-gradient(
-      135deg,
-      var(--color-foreground),
-      var(--color-accent)
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(
-      0 0 25px color-mix(in srgb, var(--color-accent) 25%, transparent)
-    );
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.3rem 0.85rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--color-accent);
-    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent) 15%, transparent);
-    backdrop-filter: blur(8px);
-  }
-
-  /* ===== Tags Grid ===== */
-  .tags-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 1rem;
-  }
-
-  /* ===== Tag Card ===== */
-  .tag-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.25rem;
-    border-radius: 1rem;
-    background: color-mix(
-      in srgb,
-      var(--color-foreground) 2%,
-      var(--color-background)
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--color-foreground) 6%, transparent);
-    overflow: hidden;
-    transition:
-      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
-    text-decoration: none;
-    color: var(--color-foreground);
-    isolation: isolate;
-  }
-
-  .tag-card:hover {
-    transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
-    box-shadow:
-      0 10px 40px -10px color-mix(in srgb, var(--color-accent) 15%, transparent),
-      0 0 0 1px color-mix(in srgb, var(--color-accent) 8%, transparent),
-      inset 0 1px 0 color-mix(in srgb, var(--color-accent) 6%, transparent);
-  }
-
-  /* Mouse-follow aurora inside card */
-  .tag-aurora {
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 22%, transparent),
-      color-mix(in srgb, var(--color-border) 10%, transparent) 40%,
-      transparent 70%
-    );
-    filter: blur(35px);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    transform: translate(
-      calc(var(--mx, 0px) - 100px),
-      calc(var(--my, 0px) - 100px)
-    );
-    will-change: transform;
-    z-index: -1;
-  }
-
-  /* Mouse-follow border glow */
-  .tag-border-glow {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--color-accent) 40%, transparent),
-      transparent 70%
-    );
-    filter: blur(20px);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    transform: translate(
-      calc(var(--mx, 0px) - 60px),
-      calc(var(--my, 0px) - 60px)
-    );
-    will-change: transform;
-    z-index: -1;
-    mix-blend-mode: screen;
-  }
-
-  .tag-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .tag-name {
-    font-weight: 600;
-    font-size: 1rem;
-    transition:
-      color 0.2s ease,
-      text-shadow 0.3s ease;
-  }
-
-  .tag-card:hover .tag-name {
-    color: var(--color-accent);
-    text-shadow: 0 0 20px
-      color-mix(in srgb, var(--color-accent) 30%, transparent);
-  }
-
-  .tag-count {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-  }
-
-  .tag-count-number {
-    font-size: 1.25rem;
+  .tags-title {
+    margin: 0;
+    font-size: clamp(1.85rem, 3.5vw, 2.35rem);
     font-weight: 700;
-    line-height: 1;
-    color: var(--color-accent);
-    transition: text-shadow 0.3s ease;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--foreground);
   }
 
-  .tag-card:hover .tag-count-number {
-    text-shadow: 0 0 15px
-      color-mix(in srgb, var(--color-accent) 50%, transparent);
+  .tags-desc {
+    margin: 0.65rem 0 0;
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--foreground) 62%, transparent);
   }
 
-  .tag-count-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.5;
+  .tags-meta {
+    margin: 0.85rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.55rem;
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--foreground) 42%, transparent);
   }
 
-  /* Progress bar */
-  .tag-bar {
-    position: relative;
-    z-index: 1;
-    height: 3px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-foreground) 6%, transparent);
-    overflow: hidden;
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.65rem 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .tag-bar-fill {
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(
-      90deg,
-      var(--color-accent),
-      var(--color-border)
-    );
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 35%, transparent);
+  .cloud-tag {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.2rem;
+    padding: 0.2rem 0.15rem;
+    color: color-mix(in srgb, var(--foreground) 78%, transparent);
+    text-decoration: none;
+    border-bottom: 1px dashed transparent;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease,
+      opacity 0.15s ease;
   }
 
-  .tag-card:hover .tag-bar-fill {
-    box-shadow:
-      0 0 12px color-mix(in srgb, var(--color-accent) 60%, transparent),
-      0 0 25px color-mix(in srgb, var(--color-accent) 20%, transparent);
+  .cloud-tag:hover,
+  .cloud-tag:focus-visible {
+    color: var(--accent);
+    border-bottom-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .cloud-tag:focus-visible {
+    outline: 2px dashed var(--accent);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  .cloud-hash {
+    color: color-mix(in srgb, var(--accent) 70%, transparent);
+    font-weight: 500;
+    opacity: 0.85;
+  }
+
+  .cloud-name {
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .cloud-n {
+    margin-left: 0.15rem;
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.72em;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: color-mix(in srgb, var(--foreground) 38%, transparent);
+    vertical-align: super;
+  }
+
+  .cloud-tag:hover .cloud-n,
+  .cloud-tag:focus-visible .cloud-n {
+    color: color-mix(in srgb, var(--accent) 75%, transparent);
+  }
+
+  /* Count → size. Quiet scale, not poster sizes. */
+  .lv-1 .cloud-name {
+    font-size: 0.86rem;
+    font-weight: 500;
+  }
+  .lv-2 .cloud-name {
+    font-size: 0.95rem;
+  }
+  .lv-3 .cloud-name {
+    font-size: 1.08rem;
+  }
+  .lv-4 .cloud-name {
+    font-size: 1.22rem;
+  }
+  .lv-5 .cloud-name {
+    font-size: 1.4rem;
+    letter-spacing: -0.03em;
+  }
+
+  .lv-5 {
+    color: var(--foreground);
+  }
+
+  .lv-4 {
+    color: color-mix(in srgb, var(--foreground) 90%, transparent);
+  }
+
+  /* One-shot tags stay present but quieter — no separate ghetto section. */
+  .is-once {
+    opacity: 0.72;
+  }
+
+  .is-once:hover,
+  .is-once:focus-visible {
+    opacity: 1;
+  }
+
+  .tags-empty {
+    margin: 2rem 0;
+    color: color-mix(in srgb, var(--foreground) 55%, transparent);
   }
 
   @media (max-width: 480px) {
-    .tags-grid {
-      grid-template-columns: 1fr;
+    .lv-5 .cloud-name {
+      font-size: 1.22rem;
+    }
+    .lv-4 .cloud-name {
+      font-size: 1.1rem;
     }
   }
 </style>
