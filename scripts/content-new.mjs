@@ -145,7 +145,9 @@ title: "${safeTitle}"
 description: "${safeDesc}"
 pubDatetime: ${date}
 tags:
-  - "security"
+  - "Security"
+category: "TOOLING — ${date.slice(0, 4)}"
+workId: "WRK_000"
 status: "active"
 repo: "https://github.com/bx33661/example"
 order: 10

@@ -3,10 +3,12 @@ title: "oh-my-vul"
 description: "Evidence-first 漏洞研究工作区：把 OSS 目标变成可复核 finding、本地复现门禁与披露草稿。"
 pubDatetime: 2026-07-11
 tags:
-  - "vulnerability-research"
+  - "Vuln Research"
   - "Claude Code"
   - "CLI"
-  - "security"
+  - "Security"
+category: "TOOLING — 2026"
+workId: "WRK_001"
 status: "active"
 repo: "https://github.com/bx33661/oh-my-vul"
 order: 1

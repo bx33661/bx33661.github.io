@@ -1,14 +1,20 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
+import CrtShell from "@/components/CrtShell.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import { SITE } from "@/config.ts";
 import { getAllProjectsWithSlugs } from "@/utils/projects";
+import "@/styles/crt-projects.css";
 
 const currentUrl = Astro.url.toString();
 const projects = await getAllProjectsWithSlugs();
-const pageDescription = "安全研究与工程工具 — 选做的、可讲清的几件事。";
+const pageDescription =
+  "SELECTED_WORK — 安全研究与工程工具终端。选做的、可讲清的几件事。";
+
+function formatWorkId(index: number, explicit?: string) {
+  if (explicit?.trim()) return explicit.trim().toUpperCase();
+  return `WRK_${String(index + 1).padStart(3, "0")}`;
+}
 ---
 
 <Layout
@@ -16,91 +22,37 @@ const pageDescription = "安全研究与工程工具 — 选做的、可讲清�
   description={pageDescription}
   canonicalURL={currentUrl}
 >
-  <Header />
-
-  <main id="main-content" class="projects-main app-layout">
-    <header class="pj-head">
-      <div>
-        <h1 class="pj-title">
-          Projects
-          <span class="pj-count">{projects.length}</span>
-        </h1>
-        <p class="pj-sub">{pageDescription}</p>
+  <CrtShell active="projects">
+    <main id="main-content" class="crt-frame">
+      <div class="crt-section-label">
+        -- SECTION 03 -----------------------------------------------
       </div>
-    </header>
+      <h1 class="crt-title">SELECTED_WORK</h1>
+      <div class="crt-meta">
+        {projects.length} PROJECTS — SORTED BY ORDER ASC
+      </div>
 
-    {
-      projects.length > 0 ? (
-        <section class="pj-grid" aria-label="项目列表">
-          {projects.map(({ project, slug }, index) => (
-            <ProjectCard project={project} slug={slug} index={index} />
-          ))}
-        </section>
-      ) : (
-        <p class="pj-empty">暂无公开项目。</p>
-      )
-    }
-  </main>
-
-  <Footer />
+      {
+        projects.length > 0 ? (
+          <section class="crt-grid" aria-label="Selected work">
+            {projects.map(({ project, slug }, index) => (
+              <ProjectCard
+                project={project}
+                slug={slug}
+                index={index}
+                workId={formatWorkId(index, project.data.workId)}
+              />
+            ))}
+            <a class="crt-more" href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer">
+              <div class="crt-more-title">SEE ALL ON GITHUB</div>
+              <div class="crt-more-sub">github.com/bx33661</div>
+              <div class="crt-more-arrow" aria-hidden="true">▶</div>
+            </a>
+          </section>
+        ) : (
+          <p class="crt-meta" style="margin-top:2rem">NO PROJECTS LOADED.</p>
+        )
+      }
+    </main>
+  </CrtShell>
 </Layout>
-
-<style>
-  .projects-main {
-    padding-top: 0.75rem;
-    padding-bottom: 5rem;
-  }
-
-  .pj-head {
-    margin-bottom: 1.75rem;
-  }
-
-  .pj-title {
-    margin: 0;
-    font-size: clamp(1.6rem, 3vw, 2rem);
-    font-weight: 750;
-    letter-spacing: -0.03em;
-  }
-
-  .pj-count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.5rem;
-    height: 1.5rem;
-    margin-left: 0.4rem;
-    padding: 0 0.4rem;
-    border-radius: 9999px;
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    color: var(--accent);
-    font-size: 0.75rem;
-    font-weight: 700;
-    vertical-align: middle;
-  }
-
-  .pj-sub {
-    margin: 0.55rem 0 0;
-    max-width: 36rem;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--foreground) 58%, transparent);
-  }
-
-  .pj-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.1rem;
-  }
-
-  @media (min-width: 640px) {
-    .pj-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.25rem;
-    }
-  }
-
-  .pj-empty {
-    margin: 2rem 0;
-    color: color-mix(in srgb, var(--foreground) 55%, transparent);
-  }
-</style>

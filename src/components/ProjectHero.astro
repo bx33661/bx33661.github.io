@@ -4,209 +4,83 @@ import { Image } from "astro:assets";
 
 type Props = {
   project: CollectionEntry<"projects">;
+  workId: string;
 };
 
-const { project } = Astro.props;
-const { title, description, tags, status, repo, demo, cover } = project.data;
+const { project, workId } = Astro.props;
+const {
+  title,
+  description,
+  tags,
+  status,
+  repo,
+  demo,
+  cover,
+  category,
+  pubDatetime,
+} = project.data;
 
-const statusLabel: Record<typeof status, string> = {
-  active: "Active",
-  wip: "WIP",
-  archived: "Archived",
-};
+const year = pubDatetime.getFullYear();
+const categoryLabel =
+  category?.trim() ||
+  `${status === "wip" ? "WIP" : status === "archived" ? "ARCHIVE" : "TOOLING"} — ${year}`;
+const displayTags = tags.map((t) => t.toUpperCase());
 ---
 
-<header class="ph">
+<header class="crt-hero">
   {
     cover && (
-      <div class="ph-cover">
+      <div class="crt-hero-media">
         <Image
           src={cover}
           alt=""
-          class="ph-cover-img"
-          widths={[720, 1080, 1440]}
-          sizes="(max-width: 768px) 100vw, 720px"
+          widths={[900, 1400]}
+          sizes="(max-width: 768px) 100vw, 72rem"
           loading="eager"
         />
+        <div class="crt-card-scan" aria-hidden="true" />
       </div>
     )
   }
 
-  <div class="ph-meta">
-    <div class="ph-title-row">
-      <h1 class="ph-title">{title}</h1>
-      <span class:list={["ph-status", `ph-status--${status}`]}>
-        {statusLabel[status]}
-      </span>
+  <div class="crt-hero-body">
+    <div class="crt-hero-kicker">
+      {workId} · {categoryLabel} · {status.toUpperCase()}
     </div>
-
-    <p class="ph-desc">{description}</p>
+    <h1 class="crt-hero-title">{title}</h1>
+    <p class="crt-hero-desc">{description}</p>
 
     {
-      tags.length > 0 && (
-        <ul class="ph-tags">
-          {tags.map((tag) => (
-            <li class="ph-tag">{tag}</li>
+      displayTags.length > 0 && (
+        <ul class="crt-tags" style="margin-top:1rem">
+          {displayTags.map((tag) => (
+            <li class="crt-tag">{tag}</li>
           ))}
         </ul>
       )
     }
 
-    <div class="ph-actions">
+    <div class="crt-hero-actions">
       <a
-        class="ph-btn ph-btn--primary"
+        class="crt-btn crt-btn--primary"
         href={repo}
         target="_blank"
         rel="noopener noreferrer"
       >
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-          <path
-            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"
-          ></path>
-        </svg>
-        GitHub
+        ▶ GITHUB
       </a>
       {
         demo && (
           <a
-            class="ph-btn"
+            class="crt-btn"
             href={demo}
             target="_blank"
             rel="noopener noreferrer"
           >
-            Demo / Docs
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path
-                d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5"
-                stroke="currentColor"
-                stroke-width="1.3"
-                stroke-linecap="round"
-                stroke-linejoin="round"></path>
-            </svg>
+            DEMO / DOCS ↗
           </a>
         )
       }
     </div>
   </div>
 </header>
-
-<style>
-  .ph {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    margin-bottom: 2rem;
-  }
-
-  .ph-cover {
-    overflow: hidden;
-    border-radius: 1rem;
-    border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
-    background: color-mix(in srgb, var(--foreground) 4%, var(--background));
-    aspect-ratio: 16 / 9;
-    max-height: 22rem;
-  }
-
-  .ph-cover-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .ph-title-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.65rem 0.85rem;
-  }
-
-  .ph-title {
-    margin: 0;
-    font-size: clamp(1.75rem, 3vw, 2.25rem);
-    font-weight: 750;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-  }
-
-  .ph-status {
-    border-radius: 9999px;
-    border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
-    background: color-mix(in srgb, var(--foreground) 5%, var(--background));
-    padding: 0.2rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: color-mix(in srgb, var(--foreground) 65%, transparent);
-  }
-
-  .ph-status--active {
-    border-color: color-mix(in srgb, var(--accent) 32%, transparent);
-    background: color-mix(in srgb, var(--accent) 10%, var(--background));
-    color: color-mix(in srgb, var(--accent) 90%, var(--foreground));
-  }
-
-  .ph-desc {
-    margin: 0.85rem 0 0;
-    max-width: 46rem;
-    font-size: 1.05rem;
-    line-height: 1.65;
-    color: color-mix(in srgb, var(--foreground) 68%, transparent);
-  }
-
-  .ph-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin: 1rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .ph-tag {
-    border-radius: 9999px;
-    border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
-    padding: 0.2rem 0.55rem;
-    font-size: 0.75rem;
-    color: color-mix(in srgb, var(--foreground) 55%, transparent);
-  }
-
-  .ph-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-top: 1.25rem;
-  }
-
-  .ph-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    border-radius: 0.7rem;
-    border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
-    background: color-mix(in srgb, var(--foreground) 4%, var(--background));
-    padding: 0.55rem 0.9rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: color-mix(in srgb, var(--foreground) 82%, transparent);
-    text-decoration: none;
-    transition:
-      border-color 0.2s ease,
-      background 0.2s ease,
-      color 0.2s ease;
-  }
-
-  .ph-btn:hover {
-    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
-    color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 7%, var(--background));
-  }
-
-  .ph-btn--primary {
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-    background: color-mix(in srgb, var(--accent) 14%, var(--background));
-    color: color-mix(in srgb, var(--accent) 92%, var(--foreground));
-  }
-
-  .ph-btn--primary:hover {
-    background: color-mix(in srgb, var(--accent) 20%, var(--background));
-  }
-</style>

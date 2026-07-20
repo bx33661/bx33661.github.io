@@ -49,3 +49,7 @@ pnpm-lock.yaml
 
 # editor-exported scratch images
 assets/c__Users_*_workspaceStorage_*_images_*.png
+
+# local design references (not shipped)
+retro-crt-portfolio/
+retro-crt-portfolio.zip

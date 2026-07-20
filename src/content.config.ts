@@ -72,6 +72,10 @@ const projects = defineCollection({
       pubDatetime: z.coerce.date(),
       modDatetime: z.coerce.date().optional().nullable(),
       tags: z.array(z.string()).default([]),
+      /** e.g. "TOOLING — 2026" under the title */
+      category: z.string().optional(),
+      /** e.g. WRK_001 — auto-filled in UI if omitted */
+      workId: z.string().optional(),
       status: z.enum(["active", "wip", "archived"]).default("active"),
       repo: z.string().url(),
       demo: z.string().url().optional(),

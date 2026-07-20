@@ -1,0 +1,54 @@
+---
+/**
+ * CRT portfolio chrome for /projects pages only.
+ * Site Header/Footer are intentionally replaced so the page can
+ * fully inhabit the warm-phosphor look from retro-crt-portfolio.
+ */
+import { SITE } from "@/config.ts";
+
+type Props = {
+  active?: "projects" | "home" | "about" | "blog";
+};
+
+const { active = "projects" } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<div class="crt-skin crt-flicker">
+  <header class="crt-topbar">
+    <a class="crt-brand" href="/">
+      <span class="crt-brand-play" aria-hidden="true">▶</span>
+      <span>{SITE.title.toUpperCase()}.COM</span>
+    </a>
+
+    <nav class="crt-nav" aria-label="CRT navigation">
+      <a href="/" aria-current={active === "home" ? "page" : undefined}>HOME</a>
+      <a
+        href="/projects/"
+        aria-current={active === "projects" ? "page" : undefined}>WORK</a
+      >
+      <a href="/blog/" aria-current={active === "blog" ? "page" : undefined}
+        >POSTS</a
+      >
+      <a href="/about/" aria-current={active === "about" ? "page" : undefined}
+        >ABOUT</a
+      >
+      <a href="/friends/">LINKS</a>
+    </nav>
+
+    <div class="crt-online" title="System online">ONLINE</div>
+  </header>
+
+  <slot />
+
+  <footer class="crt-footer">
+    <span>&copy; {year} {SITE.author.toUpperCase()} — RESEARCH TERMINAL</span>
+    <span>
+      <a href="/">RETURN_HOME</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/bx33661" target="_blank" rel="noopener noreferrer"
+        >GITHUB</a
+      >
+    </span>
+  </footer>
+</div>
