@@ -100,9 +100,10 @@ async function main() {
   const token = process.env.BAIDU_PUSH_TOKEN || "";
 
   if (!site || !token) {
-    error("Missing BAIDU_PUSH_SITE or BAIDU_PUSH_TOKEN environment variables.");
-    error("Get your token at: https://ziyuan.baidu.com/linksubmit/index");
-    process.exit(1);
+    // Secrets are optional in forks/local CI — skip instead of failing the deploy run.
+    warn("Missing BAIDU_PUSH_SITE or BAIDU_PUSH_TOKEN environment variables.");
+    warn("Skipping Baidu push. Get a token at: https://ziyuan.baidu.com/linksubmit/index");
+    process.exit(0);
   }
 
   // Baidu API expects the site parameter without protocol (e.g. www.example.com)

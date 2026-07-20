@@ -130,7 +130,7 @@ const images = Object.entries(allImages)
 </dialog>
 
 <script>
-  let lightboxCleanup = null;
+  let lightboxCleanup: (() => void) | null = null;
 
   const initGalleryLightbox = () => {
     if (lightboxCleanup) {
@@ -141,7 +141,9 @@ const images = Object.entries(allImages)
     const dialog = document.getElementById("gallery-lightbox");
     if (!(dialog instanceof HTMLDialogElement)) return;
 
-    const triggers = Array.from(document.querySelectorAll("[data-lightbox-trigger]"));
+    const triggers = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-lightbox-trigger]"),
+    );
     if (triggers.length === 0) return;
 
     const img = document.getElementById("gallery-lightbox-image");
@@ -155,7 +157,7 @@ const images = Object.entries(allImages)
 
     let current = 0;
 
-    const open = index => {
+    const open = (index: number) => {
       if (index < 0 || index >= triggers.length) return;
       current = index;
       const trigger = triggers[current];
@@ -177,14 +179,14 @@ const images = Object.entries(allImages)
     const toPrev = () => open((current - 1 + triggers.length) % triggers.length);
     const toNext = () => open((current + 1) % triggers.length);
 
-    const onKeydown = event => {
+    const onKeydown = (event: KeyboardEvent) => {
       if (!dialog.open) return;
       if (event.key === "Escape") close();
       if (event.key === "ArrowLeft") toPrev();
       if (event.key === "ArrowRight") toNext();
     };
 
-    const disposers = [];
+    const disposers: Array<() => void> = [];
 
     triggers.forEach((trigger, index) => {
       const handler = () => open(index);
@@ -207,7 +209,7 @@ const images = Object.entries(allImages)
       disposers.push(() => nextBtn.removeEventListener("click", toNext));
     }
 
-    const onDialogClick = event => {
+    const onDialogClick = (event: MouseEvent) => {
       if (event.target === dialog) close();
     };
 
@@ -218,7 +220,7 @@ const images = Object.entries(allImages)
     disposers.push(() => document.removeEventListener("keydown", onKeydown));
 
     lightboxCleanup = () => {
-      disposers.forEach(dispose => dispose());
+      disposers.forEach((dispose) => dispose());
       if (dialog.open) dialog.close();
       document.body.style.overflow = "";
     };

@@ -9,7 +9,9 @@ interface UseSliderWheelProps {
 
 export function useSliderWheel({ sliderRef, onScrollLeft, onScrollRight }: UseSliderWheelProps): void {
   const wheelAccumulatorRef = useRef(0)
-  const wheelTimeoutRef = useRef<NodeJS.Timeout>()
+  const wheelTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  )
 
   useEffect(() => {
     const slider = sliderRef.current
