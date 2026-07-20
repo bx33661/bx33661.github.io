@@ -1,106 +1,128 @@
-import { useState, useRef, useCallback } from "react"
-import type React from "react"
+import {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  type MouseEvent as ReactMouseEvent,
+  type TouchEvent as ReactTouchEvent,
+} from "react"
 import { SLIDER_CONSTANTS } from "@/lib/constants"
+
+type PointerLikeEvent =
+  | { clientX: number; preventDefault?: () => void; touches?: TouchList }
+  | MouseEvent
+  | TouchEvent
+  | ReactMouseEvent
+  | ReactTouchEvent
 
 interface UseSliderDragProps {
   onSwipeLeft: () => void
   onSwipeRight: () => void
+  /** Live drag offset — applied to the track outside React render. */
+  onDragOffsetChange?: (offsetX: number) => void
 }
 
 interface UseSliderDragReturn {
   isDragging: boolean
-  dragX: number
-  handleDragStart: (e: React.MouseEvent | React.TouchEvent) => void
-  handleDragMove: (e: React.MouseEvent | React.TouchEvent) => void
+  handleDragStart: (e: PointerLikeEvent) => void
+  handleDragMove: (e: PointerLikeEvent) => void
   handleDragEnd: () => void
 }
 
-export function useSliderDrag({ onSwipeLeft, onSwipeRight }: UseSliderDragProps): UseSliderDragReturn {
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragX, setDragX] = useState(0)
+function clientXOf(e: PointerLikeEvent): number {
+  if ("touches" in e && e.touches && e.touches.length > 0) {
+    return e.touches[0].clientX
+  }
+  return (e as { clientX: number }).clientX
+}
 
+/**
+ * Drag offset stays off the React render path.
+ * On release, parent CSS transition snaps the track — we only flip isDragging.
+ */
+export function useSliderDrag({
+  onSwipeLeft,
+  onSwipeRight,
+  onDragOffsetChange,
+}: UseSliderDragProps): UseSliderDragReturn {
+  const [isDragging, setIsDragging] = useState(false)
+
+  const isDraggingRef = useRef(false)
   const startXRef = useRef(0)
-  const currentXRef = useRef(0)
+  const dragXRef = useRef(0)
   const velocityRef = useRef(0)
   const lastTimeRef = useRef(0)
-  const animationRef = useRef<number | undefined>(undefined)
+  const onDragOffsetChangeRef = useRef(onDragOffsetChange)
+  const onSwipeLeftRef = useRef(onSwipeLeft)
+  const onSwipeRightRef = useRef(onSwipeRight)
 
-  const animateToPosition = useCallback((target: number) => {
-    const animate = () => {
-      setDragX((current) => {
-        const diff = target - current
-        if (Math.abs(diff) < 0.5) {
-          return target
-        }
-        return current + diff * SLIDER_CONSTANTS.MOMENTUM_EASING
-      })
-      animationRef.current = requestAnimationFrame(animate)
-    }
-    animate()
+  useEffect(() => {
+    onDragOffsetChangeRef.current = onDragOffsetChange
+  }, [onDragOffsetChange])
 
-    setTimeout(() => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
-      setDragX(target)
-    }, SLIDER_CONSTANTS.ANIMATION_TIMEOUT)
+  useEffect(() => {
+    onSwipeLeftRef.current = onSwipeLeft
+    onSwipeRightRef.current = onSwipeRight
+  }, [onSwipeLeft, onSwipeRight])
+
+  const handleDragStart = useCallback((e: PointerLikeEvent) => {
+    isDraggingRef.current = true
+    setIsDragging(true)
+    const clientX = clientXOf(e)
+    startXRef.current =
+      clientX - dragXRef.current / SLIDER_CONSTANTS.DRAG_RESISTANCE
+    lastTimeRef.current = performance.now()
+    velocityRef.current = 0
   }, [])
 
-  const handleDragStart = useCallback(
-    (e: React.MouseEvent | React.TouchEvent) => {
-      setIsDragging(true)
-      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX
-      startXRef.current = clientX - dragX / SLIDER_CONSTANTS.DRAG_RESISTANCE
-      lastTimeRef.current = Date.now()
-      velocityRef.current = 0
+  const handleDragMove = useCallback((e: PointerLikeEvent) => {
+    if (!isDraggingRef.current) return
 
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
-    },
-    [dragX],
-  )
-
-  const handleDragMove = useCallback(
-    (e: React.MouseEvent | React.TouchEvent) => {
-      if (!isDragging) return
-
-      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX
-      const rawDragX = clientX - startXRef.current
-      const resistedDragX = rawDragX * SLIDER_CONSTANTS.DRAG_RESISTANCE
-      const now = Date.now()
-      const dt = now - lastTimeRef.current
-
-      if (dt > 0) {
-        velocityRef.current = (resistedDragX - currentXRef.current) / dt
-      }
-
-      currentXRef.current = resistedDragX
-      lastTimeRef.current = now
-      setDragX(resistedDragX)
-    },
-    [isDragging],
-  )
-
-  const handleDragEnd = useCallback(() => {
-    if (!isDragging) return
-    setIsDragging(false)
-
-    const velocity = velocityRef.current
-    const threshold = window.innerWidth * SLIDER_CONSTANTS.SWIPE_THRESHOLD_PERCENT
-
-    if (dragX < -threshold || velocity < -SLIDER_CONSTANTS.VELOCITY_THRESHOLD) {
-      onSwipeLeft()
-    } else if (dragX > threshold || velocity > SLIDER_CONSTANTS.VELOCITY_THRESHOLD) {
-      onSwipeRight()
+    // Native TouchEvent only — React synthetic touchmove is passive at root.
+    if ("cancelable" in e && e.cancelable && "touches" in e) {
+      e.preventDefault?.()
     }
 
-    animateToPosition(0)
-  }, [isDragging, dragX, onSwipeLeft, onSwipeRight, animateToPosition])
+    const clientX = clientXOf(e)
+    const rawDragX = clientX - startXRef.current
+    const resistedDragX = rawDragX * SLIDER_CONSTANTS.DRAG_RESISTANCE
+    const now = performance.now()
+    const dt = now - lastTimeRef.current
+
+    if (dt > 0) {
+      velocityRef.current = (resistedDragX - dragXRef.current) / dt
+    }
+
+    lastTimeRef.current = now
+    dragXRef.current = resistedDragX
+    onDragOffsetChangeRef.current?.(resistedDragX)
+  }, [])
+
+  const handleDragEnd = useCallback(() => {
+    if (!isDraggingRef.current) return
+    isDraggingRef.current = false
+
+    const dragX = dragXRef.current
+    const velocity = velocityRef.current
+    const threshold =
+      window.innerWidth * SLIDER_CONSTANTS.SWIPE_THRESHOLD_PERCENT
+
+    if (dragX < -threshold || velocity < -SLIDER_CONSTANTS.VELOCITY_THRESHOLD) {
+      onSwipeLeftRef.current()
+    } else if (
+      dragX > threshold ||
+      velocity > SLIDER_CONSTANTS.VELOCITY_THRESHOLD
+    ) {
+      onSwipeRightRef.current()
+    }
+
+    // Clear drag bookkeeping. Parent settles via CSS when isDragging → false.
+    dragXRef.current = 0
+    setIsDragging(false)
+  }, [])
 
   return {
     isDragging,
-    dragX,
     handleDragStart,
     handleDragMove,
     handleDragEnd,

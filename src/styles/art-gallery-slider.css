@@ -1,30 +1,51 @@
-/* Art Gallery Slider - Dark Theme 1:1 Template Recreation */
+/* Art Gallery Slider — performance-first dark theme */
 
 .gallery-container {
   position: relative;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background: #000000;
+  background: #000;
+  /* Isolate gallery paint from the rest of the page */
+  contain: layout style;
 }
 
-/* Animated Background */
+/* Ambient background driven by CSS vars (no layer remount) */
 .gallery-background {
   position: absolute;
   inset: 0;
   z-index: 0;
+  background:
+    radial-gradient(
+      ellipse at 30% 20%,
+      color-mix(in srgb, var(--c0, #1a1a2e) 40%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 70% 80%,
+      color-mix(in srgb, var(--c1, #16213e) 40%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 50% 50%,
+      color-mix(in srgb, var(--c2, #0f3460) 28%, transparent) 0%,
+      transparent 70%
+    ),
+    linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+  transition: background 0.5s ease;
+  will-change: auto;
+  pointer-events: none;
 }
 
+/* Soft veil only — never full-viewport backdrop-filter */
 .gallery-blur-overlay {
   position: absolute;
   inset: 0;
-  /* Soft veil only — 120px full-viewport backdrop-filter was a major GPU cost. */
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.16);
   z-index: 1;
   pointer-events: none;
 }
 
-/* Counter - positioned top right under navigation */
 .gallery-counter {
   position: absolute;
   top: 6rem;
@@ -35,15 +56,17 @@
   gap: 0.5rem;
   border-radius: 9999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.45);
   padding: 0.5rem 1rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* Small frosted chip only — cheap vs full-screen blur */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .gallery-counter-current {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  font-variant-numeric: tabular-nums;
 }
 
 .gallery-counter-separator {
@@ -53,9 +76,9 @@
 .gallery-counter-total {
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.4);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Slider */
 .gallery-slider {
   position: relative;
   display: flex;
@@ -64,48 +87,66 @@
   width: 100%;
   cursor: grab;
   z-index: 10;
+  touch-action: pan-y;
+  user-select: none;
 }
 
 .gallery-slider.is-dragging {
   cursor: grabbing;
 }
 
+.gallery-slider.is-dragging .gallery-slider-track {
+  transition: none !important;
+}
+
 .gallery-slider-track {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 4rem; /* 64px → step 564 with 500px card */
   padding: 0 calc(50vw - 250px);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 @media (max-width: 768px) {
   .gallery-slider-track {
-    gap: 1rem;
+    gap: 2rem; /* 32px → step 432 with 400px card */
     padding: 0 calc(50vw - 200px);
   }
 }
 
-/* Artwork Card */
+/* Card */
 .artwork-card-wrapper {
   position: relative;
   flex-shrink: 0;
-  perspective: 1000px;
+  transform: scale(var(--card-scale, 0.85));
+  opacity: var(--card-opacity, 0.5);
+  transition:
+    transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.35s ease;
+  /* Promote only the active/near cards during slide */
+  contain: layout paint style;
+}
+
+.artwork-card-wrapper.is-active,
+.artwork-card-wrapper.is-near {
+  will-change: transform, opacity;
 }
 
 .artwork-card {
   position: relative;
   overflow: hidden;
   border-radius: 1rem;
-  transition: all 0.3s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.55);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-.artwork-card-glass {
-  position: absolute;
-  inset: 0;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+.artwork-card-wrapper.is-active .artwork-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 56px -16px rgba(0, 0, 0, 0.7);
 }
 
 .artwork-card-image-container {
@@ -125,6 +166,7 @@
 }
 
 .artwork-card-image {
+  display: block;
   height: 100%;
   width: 100%;
   border-radius: 0.75rem;
@@ -132,10 +174,16 @@
   user-select: none;
   -webkit-user-drag: none;
   background: #141414;
+  /* Avoid permanent will-change on every image */
+  transform: translateZ(0);
+}
+
+.artwork-card-wrapper.is-active .artwork-card:hover .artwork-card-image {
+  transform: translateZ(0) scale(1.04);
+  transition: transform 0.35s ease;
 }
 
 .artwork-card-image--placeholder {
-  display: block;
   background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
 }
 
@@ -144,26 +192,46 @@
   left: 0.75rem;
   right: 0.75rem;
   bottom: 0.75rem;
-  height: 40%;
+  height: 42%;
   border-radius: 0 0 0.75rem 0.75rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.55) 40%,
+    transparent 100%
+  );
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.artwork-card-wrapper.is-active .artwork-card-gradient {
+  opacity: 1;
 }
 
 .artwork-card-info {
   position: absolute;
-  inset: 0.75rem 0.75rem 0.75rem 0.75rem;
-  bottom: 0.75rem;
+  inset: 0.75rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 1.5rem;
-  user-select: none;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.artwork-card-wrapper.is-active .artwork-card-info {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .artwork-card-year {
-  margin: 0 0 0.25rem 0;
-  font-family: 'Courier New', monospace;
+  margin: 0 0 0.25rem;
+  font-family: ui-monospace, "Courier New", monospace;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -172,11 +240,11 @@
 
 .artwork-card-title {
   margin: 0;
-  font-family: Georgia, 'Playfair Display', serif;
+  font-family: Georgia, "Playfair Display", serif;
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.2;
-  color: #ffffff;
+  color: #fff;
 }
 
 @media (min-width: 768px) {
@@ -185,25 +253,7 @@
   }
 }
 
-.artwork-card-artist {
-  margin: 0.5rem 0 0 0;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.artwork-card-reflection {
-  position: absolute;
-  bottom: -5rem;
-  left: 0.75rem;
-  right: 0.75rem;
-  height: 5rem;
-  overflow: hidden;
-  border-radius: 1rem;
-  opacity: 0.2;
-  filter: blur(4px);
-}
-
-/* Navigation Dots */
+/* Dots */
 .gallery-navigation-dots {
   position: absolute;
   bottom: 2rem;
@@ -215,10 +265,10 @@
   gap: 0.5rem;
   border-radius: 9999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.45);
   padding: 0.75rem 1rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .gallery-nav-dot-button {
@@ -227,27 +277,23 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.gallery-nav-dot-button:hover {
-  transform: scale(1.1);
 }
 
 .gallery-nav-dot {
+  display: block;
   height: 0.5rem;
+  width: 0.5rem;
   border-radius: 9999px;
-  transition: all 0.3s ease-out;
+  background: rgba(255, 255, 255, 0.3);
+  transition:
+    width 0.25s ease,
+    background-color 0.25s ease;
 }
 
-.gallery-nav-dot-hover {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.2);
+.gallery-nav-dot-button.is-active .gallery-nav-dot {
+  width: 1.5rem;
 }
 
-/* Keyboard Hint */
 .gallery-keyboard-hint {
   position: absolute;
   bottom: 2rem;
@@ -270,7 +316,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
   padding: 0.25rem 0.5rem;
-  font-family: 'Courier New', monospace;
+  font-family: ui-monospace, "Courier New", monospace;
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.4);
 }
@@ -279,17 +325,11 @@
   font-size: 0.75rem;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 640px) {
   .gallery-counter {
     top: 5rem;
     right: 1rem;
     padding: 0.375rem 0.75rem;
-  }
-
-  .gallery-counter-current,
-  .gallery-counter-total {
-    font-size: 0.8125rem;
   }
 
   .artwork-card-image-container {
@@ -301,13 +341,13 @@
     font-size: 1.25rem;
   }
 
-  .artwork-card-year,
-  .artwork-card-artist {
-    font-size: 0.8125rem;
-  }
-
   .gallery-navigation-dots {
     bottom: 1.5rem;
+  }
+
+  .gallery-slider-track {
+    padding: 0 calc(50vw - 175px);
+    gap: 1.5rem;
   }
 }
 
@@ -325,35 +365,28 @@
   .gallery-counter {
     top: 4.5rem;
     right: 0.75rem;
-    padding: 0.35rem 0.65rem;
   }
 
-  .gallery-counter-current,
-  .gallery-counter-total,
-  .gallery-counter-separator {
-    font-size: 0.75rem;
+  .gallery-slider-track {
+    padding: 0 calc(50vw - 150px);
+    gap: 1rem;
   }
 }
 
-/* Performance Optimizations */
-.gallery-container * {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-slider-track,
+  .artwork-card-wrapper,
+  .artwork-card,
+  .artwork-card-image,
+  .artwork-card-info,
+  .artwork-card-gradient,
+  .gallery-background,
+  .gallery-nav-dot {
+    transition: none !important;
+  }
 }
 
-.artwork-card-image {
-  will-change: transform;
-}
-
-.gallery-slider-track {
-  will-change: transform;
-}
-
-/* Hide scrollbar */
 body:has(.gallery-container) {
   overflow: hidden;
-}
-
-::-webkit-scrollbar {
-  display: none;
 }

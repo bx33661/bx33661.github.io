@@ -7,14 +7,19 @@ import { GALLERY_IMAGES, buildGalleryImageSources } from "@/data/gallery";
 import Layout from "@/layouts/Layout.astro";
 import "@/styles/art-gallery-slider.css";
 
-// Card display is ~350–500px — never feed the slider full w1600 assets.
+// Card display is ~300–500 CSS px. Cap decode budget hard.
 const CARD_MAX_WIDTH = 960
+const DISPLAY_WIDTH = 640
 const THUMB_WIDTH = 640
 
 const pickWidth = (widths: number[], target: number) =>
   widths.find((w) => w >= target) ?? widths[widths.length - 1]
 
-const buildCardSrcSet = (baseName: string, widths: number[], format: "webp" | "jpg") =>
+const buildCardSrcSet = (
+  baseName: string,
+  widths: number[],
+  format: "webp" | "jpg",
+) =>
   widths
     .filter((w) => w <= CARD_MAX_WIDTH)
     .map((w) => `/gallery/optimized/${baseName}-w${w}.${format} ${w}w`)
@@ -24,20 +29,22 @@ const galleryImages = GALLERY_IMAGES.map((item) => {
   const sources = buildGalleryImageSources(item)
   const baseName = item.file.replace(/\.[^.]+$/, "")
   const widths = sources.renditionWidths
-  const displayWidth = pickWidth(widths, CARD_MAX_WIDTH)
+  const displayWidth = pickWidth(widths, DISPLAY_WIDTH)
   const thumbWidth = pickWidth(widths, THUMB_WIDTH)
-  const cardSrcSet =
-    buildCardSrcSet(baseName, widths, "webp") ||
-    buildCardSrcSet(baseName, widths, "jpg")
+  // Prefer webp in srcset; jpg fallback as src for older engines.
+  const webpSrcSet = buildCardSrcSet(baseName, widths, "webp")
+  const jpgSrcSet = buildCardSrcSet(baseName, widths, "jpg")
 
   return {
     src: `/gallery/optimized/${baseName}-w${displayWidth}.jpg`,
-    srcSet: cardSrcSet,
-    sizes: "(max-width: 768px) 350px, 500px",
+    srcSet: webpSrcSet || jpgSrcSet,
+    sizes: "(max-width: 480px) 300px, (max-width: 768px) 350px, 500px",
+    // Palette sampling only — same small jpg is fine and cache-friendly.
     thumb: `/gallery/optimized/${baseName}-w${thumbWidth}.jpg`,
     alt: item.alt,
     title: item.title,
     date: item.date,
+    // Intrinsic ratio for layout; actual decode is capped by src/srcset.
     width: item.width,
     height: item.height,
   }
@@ -116,11 +123,11 @@ const galleryLinks = galleries
     background: #000000;
   }
 
-  /* Make header darker and more transparent for gallery */
+  /* Make header darker for gallery — keep blur modest (full-bar blur is GPU-heavy). */
   .gallery-page-wrapper :global(.header-glass) {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
@@ -235,8 +242,6 @@ const galleryLinks = galleries
     padding: 0.4rem 0.85rem;
     font-size: 0.78rem;
     text-decoration: none;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
 

@@ -1,5 +1,11 @@
-import { useRef, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import {
+  useRef,
+  useMemo,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react"
 import { ArtworkCard } from "./artwork-card"
 import { NavigationDots } from "./navigation-dots"
 import { useSliderNavigation } from "@/hooks/use-slider-navigation"
@@ -29,8 +35,11 @@ interface ArtGallerySliderProps {
 
 export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
   const sliderRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const bgRef = useRef<HTMLDivElement>(null)
+  const currentIndexRef = useRef(0)
+  const [step, setStep] = useState(564)
 
-  // Transform gallery images to artwork format
   const artworks: Artwork[] = useMemo(
     () =>
       images.map((img, index) => ({
@@ -53,10 +62,45 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
     enableKeyboard: true,
   })
 
-  const { isDragging, dragX, handleDragStart, handleDragMove, handleDragEnd } =
+  currentIndexRef.current = currentIndex
+
+  /** Measure card width + gap from the live track (handles all breakpoints). */
+  const measureStep = useCallback(() => {
+    const track = trackRef.current
+    if (!track || track.children.length < 1) return
+    const first = track.children[0] as HTMLElement
+    const styles = getComputedStyle(track)
+    const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0
+    const next = first.offsetWidth + gap
+    if (next > 0) setStep(next)
+  }, [])
+
+  // Imperative track transform — drag never goes through React state.
+  const applyTrackTransform = useCallback(
+    (index: number, dragX: number, instant = false) => {
+      const track = trackRef.current
+      if (!track) return
+      const x = -index * step + dragX
+      track.style.transition = instant
+        ? "none"
+        : "transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)"
+      track.style.transform = `translate3d(${x}px, 0, 0)`
+    },
+    [step],
+  )
+
+  const handleDragOffset = useCallback(
+    (offsetX: number) => {
+      applyTrackTransform(currentIndexRef.current, offsetX, true)
+    },
+    [applyTrackTransform],
+  )
+
+  const { isDragging, handleDragStart, handleDragMove, handleDragEnd } =
     useSliderDrag({
       onSwipeLeft: goToNext,
       onSwipeRight: goToPrev,
+      onDragOffsetChange: handleDragOffset,
     })
 
   useSliderWheel({
@@ -65,42 +109,63 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
     onScrollRight: goToPrev,
   })
 
-  // Only sample palette for active ±1 — not every image on mount.
+  // Native non-passive touch listeners — React's synthetic touchmove is passive
+  // at the root, so preventDefault would be ignored and the page would scroll.
+  useEffect(() => {
+    const el = sliderRef.current
+    if (!el) return
+
+    const onStart = (e: TouchEvent) => handleDragStart(e)
+    const onMove = (e: TouchEvent) => handleDragMove(e)
+    const onEnd = () => handleDragEnd()
+
+    el.addEventListener("touchstart", onStart, { passive: true })
+    el.addEventListener("touchmove", onMove, { passive: false })
+    el.addEventListener("touchend", onEnd)
+    el.addEventListener("touchcancel", onEnd)
+
+    return () => {
+      el.removeEventListener("touchstart", onStart)
+      el.removeEventListener("touchmove", onMove)
+      el.removeEventListener("touchend", onEnd)
+      el.removeEventListener("touchcancel", onEnd)
+    }
+  }, [handleDragStart, handleDragMove, handleDragEnd])
+
   const colors = useColorExtraction(artworks, currentIndex)
   const currentColors = useCurrentColors(colors, artworks[currentIndex]?.id)
 
+  useLayoutEffect(() => {
+    measureStep()
+    applyTrackTransform(currentIndexRef.current, 0, true)
+  }, [measureStep, applyTrackTransform, artworks.length])
+
+  useEffect(() => {
+    window.addEventListener("resize", measureStep, { passive: true })
+    return () => window.removeEventListener("resize", measureStep)
+  }, [measureStep])
+
+  // Snap when the active slide changes or drag ends.
+  useEffect(() => {
+    if (isDragging) return
+    applyTrackTransform(currentIndex, 0, false)
+  }, [currentIndex, isDragging, applyTrackTransform])
+
+  // Ambient colors via CSS variables — no AnimatePresence remount.
+  useEffect(() => {
+    const bg = bgRef.current
+    if (!bg) return
+    bg.style.setProperty("--c0", currentColors[0] || "#1a1a2e")
+    bg.style.setProperty("--c1", currentColors[1] || "#16213e")
+    bg.style.setProperty("--c2", currentColors[2] || "#0f3460")
+  }, [currentColors])
+
   return (
     <div className="gallery-container">
-      {/* Animated ambient background */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
-          className="gallery-background"
-          style={{
-            background: `
-              radial-gradient(ellipse at 30% 20%, ${currentColors[0]}66 0%, transparent 50%),
-              radial-gradient(ellipse at 70% 80%, ${currentColors[1]}66 0%, transparent 50%),
-              radial-gradient(ellipse at 50% 50%, ${currentColors[2]}44 0%, transparent 70%),
-              linear-gradient(180deg, #0a0a0a 0%, #111111 100%)
-            `,
-          }}
-        />
-      </AnimatePresence>
+      <div ref={bgRef} className="gallery-background" aria-hidden="true" />
+      <div className="gallery-blur-overlay" aria-hidden="true" />
 
-      {/* Soft veil — CSS blur kept light; heavy 120px backdrop was a GPU killer */}
-      <div className="gallery-blur-overlay" />
-
-      {/* Counter - moved to top right */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="gallery-counter"
-      >
+      <div className="gallery-counter">
         <span className="gallery-counter-current">
           {String(currentIndex + 1).padStart(2, "0")}
         </span>
@@ -108,66 +173,41 @@ export default function ArtGallerySlider({ images }: ArtGallerySliderProps) {
         <span className="gallery-counter-total">
           {String(artworks.length).padStart(2, "0")}
         </span>
-      </motion.div>
+      </div>
 
-      {/* Slider */}
       <div
         ref={sliderRef}
-        className={`gallery-slider ${isDragging ? "is-dragging" : ""}`}
+        className={`gallery-slider${isDragging ? " is-dragging" : ""}`}
         onMouseDown={handleDragStart}
         onMouseMove={handleDragMove}
         onMouseUp={handleDragEnd}
         onMouseLeave={handleDragEnd}
-        onTouchStart={handleDragStart}
-        onTouchMove={handleDragMove}
-        onTouchEnd={handleDragEnd}
       >
-        <motion.div
-          className="gallery-slider-track"
-          animate={{
-            x:
-              typeof window !== "undefined"
-                ? -currentIndex * (window.innerWidth > 768 ? 564 : 432) + dragX
-                : 0,
-          }}
-          transition={
-            isDragging
-              ? { duration: 0 }
-              : { duration: 0.6, ease: [0.32, 0.72, 0, 1] }
-          }
-        >
+        <div ref={trackRef} className="gallery-slider-track">
           {artworks.map((artwork, index) => (
             <ArtworkCard
               key={artwork.id}
               artwork={artwork}
               isActive={index === currentIndex}
-              dragOffset={dragX}
               index={index}
               currentIndex={currentIndex}
             />
           ))}
-        </motion.div>
+        </div>
       </div>
 
-      {/* Navigation dots */}
       <NavigationDots
         total={artworks.length}
         current={currentIndex}
         onSelect={goToSlide}
-        colors={currentColors}
+        accent={currentColors[0]}
       />
 
-      {/* Keyboard hint */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="gallery-keyboard-hint"
-      >
+      <div className="gallery-keyboard-hint">
         <kbd className="gallery-kbd">←</kbd>
         <kbd className="gallery-kbd">→</kbd>
         <span className="gallery-kbd-label">navigate</span>
-      </motion.div>
+      </div>
     </div>
   )
 }
