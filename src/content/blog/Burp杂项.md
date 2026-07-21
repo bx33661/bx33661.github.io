@@ -1,6 +1,6 @@
 ---
 title: "Burp杂项"
-description: "Burp杂项，更好的使用工具"
+description: "Burp Suite 实战杂项：代理抓包、过滤、扫描、Collaborator、Decoder 与常见排障技巧。"
 date: 2024-09-21
 tags:
   - "ctf"

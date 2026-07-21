@@ -1,6 +1,6 @@
 ---
 title: "Python新人学习-安全分析"
-description: "Python新人学习-安全分析-Summer"
+description: "HnuSec Python 安全新人第一讲：SSTI、反序列化、沙箱逃逸等 CTF/Web 安全入门要点。"
 date: 2025-07-20
 tags:
   - "Python"

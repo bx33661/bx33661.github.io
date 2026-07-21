@@ -1,6 +1,6 @@
 ---
 title: "Claude Code Agent Teams 代码安全审计初体验"
-description: "探讨 Claude Code 的 Agent Teams 功能在代码安全审计中的应用与实践，以 Go 语言项目为例体验多智能体协作的优越性与局限性。"
+description: "用 Claude Code Agent Teams 做代码安全审计：多智能体协作流程、适用边界与 Go 项目初体验。"
 date: 2026-03-11
 tags:
   - "Claude Code"

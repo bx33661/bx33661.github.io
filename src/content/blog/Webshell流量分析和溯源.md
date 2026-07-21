@@ -1,6 +1,6 @@
 ---
 title: "蚁剑流量分析和溯源"
-description: "Webshell分析---蚁剑流量分析和溯源"
+description: "中国蚁剑 Webshell 流量特征分析与应急溯源：识别加密通信并定位受控主机。"
 date: 2024-01-15
 tags:
   - "webshell"

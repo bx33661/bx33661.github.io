@@ -1,6 +1,6 @@
 ---
 title: "OWAP-juice-shop靶场学习"
-description: "OWAP Juice Shop 是一个用于学习和测试 Web 应用程序安全的开源项目。"
+description: "OWASP Juice Shop 靶场学习记录：常见 Web 漏洞复现路径、解题思路与安全测试练习笔记。"
 date: 2025-08-11
 tags:
   - "靶场"

@@ -1,6 +1,6 @@
 ---
 title: "Webpack 渗透思路"
-description: "Webpack 渗透思路,反编查找"
+description: "前端 Webpack 渗透思路：sourcemap、打包还原、敏感接口与配置泄露排查路径。"
 date: 2025-05-29
 tags:
   - "Webpack"

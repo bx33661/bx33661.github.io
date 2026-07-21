@@ -3,7 +3,7 @@
 
 ---
 title: "Python安全 - CTF新手培训"
-description: "Python安全学习课程，涵盖SSTI、反序列化、沙箱逃逸等安全知识"
+description: "Python 安全培训笔记：SSTI、反序列化、沙箱逃逸等 CTF 常见题型与防御思路梳理。"
 date: 2025-01-20
 tags:
   - "Python"
