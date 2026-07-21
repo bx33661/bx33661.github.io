@@ -4,10 +4,8 @@ import {
   getAllNotes,
   getAllNoteSlugs,
   getAllPostSlugs,
-  getAllTags,
 } from "@/lib/data-utils";
 import { getAllProjectDocs } from "@/utils/projects";
-import { TAG_PATH_PREFIX, getTagPath } from "@/utils/tagPath";
 
 function buildUrl(baseUrl: string, path: string): string {
   return `${baseUrl}${path}`;
@@ -23,7 +21,6 @@ export async function GET(context: APIContext) {
     const noteSlugs = await getAllNoteSlugs();
     const allNotes = await getAllNotes();
     const projectDocs = await getAllProjectDocs();
-    const tags = await getAllTags();
     const site = context.site ?? SITE.website;
     const baseUrl = site.toString().endsWith("/")
       ? site.toString().slice(0, -1)
@@ -79,12 +76,7 @@ export async function GET(context: APIContext) {
         changefreq: "monthly",
         priority: "0.6",
       },
-      {
-        url: buildUrl(baseUrl, `${TAG_PATH_PREFIX}/`),
-        lastmod: now,
-        changefreq: "weekly",
-        priority: "0.6",
-      },
+      // /blog/tags/* intentionally omitted — tags are UI filters (noindex), not SEO landing pages.
       {
         url: buildUrl(baseUrl, "/notes/list/"),
         lastmod: now,
@@ -134,30 +126,12 @@ export async function GET(context: APIContext) {
       }),
     );
 
-    // 按 slug 路径聚合（合并大小写变体），只收录文章数达标的可索引标签页；
-    // 薄标签页已 noindex，不应进 sitemap，否则给搜索引擎发矛盾信号。
-    const tagCountByPath = new Map<string, number>();
-    for (const [tag, count] of tags) {
-      const path = getTagPath(tag);
-      tagCountByPath.set(path, (tagCountByPath.get(path) ?? 0) + count);
-    }
-    const tagUrls = Array.from(tagCountByPath, ([path, count]) => ({
-      url: buildUrl(baseUrl, path),
-      lastmod: now,
-      changefreq: "weekly",
-      priority: count >= 5 ? "0.6" : "0.5",
-    })).filter(entry => {
-      const path = entry.url.replace(baseUrl, "");
-      return (tagCountByPath.get(path) ?? 0) >= SITE.tagIndexMinPosts;
-    });
-
     const allUrls = [
       ...staticPages,
       ...blogPosts,
       ...notes,
       ...projects,
       ...notePages,
-      ...tagUrls,
     ];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>

@@ -30,8 +30,8 @@ const params = Astro.params;
 const { tag } = params;
 const { page, tagName } = Astro.props;
 
-// 薄标签页（文章数不足）或分页第 2 页及以后，加 noindex 避免稀释索引质量
-const noindex = page.total < SITE.tagIndexMinPosts || page.currentPage > 1;
+// Tags are on-site filters only — never seek search indexing.
+const noindex = true;
 ---
 
 <Layout title={`Tag: ${tagName} | ${SITE.title}`} noindex={noindex}>

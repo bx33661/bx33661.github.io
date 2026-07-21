@@ -21,8 +21,9 @@ export const SITE = {
   lightAndDarkMode: true,
   postPerIndex: 6,
   postPerPage: 8,
-  // 文章数低于此值的标签页加 noindex、移出 sitemap，避免薄聚合页稀释索引质量
-  tagIndexMinPosts: 3,
+  // Legacy threshold (unused): all tag pages are noindex and omitted from sitemap.
+  // Tags stay as on-site filters only — see blog/tags/* and sitemap.xml.ts.
+  tagIndexMinPosts: Number.POSITIVE_INFINITY,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
   showArchives: true,
   showGalleries: true,
