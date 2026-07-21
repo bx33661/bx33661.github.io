@@ -1,6 +1,6 @@
 ---
-title: "Metasploit框架学习-1"
-description: "Metasploit渗透测试框架学习笔记，基于TryHackMe平台的实战教程，涵盖MSF基础使用、模块介绍及渗透测试各阶段应用。"
+title: "Metasploit 框架入门：TryHackMe 三关笔记"
+description: "基于 TryHackMe 的 Metasploit 学习笔记：模块、利用流程与渗透测试各阶段基础操作。"
 date: 2024-01-01
 tags:
   - "Metasploit"

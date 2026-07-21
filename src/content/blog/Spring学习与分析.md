@@ -1,5 +1,5 @@
 ---
-title: "Spring学习与分析 - 从Servlet到SpringBoot的演进"
+title: "Spring 安全相关学习与代码分析"
 description: "深入理解Spring框架的设计理念，从传统Servlet容器到SpringBoot的演进过程，包括MVC架构、POJO规范、自动配置机制等核心概念。"
 date: 2025-10-30
 tags:

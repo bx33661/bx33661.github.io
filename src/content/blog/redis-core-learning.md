@@ -1,5 +1,5 @@
 ---
-title: "Redis与缓存Part1"
+title: "Redis 与缓存基础：结构、持久化与安全注意点"
 description: "深度总结 Redis 的核心知识点，涵盖五大基本数据类型的应用场景、Python 实战操作，以及缓存穿透、击穿、雪崩等经典问题的解决方案（布隆过滤器等）。"
 date: 2026-02-10
 tags:

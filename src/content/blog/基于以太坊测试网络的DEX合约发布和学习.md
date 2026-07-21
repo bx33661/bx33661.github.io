@@ -1,5 +1,5 @@
 ---
-title: "基于以太坊测试网络的DEX合约发布和学习"
+title: "以太坊测试网 DEX 合约发布与学习"
 description: "在Sepolia测试网发行ERC-20代币、编写DEX合约与简易DApp的完整实践记录与踩坑总结。"
 date: 2025-12-09
 tags:

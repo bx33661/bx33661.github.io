@@ -1,5 +1,5 @@
 ---
-title: "Vite漏洞分析"
+title: "Vite 任意文件读取漏洞分析（CVE-2025-30208 等）"
 description: "Vite 任意文件读取相关 CVE（含 CVE-2025-30208 等）原理、复现与防御要点分析。"
 date: 2025-06-15
 tags:

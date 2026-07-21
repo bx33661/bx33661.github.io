@@ -1,5 +1,5 @@
 ---
-title: "Go下template的SSTI分析"
+title: "Go template SSTI：原理、利用与防护"
 description: "深入分析Go语言template模板引擎的SSTI（服务器端模板注入）漏洞，包括html/template和text/template的语法特性及安全利用技术。"
 date: 2025-07-23
 tags:

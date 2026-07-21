@@ -1,5 +1,5 @@
 ---
-title: "OpenCode漏洞复现(CVE-2026-22812)"
+title: "OpenCode 漏洞复现：CVE-2026-22812 分析"
 description: "OpenCode 1.0.215版本RCE与任意文件读取漏洞深度分析,包含完整的漏洞复现步骤、代码审计细节以及安全防护建议。"
 date: 2026-01-17
 tags:

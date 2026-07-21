@@ -1,5 +1,5 @@
 ---
-title: "HTB-CTF Challenge做题记录"
+title: "HTB CTF 题解与思路整理"
 description: "HackTheBox CTF Challenge做题记录，涵盖WEB、MOBILE、CRYPTO、REVERSE等多个安全方向的深入分析与解题思路分享。"
 date: "2025-08-30"
 tags:

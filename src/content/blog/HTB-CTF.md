@@ -1,5 +1,5 @@
 ---
-title: "HTB-CTF Try Out分析与题解"
+title: "HTB CTF 做题记录"
 description: "HTB-CTF是HackTheBox发起的一个CTF比赛，题目覆盖了多个领域，包括WEB、MOBILE、CRYPTO、REVERSE等。"
 date: "2025-08-30"
 tags:

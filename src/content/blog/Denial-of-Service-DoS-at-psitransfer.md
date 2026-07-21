@@ -1,5 +1,5 @@
 ---
-title: "Denial of Service (DoS) at psitransfer"
+title: "PsiTransfer DoS 漏洞分析与复现"
 description: "Analysis of a Denial of Service (DoS) vulnerability in psitransfer caused by improper exception handling in file upload logic."
 date: 2026-02-05
 tags:

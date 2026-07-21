@@ -1,5 +1,5 @@
 ---
-title: "Burp杂项"
+title: "Burp Suite 实战技巧：代理、扫描与 Collaborator"
 description: "Burp Suite 实战杂项：代理抓包、过滤、扫描、Collaborator、Decoder 与常见排障技巧。"
 date: 2024-09-21
 tags:

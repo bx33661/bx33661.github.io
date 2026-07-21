@@ -1,5 +1,5 @@
 ---
-title: "OWAP-juice-shop靶场学习"
+title: "OWASP Juice Shop 靶场通关与漏洞练习"
 description: "OWASP Juice Shop 靶场学习记录：常见 Web 漏洞复现路径、解题思路与安全测试练习笔记。"
 date: 2025-08-11
 tags:

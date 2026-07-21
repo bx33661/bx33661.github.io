@@ -1,5 +1,5 @@
 ---
-title: "Claude Code使用记录&随笔"
+title: "Claude Code 使用笔记：CLI Agent 工作流实践"
 description: "Claude Code / 同类 CLI Agent 使用随笔：交互模式、常用工作流与安全审计场景下的实践记录。"
 date: 2025-08-25
 tags:

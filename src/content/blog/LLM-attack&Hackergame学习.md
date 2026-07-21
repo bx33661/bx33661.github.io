@@ -1,5 +1,5 @@
 ---
-title: "基于TinyStories的LLM-attack & Hackergame-GCG攻击学习 "
+title: "LLM 攻击与 Hackergame：GCG 等对抗学习笔记"
 description: "TinyStories 与 Hackergame 题复现：prompt 注入、accepted/hackergame/🐮 输出与 GCG 攻击实战"
 date: 2025-12-03
 tags:

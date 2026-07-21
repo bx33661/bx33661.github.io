@@ -1,5 +1,5 @@
 ---
-title: "HTTP请求走私研究与分析"
+title: "HTTP 请求走私（CL·TE / TE·CL）原理与检测"
 description: "HTTP 请求走私（HTTP/1.1）原理、CL·TE 与 TE·CL 变体，以及检测与防御思路。"
 date: 2025-07-23
 tags:

@@ -1,5 +1,5 @@
 ---
-title: "Go net/http 源码学习：Server 与 Client 视角"
+title: "Go net/http 源码阅读与安全相关点"
 description: "从 Server 与 Client 两个视角梳理 Go net/http 的请求处理链路、路由分发与响应写回机制，结合源码理解关键设计。"
 date: 2026-02-26
 tags:

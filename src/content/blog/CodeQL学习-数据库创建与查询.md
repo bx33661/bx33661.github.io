@@ -1,5 +1,5 @@
 ---
-title: "CodeQL第一弹-数据库创建与查询"
+title: "CodeQL 入门：数据库创建与常用查询"
 description: "CodeQL静态污点分析、数据库创建（Python/C++）和查询执行完整实践指南，包含AI4CodeQL项目经验总结。"
 date: "2025-12-11"
 tags:

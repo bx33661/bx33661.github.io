@@ -1,5 +1,5 @@
 ---
-title: "oh-my-vul 1.0 设计与实践"
+title: "oh-my-vul 1.0：证据优先的漏洞研究工作台"
 description: "记录 oh-my-vul 从两个安全研究 Skill 演进为证据优先漏洞研究工作台的过程，以及 Evidence、CLI、TUI、Codex 和 Claude Code 适配背后的设计考虑。"
 date: 2026-07-11
 tags:

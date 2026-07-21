@@ -1,5 +1,5 @@
 ---
-title: "深入理解P2P网络与BitTorrent协议：去中心化文件共享的技术原理"
+title: "P2P 与 BT 协议学习笔记"
 description: "全面解析P2P（点对点）网络和BitTorrent协议的核心技术原理，包括DHT分布式哈希表、节点发现机制、NAT穿透、资源定位算法、数据传输优化等关键技术。深入探讨去中心化网络架构如何实现高效的文件共享，以及BitTorrent协议中的Tit-for-Tat激励机制、分片传输策略和哈希校验等核心算法的实现细节。"
 date: 2025-09-09
 tags:

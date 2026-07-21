@@ -1,5 +1,5 @@
 ---
-title: "K8s Goat 靶场实战记录"
+title: "Kubernetes Goat 靶场：密钥泄露到容器逃逸"
 description: "Kubernetes Goat 实战：密钥泄露、DIND、Metadata Secrets 与容器逃逸等场景记录。"
 date: 2026-02-19
 tags:

@@ -1,5 +1,5 @@
 ---
-title: "Jenkins凭证破解&敏感信息获取"
+title: "Jenkins 凭证解密与敏感信息获取实战"
 description: "Jenkins 凭证与敏感信息获取：常见暴露面、凭据解密思路与加固建议（授权环境）。"
 date: 2025-08-10
 tags:

@@ -1,5 +1,5 @@
 ---
-title: "Claude Code Agent Teams 代码安全审计初体验"
+title: "Claude Code Agent Teams：多智能体代码安全审计"
 description: "用 Claude Code Agent Teams 做代码安全审计：多智能体协作流程、适用边界与 Go 项目初体验。"
 date: 2026-03-11
 tags:

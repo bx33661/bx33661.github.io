@@ -1,5 +1,5 @@
 ---
-title: "Dom树学习分析"
+title: "DOM 树结构学习与前端安全相关分析"
 description: "深入学习DOM（Document Object Model）树形结构，了解浏览器如何解析HTML文档并为JavaScript提供访问接口的机制。"
 date: 2025-07-21
 tags:

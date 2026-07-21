@@ -1,5 +1,5 @@
 ---
-title: "Pass The Hash攻击学习"
+title: "Pass the Hash 攻击原理与防护要点"
 description: "Pass The Hash攻击学习，将窃取到的NTLM Hash作为凭据，直接用于认证和访问网络中的其他主机"
 date: 2025-08-02
 tags:

@@ -1,5 +1,5 @@
 ---
-title: "Wiz Cloud Hunting Games 挑战复盘：一条完整的云上攻击链"
+title: "Wiz Cloud Hunting Games 解题记录"
 description: "记录 Wiz Cloud Hunting Games CTF 的完整调查过程：从 S3 数据外泄溯源，到 CloudTrail 追踪、Overlay 日志隐藏识别，再到持久化清除。"
 date: 2026-02-20
 tags:

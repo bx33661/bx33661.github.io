@@ -1,5 +1,5 @@
 ---
-title: "OpenHarmonyCTF-ezAPP_And_SERVER"
+title: "OpenHarmony CTF：ezAPP 与 SERVER 题解"
 description: "OpenHarmonyCTF-ezAPP_And_SERVER 主要是鸿蒙APP结合Web漏洞分析和学习"
 date: 2025-06-23
 tags:

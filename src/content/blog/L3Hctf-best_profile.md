@@ -1,5 +1,5 @@
 ---
-title: "L3hCTF"
+title: "L3HCTF best_profile：Nginx 缓存与 Flask ProxyFix"
 description: "L3hCTF best_profile writeup - nginx cache and Flask ProxyFix"
 date: 2024-01-15
 tags:

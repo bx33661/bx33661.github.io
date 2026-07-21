@@ -1,5 +1,5 @@
 ---
-title: "SSJI服务器端JavaScript代码注入学习与实践"
+title: "SSJI / 服务端注入学习笔记"
 description: "深入学习服务器端JavaScript代码注入漏洞的原理、利用技巧、沙箱绕过方法以及实际CTF案例分析。"
 date: "2025-09-05"
 tags:
