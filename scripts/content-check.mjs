@@ -46,11 +46,26 @@ function hasKey(frontmatter, key) {
   return pattern.test(frontmatter)
 }
 
+/** Strip a YAML inline comment outside of quotes: `false  # draft` → `false`. */
+function stripInlineComment(value) {
+  let inSingle = false
+  let inDouble = false
+  for (let i = 0; i < value.length; i += 1) {
+    const ch = value[i]
+    if (ch === "'" && !inDouble) inSingle = !inSingle
+    else if (ch === '"' && !inSingle) inDouble = !inDouble
+    else if (ch === '#' && !inSingle && !inDouble) {
+      return value.slice(0, i).trimEnd()
+    }
+  }
+  return value.trim()
+}
+
 function getScalarValue(frontmatter, key) {
   const pattern = new RegExp(`^${key}\\s*:\\s*(.+)$`, 'm')
   const match = frontmatter.match(pattern)
   if (!match) return ''
-  return match[1].trim()
+  return stripInlineComment(match[1].trim())
 }
 
 function stripQuotes(value) {

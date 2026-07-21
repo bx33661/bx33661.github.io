@@ -25,14 +25,23 @@ function parseArgs(argv) {
 }
 
 function readSiteHrefFromConfig() {
-  const filePath = path.resolve('src/config/site.ts')
-  if (!fs.existsSync(filePath)) {
-    return undefined
+  // SITE lives in src/config.ts; src/config/site.ts only re-exports it.
+  const candidates = [
+    path.resolve('src/config.ts'),
+    path.resolve('src/config/site.ts'),
+  ]
+
+  for (const filePath of candidates) {
+    if (!fs.existsSync(filePath)) continue
+    const raw = fs.readFileSync(filePath, 'utf8')
+    const match =
+      raw.match(/href:\s*['"`]([^'"`]+)['"`]/) ||
+      raw.match(/website:\s*[`'"](https?:\/\/[^`'"]+?)\/?[`'"]/) ||
+      raw.match(/SITE_ORIGIN\s*=\s*['"`](https?:\/\/[^'"`]+)['"`]/)
+    if (match?.[1]) return match[1].replace(/\/$/, '')
   }
 
-  const raw = fs.readFileSync(filePath, 'utf8')
-  const match = raw.match(/href:\s*['"`]([^'"`]+)['"`]/)
-  return match?.[1]
+  return undefined
 }
 
 function normalizeBaseUrl(rawValue) {

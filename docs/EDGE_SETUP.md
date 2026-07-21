@@ -2,47 +2,91 @@
 
 ## Why
 
-GitHub Pages serves static files and cannot emit custom HTTP 301/response headers by repo config alone.
-To preserve SEO migration quality, configure redirects and security headers at your edge/CDN layer.
+GitHub Pages serves static files and **cannot** emit custom HTTP 301s or response headers from repo files alone.
 
-## Redirects (301)
+- `public/_redirects` and `public/_headers` are for Netlify / Cloudflare Pages–style hosts.
+- On GitHub Pages they are **ignored**.
+- HTML-level redirects (static Astro pages under `src/pages/album/**`, `src/pages/archive.astro`, etc.) and the CSP `<meta>` in `Layout.astro` still apply without an edge layer.
 
-Apply these redirects at edge:
+If you put a CDN / reverse proxy in front of Pages (Cloudflare, Fastly, etc.), configure redirects and security headers there.
 
-- `/projects` -> `/galleries/` (301)
-- `/projects/` -> `/galleries/` (301)
-- `/projects/*` -> `/galleries/` (301)
+## Active site routes (do not redirect these)
 
-The repo also includes:
+These are first-class pages. **Do not** 301 them away:
 
-- `public/_redirects` for Netlify/Cloudflare Pages style platforms that support this file.
-- Static Astro fallback pages under `src/pages/projects/**`, so GitHub Pages visitors still land on `/galleries/` even without edge redirects.
+| Path | Module |
+|------|--------|
+| `/projects/`, `/projects/*` | Research / tooling showcase (content collection) |
+| `/galleries/`, `/galleries/*` | Photo galleries |
+| `/blog/`, `/blog/*` | Blog |
+| `/notes/`, `/notes/*` | Notes |
+| `/friends/` | Friends |
+| `/search/` | Pagefind search |
 
-## Security Headers
+> **Historical note:** An earlier draft of this doc told the edge to send `/projects*` → `/galleries/`. That is obsolete. Projects is a real module now; applying that rule would break the site.
 
-Apply these headers at edge for all paths:
+## Recommended edge redirects (301)
 
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- `Referrer-Policy: strict-origin-when-cross-origin`
-- `Permissions-Policy: geolocation=(), microphone=(), camera=()`
-- `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
-- `Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://gstatic.loli.net; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com https://app.posthog.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'`
+Only for **legacy** paths that no longer have a dedicated page tree (or only have a soft HTML refresh):
 
-The repo includes this header set in `public/_headers` for Netlify/Cloudflare Pages style platforms that support it. GitHub Pages does not apply `public/_headers`; keep these rules at the edge/CDN if strict response headers are required. Main Astro pages also emit an HTML-level CSP/referrer policy as defense in depth, but HTTP-only headers such as HSTS and X-Frame-Options still require an edge/CDN.
+```text
+/bento          → /galleries/          301
+/bento/         → /galleries/          301
+/tags/*         → /blog/tags/:splat    301
+/album          → /galleries/          301
+/album/         → /galleries/          301
+/album/*        → /galleries/:splat    301   # optional if old album slugs match
+/archive        → /archives/           301
+/archive/       → /archives/           301
+```
+
+Repo mirrors (platform-dependent):
+
+- `public/_redirects` — Netlify/Cloudflare Pages syntax (`/tags/*`, `/bento`).
+- Static HTML refresh fallbacks — `src/pages/album/**`, `src/pages/archive.astro` (work on GitHub Pages without edge).
+
+`/tags/*` has **no** static Astro fallback today. On plain GitHub Pages it 404s unless you add an edge 301 or a static redirect page.
+
+## Security headers
+
+Apply on the edge for all paths:
+
+```http
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: geolocation=(), microphone=(), camera=()
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://gstatic.loli.net; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com https://app.posthog.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'
+```
+
+Same set lives in `public/_headers` for hosts that honor it.
+
+Notes:
+
+- GitHub Pages does **not** apply `public/_headers`. HSTS / `X-Frame-Options` / real CSP **response** headers need an edge.
+- Main Astro pages also emit an HTML-level CSP + referrer policy as defense in depth.
+- Before enabling Giscus (`PUBLIC_ENABLE_COMMENTS=true`), extend CSP with `https://giscus.app` for `script-src`, `frame-src`, and `connect-src` (HTML meta, `_headers`, and edge — all three).
 
 ## Validation
 
-After edge rules are published, verify:
-
 ```bash
-curl -I https://www.bx33661.com/projects
-curl -I https://www.bx33661.com/projects/algorithm-practice
-curl -I https://www.bx33661.com/
+curl -sI https://www.bx33661.com/ | rg -i 'strict-transport|x-frame|content-security|HTTP/'
+curl -sI https://www.bx33661.com/projects/
+curl -sI https://www.bx33661.com/tags/web
+curl -sI https://www.bx33661.com/bento
 ```
 
-Expected:
+Expected when edge is configured:
 
-- `/projects*` returns `301` with `Location: /galleries/` when edge redirects are enabled
-- without edge redirects on GitHub Pages, `/projects*` serves a static HTML redirect to `/galleries/`
-- homepage response contains the security headers above
+- `/projects/` → **200** (not a redirect to galleries)
+- `/tags/*` → **301** → `/blog/tags/*`
+- `/bento` → **301** → `/galleries/`
+- Homepage response includes the security headers above
+
+On bare GitHub Pages (no edge):
+
+- `/projects/` → 200
+- `/tags/*` → 404 (until edge or a static fallback is added)
+- `/album/`, `/archive` → HTML refresh redirects
+- Security headers above are absent from the HTTP response (CSP meta still in HTML)

@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://www.bx33661.com"><img src="https://img.shields.io/badge/site-bx33661.com-0ea5e9?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Website" /></a>
   <a href="https://github.com/bx33661/bx33661.github.io/actions/workflows/deploy.yml"><img src="https://img.shields.io/github/actions/workflow/status/bx33661/bx33661.github.io/deploy.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=deploy" alt="Deploy" /></a>
-  <a href="https://astro.build"><img src="https://img.shields.io/badge/Astro-6-BC52EE?style=for-the-badge&logo=astro&logoColor=white" alt="Astro" /></a>
+  <a href="https://astro.build"><img src="https://img.shields.io/badge/Astro-7-BC52EE?style=for-the-badge&logo=astro&logoColor=white" alt="Astro" /></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
   <a href="https://pages.github.com/"><img src="https://img.shields.io/badge/GitHub%20Pages-live-222?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Pages" /></a>
 </p>
@@ -30,7 +30,7 @@
 | 搜索 | [`/search/`](https://www.bx33661.com/search/) | Pagefind 全文检索 |
 | 友链 | [`/friends/`](https://www.bx33661.com/friends/) | 朋友与组织 |
 
-技术栈：Astro 6 · React · Tailwind CSS 4 · Pagefind · GitHub Actions
+技术栈：Astro 7 · React · Tailwind CSS 4 · Pagefind · GitHub Actions
 
 ## 快速开始
 
@@ -77,7 +77,8 @@ CI 从 GitHub Variables / Secrets 注入；百度 token 使用 `secrets.BAIDU_PU
 src/
   config.ts        # SITE 唯一配置源
   config/          # friends / env / theme
-  content/         # blog、notes 等内容集合
+  content/         # blog、projects 等内容集合
+  data/            # notes、galleries 数据
   pages/           # 路由
   components/      # UI
   layouts/         # Layout / PostDetails / Main
@@ -108,8 +109,11 @@ docs/              # 部署说明与仓库视觉素材
 ## 内容约定
 
 - 博客：`src/content/blog/`
-- 笔记：`src/content/notes/`
+- 项目：`src/content/projects/<slug>/`
+- 笔记：`src/data/notes/`
+- 相册元数据：`src/data/galleries/`
 - 图片优先放 `public/`；文件名建议 kebab-case，避免空格
+- 外链图（如语雀 CDN）若遇防盗链，文内可保留 `<meta name="referrer" content="no-referrer">`
 
 ## 联系
 
