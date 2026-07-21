@@ -22,6 +22,8 @@ const requiredFiles = [
   "index.html",
   "galleries/index.html",
   "album/index.html",
+  "tags/index.html",
+  "blog/tags/index.html",
   "sitemap.xml",
   "image-sitemap.xml",
   "_headers",
@@ -74,6 +76,47 @@ if (fs.existsSync(albumIndex)) {
   const content = fs.readFileSync(albumIndex, "utf8");
   if (!/\/galleries\/?/.test(content)) {
     failures.push("album index does not redirect to /galleries");
+  }
+}
+
+const tagsIndex = requireBuiltFile("tags/index.html");
+if (fs.existsSync(tagsIndex)) {
+  const content = fs.readFileSync(tagsIndex, "utf8");
+  if (!/\/blog\/tags\/?/.test(content)) {
+    failures.push("tags index does not redirect to /blog/tags");
+  }
+}
+
+const tagsDir = path.join(distDir, "tags");
+if (fs.existsSync(tagsDir)) {
+  const tagDirs = fs
+    .readdirSync(tagsDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory());
+  if (tagDirs.length === 0) {
+    failures.push("no legacy tag redirect pages under dist/tags");
+  } else {
+    const sample = requireBuiltFile(
+      path.join("tags", tagDirs[0].name, "index.html"),
+    );
+    const sampleContent = fs.readFileSync(sample, "utf8");
+    if (
+      !/http-equiv=["']refresh["']/i.test(sampleContent) ||
+      !/\/blog\/tags\//.test(sampleContent)
+    ) {
+      failures.push(
+        `legacy tag redirect missing refresh to /blog/tags: ${sample}`,
+      );
+    }
+  }
+}
+
+const headersFile = requireBuiltFile("_headers");
+if (fs.existsSync(headersFile)) {
+  const headers = fs.readFileSync(headersFile, "utf8");
+  if (!/giscus\.app/.test(headers) || !/frame-src/.test(headers)) {
+    failures.push(
+      "dist/_headers CSP missing giscus.app / frame-src allowlist",
+    );
   }
 }
 

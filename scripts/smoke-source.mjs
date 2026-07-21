@@ -46,10 +46,33 @@ const assertHasText = (filePath, pattern, label) => {
 const repoRoot = process.cwd()
 
 requireFile(path.join(repoRoot, 'src/pages/album/index.astro'))
+requireFile(path.join(repoRoot, 'src/pages/tags/index.astro'))
+requireFile(path.join(repoRoot, 'src/pages/tags/[tag].astro'))
 requireFile(path.join(repoRoot, 'src/data/gallery.ts'))
 requireFile(path.join(repoRoot, 'public/sw.js'))
 requireFile(path.join(repoRoot, 'public/site.webmanifest'))
 requireFile(path.join(repoRoot, 'astro.config.ts'))
+
+assertHasText(
+  path.join(repoRoot, 'src/pages/tags/index.astro'),
+  /\/blog\/tags\/?/,
+  'legacy /tags index missing redirect to /blog/tags',
+)
+assertHasText(
+  path.join(repoRoot, 'src/layouts/Layout.astro'),
+  /giscus\.app/,
+  'Layout CSP missing giscus.app allowlist',
+)
+assertHasText(
+  path.join(repoRoot, 'public/_headers'),
+  /giscus\.app/,
+  '_headers CSP missing giscus.app allowlist',
+)
+assertHasText(
+  path.join(repoRoot, 'src/layouts/Layout.astro'),
+  /frame-src[^"]*giscus\.app/,
+  'Layout CSP missing frame-src for giscus.app',
+)
 
 requireDirectoryHasFiles(
   path.join(repoRoot, 'src/data/galleries/bx-journey'),
