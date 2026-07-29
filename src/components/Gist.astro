@@ -1,0 +1,104 @@
+---
+/**
+ * Gist — 在文章中嵌入 GitHub Gist 代码片段
+ *
+ * 使用方式:
+ *   <Gist id="5672adaff13bc2bbae43f025faaebda2" />
+ *   <Gist id="5672adaff13bc2bbae43f025faaebda2" file="share_set_user_info.php" />
+ *
+ * Props:
+ *   id        — Gist ID (必填)
+ *   file      — 指定 Gist 中的某个文件 (可选)
+ *   height    — iframe 高度，默认 500px (可选)
+ */
+
+interface Props {
+  id: string;
+  file?: string;
+  height?: string;
+}
+
+const { id, file, height = "500px" } = Astro.props;
+
+// 构建 Gist URL
+const gistUrl = file
+  ? `https://gist.github.com/${id}.js?file=${file}`
+  : `https://gist.github.com/${id}.js`;
+
+// 生成唯一 ID 用于 iframe
+const uniqueId = `gist-${id}-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="gist-embed relative w-full overflow-hidden rounded-lg border border-skin-line my-6">
+  <iframe
+    id={uniqueId}
+    class="w-full border-0"
+    style={`height: ${height};`}
+    title={`GitHub Gist ${id}`}
+  ></iframe>
+</div>
+
+<script define:vars={{ gistUrl, uniqueId }}>
+  // 使用 iframe 的 document.write 方法加载 Gist
+  const iframe = document.getElementById(uniqueId);
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+
+  // 写入加载 Gist 的 HTML
+  doc.open();
+  doc.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <base target="_parent">
+      <style>
+        body {
+          margin: 0;
+          padding: 16px;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+          background: transparent;
+        }
+        .gist {
+          margin: 0 !important;
+        }
+        .gist-file {
+          border: none !important;
+        }
+        .gist-meta {
+          padding: 8px 12px !important;
+        }
+      </style>
+    </head>
+    <body>
+      <script src="${gistUrl}"><\/script>
+    </body>
+    </html>
+  `);
+  doc.close();
+
+  // 自动调整 iframe 高度
+  iframe.onload = function() {
+    try {
+      const body = iframe.contentDocument?.body;
+      if (body) {
+        const height = body.scrollHeight;
+        iframe.style.height = (height + 32) + 'px';
+      }
+    } catch (e) {
+      console.warn('无法自动调整 Gist iframe 高度:', e);
+    }
+  };
+</script>
+
+<style>
+  .gist-embed {
+    background: var(--color-card-muted);
+  }
+
+  @media (max-width: 640px) {
+    .gist-embed {
+      margin-left: -1rem;
+      margin-right: -1rem;
+      border-radius: 0;
+    }
+  }
+</style>

