@@ -94,7 +94,8 @@ python3 poc.py \
   --target http://127.0.0.1:8000 \
   --username admin \
   --password admin \
-  --command "id"
+  --injection-point userid \
+  --proof-file /var/www/en/bx.txt
 ```
 
 ### 本地测试结果
@@ -106,6 +107,10 @@ python3 poc.py \
 使用 admin/admin 登录进来：
 
 ![登录界面](/blog/cnvd-lg-2026-20654/image%204.png)
+
+执行 POC 的结果
+![登录界面](/blog/cnvd-lg-2026-20654/f053e44d-6d84-4f23-a33a-e6460b880a98.png)
+
 
 ## 真实设备挖掘
 
