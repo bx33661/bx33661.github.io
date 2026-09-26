@@ -6,23 +6,18 @@ tags:
   - "TCP"
   - "学习分析"
   - "TryHackMe"
-  - "web"
+  - "Web"
 authors:
   - "bx"
-draft: false         
-slug: "bxtcp"          
+draft: false
+slug: "bxtcp"
 ---
-<meta name="referrer" content="no-referrer">
-
-
 
 # TCP/IP-Core Protocols
 
 ---
 
 ![img](https://cdn.nlark.com/yuque/0/2025/png/42994824/1746592688270-f34ca89d-5a07-45b2-8b1d-9b117e80e3a4.png)
-
-
 
 先放一张 OSI 简化图
 
@@ -36,12 +31,6 @@ slug: "bxtcp"
 ## DNS
 
 DNS 工作在应用层，即 ISO OSI 模型的第 7 层。DNS 流量默认使用 UDP 端口 53，并使用 TCP 端口 53 作为默认回退。有许多类型的 DNS 记录
-
-
-
-
-
-
 
 ## WHOIS
 
@@ -84,8 +73,6 @@ whois x.com
 
 ![img](https://cdn.nlark.com/yuque/0/2025/png/42994824/1746593792064-ae4ff113-6c95-4d12-94af-ec0695aafff1.png)
 
-
-
 ## FTP
 
 基本特性:
@@ -95,8 +82,6 @@ whois x.com
 - 支持 **用户身份验证**
 - 可运行在 **主动模式（PORT）** 或 **被动模式（PASV）**
 - 支持文本和二进制两种传输模式
-
-
 
 **命令如下**
 
@@ -110,8 +95,6 @@ whois x.com
 | `put`          | 上传文件         |
 | `mget`         | 批量下载         |
 | `bye` / `quit` | 退出连接         |
-
-
 
 连接示例
 
@@ -147,8 +130,6 @@ ftp> !cat flag.txt
 THM{FAST-FTP}
 ```
 
-
-
 ### 流量分析
 
 常见 FTP 命令定义（协议级别）
@@ -169,8 +150,6 @@ THM{FAST-FTP}
 
 ------
 
-
-
 | 协议 | 用途             | 典型端口     | 是否支持邮件接收 |
 | ---- | ---------------- | ------------ | ---------------- |
 | SMTP | 邮件发送         | 25, 587, 465 | 否               |
@@ -180,8 +159,6 @@ THM{FAST-FTP}
 ## SMTP
 
  SMTP（Simple Mail Transfer Protocol，简单邮件传输协议）是**电子邮件传输的核心协议**，用于在邮件客户端和服务器之间、或者服务器与服务器之间发送电子邮件。它定义了**邮件从发送方传送到接收方的规则和流程**。  
-
-
 
 SMTP 的特点
 
@@ -237,15 +214,11 @@ S: 221 Bye
 
 - 邮件成功发送后，客户端发送 `QUIT`，服务器响应 `221`，关闭连接。
 
-
-
 ## POP3
 
  Post Office Protocol version 3
 
  是一个**用于接收电子邮件的应用层协议**，主要用于**从远程邮件服务器下载邮件到本地客户端**，通常与 SMTP 搭配使用。  
-
-
 
 ### telnet 连接示例
 
@@ -331,13 +304,7 @@ POP3 的设计理念是：**邮件从服务器下载后即从服务器删除**�
 
 客户端使用 `QUIT` 命令断开连接。
 
-
-
-
-
 ## IMAP
-
-
 
 IMAP 与 POP3 的核心区别在于：
 
@@ -352,10 +319,6 @@ IMAP 与 POP3 的核心区别在于：
 - 可以选择只下载邮件头部（提高效率）
 
 ![img](https://cdn.nlark.com/yuque/0/2025/png/42994824/1746608739648-02d4001e-bf69-4560-9e26-6ce878f2096d.png)
-
-
-
-
 
 IMAP 使用的是一种基于文本的命令/响应结构。每条命令以一个标识符（tag）开始，比如 `A001`。
 
@@ -378,8 +341,6 @@ A003 FETCH 1 BODY[HEADER]
 A004 LOGOUT
 ```
 
-
-
 回答问题
 
 ```plain
@@ -387,12 +348,6 @@ FETCH 4 body[]
 ```
 
 ![img](https://cdn.nlark.com/yuque/0/2025/png/42994824/1746608899932-96472362-806a-4858-8eba-4ddfd79558ac.png)
-
-
-
-
-
-
 
 ## 思考🤔
 
@@ -407,8 +362,6 @@ FETCH 4 body[]
 | POP3                   | TCP                                  | 110                                     |
 | IMAP                   | TCP                                  | 143                                     |
 
-
-
 浅显地理解
 
 | 协议              | 使用 TCP 的原因                            |
@@ -417,8 +370,6 @@ FETCH 4 body[]
 | FTP               | 文件传输要求高可靠性                       |
 | SMTP/POP3/IMAP    | 邮件不能丢失或乱序                         |
 | DNS（多数用 UDP） | 查询速度快，偶尔丢失可重发，不要求建立连接 |
-
-
 
 ## others
 
@@ -433,8 +384,6 @@ FETCH 4 body[]
 ```bash
 sudo apt install telnet
 ```
-
-
 
 ![img](https://cdn.nlark.com/yuque/0/2025/png/42994824/1746609090370-5d68fc94-7f42-44d9-8512-627ecb107342.png)
 

@@ -7,14 +7,13 @@ tags:
   - "lua"
   - "openresty"
   - "backend"
-  - "security"
+  - "Security"
 authors:
   - "bx"
 draft: false
 slug: "redis-lua-script-part2"
 ---
 
-<meta name="referrer" content="no-referrer">
 
 > 这篇是 Redis 学习笔记 Part 2，重点放在 Lua 脚本能力和在 Redis/OpenResty 场景中的实际使用。
 

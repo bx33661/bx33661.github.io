@@ -13,7 +13,6 @@ authors:
 draft: false
 slug: "wiz-cloud-hunting-games-writeup"
 ---
-<meta name="referrer" content="no-referrer">
 
 # Wiz Cloud Hunting Games 挑战复盘：一条完整的云上攻击链
 > 本篇文章文字经过 AI 排版整理，核心文字无变化
@@ -60,7 +59,6 @@ Wiz 出的这套云安全靶场质量很高，题目串起了一条完整的攻�
 SELECT * FROM s3_data_events LIMIT 5;
 ```
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771589669009-a3fe6a58-3978-4c00-87e4-34237115bf39.png)
 
 既然本本题围绕“recipe”这个为主题，我们模糊匹配 Pah 中这个的出现，肯定是采用“GetObject”动作
@@ -71,12 +69,10 @@ WHERE (path LIKE '%recipe%' OR requestParameters LIKE '%recipe%')
 AND eventname = 'GetObject';
 ```
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771590613417-64e1e76f-6b07-42df-8b5c-9aabe8cf76e4.png)
 
 但是有四条，其实这里就能确定是最后一个了，但是我们也可以看一下 useragent
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771590757989-8ffa4ee7-ca9b-45a8-8c62-c1d4d8c90e57.png)
 
 最后锁定这个 boto3 必然无疑了
@@ -86,8 +82,6 @@ arn:aws:sts::509843726190:assumed-role/S3Reader/drinks
 ```
 
 next one
-
-
 
 ## CHALLENGE Two Follow, follow the trail
 > So you have managed to validate FizzShadows' claim and track the IAM role that has exfiltrated ExfilCola's recipe. You've been granted access to the cloudtrail table. Follow the trail of the S3Reader. Who used it?
@@ -102,8 +96,6 @@ next one
 攻击者本身并不是这个 Role，而是“某个人”或者“某个实体”通过调用了 AWS STS 的 `AssumeRole` API，扮演成了这个 `S3Reader` 角色
 
 现在我们手握 `cloudtrail`的访问权限，我们需要去查：到底是谁（哪个原始 ARN）申请扮演了 `S3Reader`
-
-
 
 根据上文分析，我们提取两个关键词“S3Reader”，“drinks”
 
@@ -121,7 +113,6 @@ AND requestParameters LIKE '%S3Reader%' AND requestParameters LIKE "%drinks%";
 
 结果如下
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771591338472-23c3d2ec-0758-4742-a112-968b4d474c38.png)
 
 ```python
@@ -129,10 +120,6 @@ arn:aws:iam::509843726190:user/Moe.Jito
 ```
 
 直接锁定这个“Moe.Jito”
-
-
-
-
 
 ## CHALLENGE Three Deeper into the trail
 > Bingo — you've tracked down the compromised IAM user: Moe.Jito. Keep digging through the CloudTrail logs.
@@ -143,8 +130,6 @@ arn:aws:iam::509843726190:user/Moe.Jito
 >
 > 沿着攻击者的行动轨迹继续追踪，找出那台被入侵并被用来进行横向移动的机器。
 >
-
-
 
 这个题尝试很多东西，最开始去追踪这个 ip 但是无果
 
@@ -161,7 +146,6 @@ FROM cloudtrail
 WHERE eventname like 'Update%';
 ```
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771592584160-4810320f-35b3-41fd-a5e6-b23092fce393.png)
 
 可以发现这样一个事件的存在，它在修改 aws 的 lamda 函数
@@ -172,9 +156,7 @@ arn:aws:sts::509843726190:assumed-role/lambdaWorker/i-0a44002eec2f16c25
 i-0a44002eec2f16c25
 ```
 
-
-
-## CHALLENGE Four <font style="color:rgb(31, 31, 31);">Ain't no mountain high enough to keep me away from my logs</font>
+## CHALLENGE Four Ain't no mountain high enough to keep me away from my logs
 > Great progress! As you continue your investigation, you discover that once the attacker compromised the EC2 machine, they were able to manipulate a Lambda function to gain access to multiple IAM users. ExfilCola has granted you root access to the EC2 machine where this activity originated from. But the question remains - how did the attacker gain access to this machine? Your task is to find the IP address of another ExfilCola workload that was used as the initial entry point into the organization.
 >
 > 进展非常顺利！随着你继续调查，你发现攻击者在攻陷 EC2 机器后，操纵了一个 Lambda 函数，从而获得了多个 IAM 用户的访问权限。ExfilCola 已授予你对这台发生相关活动的 EC2 机器的 root 访问权限。
@@ -202,18 +184,12 @@ _**“挂载覆盖”（Mount Shadowing / OverlayFS）**__ 的系统级障眼法
 + _**打个比方：**_`_/var/log_`_ 就像是一张写满了黑客犯罪记录的纸。黑客没有拿橡皮去擦掉字，而是拿了一张全新的白纸，__**盖在了**__原来的纸上面。_
 + _当你尝试读取 _`_/var/log_`_ 时，操作系统只会让你看到最上面的那层“白纸”，底下的真实日志文件依然完好无损地躺在硬盘里，只是暂时被“屏蔽”了。_
 
-
-
-
-
 给了一个终端 root 权限，可以先看一下日志，没有发现任何东西
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771593030123-546ea77a-7266-4e77-8116-261d51f2420b.png)
 
 使用了 overlay 技术，unmount 一下
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771593088587-00c57977-6bbd-4bd8-a59a-ad50378d5312.png)
 
 解除挂载之后，重新审查/var/log 文件夹发现就可以本身文件，继续审查 auth.log
@@ -229,7 +205,6 @@ cat /var/log/auth.log | grep sshd
 > Linux 系统中有许多默认用于运行后台服务（如 `postgresql-user`, `nginx`, `nobody`）的账号。这些账号为了安全，通常被剥夺了交互式登录权限（Shell 设为 `/usr/sbin/nologin`）
 >
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771593223929-0f8466ee-e80c-4814-a5ae-0375bac2589a.png)
 
 提交这个 ip
@@ -237,10 +212,6 @@ cat /var/log/auth.log | grep sshd
 ```sql
 102.54.197.238
 ```
-
-
-
-
 
 ## CHALLENGE Five Now you're just somebody that I used to log
 > Wow, you rock! Now you know that the attacker has laterally moved from a workload within the organization to a high privileged machine, ssh-fetcher, via SSH. ExfilCola has granted you root access to the PostgreSQL service where this activity originated from.
@@ -264,7 +235,6 @@ cat /var/log/auth.log | grep sshd
 
 系统级别，没什么发现
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771594672283-d019ad0e-1a50-4040-a025-5360b2af8b70.png)
 
 接着，由于是 Ubuntu 系统，我们
@@ -274,7 +244,6 @@ ls /var/spool/cron/crontabs/
 cat /var/spool/cron/crontabs/postgres
 ```
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771594652002-e5fd23c8-fad9-4dd6-9c9d-9b3830526c8f.png)
 
 文件内容
@@ -532,17 +501,11 @@ Success! You've deleted the secret recipe before it could be exposed. The flag i
 * Connection #0 to host 34.118.239.100 left intact
 ```
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771595095946-8a053c28-6c9d-409b-af41-664814347143.png)
 
 到这里也是顺利通关了
 
-<!-- 这是一张图片，ocr 内容为： -->
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771595138015-0297eb1f-3644-447e-a3dd-0ceef47f7039.png)
-
-
-
-
 
 ## 总结
 ### 云控制平面
@@ -550,8 +513,6 @@ Success! You've deleted the secret recipe before it could be exposed. The flag i
 
 + 数据平面（Data Plane）： 这是你的业务实际运行和数据实际存放的地方。比如 EC2 实例里跑着的 Nginx 进程、S3 存储桶里存着的图片文件、RDS 数据库里的表。
 + 控制平面（Control Plane）： 这是管理数据平面的那一层“大脑”。它负责创建、修改、删除和配置底层资源。比如，你点击 AWS 控制台按钮新建一台 EC2，或者通过 AWS CLI 执行命令给 S3 存储桶赋予公开访问权限，这些操作都是在与控制平面交互。
-
-
 
 就是在云上，传统防火墙就大大被削弱了
 
@@ -567,11 +528,8 @@ Success! You've deleted the secret recipe before it could be exposed. The flag i
 
 CloudTrail 的唯一工作，就是忠实地记录下每一次 API 调用的全过程
 
-
-
 ### IAM 的角色扮演机制
 也就是这个 AssumeRole
 
 AWS 的 STS (Security Token Service) 允许实体（用户或机器）临时扮演另一个角色（Role）来获取特定权限。这是云上最常见的权限委托机制，也是黑客最爱用的“身份隐藏”手法
-
 

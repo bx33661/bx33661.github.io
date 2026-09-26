@@ -13,14 +13,11 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "csp-bypass-analysis"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # CSP规则绕过与题目分析
 目前记录这么些，感觉是一个十分深入的东西后面再补充
 
 关键点： CSP 本质不是 “防御 XSS 的根工具”，而是 “XSS 的缓冲/减轻机制”
-
-
 
 ## HTB 中相关题目分析
 **Cursed Secret Party  诅咒的秘密派对**
@@ -99,16 +96,12 @@ module.exports = { visit };
 
 所以说我们能拿到 admin 的 cookie 就能获得 flag，问题是找能拿到 cookie 的点
 
-
-
 题目基本框架
 
 + 应用类型 ：Node.js + Express Web应用
 + 模板引擎 ：Nunjucks
 + 数据库 ：SQLite
 + 认证机制 ：JWT (JSON Web Token)
-
-
 
 看一下这个 admin.html 文件
 
@@ -216,8 +209,6 @@ Content-Length: 174
 }
 ```
 
-
-
 ##  **脚本与执行相关**
 + `script-src`  
 控制 `<script>` 加载来源。支持：
@@ -230,8 +221,6 @@ Content-Length: 174
 专门限制 外部脚本元素 的来源。
 + `script-src-attr`（CSP3）  
 专门限制 内联事件属性（如 `<div onclick="...">`）和 `javascript:` URL。
-
-
 
 几个概念
 
@@ -252,12 +241,8 @@ Content-Length: 174
 <a href="javascript:alert('链接被点击')">点击链接</a>
 ```
 
-
-
 ###  CSP 里的 nonce 和 sha256 哈希白名单机制  
 因为这个`'unsafe-inline'`太宽泛和不安全了，但是确实是需要一些内联脚本的，所以才用这个机制就可以精确的允许特定脚本的执行
-
-
 
 ### Nonce 机制  
 > 这里没有具体说具体开发逻辑，说一下我个人思路
@@ -285,9 +270,7 @@ Content-Security-Policy: script-src 'self' 'nonce-randombx33661'
 
 只有带上 `nonce="randombx33661"` 的内联脚本会被允许，其它没有 nonce 的内联脚本,包括简单注入的 `<script>alert(1)</script>`会被 CSP 拦掉。  
 
-
-
-具体配置代码，感觉能更好理解一下设计 
+具体配置代码，感觉能更好理解一下设计
 
 ```javascript
 // middleware: 生成随机 nonce
@@ -364,8 +347,6 @@ Content-Security-Policy:
 + 发现 `<script nonce="abc123xyz" src="...">` ✅ → 允许加载执行。
 + 发现 `<script>` 没有 nonce ❌ → 阻止执行，并在控制台报错：
 
-
-
 ### sha256 哈希机制  
 就是给脚本内容计算哈希，然后写到 CSP 里。
 
@@ -384,8 +365,6 @@ HTML 里：
 ```
 
 浏览器会计算 `<script>` 内容的 SHA-256 哈希值，和 CSP 里的值对比，如果一致 → 允许执行，否则拦截。
-
-
 
 ## 其他常见 CSP 规则
 >  CSP 的规则其实就是一组 **“资源类型 → 允许来源”** 的映射  
@@ -483,6 +462,4 @@ connect-src 'self' https://api.example.com
 限制 PWA manifest.json 来源。
 + `**prefetch-src**`（CSP3）  
 限制 `<link rel="prefetch">`、`prerender` 等预取资源。
-
-
 

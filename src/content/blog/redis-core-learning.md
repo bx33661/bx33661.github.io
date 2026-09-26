@@ -5,7 +5,7 @@ date: 2026-02-10
 tags:
   - "redis"
   - "database"
-  - "python"
+  - "Python"
   - "cache"
   - "backend"
 authors:
@@ -14,7 +14,6 @@ draft: false
 slug: "redis-core-guide"
 ---
 
-<meta name="referrer" content="no-referrer">
 
 > 本文记录了 Redis 的核心操作与实战经验，特别是针对缓存场景下的常见问题及其解决方案。
 
@@ -120,7 +119,7 @@ print(f"成功执行了 {len(results)} 个命令")
 ```
 
 原理图示：
-```
+```text
 Python 本地内存缓冲：
 ┌───────────────────────────┐
 │ set task:0                │

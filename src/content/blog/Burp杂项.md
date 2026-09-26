@@ -3,18 +3,15 @@ title: "Burp Suite 实战技巧：代理、扫描与 Collaborator"
 description: "Burp Suite 实战杂项：代理抓包、过滤、扫描、Collaborator、Decoder 与常见排障技巧。"
 date: 2024-09-21
 tags:
-  - "ctf"
+  - "CTF"
   - "2025轩辕杯"
   - "wp"
-  - "web"
+  - "Web"
 authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "k8burp"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
-
-
 
 # Burp杂项
 Brupsuite官网：[https://portswigger.net](https://portswigger.net/burp)
@@ -52,8 +49,6 @@ HTTPS的证书信息直接通过浏览器查看![](https://cdn.nlark.com/yuque/0
 
 ### 快捷修改请求方式
 GET和POST请求快速切换
-
-![]()
 
 ### 全局搜索(search)
 可以查找bp中所有东西
@@ -172,5 +167,5 @@ BP的外带模块
 需要修改一个合适默认的字体
 
 ![](https://gitee.com/bx33661/image/raw/master/path/image-20250108120432707.png)
- 
+
 

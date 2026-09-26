@@ -13,13 +13,11 @@ draft: false              # 设为 true 则为草稿
 slug: "k8x9w2m7"          # 随机URL字符串
 ---
 
-![PixPin_2026-04-19_13-41-14](/blog/l3hctf-best-profile/PixPin_2026-04-19_13-41-14.png)
+![PixPin_2026-04-19_13-41-14](/blog/l3hctf-best-profile/01-profile-bypass-flow.png)
 
+## L3Hctf-best_profile
 
-
-## L3Hctf-best_profile 
-
-### best_profile 
+### best_profile
 
 > oops, it’s my profile
 
@@ -120,6 +118,5 @@ if __name__ == "__main__":
 
 结果如下
 
-![image-20250712133846167](/static/image-20250712133846167.png)
-
+![image-20250712133846167](/blog/l3hctf-best-profile/02-flag-result.png)
 

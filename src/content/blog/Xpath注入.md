@@ -13,13 +13,10 @@ draft: false              # 设为 true 则为草稿
 slug: "bx33661xpath"          # 随机URL字符串
 ---
 
-<meta name="referrer" content="no-referrer">
 
 # Xpath注入学习和分析
 
 **XPath** 是一种可以访问 XML 文件中的节和内容的查询语言。
-
-
 
 ## 快速获取 Xpath
 
@@ -31,8 +28,6 @@ slug: "bx33661xpath"          # 随机URL字符串
 
 有这个完整和相对的这个区别
 
-
-
 + 利用工具
 
 一些浏览器插件之类工具调用获取
@@ -40,8 +35,6 @@ slug: "bx33661xpath"          # 随机URL字符串
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753234554240-ac1995c5-fdad-413c-b65c-bcd8418cfee2.png)
 
 效果如上
-
-
 
 ### 验证
 `$x `函数
@@ -84,10 +77,6 @@ $x("//*[@id='16858669']/div/h2/a")[0]?.style.border = "3px solid red"
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753235236083-09cd98b0-d9d8-497e-8c87-2951bbcc851d.png)
 
-
-
-
-
 ## Xpath 语法
 常用的语法
 
@@ -96,7 +85,7 @@ $x("//*[@id='16858669']/div/h2/a")[0]?.style.border = "3px solid red"
 + `@` 选择属性
 + `[]` - 谓语，用于筛选条件
 
-常用函数    
+常用函数
 
 ```javascript
 # 字符串函数
@@ -110,8 +99,6 @@ count(), sum(), number(), round(), floor(), ceiling()
 name(), local-name(), namespace-uri()
 position(), last()
 ```
-
-
 
 一个 xml 文件如下
 
@@ -142,8 +129,6 @@ position(), last()
 //book/title/text()               # 选择所有书籍标题的文本内容
 //@category                       # 选择所有category属性
 ```
-
-
 
 ## Xpath 注入
 原理如下
@@ -225,8 +210,6 @@ query = f"//user[username/text()='{username}' and password/text()='{password}']"
 //user[username/text()='']|//*|//*[password/text()='123']
 ```
 
-
-
 ### 命名空间绕过
 #### 什么是空间命名
 ```python
@@ -240,8 +223,6 @@ query = f"//user[username/text()='{username}' and password/text()='{password}']"
 
 就是说在XPath 查询时，如果不指定命名空间，就找不到这些元素  
 
-
-
 所以我们手段就如下
 
 有些XML文档使用命名空间，可以通过以下方式绕过：
@@ -254,12 +235,6 @@ query = f"//user[username/text()='{username}' and password/text()='{password}']"
 ' or local-name()='user' or '1'='1
 ```
 
-
-
-
-
-
-
 我们可以尝尝把 Xpath 和 sql 对比起来分析学习
 
 XPath 注入和SQL 注入 相比如下
@@ -271,9 +246,6 @@ XPath 注入和SQL 注入 相比如下
 | 特征 | 查询节点路径、属性、文本等 | 查询表、字段、值等 |
 | 利用方式 | 猜解节点、读取 XML 数据 | 获取数据、执行命令、控制数据库 |
 
-
-
-
 ## XPath 盲注技术
 > 盲注原理:
 >
@@ -281,8 +253,6 @@ XPath 注入和SQL 注入 相比如下
 >
 
 盲注是一种在服务器不返回详细错误信息的情况下进行的注入技术。XPath盲注主要利用XPath的字符串操作函数和运算符，通过服务器的不同响应来推断信息。
-
-
 
 ### 盲注技术示例
 假设有一个登录系统，使用以下XPath查询：
@@ -346,8 +316,6 @@ def xpath_blind(url, xpath_param):
     return result
 ```
 
-
-
 ### 节点遍历技术
 使用特殊的XPath表达式可以遍历整个XML文档：
 
@@ -372,8 +340,6 @@ def xpath_blind(url, xpath_param):
 
 就是说在XPath 查询时，如果不指定命名空间，就找不到这些元素  
 
-
-
 所以我们手段就如下
 
 有些XML文档使用命名空间，可以通过以下方式绕过：
@@ -386,12 +352,7 @@ def xpath_blind(url, xpath_param):
 ' or local-name()='user' or '1'='1
 ```
 
-
-
-
-
 ## 防御策略与分析
-
 
 这里以 Python 代码为例子
 
@@ -455,8 +416,6 @@ def restricted_xpath_query(query, allowed_paths):
             return None
     # 执行查询...
 ```
-
-
 
 ## 参考文章
 [XPath 注入指北](https://www.tr0y.wang/2019/05/11/XPath%E6%B3%A8%E5%85%A5%E6%8C%87%E5%8C%97/)

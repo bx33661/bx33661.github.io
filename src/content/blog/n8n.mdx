@@ -15,7 +15,6 @@ slug: "n8n-cve-2025-68613-analysis"
 ---
 import Bilibili from '../../components/Bilibili.astro'
 
-<meta name="referrer" content="no-referrer" />
 
 # CVE-2025-68613: n8n 表达式注入导致远程代码执行漏洞分析与复现
 
@@ -58,7 +57,6 @@ git checkout tags/n8n@1.120.0
 `packages/workflow/src/expression.ts`  
 
 该方法负责解析和执行 n8n 工作流中的表达式（以 `{{ }}` 包裹的代码）。
-
 
 ```typescript
 resolveSimpleParameterValue(
@@ -196,7 +194,7 @@ data.process =
 
 n8n 在 `Expression.ts` 中实现了多层防护，但均可被绕过：
 
-### 防护1: 全局对象名单 
+### 防护1: 全局对象名单
 
 ```typescript
 // Prevent Remote Code Execution
@@ -392,7 +390,7 @@ docker-compose down -v
 工作流需要两个节点：
 
 1. **Manual Trigger** - 手动触发节点
-   
+
 2. **Edit Fields (Set)** - 设置字段节点（用于注入 payload）
 
 ![添加节点](https://cdn.nlark.com/yuque/0/2026/png/42994824/1768740705897-c496a201-f2b4-4154-9e66-70f7eef30d04.png)
@@ -420,7 +418,7 @@ docker-compose down -v
 
 执行成功后，可以在输出面板中看到 `/etc/passwd` 文件的完整内容：
 
-```
+```text
 root:x:0:0:root:/root:/bin/bash
 daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
 bin:x:2:2:bin:/bin:/usr/sbin/nologin
@@ -475,7 +473,7 @@ Antigravity 会自动完成整个流程
 
 
 
-## 修复分析和建议 
+## 修复分析和建议
 
 ### 官方修复方案（v1.122.0）
 

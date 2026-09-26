@@ -11,15 +11,12 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "mcp-security"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # MCP安全应用和问题
 ## MCP 相关安全项目
 + MCP 安全检查清单：AI 工具生态系统安全指南
 
 [MCP-Security-Checklist/README_CN.md at main · slowmist/MCP-Security-Checklist](https://github.com/slowmist/MCP-Security-Checklist/blob/main/README_CN.md)
-
-
 
 ## 一些安全类 MCP 使用
 ### IDA-Pro-MCP
@@ -62,8 +59,6 @@ MCP 客户端配置如下
 用 cursor 或者 trae 这些，这里演示一下 trae
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755420640132-b48517fd-9932-4d42-ab67-1cf7e819ff1a.png)
-
-
 
 #### Trae 配置
 可以新建一个智能体专门搞这个 ida 的
@@ -215,9 +210,6 @@ IDA-mcp 具体工具列表
 | 设置类型 | `set_global_variable_type`<br/>，`set_local_variable_type`<br/>，`set_function_prototype`<br/>，`declare_c_type` |
 | 数字转换 | `convert_number` |
 
-
-
-
 ### CloudSword-MCP（云鉴）
 项目地址
 
@@ -296,13 +288,10 @@ IDA-mcp 具体工具列表
 - 仅执行只读和合法的安全分析操作，不进行破坏性命令。
 ```
 
-### 
 #### 具体测试
 配置之后可以看下工具列表
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755574713463-c685cc68-52de-4207-9a5f-0127f2a5093a.png)
-
-
 
 使用示例
 
@@ -311,12 +300,6 @@ Q：列出腾讯云用户的 COS 储存桶
 A：响应如下，调用查看了我的一些储存桶
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755575762648-4fb0436e-3b52-4511-b7b4-0da6a6116d16.png)
-
-
-
-
-
-
 
 ## 查看 MCP 信息
 MCP 协议核心是 3 大类：
@@ -370,10 +353,6 @@ MCP 协议核心是 3 大类：
     - `resources?`
     - `logging?` / `experimental?`
 
-
-
-
-
 ### 使用官方 `mcp` SDK  
 [GitHub - modelcontextprotocol/python-sdk: The official Python SDK for Model Context Protocol servers and clients](https://github.com/modelcontextprotocol/python-sdk)
 
@@ -418,8 +397,6 @@ if __name__ == "__main__":
 
 ```
 
-
-
 ### 使用 FastMCP
 具体环境采用
 
@@ -447,6 +424,4 @@ if __name__ == "__main__":
     asyncio.run(main())
 
 ```
-
-
 

@@ -6,14 +6,13 @@ tags:
   - "HTTP"
   - "bx"
   - "安全分析"
-  - "WEB"
+  - "Web"
 authors:
   - "bx"
-draft: false             
-slug: "bx33661http"          
+draft: false
+slug: "bx33661http"
 ---
 
-<meta name="referrer" content="no-referrer">
 
 # HTTP 请求走私
 
@@ -42,10 +41,6 @@ Hello, World!
 对于这个而言，服务器读取Content-Length值（13字节），精确读取指定长度的数据作为消息体
 
 相对来说简单直接，易于实现
-
-
-
-
 
 ### Transfer-Encoding (TE)  传输编码 (TE)
 Transfer-Encoding用于指定消息体的编码方式，最常见的是chunked编码
@@ -123,10 +118,6 @@ false}
 
 ```
 
-
-
-
-
 ## 走私学习与分析
 > 下面把**Content-Length 简称 CL，Transfer-Encoding 简称 TE**
 >
@@ -137,8 +128,6 @@ false}
 
 1. **优先级规则**：当同时存在Transfer-Encoding和Content-Length时，应忽略Content-Length
 2. **现实差异**：不同服务器实现可能不严格遵循此规则
-
-
 
 ### Connection: keep-alive
  HTTP1.1 默认开启，并且一般会显式显示
@@ -225,10 +214,6 @@ KeepAliveTimeout 5
 MaxKeepAliveRequests 100
 ```
 
-
-
-
-
 ### 具体攻击
 + CL.TE攻击（Content-Length + Transfer-Encoding）
 + TE.CL攻击（Transfer-Encoding + Content-Length）
@@ -249,8 +234,6 @@ GET /admin HTTP/1.1
 Host: example.com
 ```
 
-
-
 #### CL.TE攻击
 **原理：**
 
@@ -270,8 +253,6 @@ SMUGGLED
 前端的话，会认为`0\r\n\r\nSMUGGLED `(Content-Length),将完整请求转发给后端
 
 后端的话，按chunked解析：`0\r\n\r\n`，请求结束，剩余的`SMUGGLED`被当作下一个请求的开始
-
-
 
 #### TE.CL攻击
 **原理**：
@@ -294,8 +275,6 @@ SMUGGLED
 
 **后端服务器处理**：使用Content-Length: 3,只读取前3字节：`8\r\n`,剩余部分`SMUGGLED\r\n0\r\n\r\n`被当作下一个请求
 
-
-
 #### 会话劫持
 ```graphql
 POST / HTTP/1.1
@@ -314,10 +293,7 @@ username=admin&password=secret&next_user_data=
 
 走私的POST请求会"搞掉"下一个正常用户请求的部分内容
 
-
-
 ### 靶场学习
-
 
 #### 基本的 TECL
  对应靶场，题目要求
@@ -370,10 +346,6 @@ x=1
 第二次请求
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753353220791-20167653-ff62-4133-9a77-2a1dd6d3606b.png)
-
-
-
-
 
 #### 基本的 CL.TE 漏洞
 对应靶场
@@ -429,8 +401,6 @@ GPOST /...
 ```
 
 所以服务会报错
-
-
 
 ## 参考文章
 [What is HTTP request smuggling? Tutorial & Examples | Web Security Academy](https://portswigger.net/web-security/request-smuggling)

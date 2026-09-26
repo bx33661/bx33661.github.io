@@ -6,13 +6,12 @@ tags:
   - "HTTP"
   - "bx"
   - "安全分析"
-  - "WEB"
+  - "Web"
 authors:
   - "bx3"
-draft: false             
-slug: "bxhttpSplit"          
+draft: false
+slug: "bxhttpSplit"
 ---
-
 
 # HTTP响应拆分漏洞分析
 ## 基本了解
@@ -80,8 +79,6 @@ def set_language():
 if __name__ == '__main__':
     app.run(debug=True)
 ```
-
-
 
 ### 漏洞实现
 为了演示真实的漏洞，我们使用更原始的socket实现：
@@ -255,12 +252,6 @@ curl -v "http://localhost:5002/set_language?lang=en%0d%0aLocation:%20http://www.
 %0d%0a%20%20  # CRLF + 空格（某些解析器会忽略空格）
 ```
 
-
-
-
-
-
-
 ## 措施和修复
 这里记录一些理解
 
@@ -302,10 +293,7 @@ def validate_language_code(lang):
 lang = validate_language_code(request.args.get('lang', 'en'))
 ```
 
-
 还有各个框架的安全设置，和服务器设置
-
-
 
 ## 深度攻击思路（ing）
 ### 缓存投毒攻击 (Cache Poisoning)
@@ -348,6 +336,4 @@ lang = validate_language_code(request.args.get('lang', 'en'))
  Location: /home
  Set-Cookie: SESSIONID=ATTACKER_CONTROLLED_ID; HttpOnly
 ```
-
-
 

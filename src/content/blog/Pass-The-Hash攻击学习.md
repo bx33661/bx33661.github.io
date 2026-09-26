@@ -12,9 +12,6 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "passthehash"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
-
-
 
 ## Pass The Hash攻击学习
 
@@ -27,10 +24,6 @@ slug: "passthehash"          # 随机URL字符串
 3. **客户端:** 客户端会使用用户的**NTLM Hash**（而不是明文密码）来加密这个Challenge，生成一个“响应”（Response）。
 4. **客户端 -> 服务器:** “这是加密后的Response。”
 5. **服务器:** 服务器将Response交给域控制器（DC）。DC拥有所有用户的NTLM Hash，它会用存储的Hash执行相同的加密计算。如果计算结果与客户端发来的Response一致，就证明客户端拥有正确的凭据，认证通过
-
-
-
-
 
 ### 常见提取
 
@@ -61,8 +54,6 @@ mimikatz
 lsadump::dcsync /user:DOMAIN\Administrator
 ```
 
-
-
 ### 一般攻流程
 
 所以一般来讲，一个典型的域环境 PTH 攻击流程：
@@ -84,10 +75,6 @@ python3 psexec.py DOMAIN/Administrator@TARGET -hashes <LMhash>:<NThash>
 
 4. 继续移动。
 
-
-
-
-
 ### 防御措施
 
 + 禁用 NTLM 或限制 NTLM 使用（用 Kerberos 代替）。
@@ -99,11 +86,7 @@ reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v RunAsPPL /t REG_DWORD /d 1 
 
 ...
 
-
-
-
-
-## NTLM 和 Kerberos 
+## NTLM 和 Kerberos
 
 > GPT-5 总结一下
 
@@ -129,8 +112,6 @@ reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v RunAsPPL /t REG_DWORD /d 1 
 > + **Hash 即凭据** → 拿到 Hash 就能认证（PTH 攻击核心）。
 > + 无法抵抗重放攻击（除非 Challenge 是一次性且短时有效）。
 > + 没有强加密的会话票据，安全性低于 Kerberos。
-
-
 
 ###  Kerberos  
 
@@ -173,12 +154,6 @@ reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v RunAsPPL /t REG_DWORD /d 1 
 > + 如果拿到 **TGT 或 TGS 票据**，依然可以伪造会话（**Pass-the-Ticket 攻击**）。
 > + KDC/域控制器被攻陷 → 全域沦陷（黄金票据/白银票据攻击）。
 
-
-
-
-
-
-
 ## Impacke 套件
 
 >  Impacket 是一个内网渗透的“命令行航母”，它将复杂的Windows网络协议攻击封装成了简单易用的脚本  
@@ -186,9 +161,6 @@ reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v RunAsPPL /t REG_DWORD /d 1 
 简单的说， Impacket是一个用Python编写的、用于处理网络协议的类库集合  
 
 [GitHub - fortra/impacket: Impacket is a collection of Python classes for working with network protocols.](https://github.com/fortra/impacket)
-
-
-
 
 ## mimikatz 猕猴桃
 
@@ -230,8 +202,6 @@ kerberos::list
 ```plain
 lsadump::dcsync /user:Administrator
 ```
-
-
 
 ## 参考文章
 

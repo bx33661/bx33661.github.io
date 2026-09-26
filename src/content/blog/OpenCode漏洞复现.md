@@ -13,7 +13,6 @@ authors:
 draft: false
 slug: "opencode-vulnerability-analysis"
 ---
-<meta name="referrer" content="no-referrer">
 
 # OpenCode漏洞复现(GHSA-vxw4-wv6m-9hhh)
 
@@ -215,7 +214,6 @@ const proc = spawn(shell, args, {
 - 命令在 `Instance.directory` 目录下运行
 -  **用户输入的命令直接被执行,没有任何安全检查**
 -  **继承了父进程的环境变量**
-
 
 ---
 

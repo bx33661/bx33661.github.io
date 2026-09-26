@@ -12,9 +12,8 @@ authors:
   - "bx"
 draft: false
 slug: "ethereum-dex-sepolia"
-cover: "/blog/ethereum-dex-sepolia/image.png"
+cover: "/blog/ethereum-dex-sepolia/step-00.png"
 ---
-<meta name="referrer" content="no-referrer">
 
 # 基于以太坊测试网络的DEX合约发布和学习
 
@@ -28,14 +27,14 @@ cover: "/blog/ethereum-dex-sepolia/image.png"
 
 小狐狸
 
-![image.png](/blog/ethereum-dex-sepolia/image.png)
+![image.png](/blog/ethereum-dex-sepolia/step-00.png)
 
 > **MetaMask**：**你的钱由你自己保管**。所有的资产数据都在区块链上，MetaMask 只是一个“钥匙管理器”。**如果你弄丢了助记词（12个单词），MetaMask 官方也帮不了你，你的钱就永远丢失了。**
-> 
+>
 
 需要先创建一个钱包去完成后续实验，就像我下面这样MetaMask是我们在区块链中资产管理的一个钱包，我们可以把我们的ETH等转到MetaMask的钱包地址中统一管理
 
-![image.png](/blog/ethereum-dex-sepolia/image%201.png)
+![image.png](/blog/ethereum-dex-sepolia/step-01.png)
 
 ## 以太坊测试网
 
@@ -44,24 +43,24 @@ cover: "/blog/ethereum-dex-sepolia/image.png"
 本次实验采用的是Sepolia
 
 > *Sepolia是以太坊官方测试网络之一。它和以太坊主网规则/环境很像，但使用的是没有真实价值的测试 ETH（Sepolia ETH），专门给开发和测试用。*
-> 
+>
 
 在MetaMask上添加
 
-![image.png](/blog/ethereum-dex-sepolia/image%202.png)
+![image.png](/blog/ethereum-dex-sepolia/step-02.png)
 
 这里我们去这个水龙头领取一下
 
 > 这个原理了解了一下，就是说，为了防止有人用机器人疯狂刷币，传统的防御手段是“只有你有钱（主网有 ETH）才能领”。但 pk910 认为这阻碍了新手开发者，所以他设计了一套只有你付出了计算努力（挖矿）才能领”的机制，采用了**浏览器挖矿 ，所以我们在获取这个代币的时候会发现cpu占用马上上来了**
-> 
+>
 
 [Sepolia PoW Faucet](https://sepolia-faucet.pk910.de/)
 
-![image.png](/blog/ethereum-dex-sepolia/image%203.png)
+![image.png](/blog/ethereum-dex-sepolia/step-03.png)
 
 选择确认
 
-![image.png](/blog/ethereum-dex-sepolia/image%204.png)
+![image.png](/blog/ethereum-dex-sepolia/step-04.png)
 
 交易被确认
 
@@ -69,7 +68,7 @@ TX:[0xe2f3103668aff5d8c4f4861acfb1d6b5c49eaa51b05f6b5e73635f6d5be62888](https://
 
 可以再ETH的测试网查看到
 
-![image.png](/blog/ethereum-dex-sepolia/image%205.png)
+![image.png](/blog/ethereum-dex-sepolia/step-05.png)
 
 # 合约编写&代币发行
 
@@ -84,11 +83,11 @@ TX:[0xe2f3103668aff5d8c4f4861acfb1d6b5c49eaa51b05f6b5e73635f6d5be62888](https://
 在Remix IDE中创建ERC20项目
 
 > Remix IDE 是以太坊官方推荐的、基于浏览器的智能合约开发工具，一站式的SOL开发环境
-> 
+>
 
 在文件浏览器创建sol文件
 
-![image.png](/blog/ethereum-dex-sepolia/image%206.png)
+![image.png](/blog/ethereum-dex-sepolia/step-06.png)
 
 这里编写合约
 
@@ -108,21 +107,21 @@ contract TokenA_bx is ERC20 {
 
 编写代码完成后需要点击“Compile”检测一下
 
-![image.png](/blog/ethereum-dex-sepolia/image%207.png)
+![image.png](/blog/ethereum-dex-sepolia/step-07.png)
 
 在这个sep测试网络部署
 
 首先需要连接MetaMask
 
-![image.png](/blog/ethereum-dex-sepolia/image%208.png)
+![image.png](/blog/ethereum-dex-sepolia/step-08.png)
 
 部署合约
 
-![image.png](/blog/ethereum-dex-sepolia/image%209.png)
+![image.png](/blog/ethereum-dex-sepolia/step-09.png)
 
 确认之后，等一段时间回到回复
 
-![image.png](/blog/ethereum-dex-sepolia/image%2010.png)
+![image.png](/blog/ethereum-dex-sepolia/step-10.png)
 
 交易ID：0x687d258d22429b63e34598c7b1374fddec7bd2432e622fcfa68e3f1814b555fb
 
@@ -132,13 +131,13 @@ contract TokenA_bx is ERC20 {
 
 具体如下
 
-![image.png](/blog/ethereum-dex-sepolia/image%2011.png)
+![image.png](/blog/ethereum-dex-sepolia/step-11.png)
 
 对应合约ID:0x97bd56729310889aD33b2bbC520571303E5BFc33
 
 可以在Explore上看到具体信息
 
-![image.png](/blog/ethereum-dex-sepolia/image%2012.png)
+![image.png](/blog/ethereum-dex-sepolia/step-12.png)
 
 在MetaMask添加我们这个合约代币
 
@@ -148,11 +147,11 @@ contract TokenA_bx is ERC20 {
 0x97bd56729310889aD33b2bbC520571303E5BFc33
 ```
 
-![image.png](/blog/ethereum-dex-sepolia/image%2013.png)
+![image.png](/blog/ethereum-dex-sepolia/step-13.png)
 
 导入之后的效果就是这样
 
-![image.png](/blog/ethereum-dex-sepolia/image%2014.png)
+![image.png](/blog/ethereum-dex-sepolia/step-14.png)
 
 ### 创建代币—DXcoin
 
@@ -204,21 +203,21 @@ contract TokenB_dx is ERC20, Ownable {
 1000000e18
 ```
 
-![image.png](/blog/ethereum-dex-sepolia/image%2015.png)
+![image.png](/blog/ethereum-dex-sepolia/step-15.png)
 
 然后部署在测试网络上
 
 [Sepolia Transaction Hash: 0xcd0e134314... | Etherscan Sepolia](https://sepolia.etherscan.io/tx/0xcd0e1343143560aa2192418493412e1049022ed65bca9d6b417339048feac439)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2016.png)
+![image.png](/blog/ethereum-dex-sepolia/step-16.png)
 
 具体合约页面
 
-![image.png](/blog/ethereum-dex-sepolia/image%2017.png)
+![image.png](/blog/ethereum-dex-sepolia/step-17.png)
 
 导入MetaMask中Sep网络
 
-![image.png](/blog/ethereum-dex-sepolia/image%2018.png)
+![image.png](/blog/ethereum-dex-sepolia/step-18.png)
 
 ## Base DEX合约
 
@@ -346,7 +345,7 @@ contract SimpleDex_bx {
 
 ```
 
-遵循公式：`x * y = k` 
+遵循公式：`x * y = k`
 
 1. **交易功能** 
 
@@ -377,7 +376,7 @@ contract SimpleDex_bx {
 
 对应编译检查通过之后，准备部署
 
-![image.png](/blog/ethereum-dex-sepolia/image%2019.png)
+![image.png](/blog/ethereum-dex-sepolia/step-19.png)
 
 根据逻辑填入参数
 
@@ -385,7 +384,7 @@ contract SimpleDex_bx {
 0x97bd56729310889aD33b2bbC520571303E5BFc33,0x98b129D0fa6D052ec1ba74b7541D1a63aD614e75
 ```
 
-![image.png](/blog/ethereum-dex-sepolia/image%2020.png)
+![image.png](/blog/ethereum-dex-sepolia/step-20.png)
 
 确认是测试网络无误后
 
@@ -426,13 +425,13 @@ ok成功部署
 
 [](https://sepolia.etherscan.io/tx/0x3b2d5936073cd8ee79d0d8faff31868aa7d874827f8dd76346be47cf345da60e)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2021.png)
+![image.png](/blog/ethereum-dex-sepolia/step-21.png)
 
 对应合约地址：0xb3561158AcD93048448D1f1F2f484C5FAB31548c
 
 [Address: 0xb3561158...fab31548c | Etherscan Sepolia](https://sepolia.etherscan.io/address/0xb3561158acd93048448d1f1f2f484c5fab31548c#code)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2022.png)
+![image.png](/blog/ethereum-dex-sepolia/step-22.png)
 
 我们就按 “500 + 500” 加入池子
 
@@ -440,7 +439,7 @@ ok成功部署
 
 注意这里要在这里
 
-![image.png](/blog/ethereum-dex-sepolia/image%2023.png)
+![image.png](/blog/ethereum-dex-sepolia/step-23.png)
 
 执行approve
 
@@ -456,45 +455,45 @@ value（授权数量）
 
 支出请求，这里点确认
 
-![image.png](/blog/ethereum-dex-sepolia/image%2024.png)
+![image.png](/blog/ethereum-dex-sepolia/step-24.png)
 
 具体交易：
 
 [https://sepolia.etherscan.io/tx/0x764503675c07221866de39e8b3a2b7c099fb90be0fd1a3bf7b5df22f8fe6f180](https://sepolia.etherscan.io/tx/0x764503675c07221866de39e8b3a2b7c099fb90be0fd1a3bf7b5df22f8fe6f180)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2025.png)
+![image.png](/blog/ethereum-dex-sepolia/step-25.png)
 
 对于BX币的账户
 
-![image.png](/blog/ethereum-dex-sepolia/image%2026.png)
+![image.png](/blog/ethereum-dex-sepolia/step-26.png)
 
 [https://sepolia.etherscan.io/tx/0x63eff085a8c5b52ec0d300baad5bd27f11ac209e6cbf9b6d0e194157adc760df](https://sepolia.etherscan.io/tx/0x63eff085a8c5b52ec0d300baad5bd27f11ac209e6cbf9b6d0e194157adc760df)
 
 对应如下
 
-![image.png](/blog/ethereum-dex-sepolia/image%2027.png)
+![image.png](/blog/ethereum-dex-sepolia/step-27.png)
 
 使用Add Liquidity方法
 
-![image.png](/blog/ethereum-dex-sepolia/image%2028.png)
+![image.png](/blog/ethereum-dex-sepolia/step-28.png)
 
 测试网上交易ID:0xc11bdb873232559b6336beebe9c8f856ca9d8f067cbf316bf8e57aa902354d10
 
 [https://sepolia.etherscan.io/tx/0xc11bdb873232559b6336beebe9c8f856ca9d8f067cbf316bf8e57aa902354d10](https://sepolia.etherscan.io/tx/0xc11bdb873232559b6336beebe9c8f856ca9d8f067cbf316bf8e57aa902354d10)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2029.png)
+![image.png](/blog/ethereum-dex-sepolia/step-29.png)
 
 这里成功入池了
 
 还可以回到回 Remix 点 reserveA / reserveB
 
-![image.png](/blog/ethereum-dex-sepolia/image%2030.png)
+![image.png](/blog/ethereum-dex-sepolia/step-30.png)
 
 符合预期
 
 然后再approve 10 BX 给 DEX2
 
-![image.png](/blog/ethereum-dex-sepolia/image%2031.png)
+![image.png](/blog/ethereum-dex-sepolia/step-31.png)
 
 具体交易信息
 
@@ -504,11 +503,11 @@ Transaction Hash:
 
 0xa84a517002c0b66b2706e63a08f428529a7a4ec69ce9f440e49e667ad03f7cc6
 
-![image.png](/blog/ethereum-dex-sepolia/image%2032.png)
+![image.png](/blog/ethereum-dex-sepolia/step-32.png)
 
 调用 swapAforB
 
-![image.png](/blog/ethereum-dex-sepolia/image%2033.png)
+![image.png](/blog/ethereum-dex-sepolia/step-33.png)
 
 [](https://sepolia.etherscan.io/tx/0x71152db9cb3206364e764909b2aaf4e177e4aff0fd6d6c7d8ca147b80f4a1351)
 
@@ -516,7 +515,7 @@ Transaction Hash:
 
 0x71152db9cb3206364e764909b2aaf4e177e4aff0fd6d6c7d8ca147b80f4a1351
 
-![image.png](/blog/ethereum-dex-sepolia/image%2034.png)
+![image.png](/blog/ethereum-dex-sepolia/step-34.png)
 
 *在流动性池 reserveA=500 BX、reserveB=500 DX 的情况下，调用 swapAforB 换入 10 BX。根据恒定乘积做市商模型*
 
@@ -633,29 +632,29 @@ contract SimpleDex_bx {
 
 [https://sepolia.etherscan.io/tx/0x0ec85fdfe417aeb3e499cb5dd551219a6dc0aba85845f04c4b3d0118376584f1](https://sepolia.etherscan.io/tx/0x0ec85fdfe417aeb3e499cb5dd551219a6dc0aba85845f04c4b3d0118376584f1)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2035.png)
+![image.png](/blog/ethereum-dex-sepolia/step-35.png)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2036.png)
+![image.png](/blog/ethereum-dex-sepolia/step-36.png)
 
 批准
 
 [https://sepolia.etherscan.io/tx/0x58a34bc3b991c1c6cbc1287c4ca4df82af481605022eaa046a3462bbef168083](https://sepolia.etherscan.io/tx/0x58a34bc3b991c1c6cbc1287c4ca4df82af481605022eaa046a3462bbef168083)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2037.png)
+![image.png](/blog/ethereum-dex-sepolia/step-37.png)
 
 在新Advanced DEX 上 addLiquidity
 
-![image.png](/blog/ethereum-dex-sepolia/image%2038.png)
+![image.png](/blog/ethereum-dex-sepolia/step-38.png)
 
 在MetaMask中
 
-![image.png](/blog/ethereum-dex-sepolia/image%2039.png)
+![image.png](/blog/ethereum-dex-sepolia/step-39.png)
 
 交易链接
 
 [https://sepolia.etherscan.io/tx/0x5e35204d115a174e433d851fa25e6853e4184c012d4fb5395c9a8ad9f076cef3](https://sepolia.etherscan.io/tx/0x5e35204d115a174e433d851fa25e6853e4184c012d4fb5395c9a8ad9f076cef3)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2040.png)
+![image.png](/blog/ethereum-dex-sepolia/step-40.png)
 
 现在池子里面有资金了
 
@@ -669,7 +668,7 @@ minOut:9.5e18
 deadline:9999999999
 ```
 
-![image.png](/blog/ethereum-dex-sepolia/image%2041.png)
+![image.png](/blog/ethereum-dex-sepolia/step-41.png)
 
 交易ID:0x8f7ae9b20bcf5d7fa866eb045688e0d800538c714b5f6461c6c8d545882addc4
 
@@ -677,17 +676,17 @@ deadline:9999999999
 
 [https://sepolia.etherscan.io/tx/0x8f7ae9b20bcf5d7fa866eb045688e0d800538c714b5f6461c6c8d545882addc4](https://sepolia.etherscan.io/tx/0x8f7ae9b20bcf5d7fa866eb045688e0d800538c714b5f6461c6c8d545882addc4)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2042.png)
+![image.png](/blog/ethereum-dex-sepolia/step-42.png)
 
 可以看到流动变化
 
-![image.png](/blog/ethereum-dex-sepolia/image%2043.png)
+![image.png](/blog/ethereum-dex-sepolia/step-43.png)
 
 ### GETAMOUNTOUT功能
 
 调用GETAMOUNTOUT
 
-![image.png](/blog/ethereum-dex-sepolia/image%2044.png)
+![image.png](/blog/ethereum-dex-sepolia/step-44.png)
 
 具体LOG
 
@@ -731,7 +730,7 @@ minOut:11e18
 deadline:9999999999
 ```
 
-![image.png](/blog/ethereum-dex-sepolia/image%2045.png)
+![image.png](/blog/ethereum-dex-sepolia/step-45.png)
 
 ### 超时测试
 
@@ -747,7 +746,7 @@ deadline:9999999999
 
 正常
 
-![image.png](/blog/ethereum-dex-sepolia/image%2046.png)
+![image.png](/blog/ethereum-dex-sepolia/step-46.png)
 
 我们故意测试
 
@@ -759,7 +758,7 @@ deadline:1
 
 报错如下
 
-![image.png](/blog/ethereum-dex-sepolia/image%2047.png)
+![image.png](/blog/ethereum-dex-sepolia/step-47.png)
 
 弹窗里明确写了 `execution reverted: "expired"`，说明你把 `deadline=1` 这种过期时间传进去后，被 `require(block.timestamp <= deadline)` 拦住了。
 
@@ -785,7 +784,7 @@ constructor(address _tokenA, address _tokenB) {
 0x97bd56729310889aD33b2bbC520571303E5BFc33
 ```
 
-![image.png](/blog/ethereum-dex-sepolia/image%2048.png)
+![image.png](/blog/ethereum-dex-sepolia/step-48.png)
 
 可以看到Remix IDE中触发了报错，对于“zero address”不接受，符合预期
 
@@ -796,7 +795,7 @@ constructor(address _tokenA, address _tokenB) {
 0x97bd56729310889aD33b2bbC520571303E5BFc33
 ```
 
-![image.png](/blog/ethereum-dex-sepolia/image%2049.png)
+![image.png](/blog/ethereum-dex-sepolia/step-49.png)
 
 可以看到Remix IDE中触发了报错，对于“same token”不接受，符合预期
 
@@ -997,11 +996,11 @@ LP 份额 / removeLiquidity / sync reserves / ReentrancyGuard等功能
 
 我们继续部署新的合约在测试网络上
 
-![image.png](/blog/ethereum-dex-sepolia/image%2050.png)
+![image.png](/blog/ethereum-dex-sepolia/step-50.png)
 
 Details如下
 
-![image.png](/blog/ethereum-dex-sepolia/image%2051.png)
+![image.png](/blog/ethereum-dex-sepolia/step-51.png)
 
 新合约地址
 
@@ -1011,25 +1010,25 @@ Details如下
 
 Approve BX
 
-![image.png](/blog/ethereum-dex-sepolia/image%2052.png)
+![image.png](/blog/ethereum-dex-sepolia/step-52.png)
 
 https://sepolia.etherscan.io/tx/0x5da7b05342b7d0539b2b3890dd6fd00a41b6c3e97956b403ce434c1c3b815caa
 
-![image.png](/blog/ethereum-dex-sepolia/image%2053.png)
+![image.png](/blog/ethereum-dex-sepolia/step-53.png)
 
 ### Approve操作
 
 Approve DX
 
-![image.png](/blog/ethereum-dex-sepolia/image%2054.png)
+![image.png](/blog/ethereum-dex-sepolia/step-54.png)
 
 https://sepolia.etherscan.io/tx/0x8f7ae9b20bcf5d7fa866eb045688e0d800538c714b5f6461c6c8d545882addc4
 
-![image.png](/blog/ethereum-dex-sepolia/image%2055.png)
+![image.png](/blog/ethereum-dex-sepolia/step-55.png)
 
 进行ADDliquidity
 
-![image.png](/blog/ethereum-dex-sepolia/image%2056.png)
+![image.png](/blog/ethereum-dex-sepolia/step-56.png)
 
 [https://sepolia.etherscan.io/tx/0x427892ecc22e6fe72d3095cf386f4d07feadfb8be9d0f908f3ecefd92784f812](https://sepolia.etherscan.io/tx/0x427892ecc22e6fe72d3095cf386f4d07feadfb8be9d0f908f3ecefd92784f812)
 
@@ -1048,7 +1047,7 @@ LP 份额（shares/totalShares）功能体现
 - shares(0xcd17778b7ddd0a0529388a9db9e4cc1e65b66d4e)
 - totalShares
 
-![image.png](/blog/ethereum-dex-sepolia/image%2057.png)
+![image.png](/blog/ethereum-dex-sepolia/step-57.png)
 
 符合预期
 
@@ -1067,25 +1066,25 @@ removeLiquidity体现
 这里remove：10000000000000000000
 ```
 
-![image.png](/blog/ethereum-dex-sepolia/image%2058.png)
+![image.png](/blog/ethereum-dex-sepolia/step-58.png)
 
 交易细节
 
-![image.png](/blog/ethereum-dex-sepolia/image%2059.png)
+![image.png](/blog/ethereum-dex-sepolia/step-59.png)
 
 [https://sepolia.etherscan.io/tx/0x4ac87ab82f616134119cb829985ba3fae87c0d8be1d3fb4a9f0ba76e359ac08b](https://sepolia.etherscan.io/tx/0x4ac87ab82f616134119cb829985ba3fae87c0d8be1d3fb4a9f0ba76e359ac08b)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2060.png)
+![image.png](/blog/ethereum-dex-sepolia/step-60.png)
 
 可以看到这里
 
-![image.png](/blog/ethereum-dex-sepolia/image%2061.png)
+![image.png](/blog/ethereum-dex-sepolia/step-61.png)
 
 与上面对比，数值全部减小 10%符合预期
 
 这里我们再做一个测试，尝试输入值大于shares
 
-![image.png](/blog/ethereum-dex-sepolia/image%2062.png)
+![image.png](/blog/ethereum-dex-sepolia/step-62.png)
 
 minA/minB 保护 LP 退出时的最小可得资产，防止被抢跑/价格波动导致实际到账过低。
 
@@ -1093,25 +1092,25 @@ minA/minB 保护 LP 退出时的最小可得资产，防止被抢跑/价格波�
 
 sync reserves体现
 
-我们先制造不一致 
+我们先制造不一致
 
 我再BX中 Transfer 50e18 给 final合约0xc03bA12283e12BAF76D5507a146EA24C35D39a10
 
-![image.png](/blog/ethereum-dex-sepolia/image%2063.png)
+![image.png](/blog/ethereum-dex-sepolia/step-63.png)
 
 [https://sepolia.etherscan.io/tx/0x291acd09fc33b9f14714b5489c7f7c7f9e8451db418bb4b85f4e30eeafdd93db](https://sepolia.etherscan.io/tx/0x291acd09fc33b9f14714b5489c7f7c7f9e8451db418bb4b85f4e30eeafdd93db)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2064.png)
+![image.png](/blog/ethereum-dex-sepolia/step-64.png)
 
 我们对比来看
 
-![image.png](/blog/ethereum-dex-sepolia/image%2065.png)
+![image.png](/blog/ethereum-dex-sepolia/step-65.png)
 
 这上面没变，但是回到BX的balanceof
 
 发现额度是增加的
 
-![image.png](/blog/ethereum-dex-sepolia/image%2066.png)
+![image.png](/blog/ethereum-dex-sepolia/step-66.png)
 
 展示“余额≠reserve”风险
 
@@ -1136,20 +1135,20 @@ sync reserves体现
 
 1. `contract FinalDex_bx is ReentrancyGuard`（继承防重入库）
 
-![image.png](/blog/ethereum-dex-sepolia/image%2067.png)
+![image.png](/blog/ethereum-dex-sepolia/step-67.png)
 
 1. 对所有会转账的外部函数加了 `nonReentrant`：`addLiquidity / removeLiquidity / swapAforB / swapBforA`。
 
-![image.png](/blog/ethereum-dex-sepolia/image%2068.png)
+![image.png](/blog/ethereum-dex-sepolia/step-68.png)
 
-![image.png](/blog/ethereum-dex-sepolia/image%2069.png)
+![image.png](/blog/ethereum-dex-sepolia/step-69.png)
 
 本合约继承 ReentrancyGuard，并对所有涉及外部转账的状态修改函数添加 nonReentrant 修饰，避免攻击者在 transfer 回调期间二次进入同一函数导致份额/储备被重复结算；在重入测试中二次调用直接 revert，证明防护生效。
 
 ## Dapp
 
 > $\text{DApp} = \text{前端界面 (User Interface)} + \text{智能合约 (Smart Contracts)}$
-> 
+>
 
 就是区块链领域的app，基于智能合约
 
@@ -1172,11 +1171,11 @@ export const TOKEN_B_ADDRESS = "0x98b129D0fa6D052ec1ba74b7541D1a63aD614e75";
 
 先连上钱包执行后续操作
 
-![image.png](/blog/ethereum-dex-sepolia/image%2070.png)
+![image.png](/blog/ethereum-dex-sepolia/step-70.png)
 
 兑换（swap）页面
 
-![image.png](/blog/ethereum-dex-sepolia/image%2071.png)
+![image.png](/blog/ethereum-dex-sepolia/step-71.png)
 
 功能使用
 
@@ -1190,4 +1189,4 @@ export const TOKEN_B_ADDRESS = "0x98b129D0fa6D052ec1ba74b7541D1a63aD614e75";
 
 流动性页面
 
-![image.png](/blog/ethereum-dex-sepolia/image%2072.png)
+![image.png](/blog/ethereum-dex-sepolia/step-72.png)

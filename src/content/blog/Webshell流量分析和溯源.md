@@ -13,9 +13,6 @@ draft: false
 slug: "k8x9w22"
 ---
 
-<meta name="referrer" content="no-referrer">
-
-
 
 # 蚁剑流量分析和溯源
 
@@ -65,8 +62,6 @@ ip addr
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1744734712242-33d40c25-6b4c-4dda-b6f9-d89653532ba0.png)
 
-
-
 ## 流量特征分析
 
 ### 总结
@@ -78,12 +73,6 @@ ip addr
 
 3.  以 HTTP POST 请求为主  （这个其实都一样）
 4.  请求体参数化，常带有随机键名  
-
-
-
-
-
-
 
 ### 测试过程
 
@@ -121,8 +110,6 @@ Y2QgIi92YXIvd3d3L2h0bWwiO3dob2FtaTtlY2hvIGE5MDA4YjM7cHdkO2VjaG8gYTczOGUzZGI
 cd "/var/www/html";whoami;echo a9008b3;pwd;echo a738e3db
 ```
 
-
-
 #### chr 编码 + rot13 回显
 
 > 其实总体来说，所以逻辑和格式都是一样的，就是发包和收包的编码格式不一样，我的理解是就是加一层编解码处理
@@ -138,8 +125,6 @@ rot13 回显如下
 解码如下
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1744734426799-d4397a64-b4fd-40b5-a5a3-a98e6ecde36f.png)
-
-
 
 ## 附件
 

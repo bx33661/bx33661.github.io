@@ -6,14 +6,12 @@ tags:
   - "Webpack"
   - "学习分析"
   - "JavaScript"
-  - "web"
+  - "Web"
 authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "bxwebpack"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
-
 
 # Webpack 渗透思路
 >  目前了解到的就是这些

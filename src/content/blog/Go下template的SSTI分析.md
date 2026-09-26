@@ -5,15 +5,13 @@ date: 2025-07-23
 tags:
   - "Go"
   - "bx"
-  - "ctf"
-  - "WEB"
+  - "CTF"
+  - "Web"
 authors:
   - "bx"
-draft: false             
-slug: "bx1go"          
+draft: false
+slug: "bx1go"
 ---
-
-<meta name="referrer" content="no-referrer">
 
 
 # Go下template的SSTI分析

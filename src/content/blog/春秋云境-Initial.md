@@ -13,7 +13,6 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "chunqiu-Initial"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # 春秋云境-Initial
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753622805899-979985e8-ad9f-4fd2-9ee5-77a254fa1f6b.png)
@@ -287,11 +286,7 @@ www-data:/tmp) $ cat 1.txt
 - 139 (NetBIOS)
 - 445 (SMB)
 
-
-
 同时发现永恒之蓝漏洞**MS17-010 (永恒之蓝)** - 172.22.1.21
-
-
 
 这里使用
 

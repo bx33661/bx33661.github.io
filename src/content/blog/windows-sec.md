@@ -13,7 +13,6 @@ draft: false              # 设为 true 则为草稿
 slug: "bx33661win1"          # 随机URL字符串
 ---
 
-<meta name="referrer" content="no-referrer">
 
 # Windows应急响应和安全
 
@@ -66,8 +65,6 @@ netstat -ano | findstr :80
 3. **应用程序池（App Pools）**：运行网站的隔离环境
 4. **网站（Sites）**：一个IIS实例下可配置多个网站，每个可绑定不同域名和端口
 
-
-
 例如
 
 ```python
@@ -75,10 +72,6 @@ C:\inetpub\logs\LogFiles\W3SVC1\
 ```
 
 W3SVC1--->`World Wide Web Publishing Service #1`
-
-
-
-
 
 ### 服务器管理器
 
@@ -129,9 +122,6 @@ HKEY_LOCAL_MACHINE
 | **HKEY_USERS (HKU)**           | 所有用户的配置（HKCU是它的子集） |
 | **HKEY_CURRENT_CONFIG (HKCC)** | 当前硬件配置                     |
 
-
-
-
 一个注册表项（Key）可以有多个值（Value）
 
 常见值类型：
@@ -142,9 +132,6 @@ HKEY_LOCAL_MACHINE
 | `REG_DWORD`    | 双字节   | 通常用于开关（0/1）或数值 |
 | `REG_BINARY`   | 二进制   | 原始数据                  |
 | `REG_MULTI_SZ` | 多字符串 | 多个路径或参数            |
-
-
-
 
 ** Hive 的实际存储位置和映射关系  **
 
@@ -160,40 +147,19 @@ HKEY_LOCAL_MACHINE
 | `C:\Users\<用户名>\NTUSER.DAT`                               | `HKCU`<br/>（当前用户设置）          |
 | `C:\Users\<用户名>\AppData\Local\Microsoft\Windows\UsrClass.dat` | `HKCU\Software\Classes`              |
 
-
-
-
-
-
 ### 守护进程
 
 在Windows系统中，**守护进程**对应的概念是**Windows服务（Windows Service）**，它们是在后台运行的程序，不需要用户交互。
 
-
-
-
-
-
-
-
-
 ### IPS
 
-
-
-
 ### Windows句柄
-
 
 ## 关键文件夹
 
 ### Temp 文件夹📂
 
 `C:\Windows\Temp` 是 **Windows系统的主要临时文件夹**。它的核心作用是为操作系统本身以及以系统权限运行的各种服务和应用程序提供一个存放**临时文件**的地方。  
-
-
-
-
 
 ### %UserProfile%\Recent
 
@@ -204,8 +170,6 @@ HKEY_LOCAL_MACHINE
 每当你在电脑上打开一个文件（如文档、图片、视频）或访问一个文件夹时，Windows会自动在这个 `Recent` 文件夹里创建一个指向该项目的小快捷方式（`.lnk` 文件）。
 
 这些快捷方式的作用是为Windows的“**最近使用的项目**”或“**快速访问**”等功能提供数据来源。例如，你在文件资源管理器的“快速访问”列表中看到的“最近使用的文件”，其列表就是通过读取这个文件夹的内容生成的。
-
-
 
 所以
 
@@ -223,9 +187,7 @@ HKEY_LOCAL_MACHINE
 
 排查异常情况
 
-比如说挖矿程序这些，cpu 占用都很高 
-
-
+比如说挖矿程序这些，cpu 占用都很高
 
 可以查看
 
@@ -239,17 +201,6 @@ HKEY_LOCAL_MACHINE
 | ✅ C2 通信    | 每隔几十秒连接某个海外 IP，流量少但持续               |
 | ✅ 持久后门   | 有进程一直监听本地端口（如 4444），但系统中没注册服务 |
 
-
-
-
-
-
-
-
-
-
-
-
 任务计划程序里面查找具体信息
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1752825910331-cb495b07-c529-404f-a9ac-884554f9466e.png)
@@ -258,27 +209,9 @@ HKEY_LOCAL_MACHINE
 >
 > 后面的这个字符是 GUID 唯一标识符号，方便确定
 
-
-
-
-
-
-
-
-
-
-
 计算机管理中的本地用户和组
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1752826058924-06483412-7b6e-46ef-8e4c-a2b6f9c85642.png)
-
-
-
-
-
-
-
-
 
 ## 一些尝试技巧
 
@@ -293,6 +226,4 @@ everything 这个软件太方便了，可以帮助我们快速定位
 借助 everything 就可以快速帮助我们你查看哪些新东西出现
 
 然后定位到释放出来的位置
-
-
 

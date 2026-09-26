@@ -9,10 +9,9 @@ tags:
   - "vite"
 authors:
   - "bx"
-draft: false             
-slug: "bxvite" 
+draft: false
+slug: "bxvite"
 ---
-<meta name="referrer" content="no-referrer">
 
 # Vite漏洞分析
 主要是 TGCTF 里面出来了三道题，这个漏洞还是非常新的
@@ -33,8 +32,6 @@ slug: "bxvite"
 
 [`server.fs.deny` bypassed with an invalid `request-target`](https://github.com/vitejs/vite/security/advisories/GHSA-356w-63v5-8wf4)
 
-
-
 ## 调试 Vue
 学习到了一个 vue devtools
 
@@ -54,15 +51,9 @@ slug: "bxvite"
 
 具体效果如下
 
-
-
-
-
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1744727030500-241e36a6-a6d1-4260-9065-bcd3677282f7.png)
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1744727200702-a5b0c156-a898-4331-9d5e-cf8981e2e4c7.png)
-
-
 
 ## **前端GAME**
 https://www.panziye.com/front/16376.html
@@ -125,10 +116,6 @@ http://node2.tgctf.woooo.tech:32123/@fs/tgflagggg?import&raw??
 ```
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1744647088429-b1c1636d-4d47-4d62-b584-12c176821cd1.png)
-
-
-
-
 
 ## **前端GAME Plus**
 https://github.com/vitejs/vite/security/advisories/GHSA-xcj6-pq6g-qj4x

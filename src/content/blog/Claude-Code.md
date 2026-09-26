@@ -9,10 +9,9 @@ tags:
   - "记录"
 authors:
   - "bx"
-draft: false             
-slug: "claude-code"          
+draft: false
+slug: "claude-code"
 ---
-<meta name="referrer" content="no-referrer">
 
 # Claude Code使用记录&随笔
 最近在使用这些工具顺便记个随笔，方便自己使用
@@ -69,10 +68,6 @@ claude -p "你的问题"
 + `/upgrade` 升级 Max
 + `/vim` 切换 Vim 模式
 
-
-
-
-
 ## 使用 Claude Code
 ### 命令集成：
 可以在 Claude 界面直接运行 `git`、`pytest` 等命令，Claude 会帮你解释结果。
@@ -93,20 +88,10 @@ Claude 会在后台帮你跑这个命令，把结果显示出来，并自动解�
 
 它会运行测试，输出通过/失败的详情，Claude 会告诉你**哪些测试失败、报错原因、可能的修复方案**。
 
-
-
-
-
 ### CLAUDE.md
  在 **Claude Code** 里，`CLAUDE.md` 是一个**项目文档文件**，相当于「Claude 的使用说明 + 项目上下文索引」。  
 
-
-
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755959180745-af6b8b8d-930b-43fc-b8e6-a4aa3cbaeefb.png)
-
-
-
-
 
 ### 使用截图
 具体效果
@@ -127,8 +112,6 @@ Todos
 4. **命令集成**：可以在 Claude 界面直接运行 `git`、`pytest` 等命令，Claude 会帮你解释结果。
 5. **多文件协作**：Claude 能跨文件追踪上下文，适合重构或做安全审查。
 
-
-
 ## 接入其他模型
 采用那种覆盖环境变量的方式去修改 claude code 的模型，但是常规你得使用支持这个协议的
 
@@ -143,8 +126,6 @@ setx ANTHROPIC_BASE_URL "..."
 setx ANTHROPIC_AUTH_TOKEN="..."
 ```
 
-
-
 要不然就是采用 GitHub 上面接口代理
 
 ### 接入 GLM4.5
@@ -158,9 +139,7 @@ setx ANTHROPIC_BASE_URL "https://open.bigmodel.cn/api/anthropic"
 setx ANTHROPIC_AUTH_TOKEN="..."
 ```
 
-
-
-### 接入 deepseek 
+### 接入 deepseek
 >  deepseek 有支持对应协议的
 >
 
@@ -171,10 +150,6 @@ $env:ANTHROPIC_AUTH_TOKEN="sk-..."
 setx ANTHROPIC_BASE_URL "https://api.deepseek.com/anthropic"
 setx ANTHROPIC_AUTH_TOKEN "sk-..."
 ```
-
-
-
-
 
 ## 额外配置
 ### 使用 agent
@@ -245,15 +220,9 @@ Agent = 角色设定 + 固定提示词 + 绑定模型
 + 固定提示词：相当于在后台自动加了一段 system prompt，你不用每次重复。
 + 绑定模型：指定 haiku / sonnet / opus，不同速度和推理能力。
 
-
-
 在命令/agent，可以看到已经加载成功了
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755956252776-1196993e-e4ae-4ccb-b89a-40db70c74477.png)
-
-
-
-
 
 ### 使用 MCP
 基本命令
@@ -274,8 +243,6 @@ Agent = 角色设定 + 固定提示词 + 绑定模型
 # B. 显式调用
 /mcp call notion <toolName> {"param":"value"}
 ```
-
-
 
 三种格式
 
@@ -322,8 +289,6 @@ claude mcp add --transport http secure https://api.example.com/mcp \
 
 ---
 
-
-
 #### json 格式导入 mcp
 基本语法
 
@@ -333,8 +298,6 @@ claude mcp add-json <name> '<json>'
 
 + `<name>`：你在 Claude 里给这个 MCP 起的名字
 + `<json>`：MCP 配置 JSON（注意要正确转义）
-
-
 
  示例如下
 
@@ -349,6 +312,4 @@ claude mcp add-json weather-api '{
 }'
 
 ```
-
-
 

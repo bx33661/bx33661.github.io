@@ -13,12 +13,11 @@ draft: false
 slug: "codeql-learning"
 ---
 
-
 前段时间我们团队搞了一个AI4CodeQL的智能漏洞挖掘项目，这里总结几篇关于CodeQL的文章
 
 第一篇就是分析一下数据创建，查询的问题
 
-![CodeQL架构图](/blog/codeql-learning/bfbf4068-05f1-40be-9d56-f6285a366cf2.png)
+![CodeQL架构图](/blog/codeql-learning/01-codeql-architecture.png)
 
 ## 静态污点分析STA
 
@@ -43,7 +42,7 @@ Web环境中HTTP，Cookie等这些操作被视为Source点。
 **SQL注入中**
 
 > 我们都清楚：SQL注入原理就是用户输入被拼接成 SQL 语句的一部分，导致数据库引擎误将数据当成代码执行
-> 
+>
 
 在Java代码中，常见的Sink点就是数据库引擎执行SQL查询的点
 
@@ -66,7 +65,7 @@ PDO::query()
 **命令注入中**
 
 > Command Injection 原理众所众知：
-> 
+>
 
 我们数据流向操作系统命令执行函数时，比如说下面这些常见的危险函数
 
@@ -113,7 +112,7 @@ if (StringUtils.isNumeric(input)) { ... }
 
 还有类似白名单，黑名单这些去逻辑上处理数据
 
-```
+```yaml
 allow:
 	a,b,c
 not allow:
@@ -234,7 +233,7 @@ select sink.getNode(), src, sink,
 
 可以看出来我们定义了这些逻辑操作去进行污点分析
 
-```
+```text
 isSource
 isSink
 isSanitizer
@@ -283,7 +282,7 @@ codeql database create python-db --language=python --source-root=source_code/Sha
 
 最后的数据库结构如下
 
-```
+```text
 python-database/
 ├── db-python/           # Python 特定的数据库文件
 ├── log/                 # 提取日志
@@ -306,7 +305,7 @@ codeql database create cpp-database \
 
 这里借助AI总结一下C/CPP 创建的过程，可以说是相当复杂和详细的
 
-```
+```text
 用户命令:  codeql database create db --language=cpp --command="make"
     │
     ├─> [1] CodeQL CLI 启动
@@ -377,13 +376,13 @@ codeql database create cpp-database \
 
 主要流如下
 
-```
+```text
 代码 -> AST -> TRAP 文件 -> 关系数据库 -> CodeQL 查询
 ```
 
 C/CPP最后的数据库结构
 
-```
+```text
 cpp-database/
 ├── db-cpp/
 │   ├── default/
@@ -417,7 +416,7 @@ codeql database create frr-codeql-db \
 
 可以重点看一下build-mode这个命令参数，官方已经标记了这些模式的试用语言范围
 
-![build-mode模式](/blog/codeql-learning/image.png)
+![build-mode模式](/blog/codeql-learning/02-build-mode-options.png)
 
 ```bash
 --build-mode=<mode>
@@ -447,7 +446,7 @@ Java/C# 在这种模式下可能只分析源码文件而不进行完整编译
 
 Log文件中有很详细的记录过程
 
-![Log文件示例](/blog/codeql-learning/image%201.png)
+![Log文件示例](/blog/codeql-learning/03-log-file-sample.png)
 
 不过一般借助Vscode插件中，就自动解析输出Log文件中错误点了
 
@@ -475,10 +474,10 @@ codeql database analyze C:\baidunetdiskdownload\qwb_targets1\targets\python\CVE-
 结果输出成SARIF文件
 
 > *SARIF 全称是 Static Analysis Results Interchange Format， 中文一般翻译为 静态分析结果交换格式。*
-> 
-> 
+>
+>
 > *它是一种基于 JSON 的标准格式（扩展名 `.sarif` 或 `.sarif.json`）， 用于 统一表示静态分析工具的扫描结果*
-> 
+>
 
 基本格式如下
 
@@ -523,11 +522,11 @@ codeql database analyze C:\baidunetdiskdownload\qwb_targets1\targets\python\CVE-
 
 对于SARIF文件，vscode可以使用这个插件去进行预览
 
-![SARIF插件](/blog/codeql-learning/image%202.png)
+![SARIF插件](/blog/codeql-learning/04-sarif-viewer-extension.png)
 
 具体效果就是
 
-![SARIF预览效果](/blog/codeql-learning/image%203.png)
+![SARIF预览效果](/blog/codeql-learning/05-sarif-preview-result.png)
 
 由于Sarif文件如果在脚本处理的时候，对于路径不太好提取，我们团队做了一个Path提取脚本
 
@@ -666,17 +665,15 @@ codeql bqrs decode \
 codeql bqrs info results.bqrs
 ```
 
-![BQRS解码](/blog/codeql-learning/image%204.png)
+![BQRS解码](/blog/codeql-learning/06-bqrs-decode-sample.png)
 
 ### VScode插件生态运行
 
 官方提供插件
 
-![VS Code CodeQL插件](/blog/codeql-learning/image%205.png)
+![VS Code CodeQL插件](/blog/codeql-learning/07-vscode-codeql-plugin.png)
 
 这个就是图形化操作，引入DB，运行就行，需要做的就是配好环境统一版本信息
-
-
 
 ### PACK目录
 

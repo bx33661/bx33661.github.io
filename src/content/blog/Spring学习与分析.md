@@ -15,7 +15,6 @@ slug: "spring-learning-analysis"
 cover: "/blog/spring-learning-analysis/spring-mvc-flow.png"
 ---
 
-<meta name="referrer" content="no-referrer">
 
 # Spring学习与分析
 
@@ -611,41 +610,41 @@ spring:
 `.properties` 是一种最简单的配置文件格式，特点如下：
 
 **基本语法：**
-```
+```properties
 key=value
 ```
 或者
-```
+```properties
 key: value
 ```
 （在 Spring Boot 里这两种都可以，推荐 `=`）
 
 **注释：** 用 `#` 或 `!` 开头
-```
+```properties
 # 这是一个注释
 ! 这也是注释
 ```
 
 **空格处理：** 键和值之间的空格会被忽略
-```
+```properties
 server.port=8080
 ```
 
 **换行续写：**
-```
+```properties
 my.long.property=this is a \
   very long line
 ```
 结果：`this is a very long line`
 
 **转义字符：** 支持 `\n`（换行）、`\t`（制表）、`\uXXXX`（Unicode）等
-```
+```properties
 greeting=Hello\nWorld
 chinese=\u4F60\u597D
 ```
 
 **占位符引用**（Spring Boot 扩展）
-```
+```properties
 app.name=MyApp
 app.description=${app.name} is a Spring Boot project
 ```

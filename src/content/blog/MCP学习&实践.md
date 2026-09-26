@@ -4,15 +4,14 @@ description: "MCP（Model Context Protocol）是由 Anthropic 于 2024 年 11 �
 date: 2025-08-10
 tags:
   - "Anthropic"
-  - "llm"
-  - "ai"
+  - "LLM"
+  - "AI"
   - "model context protocol"
 authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "mcp1"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # MCP 学习&实践--Model Context Protocol
 ## MCP 概念
@@ -27,15 +26,11 @@ MCP 可应用于：
 
 + 文件系统访问、数据库查询、API 调用等工具性操作；
 + 安全授予权限，确保用户掌控访问授权；
-+ 支持 JSON-RPC 2.0 协议、客户端-服务器架构和能力协商机制 
++ 支持 JSON-RPC 2.0 协议、客户端-服务器架构和能力协商机制
 
-
-
-图片来自： 
+图片来自：
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755242123068-5449adf6-d661-46ed-abb2-b809ad42f081.png)
-
-
 
 理解和学习一下核心概念
 
@@ -50,7 +45,6 @@ MCP 主机：协调和管理一个或多个 MCP 客户端的 AI 应用程序
 MCP 客户端：保持与 MCP 服务器连接并从 MCP 服务器获取上下文供 MCP 主机使用的组件
 + **MCP Server**: A program that provides context to MCP clients  
 MCP 服务器：为 MCP 客户端提供上下文的程序
-
 
 ### 消息格式
 MCP 本质是一个用 JSON-RPC 2.0 作为通信协议的客户端-服务端系统：
@@ -85,8 +79,6 @@ MCP Server 响应：
 }
 ```
 
-
-
 ### 传输
 一些文章
 
@@ -102,13 +94,6 @@ MCP Server 响应：
 | 会话与状态 | 由宿主进程掌控；天然同进程上下文。 | 典型为长会话但连接中断难恢复。 | 支持会话 ID 与无状态服务器；可在断线后恢复或重建流。 |
 | 安全要点 | 仅限本机进程间通信，攻击面小。 | 需妥善管理 SSE 端点与跨域/连接稳定性。 | 必须校验 Origin、建议仅绑定 localhost、本地需注意 DNS 重绑定风险与鉴权。 |
 | 规范地位 | 强烈建议客户端尽可能支持。 | 旧版标准传输之一（2024-11-05），现已被替代。 | 当前标准传输，与 STDIO 并列；取代了原 HTTP+SSE 模式。 |
-
-
-
-
-
-
-
 
 ## Mcp 使用
 基本逻辑就是利用 MCP 客户端，配置 MCP 服务器，启用然后让 AI 调用
@@ -179,12 +164,8 @@ python -m mcp_server_git
 
 整理来说效果还是十分不错的
 
-
-
-
-
-### 智谱搜索 MCP 
-尝试 智谱搜索 MCP 
+### 智谱搜索 MCP
+尝试 智谱搜索 MCP
 
 :::info
 这里采用 Cherry Studio
@@ -224,8 +205,6 @@ MCP 调用后
 > 总决赛抢七大战的关键转折发生在首节，步行者核心球员**哈利伯顿在无对抗情况下右小腿跟腱受伤**，表情痛苦地退出比赛。这一伤病直接影响了比赛走势，雷霆队在下半场逐渐确立优势。
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1751183354031-0195b344-1699-4080-8cd5-87a05eaa4052.png)
-
-
 
 ## Mcp 开发
 ### 认识 UV
@@ -269,10 +248,6 @@ uv python install
 uv python list
 ```
 
-
-
-
-
 ### 天气 MCP
 > 这个是比较经典的，直接通过官方给的示例学习一下
 >
@@ -290,8 +265,6 @@ uv python list
 
 1. **获取天气警报** (`get_alerts`) - 获取美国各州的天气警报信息
 2. **获取天气预报** (`get_forecast`) - 获取指定坐标的详细天气预报
-
-
 
 创建一个`weather.py`
 
@@ -448,10 +421,6 @@ if __name__ == "__main__":
 4. 结果被发回给 Claude
 5. Claude 制定自然语言响应
 6. 响应显示给你
-
-
-
-
 
 ## 参考文章&知识库
 [Introducing the Model Context Protocol](https://www.anthropic.com/news/model-context-protocol)

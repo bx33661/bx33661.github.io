@@ -5,15 +5,13 @@ date: 2025-06-23
 tags:
   - "hap"
   - "OpenHarmony"
-  - "ctf"
-  - "WEB"
+  - "CTF"
+  - "Web"
 authors:
   - "hnusec"
-draft: false             
-slug: "OpenHarmonyCTF"          
+draft: false
+slug: "OpenHarmonyCTF"
 ---
-
-<meta name="referrer" content="no-referrer">
 
 
 # OpenHarmonyCTF-ezAPP_And_SERVER
@@ -21,7 +19,7 @@ slug: "OpenHarmonyCTF"
 :::info
 主要是鸿蒙APP结合Web漏洞
 
-@Ewoji 
+@Ewoji
 
 :::
 
@@ -39,8 +37,6 @@ slug: "OpenHarmonyCTF"
 > 但是效果一般，还是处于开发阶段，但是能阅读出来大部分代码就好
 >
 
-
-
 2. adcde
 
 > 比较新的吧算，JDK17+
@@ -48,17 +44,9 @@ slug: "OpenHarmonyCTF"
 
 [GitHub - Yricky/abcde: openHarmony逆向工具包，初步支持反编译](https://github.com/Yricky/abcde)
 
-
-
 跟 jadx 逻辑一样，具体使用找到一些文章如下
 
 [鸿蒙hap应用反编译工具 abc-decompiler 使用分享](https://bbs.kanxue.com/thread-283225.htm)
-
-
-
-
-
-
 
 ### ezAPP_And_SERVER
 > 给了一个远程地址，和一个 Hap包文件
@@ -649,8 +637,6 @@ Content-Length: 58
 测了那8个UID，都无用，不是UID
 
 尝试UID也失败了
-
-
 
 #### 注入分析
 通过contacts接口sqlite注入拿到uuid

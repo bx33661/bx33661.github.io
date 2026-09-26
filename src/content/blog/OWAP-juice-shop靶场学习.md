@@ -13,7 +13,6 @@ draft: false              # 设为 true 则为草稿
 slug: "juice-shop"          # 随机URL字符串
 ---
 
-<meta name="referrer" content="no-referrer">
 # OWAP-juice-shop靶场学习
 ## 介绍
 OWASP Juice Shop 是一个用于学习和测试 Web 应用程序安全的开源项目。它提供了一个真实的 Web 应用环境，模拟了一个在线商店的场景，包含了多个安全漏洞和攻击面。
@@ -67,11 +66,7 @@ github 官方地址
 - ⭐⭐⭐⭐ 专家
 - ⭐⭐⭐⭐⭐ 大师
 
-
-
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755055555371-f200e4d5-be75-49c6-95b2-ea6c138012cf.png)
-
-
 
 ## 漏洞分类与学习
 
@@ -93,8 +88,6 @@ github 官方地址
 http://127.0.0.1:3000/#/score-board
 ```
 
-
-
 ### XSS
 **DOM XSS**
 
@@ -106,14 +99,6 @@ http://127.0.0.1:3000/#/score-board
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755055625089-953f106f-854a-49ab-a8a4-d71b711c9f54.png)
 
 执行 XSS 发现是存在的，没有过滤
-
-
-
-
-
-
-
-
 
 可以分析一下，直接利用 XSS 嵌入网页
 
@@ -133,10 +118,6 @@ http://127.0.0.1:3000/#/score-board
 还是一样的入口，XSS 嵌入效果如下
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755056100396-a9c77f93-7f42-4099-b779-0d1de1e00e21.png)
-
-
-
-
 
 ### 查阅机密文件
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755056427452-db027247-4942-4eaa-acfb-661f2f76a432.png)
@@ -173,16 +154,7 @@ http://127.0.0.1:3000/ftp/legal.md
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755057229276-076028be-d48d-492c-aa3d-654c6a8cfe60.png)
 
-
-
-
-
 ### **Privacy Policy**
-
-
-
-
-
 
 ### Outdated Allowlist
 > 让我们将您重定向到我们不再推广的加密货币地址
@@ -210,10 +182,6 @@ http://127.0.0.1:3000/ftp/legal.md
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755058227513-afa7d652-253c-47c2-9989-758d2aa63242.png)
 
-
-
-
-
 ### Web3 Sandbox
 > 查找意外部署的代码沙盒，用于即时编写智能合约。
 >
@@ -230,10 +198,6 @@ http://127.0.0.1:3000/#/web3-sandbox
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755062456032-d041ff0f-1854-47d1-ba3f-80c0591bd6a9.png)
 
-
-
-
-
 ### Exposed Metrics
 > 找出后端服务使用[常见监测软件](https://github.com/prometheus/prometheus)获得
 >
@@ -246,10 +210,7 @@ http://127.0.0.1:3000/metrics
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755062707214-b89ef996-8617-4193-8dee-83b2797cdf85.png)
 
-
-
-###   
-</font>Bully Chatbot
+### Bully Chatbot
 > Receive a coupon code from the support chatbot
 >
 
@@ -261,16 +222,7 @@ http://127.0.0.1:3000/metrics
 Oooookay, if you promise to stop nagging me here's a 10% coupon code for you: k#*Agh7ZKp
 ```
 
-
-
-
-
-
-
-
-
-###   
-</font>Privacy Policy
+### Privacy Policy
 > Read our privacy policy.
 >
 
@@ -281,8 +233,6 @@ Oooookay, if you promise to stop nagging me here's a 10% coupon code for you: k#
 进来就成功
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1755063220889-af90753c-d101-446d-9d0d-b09f8e376de7.png)
-
-
 
 ## Others
 ### 常见币种地址

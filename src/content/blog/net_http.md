@@ -13,8 +13,6 @@ draft: false
 slug: "go-net-http-source-analysis"
 ---
 
-<!-- 这是一张图片，ocr 内容为： -->
-
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771943787882-76177644-8587-49b7-b36b-2e3d0cec2ae5.png)
 
 最近在高强度的 GoGoGoGo，来看看 net/http 这个包
@@ -112,8 +110,6 @@ ok，我们继续跟进
 
 对于`func (srv *Server) Serve(l net.Listener) error`方法而言
 
-<!-- 这是一张图片，ocr 内容为： -->
-
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771936236518-f141e69e-27a8-498f-8747-038ef4168225.png)
 
 重点关注就是这个无限循环，根据逻辑（忽略错误处理）我们可以简化成
@@ -139,13 +135,9 @@ for {
 
 1. **读取请求：**`**w, err := c.readRequest(ctx)**` 这里是解析 HTTP 协议的地方。它会把网络流里的字节（比如 `GET / HTTP/1.1...`）解析成你代码里用的 `*http.Request` 结构体。
 
-<!-- 这是一张图片，ocr 内容为： -->
-
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771937219288-e3548fa1-bb02-43fd-8d7c-94dbb1d4655c.png)
 
 2. **转交处理器：**`**serverHandler{c.server}.ServeHTTP(w, w.req)**` 这是最激动人心的一步。底层框架处理完了所有的网络 I/O 和协议解析，现在要把它交回给你写的业务代码了。
-
-<!-- 这是一张图片，ocr 内容为： -->
 
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771937379722-752d64c9-a78b-45ac-961d-5cff707bb86c.png)
 
@@ -218,8 +210,6 @@ if use121 {
 	}
 ```
 
-<!-- 这是一张图片，ocr 内容为： -->
-
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771939513209-bbc808f8-06df-4b26-90fc-355b51c677f4.png)
 
 > 在 Go 1.22 中，官方对 `net/http` 的路由做了一次**史诗级的增强**（终于原生支持了 HTTP 方法匹配和路径通配符，比如 `GET /users/{id}`）
@@ -239,11 +229,9 @@ h.ServeHTTP(w, r)
 
 1. Handler 接口
 
-<!-- 这是一张图片，ocr 内容为： -->
-
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771938688136-3b29acfb-3589-4ea1-8ac9-9f04374a0316.png)
 
-<font style="color:rgb(31, 35, 40);">凡是实现了 </font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">ServeHTTP</font>`<font style="color:rgb(31, 35, 40);"> 方法的结构体，都叫 </font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">Handler</font>`
+凡是实现了 `ServeHTTP` 方法的结构体，都叫 `Handler`
 
 2. ServeMux，多路复用器，本质就是一张路由表
 
@@ -471,8 +459,6 @@ type ResponseWriter interface {
 
 `responese` 结构体
 
-<!-- 这是一张图片，ocr 内容为： -->
-
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771942141803-cd867808-abf4-42ca-bfcd-18a2ab725476.png)
 
 这里关注这个几个量
@@ -486,7 +472,7 @@ type response struct {
 }
 ```
 
-然后看一个比较有趣的题目“<font style="color:rgb(31, 35, 40);">为什么 </font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">Write</font>`<font style="color:rgb(31, 35, 40);"> 之后再 </font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">WriteHeader</font>`<font style="color:rgb(31, 35, 40);"> 会失效？</font>”
+然后看一个比较有趣的题目“为什么 `Write` 之后再 `WriteHeader` 会失效？”
 
 可以看一下这里给出的解释
 
@@ -520,14 +506,10 @@ type response struct {
 
 所以我们这里能理解两个点
 
-1. <font style="color:rgb(31, 35, 40);">不传 WriteHeader 也没事，</font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">Write</font>`<font style="color:rgb(31, 35, 40);"> 时会自动补 </font>`<font style="color:rgb(31, 35, 40);background-color:rgba(129, 139, 152, 0.12);">200 OK</font>`
-2. <font style="color:rgb(31, 35, 40);">Header 必须在 Write 之前设置</font>
+1. 不传 WriteHeader 也没事，`Write` 时会自动补 `200 OK`
+2. Header 必须在 Write 之前设置
 
-<font style="color:rgb(31, 35, 40);"></font>
-
-<font style="color:rgb(31, 35, 40);"></font>
-
-## <font style="color:rgb(31, 35, 40);">应用</font>
+## 应用
 
 ### 标准化输出响应
 

@@ -258,7 +258,7 @@ Claude Code 中把 `$omv-*` 换成 `/omv-*`。如果 strict review 返回 `needs
 
 下面是 Findings 视图的实际效果。左侧按照优先级展示工作队列，右侧集中显示当前 finding 的状态、readiness、verdict、blocker 和下一步 Skill。这样打开项目以后，不需要先翻完整 Evidence，也能快速判断研究停在了哪一层。
 
-![oh-my-vul TUI Findings 视图：左侧为工作队列，右侧为 Evidence 摘要、blocker 与下一步动作](oh-my-vul-tui.png)
+![oh-my-vul TUI Findings 视图：左侧为工作队列，右侧为 Evidence 摘要、blocker 与下一步动作](/blog/oh-my-vul-1-0/01-oh-my-vul-tui-findings.png)
 
 工作台目前包含 Overview、Findings、Campaign 和 Activity，Finding 详情又分为 Summary、Evidence、Threat 和 History。搜索、结构化过滤、完整详情滚动、窄终端布局、最近 200 条 Activity 都已经做了适配。
 

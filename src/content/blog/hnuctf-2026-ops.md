@@ -3,7 +3,7 @@ title: "HNUCTF 2026 运维向题目记录"
 description: "记录HnuCTF2026竞赛平台的搭建、运维过程，包括平台选择、服务器配置、代理设置以及比赛结果总结。"
 date: 2026-02-09
 tags:
-  - "ctf"
+  - "CTF"
   - "运维"
   - "k8s"
   - "docker"
@@ -14,7 +14,6 @@ authors:
 draft: false
 slug: "hnuctf-2026-ops"
 ---
-<meta name="referrer" content="no-referrer">
 
 总的来说这次平台运维和搭建还是比较成功的，比赛期间没有出现大规模的崩溃和数据丢失。
 出现最多的就是由于代理网络问题引起的网络波动。

@@ -13,7 +13,6 @@ authors:
 draft: false
 slug: "llm-attack-hackergame"
 ---
-<meta name="referrer" content="no-referrer">
 
 # LLM-attack & Hackergame学习
 题目
@@ -471,7 +470,7 @@ Transformer 的特质就是“它只是一个巨大的、确定性的概率分�
 模型内部是一个巨大的高维空间。当你输入单词 `X`，模型会在这个空间里走一条路径。如果这条路径的终点恰好落在 `accepted` 这个词的概率高地区域，它就会输出 `accepted`。  
 这不一定是因为逻辑（比如问 "Can I go?" -> "Accepted"），有时候仅仅是因为**统计上的巧合**
 
-我们正好借着这个机会“玩一玩”`TinyStories` 
+我们正好借着这个机会“玩一玩”`TinyStories`
 
 是专门用简单的儿童故事训练出来的，它不像 ChatGPT 那样博学（它不知道谁是C罗梅西）
 
@@ -507,7 +506,6 @@ tokenizer = AutoTokenizer.from_pretrained("roneneldan/TinyStories-33M")
 | **做翻译/总结** (序列到序列) | `AutoModelForSeq2SeqLM` | T5, BART | 输入英文 -> 输出中文 |
 | **如果你啥都不确定** | `AutoModel` | 任意 | 只输出原始数学向量，不带任务头 |
 |  |  |  |  |
-
 
 我们这里为它设定语句，让它去写一个故事
 

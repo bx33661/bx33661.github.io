@@ -12,7 +12,6 @@ authors:
 draft: false
 slug: "k8s-goat-walkthrough"
 ---
-<meta name="referrer" content="no-referrer" />
 
 # K8s Goat 靶场实战记录
 

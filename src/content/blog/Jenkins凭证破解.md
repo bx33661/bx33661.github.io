@@ -12,7 +12,6 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "jenkins-credential-crack"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # Jenkins凭证破解&敏感信息获取
 Jenkins 是一个开源的**自动化服务器（Automation Server）**，主要用于**持续集成和持续交付（CI/CD）**。
@@ -21,14 +20,10 @@ Jenkins 是一个开源的**自动化服务器（Automation Server）**，主要
 
 [https://www.jenkins.io/](https://www.jenkins.io/)
 
-
-
 ## Jenkins 凭证存储原理简述
 主要原因是 `Jenkins`允许用户将各种需要用到的凭证集中存储，而不是在 Job 配置脚本中直接写明文密码或密钥。这样可以避免密码泄露、减少重复输入、方便统一管理  
 
 如果我们能够获取到对应的密钥之类的信息，就能破解得到一些凭证信息
-
-
 
 1. **凭证存储位置**  
 Jenkins 把用户在“凭证管理”里配置的账号密码、秘钥等敏感信息，加密后存储在：
@@ -49,8 +44,6 @@ Jenkins 使用了自己的一套对称加密方式：
     - 对加密的凭证数据执行解密算法（AES 对称加密）
     - 解出明文的密码或秘钥
 
-
-
 ## 本地搭建测试
 ### 基本环境启动
 这里才用 docker 搭建
@@ -70,8 +63,6 @@ docker run -d -p 8080:8080 -p 50000:50000 --name myjenkins jenkins/jenkins:lts
 最后搭建成功
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754993399144-c77d22e1-0d5b-4fe0-8841-7ed4379595fe.png)
-
-
 
 ### 设置凭证
 这里设置一个假的凭证
@@ -98,20 +89,12 @@ Passphrase: 留空 (因为这个假密钥没有密码)。
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754994396599-c49d9a70-df15-46c0-9937-9c0f7152170a.png)
 
-
-
-
-
-
-
 ## 凭证破解
 需要三件套
 
 1. `$JENKINS_HOME/secrets/master.key`
 2. `$JENKINS_HOME/secrets/hudson.util.Secret`
 3. `$JENKINS_HOME/credentials.xml`里面的凭证内容
-
-
 
 具体测试凭证文件`credentials.xml`内容如下
 

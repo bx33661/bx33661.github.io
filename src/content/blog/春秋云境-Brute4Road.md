@@ -12,7 +12,6 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "brute4road"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
 
 # 春秋云境-Brute4Road
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753933553215-3ca4c6bc-9d39-42f0-bcc7-e9cf6a8f76c4.png)
@@ -23,8 +22,6 @@ slug: "brute4road"          # 随机URL字符串
 _**靶标介绍：**_
 
 Brute4Road是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有4个flag，分布于不同的靶机。
-
-
 
 为了深度学习，这个写的详细一点
 
@@ -66,8 +63,6 @@ Brute4Road是一套难度为中等的靶场环境，完成该挑战可以帮助�
 1. ftp 服务，匿名登录
 
 这里登录进去没有什么东西
-
-
 
 2. redis 漏洞
 
@@ -145,10 +140,6 @@ base64 "/home/redis/flag/flag01" | base64 --decode
 拿下第一个 flag
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753931428625-34a3eceb-f72a-44e0-9e88-4cba0209977a.png)
-
-
-
-
 
 继续内网渗透
 
@@ -819,10 +810,6 @@ C:/Users/Public/SweetPotato.exe -a "net localgroup administrators bx /add"
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753943101407-d3ad274a-cc97-4b59-9bd2-33009aa57268.png)
 
-
-
-
-
 查看一下系统信息
 
 是在这个xiaorang.lab 这个域内
@@ -949,8 +936,6 @@ type \\DC.xiaorang.lab\C$\Users\Administrator\flag\flag04.txt
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753945045104-0804e547-c7e9-483a-8059-818537d16726.png)
 
 最后域渗透拿下 flag
-
-
 
 ![](https://cdn.nlark.com/yuque/0/2025/png/42994824/1753945084512-2b479f92-3310-48f7-868a-627cc577ef93.png)
 

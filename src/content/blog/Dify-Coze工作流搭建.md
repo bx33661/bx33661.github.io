@@ -10,7 +10,7 @@ tags:
   - "工作流编排"
   - "api集成"
   - "文档处理"
-  - "ctf"
+  - "CTF"
   - "自动化"
   - "ai平台"
 authors:
@@ -18,8 +18,6 @@ authors:
 draft: false              # 设为 true 则为草稿
 slug: "dify-coze-workflow"          # 随机URL字符串
 ---
-<meta name="referrer" content="no-referrer">
-
 
 # Dify&Coze工作流搭建
 
@@ -143,7 +141,7 @@ curl -s https://api.github.com/users/bx33661 \
 ## 题目示例-京津冀长城杯决赛Dify工作流搭建
 
 > 京津冀长城杯决赛Dify工作流搭建
-> 
+>
 
 ### 题目要求如下
 
@@ -283,7 +281,7 @@ User-Prompt
 1. Code节点
 
 > 对于Python代码的编写需要符合这个dify文档规范
-> 
+>
 
 就是输入输出变量需要在规定定义，有点像这个做IO算法题的流程，只是一个中间处理
 
@@ -383,7 +381,7 @@ def main(arg1: Union[dict, list, str, None] = None,
 ### 导出DSL
 
 > DSL（Domain Specific Language，领域专用语言）
-> 
+>
 
 **在 Dify 里 导出 DSL 的意思是：把你在可视化画布里“拖拽出来的工作流”转成一份 流程定义文件（YAML/JSON 格式）**
 
