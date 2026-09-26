@@ -14,6 +14,7 @@ import { transformerFileName } from "./src/utils/transformers/fileName";
 import { rehypeDemoteHeadings } from "./src/utils/rehypeDemoteHeadings";
 import { rehypeArticleImages } from "./src/utils/rehypeArticleImages";
 import { SITE } from "./src/config.ts";
+import securityToolbarIntegration from "./src/plugins/security-toolbar";
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,6 +27,7 @@ export default defineConfig({
     mdx({
       extendMarkdownConfig: true,
     }),
+    securityToolbarIntegration(),
   ],
   // Astro 7 defaults to Sätteri; keep unified so existing remark/rehype plugins still work.
   markdown: {
