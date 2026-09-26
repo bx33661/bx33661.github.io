@@ -1,32 +1,15 @@
 import { getCollection, type CollectionEntry } from 'astro:content'
 import { withCache } from './cache-utils'
 import postFilter from '@/utils/postFilter'
-
+import {
+  resolveLegacyPostSlug,
+  resolveLegacyNoteSlug,
+} from '@/utils/legacySlug'
 function getBlogDate(post: CollectionEntry<'blog'>): Date {
   const maybe = post.data as { pubDatetime?: Date; date?: Date }
   return maybe.pubDatetime || maybe.date || new Date(0)
 }
 
-function stableHash(input: string): string {
-  let hash = 0
-  for (let i = 0; i < input.length; i++) {
-    hash = (hash << 5) - hash + input.charCodeAt(i)
-    hash |= 0
-  }
-  return Math.abs(hash).toString(36)
-}
-
-function createDeterministicSlug(source: string, prefix: 'post' | 'note'): string {
-  const normalized = source
-    .replace(/\.(md|mdx)$/i, '')
-    .replace(/[\\/]/g, '-')
-    .normalize('NFKD')
-    .toLowerCase()
-    .replace(/[^\p{Letter}\p{Number}]+/gu, '-')
-    .replace(/^-+|-+$/g, '')
-
-  return normalized || `${prefix}-${stableHash(source)}`
-}
 
 function ensureUniqueSlug<T extends { id: string }>(
   desiredSlug: string,
@@ -61,7 +44,7 @@ export async function getAllPosts(): Promise<CollectionEntry<'blog'>[]> {
  * @returns 文章的slug
  */
 export function getPostSlug(post: CollectionEntry<'blog'>): string {
-  return post.data.slug || createDeterministicSlug(post.id, 'post')
+  return resolveLegacyPostSlug(post)
 }
 
 /**
@@ -215,7 +198,7 @@ export async function getAllNotes(): Promise<CollectionEntry<'notes'>[]> {
  * @returns 笔记的slug
  */
 export function getNoteSlug(note: CollectionEntry<'notes'>): string {
-  return note.data.slug || createDeterministicSlug(note.id, 'note')
+  return resolveLegacyNoteSlug(note)
 }
 
 /**

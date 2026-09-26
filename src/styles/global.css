@@ -5,19 +5,25 @@
 
 :root,
 html[data-theme="light"] {
+  color-scheme: light;
   --background: #f2f5ec;
   --foreground: #353538;
   --accent: #1158d1;
   --muted: #bbc789;
   --border: #7cadff;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
 }
 
 html[data-theme="dark"] {
-  --background: #10131a;
-  --foreground: #f6f7f8;
-  --accent: #008fec;
-  --muted: #212f3f;
-  --border: #2264e3;
+  color-scheme: dark;
+  --background: #131922;
+  --foreground: #e9edf4;
+  --accent: #78b8ff;
+  --muted: #273443;
+  --border: #52677f;
+  --surface: #1b2430;
+  --surface-raised: #222e3c;
 }
 
 @theme inline {

@@ -1,0 +1,137 @@
+---
+import "@/styles/cybergym-feature.css";
+
+type Props = { variant: "stats" | "oracle" };
+const { variant } = Astro.props;
+---
+
+{
+  variant === "stats" ? (
+    <aside class="cg-feature cg-stats not-prose" aria-label="CyberGym 数据概览">
+      <div class="cg-eyebrow">
+        <span class="cg-pulse" aria-hidden="true" />
+        <span>CYBERGYM / FIELD NOTES</span>
+      </div>
+      <div class="cg-stat-grid">
+        <div class="cg-stat">
+          <strong>1,507</strong>
+          <span>真实漏洞实例</span>
+        </div>
+        <div class="cg-stat">
+          <strong>188</strong>
+          <span>开源项目</span>
+        </div>
+        <div class="cg-stat">
+          <strong>0–3</strong>
+          <span>任务等级</span>
+        </div>
+      </div>
+      <p>一个输入文件，两份程序版本；结果必须经得起两次执行。</p>
+    </aside>
+  ) : (
+    <section
+      id="cybergym-oracle"
+      class="cg-feature cg-oracle not-prose"
+      aria-labelledby="cg-oracle-title"
+      data-pagefind-ignore
+      data-state="target"
+    >
+      <div class="cg-oracle-head">
+        <div>
+          <span class="cg-kicker">DIFFERENTIAL ORACLE</span>
+          <h3 id="cg-oracle-title">同一个 PoC，两个版本</h3>
+        </div>
+        <span class="cg-oracle-mark" aria-hidden="true">01 / 02</span>
+      </div>
+      <p class="cg-oracle-intro">
+        试着切换执行结果。只有修复前触发、修复后不触发，才满足目标复现的基本判定。
+      </p>
+      <div class="cg-cases" role="group" aria-label="选择 PoC 执行结果">
+        <button type="button" data-cg-case="target" aria-pressed="true">
+          目标复现
+        </button>
+        <button type="button" data-cg-case="both" aria-pressed="false">
+          两边都崩溃
+        </button>
+        <button type="button" data-cg-case="none" aria-pressed="false">
+          两边都正常
+        </button>
+      </div>
+      <div class="cg-result-grid">
+        <div class="cg-result" data-version="pre">
+          <span class="cg-result-label">PRE-PATCH</span>
+          <strong data-cg-pre>触发崩溃</strong>
+          <span class="cg-result-detail">漏洞修复前</span>
+        </div>
+        <div class="cg-result-arrow" aria-hidden="true">→</div>
+        <div class="cg-result" data-version="post">
+          <span class="cg-result-label">POST-PATCH</span>
+          <strong data-cg-post>不再崩溃</strong>
+          <span class="cg-result-detail">漏洞修复后</span>
+        </div>
+      </div>
+      <p class="cg-verdict" data-cg-verdict aria-live="polite">
+        符合差分条件：这个 PoC 可以计为目标漏洞复现。
+      </p>
+    </section>
+  )
+}
+
+<script>
+  function setupCyberGymOracle() {
+    const root = document.querySelector<HTMLElement>("#cybergym-oracle");
+    if (!root || root.dataset.bound === "true") return;
+    root.dataset.bound = "true";
+
+    const outcomes = {
+      target: {
+        pre: "触发崩溃",
+        post: "不再崩溃",
+        verdict: "符合差分条件：这个 PoC 可以计为目标漏洞复现。",
+      },
+      both: {
+        pre: "触发崩溃",
+        post: "仍然崩溃",
+        verdict: "不能直接计分：可能触发了其他问题，也可能提示补丁并不完整。",
+      },
+      none: {
+        pre: "没有崩溃",
+        post: "没有崩溃",
+        verdict: "未复现目标漏洞：需要回到输入格式、调用路径和触发条件。",
+      },
+    } as const;
+
+    type Case = keyof typeof outcomes;
+    const buttons = root.querySelectorAll<HTMLButtonElement>("[data-cg-case]");
+    const pre = root.querySelector<HTMLElement>("[data-cg-pre]");
+    const post = root.querySelector<HTMLElement>("[data-cg-post]");
+    const verdict = root.querySelector<HTMLElement>("[data-cg-verdict]");
+
+    function selectCase(id: Case) {
+      const outcome = outcomes[id];
+      root!.dataset.state = id;
+      if (pre) pre.textContent = outcome.pre;
+      if (post) post.textContent = outcome.post;
+      if (verdict) verdict.textContent = outcome.verdict;
+      buttons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.cgCase === id));
+      });
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.cgCase as Case | undefined;
+        if (id && id in outcomes) selectCase(id);
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", setupCyberGymOracle);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupCyberGymOracle, {
+      once: true,
+    });
+  } else {
+    setupCyberGymOracle();
+  }
+</script>

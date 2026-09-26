@@ -1,10 +1,10 @@
-import { memo } from "react"
+import { memo } from "react";
 
 interface NavigationDotsProps {
-  total: number
-  current: number
-  onSelect: (index: number) => void
-  accent?: string
+  total: number;
+  current: number;
+  onSelect: (index: number) => void;
+  accent?: string;
 }
 
 function NavigationDotsComponent({
@@ -16,29 +16,27 @@ function NavigationDotsComponent({
   return (
     <div className="gallery-navigation-dots">
       {Array.from({ length: total }).map((_, index) => {
-        const active = index === current
+        const active = index === current;
         return (
           <button
             key={index}
             type="button"
             onClick={() => onSelect(index)}
             className={`gallery-nav-dot-button${active ? " is-active" : ""}`}
-            aria-label={`Go to slide ${index + 1}`}
+            aria-label={`跳转到第 ${index + 1} 张照片`}
             aria-current={active ? "true" : undefined}
           >
             <span
               className="gallery-nav-dot"
               style={
-                active
-                  ? { backgroundColor: accent, width: 24 }
-                  : undefined
+                active ? { backgroundColor: accent, width: 24 } : undefined
               }
             />
           </button>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
-export const NavigationDots = memo(NavigationDotsComponent)
+export const NavigationDots = memo(NavigationDotsComponent);

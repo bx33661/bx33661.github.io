@@ -2,8 +2,8 @@
 
 .gallery-container {
   position: relative;
-  height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100%;
   overflow: hidden;
   background: #000;
   /* Isolate gallery paint from the rest of the page */
@@ -141,7 +141,9 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.04);
   box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.55);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 
 .artwork-card-wrapper.is-active .artwork-card:hover {
@@ -294,9 +296,40 @@
   width: 1.5rem;
 }
 
+.gallery-nav-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.44);
+  color: white;
+  cursor: pointer;
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.gallery-nav-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.gallery-nav-prev {
+  left: 1rem;
+}
+
+.gallery-nav-next {
+  right: 1rem;
+}
+
 .gallery-keyboard-hint {
   position: absolute;
-  bottom: 2rem;
+  bottom: 5rem;
   left: 2rem;
   z-index: 20;
   display: none;
@@ -325,6 +358,26 @@
   font-size: 0.75rem;
 }
 
+.gallery-open-image {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 2rem;
+  z-index: 20;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+
+.gallery-open-image:hover,
+.gallery-open-image:focus-visible {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
 @media (max-width: 640px) {
   .gallery-counter {
     top: 5rem;
@@ -342,7 +395,13 @@
   }
 
   .gallery-navigation-dots {
-    bottom: 1.5rem;
+    bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  .gallery-open-image {
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .gallery-slider-track {
@@ -353,8 +412,8 @@
 
 @media (max-width: 480px) {
   .artwork-card-image-container {
-    height: 300px;
-    width: 300px;
+    height: min(300px, calc(100vw - 2rem));
+    width: min(300px, calc(100vw - 2rem));
     padding: 0.5rem;
   }
 
@@ -368,7 +427,7 @@
   }
 
   .gallery-slider-track {
-    padding: 0 calc(50vw - 150px);
+    padding: 0 calc(50vw - min(150px, (100vw - 2rem) / 2));
     gap: 1rem;
   }
 }

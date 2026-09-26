@@ -1,0 +1,119 @@
+---
+type Props = {
+  href: string;
+  title: string;
+  description: string;
+  date: Date;
+  category?: string;
+  heading?: "h2" | "h3";
+};
+
+const {
+  href,
+  title,
+  description,
+  date,
+  category,
+  heading: Heading = "h2",
+} = Astro.props;
+const dateLabel = new Intl.DateTimeFormat("zh-CN", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+}).format(date);
+---
+
+<li class="entry-row">
+  <time datetime={date.toISOString()}>{dateLabel}</time>
+  <div class="entry-content">
+    <div class="entry-heading">
+      <Heading><a href={href}>{title}</a></Heading>
+      {category && <span class="entry-category">{category}</span>}
+    </div>
+    <p>{description}</p>
+  </div>
+  <span class="entry-arrow" aria-hidden="true">↗</span>
+</li>
+
+<style>
+  .entry-row {
+    display: grid;
+    grid-template-columns: 6.7rem minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 0.8rem;
+    padding: 1.15rem 0.15rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 28%, transparent);
+  }
+  .entry-row:first-child {
+    border-top: 1px solid color-mix(in srgb, var(--border) 28%, transparent);
+  }
+  time {
+    padding-top: 0.23rem;
+    color: color-mix(in srgb, var(--foreground) 48%, transparent);
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.73rem;
+    white-space: nowrap;
+  }
+  .entry-content {
+    min-width: 0;
+  }
+  .entry-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  :is(h2, h3) {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+  a {
+    color: var(--foreground);
+    text-decoration: none;
+  }
+  a:hover,
+  a:focus-visible {
+    color: var(--accent);
+  }
+  p {
+    margin: 0.35rem 0 0;
+    color: color-mix(in srgb, var(--foreground) 62%, transparent);
+    font-size: 0.84rem;
+    line-height: 1.65;
+  }
+  .entry-category {
+    flex: none;
+    color: color-mix(in srgb, var(--foreground) 48%, transparent);
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+  .entry-arrow {
+    padding-top: 0.15rem;
+    color: var(--accent);
+    font-size: 0.85rem;
+  }
+  @media (max-width: 640px) {
+    .entry-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.35rem 0.55rem;
+      padding: 1rem 0;
+    }
+    time {
+      grid-column: 1 / -1;
+      padding: 0;
+    }
+    .entry-heading {
+      display: block;
+    }
+    .entry-category {
+      display: inline-block;
+      margin-top: 0.3rem;
+    }
+  }
+  :global(html[data-theme="dark"]) time,
+  :global(html[data-theme="dark"]) .entry-category {
+    color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  }
+</style>

@@ -1,0 +1,290 @@
+---
+import "@/styles/trust-boundary-simulator.css";
+---
+
+<div class="threat-simulator-wrap not-prose my-8">
+  <div class="threat-simulator-card">
+    <!-- Simulator Header -->
+    <header class="simulator-header">
+      <div class="simulator-title-group">
+        <span class="simulator-badge">INTERACTIVE EXPERIMENT</span>
+        <h3 class="simulator-title">AI 审计中的信任边界推演模拟器</h3>
+      </div>
+      <p class="simulator-subtitle">
+        切换场景，直观观察不同威胁假设下，数据流到底是如何在系统信任边界处被阻断或致命穿透的。
+      </p>
+    </header>
+
+    <!-- Scenario Switcher Buttons -->
+    <div class="scenario-tabs" role="tablist" aria-label="推演场景选择">
+      <button
+        type="button"
+        class="scenario-tab active"
+        role="tab"
+        aria-selected="true"
+        data-scenario="false-positive"
+        id="tab-fp"
+      >
+        <span class="tab-indicator"></span>
+        <span class="tab-label">场景 A：本地配置任意写</span>
+        <span class="tab-tag tag-fp">典型误报</span>
+      </button>
+
+      <button
+        type="button"
+        class="scenario-tab"
+        role="tab"
+        aria-selected="false"
+        data-scenario="false-negative"
+        id="tab-fn"
+      >
+        <span class="tab-indicator"></span>
+        <span class="tab-label">场景 B：未鉴权 /admin 接口</span>
+        <span class="tab-tag tag-fn">隐蔽漏报</span>
+      </button>
+
+      <button
+        type="button"
+        class="scenario-tab"
+        role="tab"
+        aria-selected="false"
+        data-scenario="true-positive"
+        id="tab-tp"
+      >
+        <span class="tab-indicator"></span>
+        <span class="tab-label">场景 C：直接入参 SSRF</span>
+        <span class="tab-tag tag-tp">真实高危</span>
+      </button>
+    </div>
+
+    <!-- Interactive Interactive Map Area -->
+    <div class="topology-stage" id="topology-stage">
+      <!-- Zone 1: Untrusted / Attacker Surface -->
+      <section class="zone zone-untrusted" aria-label="非受信区">
+        <div class="zone-label">
+          <span class="zone-icon">⚠️</span>
+          <span>UNTRUSTED ZONE · 外部非受信攻击面</span>
+        </div>
+
+        <div class="nodes-row">
+          <div class="sim-node node-attacker" id="node-attacker">
+            <div class="node-badge">ATTACKER</div>
+            <div class="node-title">远程未认证攻击者</div>
+            <div class="node-detail" id="attacker-payload">发送篡改参数</div>
+          </div>
+
+          <div class="sim-flow-arrow" id="flow-1" aria-hidden="true">
+            <span class="pulse-beam"></span>
+            <span class="flow-label" id="flow-label-1">HTTP Request</span>
+          </div>
+
+          <div class="sim-node node-input" id="node-input">
+            <div class="node-badge">ENTRY POINT</div>
+            <div class="node-title" id="input-title">输入端点</div>
+            <div class="node-detail font-mono" id="input-detail">request.*</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- The Core: Trust Boundary Barrier -->
+      <div class="trust-boundary-line" id="trust-boundary" aria-label="系统信任边界">
+        <div class="boundary-glow"></div>
+        <div class="boundary-label-pill" id="boundary-pill">
+          <span class="status-dot" id="boundary-dot"></span>
+          <span class="boundary-text" id="boundary-text">TRUST BOUNDARY 信任边界</span>
+        </div>
+      </div>
+
+      <!-- Zone 2: Trusted Core / Internal Execution Environment -->
+      <section class="zone zone-trusted" aria-label="受信区与执行环境">
+        <div class="zone-label">
+          <span class="zone-icon">🛡️</span>
+          <span>TRUSTED ZONE · 内部受信执行环境</span>
+        </div>
+
+        <div class="nodes-row">
+          <div class="sim-node node-source" id="node-source">
+            <div class="node-badge">DATA SOURCE</div>
+            <div class="node-title" id="source-title">数据来源点</div>
+            <div class="node-detail font-mono" id="source-detail">config.yaml</div>
+          </div>
+
+          <div class="sim-flow-arrow" id="flow-2" aria-hidden="true">
+            <span class="pulse-beam"></span>
+            <span class="flow-label" id="flow-label-2">Internal Flow</span>
+          </div>
+
+          <div class="sim-node node-sink" id="node-sink">
+            <div class="node-badge">DANGEROUS SINK</div>
+            <div class="node-title" id="sink-title">危险函数调用</div>
+            <div class="node-detail font-mono" id="sink-detail">open(path, "w")</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Comparative Analysis Verdict -->
+    <div class="verdict-grid">
+      <!-- LLM Naive AST View -->
+      <div class="verdict-box box-llm">
+        <div class="box-header">
+          <span class="box-tag">LLM 纯语法/AST 视角</span>
+          <span class="box-status" id="llm-status-badge">报高危</span>
+        </div>
+        <div class="box-body">
+          <p class="box-headline" id="llm-headline">识别到 Source 到 Sink 的传播链条</p>
+          <p class="box-desc" id="llm-desc">
+            模型发现变量未经完整过滤即传入了文件操作函数，从局部语法上直接匹配了路径穿越模式。
+          </p>
+        </div>
+      </div>
+
+      <!-- Threat Modeling Reality View -->
+      <div class="verdict-box box-reality">
+        <div class="box-header">
+          <span class="box-tag">威胁建模与实战研判</span>
+          <span class="box-status" id="reality-status-badge">实际不可利用</span>
+        </div>
+        <div class="box-body">
+          <p class="box-headline" id="reality-headline">攻击者无法跨越信任边界修改配置</p>
+          <p class="box-desc" id="reality-desc">
+            配置文件仅能由服务器运维管理员修改。对于互联网远程攻击者而言，输入源不可控，利用链断裂。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupThreatSimulator() {
+    const stage = document.querySelector<HTMLElement>("#topology-stage");
+    if (!stage) return;
+
+    const scenarios = {
+      "false-positive": {
+        attackerPayload: "试图传入 ../../etc/passwd",
+        inputTitle: "本地静态配置",
+        inputDetail: "config['backup_path']",
+        boundaryClass: "blocked",
+        boundaryText: "⛔ 边界阻断：攻击者无权限修改本地配置文件",
+        sourceTitle: "系统内部配置",
+        sourceDetail: "受管理员与系统保护 (Trusted)",
+        sinkTitle: "危险文件写入",
+        sinkDetail: "open(path, 'w').write()",
+        flow1Status: "blocked",
+        flow2Status: "safe",
+        llmBadge: "🚨 误报高危",
+        llmHeadline: "模式匹配：Source → open() 路径穿越",
+        llmDesc: "LLM 机械地追踪到了数据流走向危险 Sink，但脱离了部署事实，将受信任的本地配置文件当成了外部不可信输入。",
+        realityBadge: "🛡️ 误报 (False Positive)",
+        realityHeadline: "攻击者不可控 Source，漏洞无法闭环",
+        realityDesc: "在远程未认证威胁模型下，该路径只由内部运维配置注入，攻击者无法从外部修改，不构成可利用安全事件。"
+      },
+      "false-negative": {
+        attackerPayload: "POST /admin/import?url=http://169.254.169.254",
+        inputTitle: "管理端点 (无鉴权)",
+        inputDetail: "/admin/import (未配置拦截中间件)",
+        boundaryClass: "breached",
+        boundaryText: "⚠️ 边界失效：路由未受保护，外部请求长驱直入",
+        sourceTitle: "外部未经验证入参",
+        sourceDetail: "String url (攻击者直接可控)",
+        sinkTitle: "内部请求发起点",
+        sinkDetail: "importer.load(url) → SSRF",
+        flow1Status: "active",
+        flow2Status: "critical",
+        llmBadge: "😴 误判低危 / 忽略",
+        llmHeadline: "假定边界：看到 /admin/ 便以为安全",
+        llmDesc: "模型根据路径字符语义做出了错误的“安全假设”，认为管理接口必然受严密认证保护，从而降低风险评级甚至直接忽略。",
+        realityBadge: "💥 严重漏报 (False Negative)",
+        realityHeadline: "真实网关缺失鉴权，致命远程 SSRF",
+        realityDesc: "生产环境中该路由并未绑定身份认证过滤器，外部攻击者可直接触发，原本高危的 SSRF 漏洞被模型错误放过。"
+      },
+      "true-positive": {
+        attackerPayload: "GET /api/fetch?url=http://127.0.0.1:8080",
+        inputTitle: "公开 API 端点",
+        inputDetail: "request.args['url']",
+        boundaryClass: "permeable",
+        boundaryText: "⚡ 边界通透：公开业务逻辑允许外部入参穿透",
+        sourceTitle: "Untrusted Client Input",
+        sourceDetail: "外部网络参数 (Attacker-Controlled)",
+        sinkTitle: "网络发包执行点",
+        sinkDetail: "httpClient.get(url)",
+        flow1Status: "active",
+        flow2Status: "critical",
+        llmBadge: "🎯 准确报出",
+        llmHeadline: "发现可控入参直达 HTTP 发包函数",
+        llmDesc: "代码直接接收了客户端请求参数，并在未做白名单校验的情况下向目标地址发起了网络请求。",
+        realityBadge: "🔥 真实漏洞 (True Positive)",
+        realityHeadline: "威胁模型吻合：攻击者真实可控",
+        realityDesc: "攻击者控制的 Source 成功穿越边界直达危险 Sink，满足真实漏洞的必要条件，属于有效高危漏洞报告。"
+      }
+    };
+
+    const tabs = document.querySelectorAll<HTMLButtonElement>(".scenario-tab");
+    const attackerPayload = document.querySelector("#attacker-payload");
+    const inputTitle = document.querySelector("#input-title");
+    const inputDetail = document.querySelector("#input-detail");
+    const boundaryLine = document.querySelector("#trust-boundary");
+    const boundaryText = document.querySelector("#boundary-text");
+    const sourceTitle = document.querySelector("#source-title");
+    const sourceDetail = document.querySelector("#source-detail");
+    const sinkTitle = document.querySelector("#sink-title");
+    const sinkDetail = document.querySelector("#sink-detail");
+
+    const llmStatusBadge = document.querySelector("#llm-status-badge");
+    const llmHeadline = document.querySelector("#llm-headline");
+    const llmDesc = document.querySelector("#llm-desc");
+
+    const realityStatusBadge = document.querySelector("#reality-status-badge");
+    const realityHeadline = document.querySelector("#reality-headline");
+    const realityDesc = document.querySelector("#reality-desc");
+
+    function applyScenario(id: keyof typeof scenarios) {
+      const data = scenarios[id];
+      if (!data) return;
+
+      if (attackerPayload) attackerPayload.textContent = data.attackerPayload;
+      if (inputTitle) inputTitle.textContent = data.inputTitle;
+      if (inputDetail) inputDetail.textContent = data.inputDetail;
+
+      if (boundaryLine) {
+        boundaryLine.className = `trust-boundary-line boundary-${data.boundaryClass}`;
+      }
+      if (boundaryText) boundaryText.textContent = data.boundaryText;
+
+      if (sourceTitle) sourceTitle.textContent = data.sourceTitle;
+      if (sourceDetail) sourceDetail.textContent = data.sourceDetail;
+      if (sinkTitle) sinkTitle.textContent = data.sinkTitle;
+      if (sinkDetail) sinkDetail.textContent = data.sinkDetail;
+
+      if (llmStatusBadge) llmStatusBadge.textContent = data.llmBadge;
+      if (llmHeadline) llmHeadline.textContent = data.llmHeadline;
+      if (llmDesc) llmDesc.textContent = data.llmDesc;
+
+      if (realityStatusBadge) realityStatusBadge.textContent = data.realityBadge;
+      if (realityHeadline) realityHeadline.textContent = data.realityHeadline;
+      if (realityDesc) realityDesc.textContent = data.realityDesc;
+
+      if (stage) stage.dataset.mode = id;
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((t) => {
+          t.classList.remove("active");
+          t.setAttribute("aria-selected", "false");
+        });
+        tab.classList.add("active");
+        tab.setAttribute("aria-selected", "true");
+        const scenario = tab.dataset.scenario as keyof typeof scenarios;
+        applyScenario(scenario);
+      });
+    });
+
+    applyScenario("false-positive");
+  }
+
+  document.addEventListener("astro:page-load", setupThreatSimulator);
+</script>
+

@@ -4,13 +4,13 @@ const LIGHT = "light";
 const DARK = "dark";
 
 // Initial color scheme
-// Can be "light", "dark", or empty string for system's prefers-color-scheme
-const initialColorScheme = "dark";
+// An explicit choice wins; otherwise follow the operating system.
+const initialColorScheme = "";
 
 function getPreferTheme(): string {
   // get theme data from local storage (user's explicit choice)
   const currentTheme = localStorage.getItem(THEME);
-  if (currentTheme) return currentTheme;
+  if (currentTheme === LIGHT || currentTheme === DARK) return currentTheme;
 
   // return initial color scheme if it is set (site default)
   if (initialColorScheme) return initialColorScheme;
@@ -32,7 +32,12 @@ function setPreference(): void {
 function reflectPreference(): void {
   document.firstElementChild?.setAttribute("data-theme", themeValue);
 
-  document.querySelector("#theme-btn")?.setAttribute("aria-label", themeValue);
+  const label = themeValue === DARK ? "切换到浅色模式" : "切换到深色模式";
+  for (const button of document.querySelectorAll(
+    "#theme-btn, #theme-btn-mobile",
+  )) {
+    button.setAttribute("aria-label", label);
+  }
 
   // Get a reference to the body element
   const body = document.body;
@@ -107,7 +112,7 @@ document.addEventListener("astro:after-swap", setThemeFeature);
 
 // Set theme-color value before page transition
 // to avoid navigation bar color flickering in Android dark mode
-document.addEventListener("astro:before-swap", event => {
+document.addEventListener("astro:before-swap", (event) => {
   const astroEvent = event;
   const bgColor = document
     .querySelector("meta[name='theme-color']")
@@ -124,7 +129,21 @@ document.addEventListener("astro:before-swap", event => {
 window
   .matchMedia("(prefers-color-scheme: dark)")
   .addEventListener("change", ({ matches: isDark }) => {
+    // Do not overwrite a choice made with the site's theme button.
+    if (
+      localStorage.getItem(THEME) === LIGHT ||
+      localStorage.getItem(THEME) === DARK
+    ) {
+      return;
+    }
     themeValue = isDark ? DARK : LIGHT;
     window.theme?.setTheme(themeValue);
-    setPreference();
+    reflectPreference();
   });
+
+window.addEventListener("storage", (event) => {
+  if (event.key !== THEME) return;
+  themeValue = getPreferTheme();
+  window.theme?.setTheme(themeValue);
+  reflectPreference();
+});

@@ -12,6 +12,7 @@ import {
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import { rehypeDemoteHeadings } from "./src/utils/rehypeDemoteHeadings";
+import { rehypeArticleImages } from "./src/utils/rehypeArticleImages";
 import { SITE } from "./src/config.ts";
 
 // https://astro.build/config
@@ -33,7 +34,7 @@ export default defineConfig({
         remarkToc,
         [remarkCollapse, { test: "Table of contents" }],
       ],
-      rehypePlugins: [rehypeDemoteHeadings],
+      rehypePlugins: [rehypeDemoteHeadings, rehypeArticleImages],
     }),
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes

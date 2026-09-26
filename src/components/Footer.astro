@@ -53,7 +53,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
       <!-- Social links -->
       <div class="flex flex-col items-center gap-2 sm:items-end">
         <span
-          class="font-cartograph text-[10px] tracking-wider text-foreground/35 uppercase select-none"
+          class="font-cartograph text-[10px] tracking-wider text-foreground/35 uppercase select-none dark:text-foreground/65"
           >联系与关注</span
         >
         <div class="flex items-center gap-1">
@@ -84,11 +84,11 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
     <div
       class="mt-4 flex flex-col items-center justify-between gap-2 sm:flex-row"
     >
-      <p class="font-cartograph text-[11px] tracking-wide opacity-35">
+      <p class="font-cartograph text-[11px] tracking-wide opacity-35 dark:opacity-65">
         &copy; {currentYear}
         {SITE.title}. 保留所有权利。
       </p>
-      <p class="font-cartograph text-[11px] tracking-wide opacity-30">
+      <p class="font-cartograph text-[11px] tracking-wide opacity-30 dark:opacity-65">
         由热爱驱动，长期维护更新
       </p>
     </div>

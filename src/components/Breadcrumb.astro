@@ -22,16 +22,18 @@ if (
   breadcrumbList.splice(
     2,
     2,
-    `${breadcrumbList[2]} ${Number(breadcrumbList[3]) === 1 ? "" : "(page " + breadcrumbList[3] + ")"}`
+    `${breadcrumbList[2]} ${Number(breadcrumbList[3]) === 1 ? "" : "(page " + breadcrumbList[3] + ")"}`,
   );
 }
 
 const getBreadcrumbHref = (index: number) =>
-  `/${breadcrumbList.slice(0, index + 1).join("/")}/`;
+  breadcrumbList[0] === "blog" && breadcrumbList[1] === "tags" && index === 1
+    ? "/blog/#topics"
+    : `/${breadcrumbList.slice(0, index + 1).join("/")}/`;
 
 const routeLabelMap = new Map([
   ["blog", "Blog"],
-  ["tags", "Tags"],
+  ["tags", "主题"],
   ["notes", "Notes"],
   ["archives", "Archives"],
   ["galleries", "Galleries"],

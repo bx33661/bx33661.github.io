@@ -15,8 +15,7 @@ type Props = {
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
   noindex?: boolean;
-  /** "crt" strips global blog chrome (backdrop/search) for projects terminal skin */
-  chrome?: "default" | "crt";
+  referrerPolicy?: string;
 };
 
 const {
@@ -30,10 +29,8 @@ const {
   modDatetime,
   scrollSmooth = false,
   noindex = false,
-  chrome = "default",
+  referrerPolicy = "strict-origin-when-cross-origin",
 } = Astro.props;
-
-const isCrtChrome = chrome === "crt";
 
 const socialImageURL = new URL(ogImage, Astro.url);
 
@@ -66,8 +63,7 @@ const structuredData = pubDatetime
 <html
   dir={SITE.dir}
   lang=`${SITE.lang ?? "en"}`
-  class:list={[{ "scroll-smooth": scrollSmooth }, { "crt-html": isCrtChrome }]}
-  data-chrome={isCrtChrome ? "crt" : "default"}
+  class:list={[{ "scroll-smooth": scrollSmooth }]}
 >
   <head>
     <meta charset="UTF-8" />
@@ -75,43 +71,14 @@ const structuredData = pubDatetime
     <link rel="icon" type="image/png" href="/touxiang-192.png" />
     <link rel="shortcut icon" href="/touxiang-192.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    {
-      isCrtChrome && (
-        <>
-          <link
-            rel="preload"
-            href="/fonts/crt/vt323.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin="anonymous"
-          />
-          <link
-            rel="preload"
-            href="/fonts/crt/share-tech-mono.woff2"
-            as="font"
-            type="font/woff2"
-            crossorigin="anonymous"
-          />
-          <meta name="theme-color" content="#f5ede0" />
-        </>
-      )
-    }
-    {
-      Astro.url.pathname === "/" && (
-        <link
-          rel="preload"
-          as="image"
-          href="/touxiang-512.png"
-          type="image/png"
-          fetchpriority="high"
-        />
-      )
-    }
     <link rel="canonical" href={canonicalURL} />
-    <meta name="robots" content={`${noindex ? "noindex" : "index"}, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1`} />
+    <meta
+      name="robots"
+      content={`${noindex ? "noindex" : "index"}, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1`}
+    />
     <meta name="baidu-site-verification" content="codeva-INhoFW40MU" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="referrer" content={referrerPolicy} />
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://gstatic.loli.net; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com https://app.posthog.com https://giscus.app; frame-src https://giscus.app; base-uri 'self'; object-src 'none'"
@@ -171,30 +138,19 @@ const structuredData = pubDatetime
       href={new URL("rss.xml", Astro.site)}
     />
 
-    {!isCrtChrome && <meta name="theme-color" content="" />}
+    <meta name="theme-color" content="" />
 
     <ClientRouter />
 
     <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
-    <script is:inline define:vars={{ isCrtChrome }}>
+    <script is:inline>
       (function () {
-        // CRT projects pages always lock to light phosphor skin
-        if (isCrtChrome) {
-          document.firstElementChild?.setAttribute("data-theme", "light");
-          document.firstElementChild?.setAttribute("data-chrome", "crt");
-          window.theme = {
-            themeValue: "light",
-            getTheme: () => "light",
-            setTheme: () => {},
-          };
-          return;
-        }
-
         const initialColorScheme = ""; // "light" | "dark"
         const currentTheme = localStorage.getItem("theme");
 
         function getPreferTheme() {
-          if (currentTheme) return currentTheme;
+          if (currentTheme === "light" || currentTheme === "dark")
+            return currentTheme;
           if (initialColorScheme) return initialColorScheme;
           return window.matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
@@ -210,31 +166,25 @@ const structuredData = pubDatetime
         window.theme = {
           themeValue: themeValue,
           getTheme: () => window.theme.themeValue,
-          setTheme: val => {
+          setTheme: (val) => {
             window.theme.themeValue = val;
           },
         };
       })();
     </script>
   </head>
-  <body class:list={[{ "crt-body": isCrtChrome }]}>
-    {
-      !isCrtChrome && (
-        <div class="site-backdrop pointer-events-none" aria-hidden="true">
-          <div class="site-grid"></div>
-          <div class="site-glow"></div>
-          <div class="site-cursor-glow"></div>
-          <div class="site-grain"></div>
-        </div>
-      )
-    }
+  <body>
+    <div class="site-backdrop pointer-events-none" aria-hidden="true">
+      <div class="site-grid"></div>
+      <div class="site-glow"></div>
+      <div class="site-cursor-glow"></div>
+      <div class="site-grain"></div>
+    </div>
 
     <slot />
 
-    {!isCrtChrome && <SearchModal />}
-
-    {/* Load full theme logic only for normal chrome */}
-    {!isCrtChrome && <script src="../scripts/theme.ts"></script>}
+    <SearchModal />
+    <script src="../scripts/theme.ts"></script>
 
     <!-- Register SW only in production (not localhost / Lighthouse) -->
     <script is:inline>
@@ -242,7 +192,8 @@ const structuredData = pubDatetime
         window.addEventListener("load", function () {
           const host = window.location.hostname;
           const isLocal = host === "localhost" || host === "127.0.0.1";
-          const isLighthouse = navigator.userAgent.includes("Chrome-Lighthouse");
+          const isLighthouse =
+            navigator.userAgent.includes("Chrome-Lighthouse");
           if (isLocal || isLighthouse) return;
 
           navigator.serviceWorker
@@ -385,7 +336,7 @@ const structuredData = pubDatetime
             }
           });
         },
-        { signal }
+        { signal },
       );
 
       document.addEventListener(
@@ -393,7 +344,7 @@ const structuredData = pubDatetime
         () => {
           cursorGlow.classList.remove("active");
         },
-        { signal }
+        { signal },
       );
     }
   });

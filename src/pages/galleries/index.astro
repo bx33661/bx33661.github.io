@@ -8,12 +8,12 @@ import Layout from "@/layouts/Layout.astro";
 import "@/styles/art-gallery-slider.css";
 
 // Card display is ~300–500 CSS px. Cap decode budget hard.
-const CARD_MAX_WIDTH = 960
-const DISPLAY_WIDTH = 640
-const THUMB_WIDTH = 640
+const CARD_MAX_WIDTH = 960;
+const DISPLAY_WIDTH = 640;
+const THUMB_WIDTH = 640;
 
 const pickWidth = (widths: number[], target: number) =>
-  widths.find((w) => w >= target) ?? widths[widths.length - 1]
+  widths.find((w) => w >= target) ?? widths[widths.length - 1];
 
 const buildCardSrcSet = (
   baseName: string,
@@ -23,17 +23,17 @@ const buildCardSrcSet = (
   widths
     .filter((w) => w <= CARD_MAX_WIDTH)
     .map((w) => `/gallery/optimized/${baseName}-w${w}.${format} ${w}w`)
-    .join(", ")
+    .join(", ");
 
 const galleryImages = GALLERY_IMAGES.map((item) => {
-  const sources = buildGalleryImageSources(item)
-  const baseName = item.file.replace(/\.[^.]+$/, "")
-  const widths = sources.renditionWidths
-  const displayWidth = pickWidth(widths, DISPLAY_WIDTH)
-  const thumbWidth = pickWidth(widths, THUMB_WIDTH)
+  const sources = buildGalleryImageSources(item);
+  const baseName = item.file.replace(/\.[^.]+$/, "");
+  const widths = sources.renditionWidths;
+  const displayWidth = pickWidth(widths, DISPLAY_WIDTH);
+  const thumbWidth = pickWidth(widths, THUMB_WIDTH);
   // Prefer webp in srcset; jpg fallback as src for older engines.
-  const webpSrcSet = buildCardSrcSet(baseName, widths, "webp")
-  const jpgSrcSet = buildCardSrcSet(baseName, widths, "jpg")
+  const webpSrcSet = buildCardSrcSet(baseName, widths, "webp");
+  const jpgSrcSet = buildCardSrcSet(baseName, widths, "jpg");
 
   return {
     src: `/gallery/optimized/${baseName}-w${displayWidth}.jpg`,
@@ -41,15 +41,15 @@ const galleryImages = GALLERY_IMAGES.map((item) => {
     sizes: "(max-width: 480px) 300px, (max-width: 768px) 350px, 500px",
     // Palette sampling only — same small jpg is fine and cache-friendly.
     thumb: `/gallery/optimized/${baseName}-w${thumbWidth}.jpg`,
+    full: sources.originalSrc,
     alt: item.alt,
     title: item.title,
     date: item.date,
     // Intrinsic ratio for layout; actual decode is capped by src/srcset.
     width: item.width,
     height: item.height,
-  }
-})
-
+  };
+});
 
 const toGallerySlug = (id: string) =>
   id
@@ -73,10 +73,11 @@ const galleryLinks = galleries
 >
   <div class="gallery-page-wrapper">
     <Header />
-    <div class="gallery-fullscreen-container">
+    <main id="main-content" class="gallery-fullscreen-container">
+      <h1 class="gallery-page-title">画廊</h1>
       {
         galleryImages.length > 0 ? (
-          <ArtGallerySlider images={galleryImages} client:idle />
+          <ArtGallerySlider images={galleryImages} client:load />
         ) : (
           <div class="gallery-empty-state">
             <svg
@@ -103,24 +104,36 @@ const galleryLinks = galleries
         galleryLinks.length > 0 && (
           <nav class="gallery-detail-links" aria-label="图集详情入口">
             {galleryLinks.map((gallery) => (
-              <a class="gallery-detail-link" href={`/galleries/${gallery.slug}/`}>
+              <a
+                class="gallery-detail-link"
+                href={`/galleries/${gallery.slug}/`}
+              >
                 {gallery.title}
               </a>
             ))}
           </nav>
         )
       }
-    </div>
+    </main>
   </div>
 </Layout>
 
 <style>
   .gallery-page-wrapper {
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100dvh;
     overflow: hidden;
     background: #000000;
+  }
+
+  .gallery-page-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
   }
 
   /* Make header darker for gallery — keep blur modest (full-bar blur is GPU-heavy). */
@@ -190,7 +203,8 @@ const galleryLinks = galleries
     background: rgba(255, 255, 255, 0.85);
   }
 
-  .gallery-page-wrapper :global(.hamburger-btn[aria-expanded="true"] .hamburger-line) {
+  .gallery-page-wrapper
+    :global(.hamburger-btn[aria-expanded="true"] .hamburger-line) {
     background: rgba(255, 255, 255, 1);
   }
 
@@ -242,7 +256,10 @@ const galleryLinks = galleries
     padding: 0.4rem 0.85rem;
     font-size: 0.78rem;
     text-decoration: none;
-    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
   }
 
   .gallery-detail-link:hover {
@@ -253,9 +270,12 @@ const galleryLinks = galleries
 
   @media (max-width: 640px) {
     .gallery-detail-links {
-      right: 0.75rem;
+      top: 4.6rem;
+      right: auto;
       left: 0.75rem;
-      justify-content: center;
+      bottom: auto;
+      justify-content: flex-start;
+      max-width: calc(100vw - 7rem);
     }
   }
 </style>

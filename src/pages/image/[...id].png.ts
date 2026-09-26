@@ -109,7 +109,7 @@ export async function GET(context: APIContext) {
         </div>
       </div>
     </div>`,
-  ) as unknown as any
+  ) as Parameters<typeof satori>[0]
 
   const svg = await satori(markup, {
     fonts: [

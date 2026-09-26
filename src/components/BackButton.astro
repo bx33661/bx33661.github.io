@@ -2,9 +2,12 @@
 import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import { SITE } from "@/config.ts";
 
+type Props = { currentTitle?: string };
+const { currentTitle } = Astro.props;
+
 // Build breadcrumb from current URL
 const currentUrlPath = Astro.url.pathname.replace(/\/+$/, "");
-const pathSegments = currentUrlPath.split("/").filter(s => s.trim());
+const pathSegments = currentUrlPath.split("/").filter((s) => s.trim());
 ---
 
 {
@@ -91,14 +94,14 @@ const pathSegments = currentUrlPath.split("/").filter(s => s.trim());
                     class="breadcrumb-current truncate font-medium text-accent/80"
                     aria-current="page"
                   >
-                    {decodeURIComponent(segment)}
+                    {currentTitle || decodeURIComponent(segment)}
                   </span>
                 ) : (
                   <a
                     href={`/${pathSegments.slice(0, index + 1).join("/")}/`}
                     class="breadcrumb-link shrink-0 capitalize transition-colors duration-200 hover:text-accent"
                   >
-                    {decodeURIComponent(segment)}
+                    {segment === "blog" ? "文章" : decodeURIComponent(segment)}
                   </a>
                 )}
               </>

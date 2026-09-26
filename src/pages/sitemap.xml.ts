@@ -5,7 +5,6 @@ import {
   getAllNoteSlugs,
   getAllPostSlugs,
 } from "@/lib/data-utils";
-import { getAllProjectDocs } from "@/utils/projects";
 
 function buildUrl(baseUrl: string, path: string): string {
   return `${baseUrl}${path}`;
@@ -20,7 +19,6 @@ export async function GET(context: APIContext) {
     const postSlugs = await getAllPostSlugs();
     const noteSlugs = await getAllNoteSlugs();
     const allNotes = await getAllNotes();
-    const projectDocs = await getAllProjectDocs();
     const site = context.site ?? SITE.website;
     const baseUrl = site.toString().endsWith("/")
       ? site.toString().slice(0, -1)
@@ -42,12 +40,6 @@ export async function GET(context: APIContext) {
       },
       {
         url: buildUrl(baseUrl, "/notes/"),
-        lastmod: now,
-        changefreq: "weekly",
-        priority: "0.8",
-      },
-      {
-        url: buildUrl(baseUrl, "/projects/"),
         lastmod: now,
         changefreq: "weekly",
         priority: "0.8",
@@ -99,21 +91,6 @@ export async function GET(context: APIContext) {
       priority: "0.6",
     }));
 
-    const projects = projectDocs.map((doc) => {
-      const pathParts = doc.hrefPath.split("/").filter(Boolean);
-      const encoded = pathParts.map(encodePathSegment).join("/");
-      const last =
-        doc.entry.data.modDatetime ??
-        doc.entry.data.pubDatetime ??
-        new Date();
-      return {
-        url: buildUrl(baseUrl, `/projects/${encoded}/`),
-        lastmod: last.toISOString(),
-        changefreq: "monthly" as const,
-        priority: doc.isRoot ? "0.7" : "0.55",
-      };
-    });
-
     const notesPageSize = 10;
     const notesPageCount = Math.ceil(allNotes.length / notesPageSize);
     const notePages = Array.from(
@@ -126,13 +103,7 @@ export async function GET(context: APIContext) {
       }),
     );
 
-    const allUrls = [
-      ...staticPages,
-      ...blogPosts,
-      ...notes,
-      ...projects,
-      ...notePages,
-    ];
+    const allUrls = [...staticPages, ...blogPosts, ...notes, ...notePages];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">

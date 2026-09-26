@@ -1,0 +1,116 @@
+---
+type Heading = { depth: number; slug: string; text: string };
+type Props = { headings: Heading[]; variant: "inline" | "sidebar" };
+
+const { headings, variant } = Astro.props;
+---
+
+{
+  headings.length > 0 &&
+    (variant === "inline" ? (
+      <details class="post-toc-inline">
+        <summary>
+          本文目录 <span>{headings.length} 个章节</span>
+        </summary>
+        <nav aria-label="正文内嵌目录">
+          <ol>
+            {headings.map((heading) => (
+              <li class:list={[{ nested: heading.depth >= 3 }]}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </details>
+    ) : (
+      <aside class="post-toc-sidebar" aria-label="文章快速目录">
+        <p>本文目录</p>
+        <nav aria-label="正文侧边目录">
+          <ol>
+            {headings.map((heading) => (
+              <li class:list={[{ nested: heading.depth >= 3 }]}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+    ))
+}
+
+<style>
+  .post-toc-inline {
+    margin: 0 0 1.9rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    color: var(--foreground);
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  summary span,
+  .post-toc-sidebar p {
+    color: color-mix(in srgb, var(--foreground) 48%, transparent);
+    font-size: 0.72rem;
+    font-weight: 400;
+  }
+  nav {
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+  ol {
+    margin: 0;
+    padding: 0 0 0.9rem;
+    list-style: none;
+  }
+  li {
+    margin: 0.3rem 0;
+  }
+  li.nested {
+    padding-left: 0.85rem;
+  }
+  a {
+    display: block;
+    color: color-mix(in srgb, var(--foreground) 65%, transparent);
+    font-size: 0.78rem;
+    line-height: 1.45;
+    text-decoration: none;
+  }
+  a:hover,
+  a:focus-visible {
+    color: var(--accent);
+  }
+  .post-toc-sidebar {
+    display: none;
+  }
+  .post-toc-sidebar p {
+    margin: 0 0 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .post-toc-sidebar ol {
+    padding: 0;
+  }
+  @media (min-width: 1500px) {
+    .post-toc-inline {
+      display: none;
+    }
+    .post-toc-sidebar {
+      position: sticky;
+      top: 6rem;
+      display: block;
+      align-self: start;
+      padding-left: 1rem;
+      border-left: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+    }
+  }
+  :global(html[data-theme="dark"]) summary span,
+  :global(html[data-theme="dark"]) .post-toc-sidebar p {
+    color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  }
+</style>

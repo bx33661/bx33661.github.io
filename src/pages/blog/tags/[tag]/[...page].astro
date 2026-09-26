@@ -4,13 +4,14 @@ import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import Card from "@/components/Card.astro";
+import EntryRow from "@/components/EntryRow.astro";
 import Pagination from "@/components/Pagination.astro";
 import getUniqueTags from "@/utils/getUniqueTags";
 import getPostsByTag from "@/utils/getPostsByTag";
+import { getPath } from "@/utils/getPath";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
 import { SITE } from "@/config.ts";
 import { getAllPosts } from "@/lib/data-utils";
-
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const posts = await getAllPosts();
   const tags = getUniqueTags(posts);
@@ -34,16 +35,29 @@ const { page, tagName } = Astro.props;
 const noindex = true;
 ---
 
-<Layout title={`Tag: ${tagName} | ${SITE.title}`} noindex={noindex}>
+<Layout title={`主题：${tagName} | ${SITE.title}`} noindex={noindex}>
   <Header />
   <Main
-    pageTitle={[`Tag:`, `${tagName}`]}
+    pageTitle={["主题：", tagName]}
     titleTransition={tag}
-    pageDesc={`All the articles with the tag "${tagName}".`}
+    pageDesc={`与「${tagName}」相关的文章。`}
   >
-    <h1 slot="title" transition:name={tag}>{`Tag:${tag}`}</h1>
-    <ul>
-      {page.data.map(data => <Card {...data} />)}
+    <ul class="entry-list">
+      {
+        page.data.map((post) => (
+          <EntryRow
+            href={getPath(
+              post.id,
+              post.filePath,
+              true,
+              resolveLegacyPostSlug(post),
+            )}
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.pubDatetime}
+          />
+        ))
+      }
     </ul>
   </Main>
 
@@ -51,3 +65,11 @@ const noindex = true;
 
   <Footer noMarginTop={page.lastPage > 1} />
 </Layout>
+
+<style>
+  .entry-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

@@ -1,18 +1,18 @@
 ---
-const target = "/blog/tags/";
+const target = "/blog/#topics";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, follow" />
     <meta http-equiv="refresh" content={`0;url=${target}`} />
-    <link rel="canonical" href={target} />
-    <title>Redirecting...</title>
+    <link rel="canonical" href="/blog/" />
+    <title>正在前往文章主题</title>
   </head>
   <body>
-    <p>Redirecting to <a href={target}>{target}</a>...</p>
+    <p>正在前往<a href={target}>文章主题</a>…</p>
   </body>
 </html>

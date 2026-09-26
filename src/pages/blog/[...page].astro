@@ -5,11 +5,16 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
-import Card from "@/components/Card.astro";
+import EntryRow from "@/components/EntryRow.astro";
 import Pagination from "@/components/Pagination.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
+import getUniqueTags from "@/utils/getUniqueTags";
+import getPostsByTag from "@/utils/getPostsByTag";
+import { getTagPath } from "@/utils/tagPath";
 import { SITE } from "@/config.ts";
 import { getAllPosts } from "@/lib/data-utils";
+import { getPath } from "@/utils/getPath";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getAllPosts();
@@ -19,6 +24,19 @@ export const getStaticPaths = (async ({ paginate }) => {
 const { page } = Astro.props;
 const totalPosts = page.total;
 const pageData = page.data as CollectionEntry<"blog">[];
+const topicPosts = page.currentPage === 1 ? await getAllPosts() : [];
+const topics = getUniqueTags(topicPosts)
+  .filter(({ tag }) => tag !== "bx")
+  .map(({ tag, tagName }) => ({
+    tag,
+    tagName,
+    count: getPostsByTag(topicPosts, tag).length,
+  }))
+  .filter(({ count }) => count >= 4)
+  .sort(
+    (a, b) => b.count - a.count || a.tagName.localeCompare(b.tagName, "zh-CN"),
+  )
+  .slice(0, 8);
 ---
 
 <Layout
@@ -31,16 +49,17 @@ const pageData = page.data as CollectionEntry<"blog">[];
 
   <main id="main-content" class="app-layout pb-4">
     <header class="blog-head">
-      <h1 class="blog-title">Blog</h1>
-      <p class="blog-desc">按时间浏览全部博客文章。</p>
+      <p class="blog-kicker">POSTS / ARCHIVE</p>
+      <h1 class="blog-title">文章</h1>
+      <p class="blog-desc">按时间浏览技术研究与工程实践记录。</p>
       <p class="blog-meta">
-        <span>{totalPosts} posts</span>
+        <span>共 {totalPosts} 篇</span>
         {
           page.lastPage > 1 && (
             <>
               <span aria-hidden="true">·</span>
               <span>
-                Page {page.currentPage}/{page.lastPage}
+                第 {page.currentPage}/{page.lastPage} 页
               </span>
             </>
           )
@@ -48,18 +67,61 @@ const pageData = page.data as CollectionEntry<"blog">[];
       </p>
     </header>
 
-    <ul>{pageData.map((data) => <Card {...data} />)}</ul>
+    {
+      topics.length > 0 && (
+        <nav id="topics" class="blog-topics" aria-label="按主题浏览文章">
+          <span class="blog-topics-label">按主题浏览</span>
+          <ul class="blog-topics-list">
+            {topics.map(({ tag, tagName, count }) => (
+              <li>
+                <a href={getTagPath(tag)} class="blog-topic">
+                  <span>{tagName}</span>
+                  <span class="blog-topic-count">{count}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    <ul class="entry-list">
+      {
+        pageData.map((post) => (
+          <EntryRow
+            href={getPath(
+              post.id,
+              post.filePath,
+              true,
+              resolveLegacyPostSlug(post),
+            )}
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.pubDatetime}
+          />
+        ))
+      }
+    </ul>
   </main>
 
-  <Pagination page={page as any} />
+  <Pagination {page} />
 
   <Footer noMarginTop={page.lastPage > 1} />
 </Layout>
 
 <style>
   .blog-head {
-    margin: 0.15rem 0 1.35rem;
+    margin: 0.4rem 0 1.8rem;
     max-width: 40rem;
+  }
+
+  .blog-kicker {
+    margin: 0 0 0.45rem;
+    color: var(--accent);
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
   }
 
   .blog-title {
@@ -87,5 +149,75 @@ const pageData = page.data as CollectionEntry<"blog">[];
     font-size: 0.75rem;
     letter-spacing: 0.04em;
     color: color-mix(in srgb, var(--foreground) 42%, transparent);
+  }
+
+  .entry-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .blog-topics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.65rem 1rem;
+    margin: -0.45rem 0 1.45rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 6rem;
+  }
+
+  .blog-topics-label {
+    flex: none;
+    color: color-mix(in srgb, var(--foreground) 56%, transparent);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .blog-topics-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .blog-topic {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--foreground);
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .blog-topic:hover,
+  .blog-topic:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .blog-topic:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .blog-topic-count {
+    color: color-mix(in srgb, var(--foreground) 45%, transparent);
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.75rem;
+  }
+  :global(html[data-theme="dark"]) .blog-meta,
+  :global(html[data-theme="dark"]) .blog-topic-count {
+    color: color-mix(in srgb, var(--foreground) 68%, transparent);
   }
 </style>
