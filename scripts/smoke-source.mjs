@@ -1,126 +1,136 @@
-import fs from 'node:fs'
-import path from 'node:path'
+import fs from "node:fs";
+import path from "node:path";
 
-const failures = []
-const warnings = []
+const failures = [];
+const warnings = [];
 
 const requireFile = (filePath) => {
   if (!fs.existsSync(filePath)) {
-    failures.push(`missing file: ${filePath}`)
+    failures.push(`missing file: ${filePath}`);
   }
-}
+};
 
 const requireDirectoryHasFiles = (dirPath, filter) => {
   if (!fs.existsSync(dirPath)) {
-    failures.push(`missing directory: ${dirPath}`)
-    return
+    failures.push(`missing directory: ${dirPath}`);
+    return;
   }
-  const files = fs.readdirSync(dirPath).filter((name) => filter(name))
+  const files = fs.readdirSync(dirPath).filter((name) => filter(name));
   if (files.length === 0) {
-    failures.push(`directory has no expected files: ${dirPath}`)
+    failures.push(`directory has no expected files: ${dirPath}`);
   }
-}
+};
 
 const assertNoText = (filePath, pattern, label) => {
   if (!fs.existsSync(filePath)) {
-    failures.push(`missing file for check: ${filePath}`)
-    return
+    failures.push(`missing file for check: ${filePath}`);
+    return;
   }
-  const content = fs.readFileSync(filePath, 'utf8')
+  const content = fs.readFileSync(filePath, "utf8");
   if (pattern.test(content)) {
-    failures.push(`${label}: ${filePath}`)
+    failures.push(`${label}: ${filePath}`);
   }
-}
+};
 
 const assertHasText = (filePath, pattern, label) => {
   if (!fs.existsSync(filePath)) {
-    failures.push(`missing file for check: ${filePath}`)
-    return
+    failures.push(`missing file for check: ${filePath}`);
+    return;
   }
-  const content = fs.readFileSync(filePath, 'utf8')
+  const content = fs.readFileSync(filePath, "utf8");
   if (!pattern.test(content)) {
-    failures.push(`${label}: ${filePath}`)
+    failures.push(`${label}: ${filePath}`);
+  }
+};
+
+const repoRoot = process.cwd();
+
+requireFile(path.join(repoRoot, "src/pages/album/index.astro"));
+requireFile(path.join(repoRoot, "src/pages/tags/index.astro"));
+requireFile(path.join(repoRoot, "src/pages/tags/[tag].astro"));
+requireFile(path.join(repoRoot, "src/data/gallery.ts"));
+requireFile(path.join(repoRoot, "public/sw.js"));
+requireFile(path.join(repoRoot, "public/site.webmanifest"));
+requireFile(path.join(repoRoot, "astro.config.ts"));
+
+assertHasText(
+  path.join(repoRoot, "src/pages/tags/index.astro"),
+  /\/blog\/#topics/,
+  "legacy /tags index missing redirect to blog topics",
+);
+assertHasText(
+  path.join(repoRoot, "src/layouts/Layout.astro"),
+  /giscus\.app/,
+  "Layout CSP missing giscus.app allowlist",
+);
+assertHasText(
+  path.join(repoRoot, "public/_headers"),
+  /giscus\.app/,
+  "_headers CSP missing giscus.app allowlist",
+);
+assertHasText(
+  path.join(repoRoot, "src/layouts/Layout.astro"),
+  /frame-src[^"]*giscus\.app/,
+  "Layout CSP missing frame-src for giscus.app",
+);
+
+requireDirectoryHasFiles(
+  path.join(repoRoot, "src/data/galleries/bx-journey"),
+  (name) => /\.(jpe?g|png)$/i.test(name),
+);
+requireDirectoryHasFiles(
+  path.join(repoRoot, "public/gallery/optimized"),
+  (name) => /\.(avif|webp|jpg)$/i.test(name),
+);
+
+for (const retiredPath of [
+  "src/pages/projects",
+  "src/content/projects",
+  "src/utils/projects.ts",
+  "public/fonts/crt",
+]) {
+  if (fs.existsSync(path.join(repoRoot, retiredPath))) {
+    failures.push(`retired Projects resource still exists: ${retiredPath}`);
   }
 }
-
-const repoRoot = process.cwd()
-
-requireFile(path.join(repoRoot, 'src/pages/album/index.astro'))
-requireFile(path.join(repoRoot, 'src/pages/tags/index.astro'))
-requireFile(path.join(repoRoot, 'src/pages/tags/[tag].astro'))
-requireFile(path.join(repoRoot, 'src/data/gallery.ts'))
-requireFile(path.join(repoRoot, 'public/sw.js'))
-requireFile(path.join(repoRoot, 'public/site.webmanifest'))
-requireFile(path.join(repoRoot, 'astro.config.ts'))
-
-assertHasText(
-  path.join(repoRoot, 'src/pages/tags/index.astro'),
-  /\/blog\/tags\/?/,
-  'legacy /tags index missing redirect to /blog/tags',
-)
-assertHasText(
-  path.join(repoRoot, 'src/layouts/Layout.astro'),
-  /giscus\.app/,
-  'Layout CSP missing giscus.app allowlist',
-)
-assertHasText(
-  path.join(repoRoot, 'public/_headers'),
-  /giscus\.app/,
-  '_headers CSP missing giscus.app allowlist',
-)
-assertHasText(
-  path.join(repoRoot, 'src/layouts/Layout.astro'),
-  /frame-src[^"]*giscus\.app/,
-  'Layout CSP missing frame-src for giscus.app',
-)
-
-requireDirectoryHasFiles(
-  path.join(repoRoot, 'src/data/galleries/bx-journey'),
-  (name) => /\.(jpe?g|png)$/i.test(name),
-)
-requireDirectoryHasFiles(
-  path.join(repoRoot, 'public/gallery/optimized'),
-  (name) => /\.(avif|webp|jpg)$/i.test(name),
-)
-
-assertHasText(
-  path.join(repoRoot, 'src/pages/projects/index.astro'),
-  /getAllProjectsWithSlugs|ProjectCard/,
-  'projects list page missing collection wiring',
-)
-assertHasText(
-  path.join(repoRoot, 'src/content.config.ts'),
-  /projects\s*=\s*defineCollection/,
-  'projects content collection not defined',
-)
 assertNoText(
-  path.join(repoRoot, 'public/_redirects'),
-  /^\/projects(?:\/|\s|\*)/m,
-  'stale projects → galleries redirect still present in public/_redirects',
-)
+  path.join(repoRoot, "src/content.config.ts"),
+  /PROJECTS_PATH|projects\s*=\s*defineCollection/,
+  "Projects content collection still configured",
+);
 assertHasText(
-  path.join(repoRoot, 'astro.config.ts'),
+  path.join(repoRoot, "src/components/AcademicHome.astro"),
+  /PureAutoCodeQL[\s\S]*Wireshark-MCP/,
+  "homepage missing selected research projects",
+);
+assertNoText(
+  path.join(repoRoot, "src/components/AcademicHome.astro"),
+  /getProjectRoots|\/projects\//,
+  "homepage still uses retired project routes",
+);
+assertHasText(
+  path.join(repoRoot, "astro.config.ts"),
   /defaultStrategy:\s*['"]hover['"]/,
-  'Astro prefetch hover strategy not configured',
-)
+  "Astro prefetch hover strategy not configured",
+);
 
 const summary = [
   `- Failures: ${failures.length}`,
   `- Warnings: ${warnings.length}`,
-]
+];
 
-console.log('Source smoke check summary:')
-for (const line of summary) console.log(line)
+console.log("Source smoke check summary:");
+for (const line of summary) console.log(line);
 
 for (const warning of warnings) {
-  console.warn(`[WARN] ${warning}`)
+  console.warn(`[WARN] ${warning}`);
 }
 
 if (failures.length > 0) {
   for (const failure of failures) {
-    console.error(`[FAIL] ${failure}`)
+    console.error(`[FAIL] ${failure}`);
   }
-  process.exit(1)
+  process.exit(1);
 }
 
-console.log('[OK] source smoke checks passed')
+console.log("[OK] source smoke checks passed");

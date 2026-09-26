@@ -28,49 +28,234 @@ const requiredFiles = [
   "image-sitemap.xml",
   "_headers",
   "_redirects",
+  "schools/ucas-emblem.webp",
+  "schools/hainan-university-emblem.webp",
 ];
 
 for (const file of requiredFiles) {
   requireBuiltFile(file);
 }
 
-const projectsIndexFile = requireBuiltFile("projects/index.html");
-if (fs.existsSync(projectsIndexFile)) {
-  const content = fs.readFileSync(projectsIndexFile, "utf8");
-  if (/http-equiv=["']refresh["']/i.test(content) && /\/galleries\/?/.test(content)) {
-    failures.push(
-      "dist/projects/index.html still redirects to /galleries (expected real projects list)",
-    );
+const homeFile = requireBuiltFile("index.html");
+if (fs.existsSync(homeFile)) {
+  const home = fs.readFileSync(homeFile, "utf8");
+  // IMAGE_AUDIT: unused preload must not return to the homepage.
+  if (/rel="preload"[^>]*href="\/touxiang-512\.png"/.test(home))
+    failures.push("homepage preloads an unused 512px avatar");
+  for (const marker of [
+    "Zhang Boxiang",
+    "张博翔",
+    "Research interests",
+    "Selected work",
+    "PureAutoCodeQL",
+    "Wireshark-MCP",
+    "Honors &amp; awards",
+    "National First Prize",
+    "第九届强网杯全国网络安全挑战赛",
+    "Education",
+    "Hainan University",
+    "University of Chinese Academy of Sciences",
+    "UCAS",
+    "HNU",
+    "2027",
+    "BACHELOR'S DEGREE",
+    "MASTER'S DEGREE",
+    "Recent updates",
+    "Selected writing",
+    "Question",
+    "Method",
+    "Evidence",
+    "/schools/ucas-emblem.webp",
+    "/schools/hainan-university-emblem.webp",
+    "mailto:bx33661@gmail.com",
+  ]) {
+    if (!home.includes(marker))
+      failures.push(`academic homepage missing: ${marker}`);
   }
-  if (!/oh-my-vul|Wireshark-MCP|PureAutoCodeQL/i.test(content)) {
-    failures.push(
-      "dist/projects/index.html does not list expected project titles",
-    );
-  }
-  if (!/href="\/projects\/[^"/]+\//.test(content)) {
-    failures.push(
-      "dist/projects/index.html does not contain project detail links",
-    );
+  if (!/href="\/blog\/"/.test(home))
+    failures.push("academic homepage missing blog entry");
+  if (/CURRENTLY|UP NEXT|EXPECTED|预计|Master's studies|undergraduate/.test(home))
+    failures.push("academic homepage still contains education status wording");
+  if (!home.includes("selected-list") || !home.includes("work-list"))
+    failures.push("academic homepage missing selected work or writing list");
+  const selectedWriting = home.match(/<ol class="selected-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
+  const latestUpdates = home.match(/<ol class="updates-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
+  if (!selectedWriting.includes("cnvd-2026-20654-lg-nas-rce"))
+    failures.push("selected writing missing vulnerability research article");
+  if (latestUpdates.includes("cnvd-2026-20654-lg-nas-rce"))
+    failures.push("recent updates duplicates selected writing");
+  if (home.includes("18768921736") || home.includes("bx33661@qq.com"))
+    failures.push("homepage exposes private resume contact details");
+}
+
+// IMAGE_AUDIT: generated variants and loading hints are part of the build contract.
+for (const [article, image] of [
+  ["blog/k8x9w2m7/index.html", "01-profile-bypass-flow"],
+  ["blog/wechat-miniapp-security-audit/index.html", "08-xcode-development-ui"],
+  ["blog/wechat-miniapp-security-audit/index.html", "13-endpoints-parameters-analysis"],
+]) {
+  const htmlFile = requireBuiltFile(article);
+  if (!fs.existsSync(htmlFile)) continue;
+  const html = fs.readFileSync(htmlFile, "utf8");
+  if (!html.includes(`${image}-800.webp 800w`) || !html.includes(`${image}-1600.webp 1600w`))
+    failures.push(`${article} missing responsive variants for ${image}`);
+  if (!new RegExp(`<img[^>]*${image}\\.png[^>]*loading="(eager|lazy)"`).test(html))
+    failures.push(`${article} missing image loading policy for ${image}`);
+  for (const width of [800, 1600]) {
+    const variant = `blog/${image === "01-profile-bypass-flow" ? "l3hctf-best-profile" : "miniapp-audit"}/${image}-${width}.webp`;
+    requireBuiltFile(variant);
   }
 }
 
-// Docs-library: root + at least one child page should exist
-const omvRoot = requireBuiltFile("projects/oh-my-vul/index.html");
-const omvChild = path.join(distDir, "projects/oh-my-vul/problem/index.html");
-if (fs.existsSync(omvRoot)) {
-  const content = fs.readFileSync(omvRoot, "utf8");
-  if (!/crt-docs|PAGES|Overview/i.test(content)) {
-    failures.push(
-      "dist/projects/oh-my-vul/index.html missing docs-library chrome",
-    );
+const searchFile = requireBuiltFile("search/index.html");
+
+const friendsFile = requireBuiltFile("friends/index.html");
+if (fs.existsSync(friendsFile)) {
+  const friends = fs.readFileSync(friendsFile, "utf8");
+  for (const marker of ["fp-featured-intro", "friend-blogs", "friend-hnusec", "friend-organizations", "fp-exchange", "fc-tag-row", "self-banner"]) {
+    if (!friends.includes(marker)) failures.push(`friends page missing: ${marker}`);
   }
-}
-if (!fs.existsSync(omvChild)) {
-  failures.push(
-    "dist/projects/oh-my-vul/problem/index.html missing (docs child page)",
-  );
+  const friendLinks = friends.match(/aria-label="访问 [^"]+"/g) ?? [];
+  if (friendLinks.length !== 20) failures.push(`friends page should preserve 20 links, found ${friendLinks.length}`);
 }
 
+if (fs.existsSync(searchFile)) {
+  const search = fs.readFileSync(searchFile, "utf8");
+  for (const marker of [
+    "SEARCH / INDEX",
+    "search-surface",
+    "pagefind-search",
+    "search-dialog",
+    "modal-pagefind-search",
+  ]) {
+    if (!search.includes(marker))
+      failures.push(`search page missing: ${marker}`);
+  }
+  if (search.includes("sp-orb") || search.includes("sm-border-spin")) {
+    failures.push("search still renders decorative effects");
+  }
+}
+
+const archiveFile = requireBuiltFile("archives/index.html");
+if (fs.existsSync(archiveFile)) {
+  const archive = fs.readFileSync(archiveFile, "utf8");
+  for (const marker of [
+    "ARCHIVES / CHRONOLOGY",
+    "year-index",
+    "month-entries",
+  ]) {
+    if (!archive.includes(marker))
+      failures.push(`archive page missing: ${marker}`);
+  }
+  if (archive.includes("arc-orb"))
+    failures.push("archive page still renders old decorative hero");
+}
+
+const galleryFile = requireBuiltFile("galleries/index.html");
+if (fs.existsSync(galleryFile)) {
+  const gallery = fs.readFileSync(galleryFile, "utf8");
+  for (const marker of [
+    "gallery-fullscreen-container",
+    "gallery-container",
+    "查看原图",
+    "峡谷双桥",
+    "经幡穹顶",
+  ]) {
+    if (!gallery.includes(marker))
+      failures.push(`gallery page missing: ${marker}`);
+  }
+  if (gallery.includes("photo-grid"))
+    failures.push("gallery page still renders replacement photo grid");
+}
+
+const aboutFile = requireBuiltFile("about/index.html");
+if (fs.existsSync(aboutFile)) {
+  const about = fs.readFileSync(aboutFile, "utf8");
+  if (!about.includes("Zhang Boxiang") || !about.includes("Research interests"))
+    failures.push("about page missing academic homepage");
+  if (!about.includes("教育经历") || !about.includes("中国科学院大学"))
+    failures.push("about page missing education section");
+}
+
+const sampleArticleFile = requireBuiltFile(
+  "blog/wechat-miniapp-security-audit/index.html",
+);
+if (fs.existsSync(sampleArticleFile)) {
+  const article = fs.readFileSync(sampleArticleFile, "utf8");
+  for (const marker of ["本文目录", "本文概览", "等 6 个标签", "分享"]) {
+    if (!article.includes(marker))
+      failures.push(`post detail missing: ${marker}`);
+  }
+  if (!article.includes('href="https://github.com/bx33661/WxLocated"')) {
+    failures.push("WxLocated article link is malformed");
+  }
+  if (article.includes("// contenido") || article.includes("Compartir")) {
+    failures.push("post detail still contains mixed-language UI labels");
+  }
+}
+
+for (const [relativePath, expected] of [
+  ["blog/index.html", "POSTS / ARCHIVE"],
+  ["notes/index.html", "NOTES / INDEX"],
+  ["notes/list/index.html", "NOTES / ARCHIVE"],
+]) {
+  const file = requireBuiltFile(relativePath);
+  if (!fs.existsSync(file)) continue;
+  const content = fs.readFileSync(file, "utf8");
+  if (!content.includes(expected) || !content.includes("entry-row")) {
+    failures.push(`${relativePath} missing unified editorial list`);
+  }
+  if (content.includes("card-glow")) {
+    failures.push(`${relativePath} still renders article cards`);
+  }
+}
+
+const blogIndex = requireBuiltFile("blog/index.html");
+if (fs.existsSync(blogIndex)) {
+  const blog = fs.readFileSync(blogIndex, "utf8");
+  if (!blog.includes('id="topics"') || !blog.includes("按主题浏览")) {
+    failures.push("blog index missing compact topic navigation");
+  }
+  if (!/href="\/blog\/tags\/[^"/]+\/"/.test(blog)) {
+    failures.push("blog topic navigation missing tag detail links");
+  }
+  if (/class="nav-link[^" ]*"[^>]*>Tags</.test(blog)) {
+    failures.push("Tags still appears in primary navigation");
+  }
+}
+
+const blogTagsIndex = requireBuiltFile("blog/tags/index.html");
+if (fs.existsSync(blogTagsIndex)) {
+  const content = fs.readFileSync(blogTagsIndex, "utf8");
+  if (!content.includes("/blog/#topics") || content.includes("tag-cloud")) {
+    failures.push("old tag overview does not redirect to blog topics");
+  }
+}
+
+const sampleTagDetail = requireBuiltFile("blog/tags/ctf/index.html");
+if (fs.existsSync(sampleTagDetail)) {
+  const content = fs.readFileSync(sampleTagDetail, "utf8");
+  if (
+    !content.includes("主题：") ||
+    !content.includes("与「CTF」相关的文章") ||
+    !content.includes('href="/blog/#topics"')
+  ) {
+    failures.push("tag detail page missing localized filtering context");
+  }
+}
+
+if (fs.existsSync(path.join(distDir, "fonts/crt"))) {
+  failures.push("removed CRT fonts are still present in dist");
+}
+if (fs.existsSync(path.join(distDir, "projects"))) {
+  failures.push("removed /projects/ route is still present in dist");
+}
+const sitemapFile = requireBuiltFile("sitemap.xml");
+if (fs.existsSync(sitemapFile)) {
+  const sitemap = fs.readFileSync(sitemapFile, "utf8");
+  if (sitemap.includes("/projects/"))
+    failures.push("sitemap still lists removed projects pages");
+}
 const albumIndex = requireBuiltFile("album/index.html");
 if (fs.existsSync(albumIndex)) {
   const content = fs.readFileSync(albumIndex, "utf8");
@@ -82,8 +267,8 @@ if (fs.existsSync(albumIndex)) {
 const tagsIndex = requireBuiltFile("tags/index.html");
 if (fs.existsSync(tagsIndex)) {
   const content = fs.readFileSync(tagsIndex, "utf8");
-  if (!/\/blog\/tags\/?/.test(content)) {
-    failures.push("tags index does not redirect to /blog/tags");
+  if (!content.includes("/blog/#topics")) {
+    failures.push("legacy tags index does not redirect to blog topics");
   }
 }
 
@@ -114,9 +299,7 @@ const headersFile = requireBuiltFile("_headers");
 if (fs.existsSync(headersFile)) {
   const headers = fs.readFileSync(headersFile, "utf8");
   if (!/giscus\.app/.test(headers) || !/frame-src/.test(headers)) {
-    failures.push(
-      "dist/_headers CSP missing giscus.app / frame-src allowlist",
-    );
+    failures.push("dist/_headers CSP missing giscus.app / frame-src allowlist");
   }
 }
 

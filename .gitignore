@@ -26,17 +26,27 @@ pnpm-debug.log*
 .env.*.local
 .env.production
 
-# macOS-specific files
+# OS-specific files
 .DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# jetbrains setting folder
+# Editor and IDE scratch files
 .idea/
-
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
 # pagefind
 public/pagefind
 
 # local build and tooling caches
 .lighthouseci/
+.visual-artifacts/
 .tmp/
 .vercel
 

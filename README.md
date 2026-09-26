@@ -25,7 +25,6 @@
 |------|------|------|
 | 博客 | [`/blog/`](https://www.bx33661.com/blog/) | 安全研究、CTF、工程笔记 |
 | Notes | [`/notes/`](https://www.bx33661.com/notes/) | 短记录与学习备忘 |
-| Projects | [`/projects/`](https://www.bx33661.com/projects/) | 安全研究与工具展柜 |
 | 相册 | [`/galleries/`](https://www.bx33661.com/galleries/) | 图片画廊 |
 | 搜索 | [`/search/`](https://www.bx33661.com/search/) | Pagefind 全文检索 |
 | 友链 | [`/friends/`](https://www.bx33661.com/friends/) | 朋友与组织 |
@@ -77,7 +76,7 @@ CI 从 GitHub Variables / Secrets 注入；百度 token 使用 `secrets.BAIDU_PU
 src/
   config.ts        # SITE 唯一配置源
   config/          # friends / env / theme
-  content/         # blog、projects 等内容集合
+  content/         # blog 内容集合
   data/            # notes、galleries 数据
   pages/           # 路由
   components/      # UI
@@ -109,7 +108,6 @@ docs/              # 部署说明与仓库视觉素材
 ## 内容约定
 
 - 博客：`src/content/blog/`
-- 项目：`src/content/projects/<slug>/`
 - 笔记：`src/data/notes/`
 - 相册元数据：`src/data/galleries/`
 - 图片优先放 `public/`；文件名建议 kebab-case，避免空格

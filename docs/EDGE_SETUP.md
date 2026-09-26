@@ -16,14 +16,12 @@ These are first-class pages. **Do not** 301 them away:
 
 | Path | Module |
 |------|--------|
-| `/projects/`, `/projects/*` | Research / tooling showcase (content collection) |
 | `/galleries/`, `/galleries/*` | Photo galleries |
 | `/blog/`, `/blog/*` | Blog |
 | `/notes/`, `/notes/*` | Notes |
 | `/friends/` | Friends |
 | `/search/` | Pagefind search |
 
-> **Historical note:** An earlier draft of this doc told the edge to send `/projects*` → `/galleries/`. That is obsolete. Projects is a real module now; applying that rule would break the site.
 
 ## Recommended edge redirects (301)
 
@@ -75,21 +73,18 @@ Notes:
 
 ```bash
 curl -sI https://www.bx33661.com/ | rg -i 'strict-transport|x-frame|content-security|HTTP/'
-curl -sI https://www.bx33661.com/projects/
 curl -sI https://www.bx33661.com/tags/web
 curl -sI https://www.bx33661.com/bento
 ```
 
 Expected when edge is configured:
 
-- `/projects/` → **200** (not a redirect to galleries)
 - `/tags/*` → **301** → `/blog/tags/*`
 - `/bento` → **301** → `/galleries/`
 - Homepage response includes the security headers above
 
 On bare GitHub Pages (no edge):
 
-- `/projects/` → 200
 - `/tags/`, `/tags/<known-slug>/` → HTML refresh → `/blog/tags/...`
 - `/album/`, `/archive` → HTML refresh redirects
 - Security headers above are absent from the HTTP response (CSP meta still in HTML)

@@ -1,367 +1,315 @@
-import fs from 'fs'
-import path from 'path'
+import fs from "fs";
+import path from "path";
 
-const PUBLIC_ROOT = path.resolve('public')
+const PUBLIC_ROOT = path.resolve("public");
 const COLLECTION_PATHS = {
-  blog: path.resolve('src/content/blog'),
-  notes: path.resolve('src/data/notes'),
-  projects: path.resolve('src/content/projects'),
-}
-const COLLECTIONS = Object.keys(COLLECTION_PATHS)
+  blog: path.resolve("src/content/blog"),
+  notes: path.resolve("src/data/notes"),
+};
+const COLLECTIONS = Object.keys(COLLECTION_PATHS);
 
 const REQUIRED_FIELDS = {
-  blog: ['title', 'description', 'date'],
-  notes: ['title', 'description', 'date'],
-  projects: ['title', 'description'],
-}
+  blog: ["title", "description", "date"],
+  notes: ["title", "description", "date"],
+};
 
 function walkMarkdownFiles(rootDir) {
-  const result = []
-  const stack = [rootDir]
+  const result = [];
+  const stack = [rootDir];
 
   while (stack.length > 0) {
-    const current = stack.pop()
-    const entries = fs.readdirSync(current, { withFileTypes: true })
+    const current = stack.pop();
+    const entries = fs.readdirSync(current, { withFileTypes: true });
     for (const entry of entries) {
-      const fullPath = path.join(current, entry.name)
+      const fullPath = path.join(current, entry.name);
       if (entry.isDirectory()) {
-        stack.push(fullPath)
+        stack.push(fullPath);
       } else if (entry.isFile() && /\.(md|mdx)$/i.test(entry.name)) {
-        result.push(fullPath)
+        result.push(fullPath);
       }
     }
   }
 
-  return result
+  return result;
 }
 
 function extractFrontmatter(raw) {
-  const normalized = raw.replace(/^\uFEFF/, '')
-  const match = normalized.match(/^\s*---\s*\n([\s\S]*?)\n---\s*(?:\n|$)/)
-  return match ? match[1] : null
+  const normalized = raw.replace(/^\uFEFF/, "");
+  const match = normalized.match(/^\s*---\s*\n([\s\S]*?)\n---\s*(?:\n|$)/);
+  return match ? match[1] : null;
 }
 
 function hasKey(frontmatter, key) {
-  const pattern = new RegExp(`^${key}\\s*:`, 'm')
-  return pattern.test(frontmatter)
+  const pattern = new RegExp(`^${key}\\s*:`, "m");
+  return pattern.test(frontmatter);
 }
 
 /** Strip a YAML inline comment outside of quotes: `false  # draft` → `false`. */
 function stripInlineComment(value) {
-  let inSingle = false
-  let inDouble = false
+  let inSingle = false;
+  let inDouble = false;
   for (let i = 0; i < value.length; i += 1) {
-    const ch = value[i]
-    if (ch === "'" && !inDouble) inSingle = !inSingle
-    else if (ch === '"' && !inSingle) inDouble = !inDouble
-    else if (ch === '#' && !inSingle && !inDouble) {
-      return value.slice(0, i).trimEnd()
+    const ch = value[i];
+    if (ch === "'" && !inDouble) inSingle = !inSingle;
+    else if (ch === '"' && !inSingle) inDouble = !inDouble;
+    else if (ch === "#" && !inSingle && !inDouble) {
+      return value.slice(0, i).trimEnd();
     }
   }
-  return value.trim()
+  return value.trim();
 }
 
 function getScalarValue(frontmatter, key) {
-  const pattern = new RegExp(`^${key}\\s*:\\s*(.+)$`, 'm')
-  const match = frontmatter.match(pattern)
-  if (!match) return ''
-  return stripInlineComment(match[1].trim())
+  const pattern = new RegExp(`^${key}\\s*:\\s*(.+)$`, "m");
+  const match = frontmatter.match(pattern);
+  if (!match) return "";
+  return stripInlineComment(match[1].trim());
 }
 
 function stripQuotes(value) {
-  return value.replace(/^['"`](.*)['"`]$/, '$1').trim()
+  return value.replace(/^['"`](.*)['"`]$/, "$1").trim();
 }
 
 function publicPathToFilePath(value) {
-  const decodedPath = decodeURIComponent(value.split(/[?#]/, 1)[0])
-  return path.resolve(PUBLIC_ROOT, decodedPath.replace(/^\/+/, ''))
+  const decodedPath = decodeURIComponent(value.split(/[?#]/, 1)[0]);
+  return path.resolve(PUBLIC_ROOT, decodedPath.replace(/^\/+/, ""));
 }
 
 function resolveLocalImagePath(imagePath) {
   if (/^https?:\/\//i.test(imagePath)) {
-    return null
+    return null;
   }
 
-  if (imagePath.startsWith('/')) {
-    const publicPath = publicPathToFilePath(imagePath)
+  if (imagePath.startsWith("/")) {
+    const publicPath = publicPathToFilePath(imagePath);
     if (fs.existsSync(publicPath)) {
-      return publicPath
+      return publicPath;
     }
 
-    return publicPath
+    return publicPath;
   }
 
-  return null
+  return null;
 }
 
 function hasNonEmptyArray(frontmatter, key) {
-  const inlinePattern = new RegExp(`^${key}\\s*:\\s*\\[(.*)\\]\\s*$`, 'm')
-  const inlineMatch = frontmatter.match(inlinePattern)
+  const inlinePattern = new RegExp(`^${key}\\s*:\\s*\\[(.*)\\]\\s*$`, "m");
+  const inlineMatch = frontmatter.match(inlinePattern);
   if (inlineMatch) {
-    return inlineMatch[1].split(',').map((part) => part.trim()).filter(Boolean).length > 0
+    return (
+      inlineMatch[1]
+        .split(",")
+        .map((part) => part.trim())
+        .filter(Boolean).length > 0
+    );
   }
 
-  const blockPattern = new RegExp(`^${key}\\s*:\\s*\\n([\\s\\S]*?)(?=\\n[A-Za-z_][\\w-]*\\s*:|$)`, 'm')
-  const blockMatch = frontmatter.match(blockPattern)
-  if (!blockMatch) return false
+  const blockPattern = new RegExp(
+    `^${key}\\s*:\\s*\\n([\\s\\S]*?)(?=\\n[A-Za-z_][\\w-]*\\s*:|$)`,
+    "m",
+  );
+  const blockMatch = frontmatter.match(blockPattern);
+  if (!blockMatch) return false;
 
   const listLines = blockMatch[1]
-    .split('\n')
+    .split("\n")
     .map((line) => line.trim())
-    .filter((line) => line.startsWith('-'))
+    .filter((line) => line.startsWith("-"));
 
-  return listLines.length > 0
+  return listLines.length > 0;
 }
 
 function parseDateValue(frontmatter, key) {
-  const value = stripQuotes(getScalarValue(frontmatter, key))
-  if (!value) return null
+  const value = stripQuotes(getScalarValue(frontmatter, key));
+  if (!value) return null;
 
-  const parsed = new Date(value)
-  if (Number.isNaN(parsed.getTime())) return null
-  return parsed
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
 }
 
 function isTruthyFalse(value) {
-  return /^(false|0|no)$/i.test(value.trim())
+  return /^(false|0|no)$/i.test(value.trim());
 }
 
 function stableHash(input) {
-  let hash = 0
+  let hash = 0;
   for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i)
-    hash |= 0
+    hash = (hash << 5) - hash + input.charCodeAt(i);
+    hash |= 0;
   }
-  return Math.abs(hash).toString(36)
+  return Math.abs(hash).toString(36);
 }
 
 function createDeterministicSlug(source, prefix) {
   const normalized = source
-    .replace(/\.(md|mdx)$/i, '')
-    .replace(/[\\/]/g, '-')
-    .normalize('NFKD')
+    .replace(/\.(md|mdx)$/i, "")
+    .replace(/[\\/]/g, "-")
+    .normalize("NFKD")
     .toLowerCase()
-    .replace(/[^\p{Letter}\p{Number}]+/gu, '-')
-    .replace(/^-+|-+$/g, '')
+    .replace(/[^\p{Letter}\p{Number}]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
 
-  return normalized || `${prefix}-${stableHash(source)}`
+  return normalized || `${prefix}-${stableHash(source)}`;
 }
 
 function resolveCollection(filePath) {
   for (const [collection, collectionDir] of Object.entries(COLLECTION_PATHS)) {
-    const rel = path.relative(collectionDir, filePath)
-    if (rel && !rel.startsWith('..') && !path.isAbsolute(rel)) {
-      return collection
+    const rel = path.relative(collectionDir, filePath);
+    if (rel && !rel.startsWith("..") && !path.isAbsolute(rel)) {
+      return collection;
     }
   }
 
-  return null
+  return null;
 }
 
 function resolveSlugForFile(collection, filePath, frontmatter) {
-  const slugRaw = stripQuotes(getScalarValue(frontmatter, 'slug'))
-  if (slugRaw) return slugRaw
+  const slugRaw = stripQuotes(getScalarValue(frontmatter, "slug"));
+  if (slugRaw) return slugRaw;
 
-  const relFromCollection = path.relative(COLLECTION_PATHS[collection], filePath)
-  const prefix =
-    collection === 'notes' ? 'note' : collection === 'projects' ? 'project' : 'post'
-  return createDeterministicSlug(relFromCollection, prefix)
+  const relFromCollection = path.relative(
+    COLLECTION_PATHS[collection],
+    filePath,
+  );
+  const prefix = collection === "notes" ? "note" : "post";
+  return createDeterministicSlug(relFromCollection, prefix);
 }
 
 function checkFile(filePath, errors, warnings, slugRegistry) {
-  const raw = fs.readFileSync(filePath, 'utf8')
-  const collection = resolveCollection(filePath)
-  if (!collection) return
+  const raw = fs.readFileSync(filePath, "utf8");
+  const collection = resolveCollection(filePath);
+  if (!collection) return;
 
-  const relPath = path.relative(process.cwd(), filePath)
-  const frontmatter = extractFrontmatter(raw)
+  const relPath = path.relative(process.cwd(), filePath);
+  const frontmatter = extractFrontmatter(raw);
   if (!frontmatter) {
-    errors.push(`${relPath}: missing frontmatter block`)
-    return
+    errors.push(`${relPath}: missing frontmatter block`);
+    return;
   }
 
-  const requiredFields = REQUIRED_FIELDS[collection]
+  const requiredFields = REQUIRED_FIELDS[collection];
   for (const field of requiredFields) {
     if (!hasKey(frontmatter, field)) {
-      errors.push(`${relPath}: missing required field "${field}"`)
-      continue
+      errors.push(`${relPath}: missing required field "${field}"`);
+      continue;
     }
 
-    if (field === 'tags') {
-      if (!hasNonEmptyArray(frontmatter, 'tags')) {
-        errors.push(`${relPath}: "tags" must be a non-empty array`)
+    if (field === "tags") {
+      if (!hasNonEmptyArray(frontmatter, "tags")) {
+        errors.push(`${relPath}: "tags" must be a non-empty array`);
       }
-      continue
+      continue;
     }
 
-    const value = stripQuotes(getScalarValue(frontmatter, field))
+    const value = stripQuotes(getScalarValue(frontmatter, field));
     if (!value) {
-      errors.push(`${relPath}: "${field}" cannot be empty`)
+      errors.push(`${relPath}: "${field}" cannot be empty`);
     }
   }
 
-  if (collection === 'blog' || collection === 'notes') {
-    const date = parseDateValue(frontmatter, 'date')
+  if (collection === "blog" || collection === "notes") {
+    const date = parseDateValue(frontmatter, "date");
     if (!date) {
-      errors.push(`${relPath}: invalid "date", expected a parseable date`)
+      errors.push(`${relPath}: invalid "date", expected a parseable date`);
     }
 
-    const title = stripQuotes(getScalarValue(frontmatter, 'title'))
-    const description = stripQuotes(getScalarValue(frontmatter, 'description'))
+    const title = stripQuotes(getScalarValue(frontmatter, "title"));
+    const description = stripQuotes(getScalarValue(frontmatter, "description"));
     if (title && title.length > 80) {
-      warnings.push(`${relPath}: title is long (${title.length} chars), consider <= 80`)
+      warnings.push(
+        `${relPath}: title is long (${title.length} chars), consider <= 80`,
+      );
     }
     if (description && (description.length < 40 || description.length > 180)) {
-      warnings.push(`${relPath}: description length is ${description.length}, recommended 40-180`)
-    }
-    if (!hasNonEmptyArray(frontmatter, 'tags')) {
-      warnings.push(`${relPath}: missing/empty tags, recommended for archive and SEO`)
-    }
-    if (collection === 'blog' && !hasNonEmptyArray(frontmatter, 'authors')) {
-      warnings.push(`${relPath}: missing/empty authors`)
-    }
-
-    const cover = stripQuotes(getScalarValue(frontmatter, 'cover'))
-    const resolvedCover = cover ? resolveLocalImagePath(cover) : null
-    if (resolvedCover && !fs.existsSync(resolvedCover)) {
-      warnings.push(`${relPath}: local cover not found -> ${cover}`)
-    }
-
-    const markdownImagePattern = /!\[[^\]]*]\(([^)]+)\)/g
-    for (const match of raw.matchAll(markdownImagePattern)) {
-      const imagePath = stripQuotes(match[1].trim())
-      if (!imagePath || /^https?:\/\//i.test(imagePath)) {
-        continue
-      }
-      const resolvedImage = resolveLocalImagePath(imagePath)
-      if (resolvedImage && !fs.existsSync(resolvedImage)) {
-        warnings.push(`${relPath}: local image not found -> ${imagePath}`)
-      }
-    }
-  }
-
-  if (collection === 'projects') {
-    // Root = index.md inside project folder, OR a flat .md directly under projects/
-    const relToProjects = path.relative(COLLECTION_PATHS.projects, filePath)
-    const parts = relToProjects.split(path.sep)
-    const base = parts[parts.length - 1] || ''
-    const isProjectRoot =
-      (parts.length === 1 && /\.(md|mdx)$/i.test(base)) ||
-      (parts.length === 2 && /^index\.(md|mdx)$/i.test(base))
-
-    if (isProjectRoot) {
-      const pubDatetime = parseDateValue(frontmatter, 'pubDatetime')
-      if (!pubDatetime) {
-        errors.push(
-          `${relPath}: project root requires parseable "pubDatetime"`,
-        )
-      }
-
-      const repo = stripQuotes(getScalarValue(frontmatter, 'repo'))
-      if (!repo) {
-        errors.push(`${relPath}: project root requires "repo" URL`)
-      } else {
-        try {
-          new URL(repo)
-        } catch {
-          errors.push(`${relPath}: invalid project repo URL "${repo}"`)
-        }
-      }
-    } else {
-      const repo = stripQuotes(getScalarValue(frontmatter, 'repo'))
-      if (repo) {
-        try {
-          new URL(repo)
-        } catch {
-          errors.push(`${relPath}: invalid project repo URL "${repo}"`)
-        }
-      }
-    }
-
-    const demo = stripQuotes(getScalarValue(frontmatter, 'demo'))
-    if (demo) {
-      try {
-        new URL(demo)
-      } catch {
-        errors.push(`${relPath}: invalid project demo URL "${demo}"`)
-      }
-    }
-
-    const status = stripQuotes(getScalarValue(frontmatter, 'status'))
-    if (status && !['active', 'wip', 'archived'].includes(status)) {
-      errors.push(
-        `${relPath}: invalid "status" "${status}", expected active|wip|archived`,
-      )
-    }
-
-    const title = stripQuotes(getScalarValue(frontmatter, 'title'))
-    const description = stripQuotes(getScalarValue(frontmatter, 'description'))
-    if (title && title.length > 80) {
-      warnings.push(`${relPath}: title is long (${title.length} chars), consider <= 80`)
-    }
-    if (
-      isProjectRoot &&
-      description &&
-      (description.length < 40 || description.length > 180)
-    ) {
       warnings.push(
         `${relPath}: description length is ${description.length}, recommended 40-180`,
-      )
+      );
+    }
+    if (!hasNonEmptyArray(frontmatter, "tags")) {
+      warnings.push(
+        `${relPath}: missing/empty tags, recommended for archive and SEO`,
+      );
+    }
+    if (collection === "blog" && !hasNonEmptyArray(frontmatter, "authors")) {
+      warnings.push(`${relPath}: missing/empty authors`);
+    }
+
+    const cover = stripQuotes(getScalarValue(frontmatter, "cover"));
+    const resolvedCover = cover ? resolveLocalImagePath(cover) : null;
+    if (resolvedCover && !fs.existsSync(resolvedCover)) {
+      warnings.push(`${relPath}: local cover not found -> ${cover}`);
+    }
+
+    const markdownImagePattern = /!\[[^\]]*]\(([^)]+)\)/g;
+    for (const match of raw.matchAll(markdownImagePattern)) {
+      const imagePath = stripQuotes(match[1].trim());
+      if (!imagePath || /^https?:\/\//i.test(imagePath)) {
+        continue;
+      }
+      const resolvedImage = resolveLocalImagePath(imagePath);
+      if (resolvedImage && !fs.existsSync(resolvedImage)) {
+        warnings.push(`${relPath}: local image not found -> ${imagePath}`);
+      }
     }
   }
 
-  const draftRaw = getScalarValue(frontmatter, 'draft')
+  const draftRaw = getScalarValue(frontmatter, "draft");
   if (draftRaw && !isTruthyFalse(draftRaw)) {
-    warnings.push(`${relPath}: draft is not false, page may be hidden in production`)
+    warnings.push(
+      `${relPath}: draft is not false, page may be hidden in production`,
+    );
   }
 
-  if (collection === 'blog' || collection === 'notes' || collection === 'projects') {
-    const slug = resolveSlugForFile(collection, filePath, frontmatter)
-    const key = `${collection}:${slug}`
-    const existing = slugRegistry.get(key)
+  if (collection === "blog" || collection === "notes") {
+    const slug = resolveSlugForFile(collection, filePath, frontmatter);
+    const key = `${collection}:${slug}`;
+    const existing = slugRegistry.get(key);
     if (existing && existing !== relPath) {
-      errors.push(`${relPath}: duplicate slug "${slug}" (already used by ${existing})`)
+      errors.push(
+        `${relPath}: duplicate slug "${slug}" (already used by ${existing})`,
+      );
     } else {
-      slugRegistry.set(key, relPath)
+      slugRegistry.set(key, relPath);
     }
   }
 }
 
 function main() {
-  const errors = []
-  const warnings = []
-  const slugRegistry = new Map()
+  const errors = [];
+  const warnings = [];
+  const slugRegistry = new Map();
 
   for (const collection of COLLECTIONS) {
-    const collectionDir = COLLECTION_PATHS[collection]
-    if (!fs.existsSync(collectionDir)) continue
-    const files = walkMarkdownFiles(collectionDir)
+    const collectionDir = COLLECTION_PATHS[collection];
+    if (!fs.existsSync(collectionDir)) continue;
+    const files = walkMarkdownFiles(collectionDir);
     for (const filePath of files) {
-      checkFile(filePath, errors, warnings, slugRegistry)
+      checkFile(filePath, errors, warnings, slugRegistry);
     }
   }
 
-  console.log('Content check summary:')
-  console.log(`- Errors: ${errors.length}`)
-  console.log(`- Warnings: ${warnings.length}`)
+  console.log("Content check summary:");
+  console.log(`- Errors: ${errors.length}`);
+  console.log(`- Warnings: ${warnings.length}`);
 
   if (errors.length > 0) {
-    console.log('')
+    console.log("");
     for (const error of errors) {
-      console.error(`[FAIL] ${error}`)
+      console.error(`[FAIL] ${error}`);
     }
   }
 
   if (warnings.length > 0) {
-    console.log('')
+    console.log("");
     for (const warning of warnings) {
-      console.warn(`[WARN] ${warning}`)
+      console.warn(`[WARN] ${warning}`);
     }
   }
 
   if (errors.length > 0) {
-    process.exit(1)
+    process.exit(1);
   }
 }
 
-main()
+main();

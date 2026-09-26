@@ -46,7 +46,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: ".nvmrc"
           cache: "npm"
 
       - name: Setup Pages
@@ -56,14 +56,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Quality checks
-        run: npm run check
+      - name: Install browser for visual checks
+        run: npx playwright install --with-deps chromium
 
-      - name: Build with Astro
-        run: npm run build:vercel
+      - name: Full verification (includes build and dist checks)
+        run: npm run verify:full
 
-      - name: Dist smoke checks
-        run: npm run smoke:dist
+      - name: Upload visual diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diagnostics
+          path: .visual-artifacts/
+          if-no-files-found: ignore
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -108,7 +113,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: ".nvmrc"
           cache: "npm"
 
       - name: Install dependencies
