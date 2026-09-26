@@ -23,48 +23,14 @@ const postHref = (post: CollectionEntry<"blog">) =>
 const formatYear = (date: Date) => String(date.getFullYear());
 const formatDate = (date: Date) =>
   `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
-const work = [
-  {
-    number: "01",
-    name: "PureAutoCodeQL",
-    category: "AI FOR SECURITY · PROGRAM ANALYSIS",
-    description:
-      "A multi-agent approach to vulnerability analysis with CodeQL, connecting CVE intelligence, source–sink modeling and cross-file path exploration.",
-    href: "https://github.com/Fruit-Guardians/PureAutoCodeql",
-    linkLabel: "View project",
-  },
-  {
-    number: "02",
-    name: "Wireshark-MCP",
-    category: "NETWORK SECURITY · OPEN SOURCE",
-    description:
-      "Composable TShark tools that help language-model agents inspect protocols, reconstruct streams and locate frame-level evidence.",
-    href: "https://github.com/bx33661/Wireshark-MCP",
-    linkLabel: "View project",
-  },
-];
-const awards = [
-  {
-    year: "2026",
-    distinction: "National Second Prize",
-    competition: "中国高校智能机器人创意大赛 · 软件系统安全赛",
-  },
-  {
-    year: "2025",
-    distinction: "National First Prize",
-    competition: "上海市“磐石行动”全国高校安全攻防赛",
-  },
-  {
-    year: "2025",
-    distinction: "National Third Prize · Team Lead",
-    competition: "第九届强网杯全国网络安全挑战赛 · 行业领域专项赛",
-  },
-  {
-    year: "2025",
-    distinction: "10th Place Nationwide · Team Lead",
-    competition: "西工大“铸剑杯”全国大学生网络安全竞赛",
-  },
-];
+const work = (await getCollection("projects"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => entry.data);
+const awards = (await getCollection("awards"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => entry.data);
+const featuredProject = work.find((project) => project.feature);
+const featuredDetails = featuredProject?.feature;
 ---
 
 <main id="main-content" class="app-layout academic-home">
@@ -102,15 +68,15 @@ const awards = [
       <div class="interest-tags" aria-label="Research topics">
         <span>AI-assisted code auditing</span><span>Vulnerability research</span><span>Protocol analysis</span>
       </div>
-      <article class="research-proof" aria-label="Featured research: PureAutoCodeQL">
-        <h3>PureAutoCodeQL <span>Featured research</span></h3>
+      {featuredProject && featuredDetails && <article class="research-proof" aria-label={`Featured research: ${featuredProject.name}`}>
+        <h3>{featuredProject.name} <span>Featured research</span></h3>
         <dl>
-          <div><dt>Question</dt><dd>How can code-audit agents trace vulnerabilities across files?</dd></div>
-          <div><dt>Method</dt><dd>CodeQL source–sink modeling with CVE-guided analysis.</dd></div>
-          <div><dt>Evidence</dt><dd>SARIF, QL queries, selected paths and a run manifest preserve a reviewable trail.</dd></div>
-          <div><dt>Output</dt><dd><a href="https://github.com/Fruit-Guardians/PureAutoCodeql" target="_blank" rel="noopener noreferrer">View code and methodology ↗</a></dd></div>
+          <div><dt>Question</dt><dd>{featuredDetails.question}</dd></div>
+          <div><dt>Method</dt><dd>{featuredDetails.method}</dd></div>
+          <div><dt>Evidence</dt><dd>{featuredDetails.evidence}</dd></div>
+          <div><dt>Output</dt><dd><a href={featuredProject.href} target="_blank" rel="noopener noreferrer">View code and methodology ↗</a></dd></div>
         </dl>
-      </article>
+      </article>}
     </div>
   </section>
 
@@ -129,7 +95,7 @@ const awards = [
       <p class="section-note">Open-source research and engineering.</p>
     </div>
     <div class="work-list">
-      {work.slice(1).map((item) => (
+      {work.map((item) => (
         <article class="work-entry">
           <span class="entry-number">{item.number}</span>
           <div class="work-body">

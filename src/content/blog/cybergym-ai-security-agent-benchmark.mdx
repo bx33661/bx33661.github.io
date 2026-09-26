@@ -14,6 +14,8 @@ slug: "cybergym-ai-security-agent-benchmark"
 ---
 
 import CyberGymFeature from "@/components/CyberGymFeature.astro";
+import { Picture } from "astro:assets";
+import datasetMetadata from "@/assets/article/cybergym-dataset-metadata.png";
 
 ## 我为什么去看 CyberGym
 
@@ -85,7 +87,7 @@ Crash(post-patch, x) = 0
 
 </div>
 
-![CyberGym 数据集中的任务元数据和不同等级的文件](/blog/cybergym-ai-security-agent-benchmark/02-dataset-metadata.png)
+<Picture src={datasetMetadata} formats={["webp"]} widths={[480, 960, 1600]} sizes="(max-width: 720px) calc(100vw - 2rem), 990px" alt="CyberGym 数据集中的任务元数据和不同等级的文件" loading="lazy" />
 
 Level 0 有点像从未知代码库里找问题，但不能把通过 Level 0 直接写成“发现 0-day”；那还需要对最新版本和漏洞唯一性做进一步确认。Level 3 也不自动等于有真实利用能力。等级说的是输入条件，别让名字替代结论。
 

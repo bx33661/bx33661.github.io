@@ -5,6 +5,22 @@
   .app-prose {
     @apply prose;
 
+    .katex-display {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-block: 0.25rem;
+    }
+
+    .katex {
+      color: var(--foreground);
+    }
+
+    pre.mermaid {
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
     h1,
     h2,
     h3,

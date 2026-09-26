@@ -1,0 +1,15 @@
+{
+  "order": 1,
+  "number": "01",
+  "name": "PureAutoCodeQL",
+  "category": "AI FOR SECURITY · PROGRAM ANALYSIS",
+  "description": "A multi-agent approach to vulnerability analysis with CodeQL, connecting CVE intelligence, source–sink modeling and cross-file path exploration.",
+  "href": "https://github.com/Fruit-Guardians/PureAutoCodeql",
+  "linkLabel": "View project",
+  "feature": {
+    "question": "How can code-audit agents trace vulnerabilities across files?",
+    "method": "CodeQL source–sink modeling with CVE-guided analysis.",
+    "evidence": "SARIF, QL queries, selected paths and a run manifest preserve a reviewable trail."
+  },
+  "relatedPosts": ["codeql-learning"]
+}

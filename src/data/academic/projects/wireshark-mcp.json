@@ -1,0 +1,10 @@
+{
+  "order": 2,
+  "number": "02",
+  "name": "Wireshark-MCP",
+  "category": "NETWORK SECURITY · OPEN SOURCE",
+  "description": "Composable TShark tools that help language-model agents inspect protocols, reconstruct streams and locate frame-level evidence.",
+  "href": "https://github.com/bx33661/Wireshark-MCP",
+  "linkLabel": "View project",
+  "relatedPosts": []
+}

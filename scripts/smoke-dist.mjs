@@ -39,6 +39,10 @@ for (const file of requiredFiles) {
 const homeFile = requireBuiltFile("index.html");
 if (fs.existsSync(homeFile)) {
   const home = fs.readFileSync(homeFile, "utf8");
+  if (!home.includes("--font-wotfard-native:") || !home.includes("--font-cartograph-native:"))
+    failures.push("homepage missing locally served Astro Fonts API families");
+  if (!/rel="preload" href="\/_astro\/fonts\/[^\"]+\.woff2" as="font"/.test(home))
+    failures.push("homepage missing local first-screen font preload");
   // IMAGE_AUDIT: unused preload must not return to the homepage.
   if (/rel="preload"[^>]*href="\/touxiang-512\.png"/.test(home))
     failures.push("homepage preloads an unused 512px avatar");
@@ -78,6 +82,9 @@ if (fs.existsSync(homeFile)) {
     failures.push("academic homepage still contains education status wording");
   if (!home.includes("selected-list") || !home.includes("work-list"))
     failures.push("academic homepage missing selected work or writing list");
+  const selectedWork = home.match(/<div class="work-list"[\s\S]*?<\/div>\s*<\/section>/)?.[0] ?? "";
+  if (!selectedWork.includes("PureAutoCodeQL") || !selectedWork.includes("Wireshark-MCP"))
+    failures.push("selected work must include both research projects");
   const selectedWriting = home.match(/<ol class="selected-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
   const latestUpdates = home.match(/<ol class="updates-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
   if (!selectedWriting.includes("cnvd-2026-20654-lg-nas-rce"))
@@ -87,6 +94,16 @@ if (fs.existsSync(homeFile)) {
   if (home.includes("18768921736") || home.includes("bx33661@qq.com"))
     failures.push("homepage exposes private resume contact details");
 }
+
+const cyberGymFile = requireBuiltFile("blog/cybergym-ai-security-agent-benchmark/index.html");
+if (fs.existsSync(cyberGymFile)) {
+  const article = fs.readFileSync(cyberGymFile, "utf8");
+  if (!/<picture><source[^>]+cybergym-dataset-metadata[^>]+\.webp/.test(article))
+    failures.push("CyberGym article missing native responsive WebP source");
+  if (!/<img[^>]+cybergym-dataset-metadata[^>]+loading="lazy"/.test(article))
+    failures.push("CyberGym article missing lazy fallback image");
+}
+requireBuiltFile("blog/cybergym-ai-security-agent-benchmark/02-dataset-metadata.png");
 
 // IMAGE_AUDIT: generated variants and loading hints are part of the build contract.
 for (const [article, image] of [

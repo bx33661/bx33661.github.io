@@ -1,6 +1,6 @@
-import { defineCollection } from "astro:content";
+import { defineCollection, reference } from "astro:content";
 import { z } from "astro/zod";
-import { glob } from "astro/loaders";
+import { file, glob } from "astro/loaders";
 import { SITE } from "@/config.ts";
 
 export const BLOG_PATH = "src/content/blog";
@@ -64,4 +64,47 @@ const galleries = defineCollection({
     }),
 });
 
-export const collections = { blog, notes, galleries };
+const projects = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/data/academic/projects" }),
+  schema: z.object({
+    order: z.number().int().positive(),
+    number: z.string(),
+    name: z.string(),
+    category: z.string(),
+    description: z.string(),
+    href: z.url(),
+    linkLabel: z.string(),
+    feature: z.object({
+      question: z.string(),
+      method: z.string(),
+      evidence: z.string(),
+    }).optional(),
+    relatedPosts: z.array(reference("blog")).default([]),
+  }),
+});
+
+const awards = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/data/academic/awards" }),
+  schema: z.object({
+    order: z.number().int().positive(),
+    year: z.string().regex(/^\d{4}$/),
+    distinction: z.string(),
+    competition: z.string(),
+    evidenceUrl: z.url().optional(),
+  }),
+});
+
+const publications = defineCollection({
+  loader: file("./src/data/academic/publications.json"),
+  schema: z.object({
+    title: z.string(),
+    year: z.number().int(),
+    authors: z.array(z.string()).min(1),
+    venue: z.string().optional(),
+    doi: z.string().optional(),
+    url: z.url().optional(),
+    relatedProject: reference("projects").optional(),
+  }),
+});
+
+export const collections = { blog, notes, galleries, projects, awards, publications };

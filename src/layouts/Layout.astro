@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
+import { Font } from "astro:assets";
 import { SITE } from "@/config.ts";
 import SearchModal from "@/components/SearchModal.astro";
 import "@/styles/global.css";
@@ -66,6 +67,8 @@ const structuredData = pubDatetime
   class:list={[{ "scroll-smooth": scrollSmooth }]}
 >
   <head>
+    <Font cssVariable="--font-wotfard-native" preload />
+    <Font cssVariable="--font-cartograph-native" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/touxiang-192.png" />
@@ -81,7 +84,7 @@ const structuredData = pubDatetime
     <meta name="referrer" content={referrerPolicy} />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://gstatic.loli.net; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com https://app.posthog.com https://giscus.app; frame-src https://giscus.app; base-uri 'self'; object-src 'none'"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com https://giscus.app; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com https://app.posthog.com https://giscus.app; frame-src https://giscus.app; base-uri 'self'; object-src 'none'"
     />
 
     <!-- General Meta Tags -->

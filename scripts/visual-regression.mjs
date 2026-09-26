@@ -11,6 +11,7 @@ const routes = [
   ["home", "/"],
   ["friends", "/friends/"],
   ["article", "/blog/codeql-learning/"],
+  ["cybergym", "/blog/cybergym-ai-security-agent-benchmark/"],
   ["search", "/search/"],
   ["archive", "/archives/"],
   ["gallery", "/galleries/"],
@@ -22,7 +23,7 @@ const viewports = [
 const failures = [];
 let serverOutput = "";
 let serverExit = "running";
-const server = spawn(process.execPath, ["node_modules/astro/bin/astro.mjs", "preview", "--host", "127.0.0.1", "--port", String(port)], {
+const server = spawn(process.execPath, ["node_modules/astro/bin/astro.mjs", "preview", "--ignore-lock", "--host", "127.0.0.1", "--port", String(port)], {
   cwd: root,
   env: { ...process.env, PUBLIC_ENABLE_ANALYTICS: "false", PUBLIC_ENABLE_COMMENTS: "false" },
   stdio: ["ignore", "pipe", "pipe"],
@@ -118,6 +119,18 @@ try {
             const categories = await page.locator(".fp-index a").count();
             if (categories !== 3) failures.push(`${viewportName}/${theme}/friends: expected 3 directory categories, found ${categories}`);
           }
+          if (name === "cybergym") {
+            const image = page.locator('picture img[alt="CyberGym 数据集中的任务元数据和不同等级的文件"]');
+            if (await image.count() !== 1) failures.push(`${viewportName}/${theme}/cybergym: native picture missing`);
+            else {
+              await image.scrollIntoViewIfNeeded();
+              const loaded = await image.evaluate(async (element) => {
+                try { await element.decode(); return element.naturalWidth > 0; }
+                catch { return false; }
+              });
+              if (!loaded) failures.push(`${viewportName}/${theme}/cybergym: image failed to decode`);
+            }
+          }
         }
       }
       if (errors.length) failures.push(`${viewportName}: browser errors: ${errors.join(" | ")}`);
@@ -143,6 +156,6 @@ try {
   stopServer();
 }
 
-await fs.writeFile(path.join(output, "report.txt"), `${failures.length ? failures.join("\n") : "PASS: 24 route/theme/viewport screenshots, contrast, overflow, headings, theme toggle"}\n`);
+await fs.writeFile(path.join(output, "report.txt"), `${failures.length ? failures.join("\n") : "PASS: 28 route/theme/viewport screenshots, contrast, overflow, headings, theme toggle"}\n`);
 console.log(await fs.readFile(path.join(output, "report.txt"), "utf8"));
 process.exitCode = failures.length ? 1 : 0;

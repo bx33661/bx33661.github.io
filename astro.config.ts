@@ -1,10 +1,13 @@
-import { defineConfig, envField } from "astro/config";
+import { defineConfig, envField, fontProviders } from "astro/config";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import { unified } from "@astrojs/markdown-remark";
 import tailwindcss from "@tailwindcss/vite";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import mermaid from "astro-mermaid";
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -24,6 +27,7 @@ export default defineConfig({
   },
   integrations: [
     react(),
+    mermaid({ autoTheme: true, enableLog: false }),
     mdx({
       extendMarkdownConfig: true,
     }),
@@ -33,10 +37,11 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [
+        remarkMath,
         remarkToc,
         [remarkCollapse, { test: "Table of contents" }],
       ],
-      rehypePlugins: [rehypeDemoteHeadings, rehypeArticleImages],
+      rehypePlugins: [rehypeDemoteHeadings, rehypeArticleImages, rehypeKatex],
     }),
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes
@@ -61,6 +66,24 @@ export default defineConfig({
     responsiveStyles: true,
     layout: "constrained",
   },
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: "Wotfard",
+      cssVariable: "--font-wotfard-native",
+      options: {
+        variants: [{ src: ["./src/assets/fonts/wotfard-regular-webfont.woff2"], weight: 400, style: "normal" }],
+      },
+    },
+    {
+      provider: fontProviders.local(),
+      name: "Cartograph CF",
+      cssVariable: "--font-cartograph-native",
+      options: {
+        variants: [{ src: ["./src/assets/fonts/cartograph-cf-regular-webfont.woff2"], weight: 400, style: "normal" }],
+      },
+    },
+  ],
   env: {
     schema: {
       PUBLIC_GOOGLE_SITE_VERIFICATION: envField.string({

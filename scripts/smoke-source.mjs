@@ -85,7 +85,6 @@ requireDirectoryHasFiles(
 
 for (const retiredPath of [
   "src/pages/projects",
-  "src/content/projects",
   "src/utils/projects.ts",
   "public/fonts/crt",
 ]) {
@@ -93,15 +92,20 @@ for (const retiredPath of [
     failures.push(`retired Projects resource still exists: ${retiredPath}`);
   }
 }
-assertNoText(
+for (const file of [
+  "src/data/academic/projects/pureautocodeql.json",
+  "src/data/academic/projects/wireshark-mcp.json",
+  "src/data/academic/awards/panshi-2025.json",
+]) requireFile(path.join(repoRoot, file));
+assertHasText(
   path.join(repoRoot, "src/content.config.ts"),
-  /PROJECTS_PATH|projects\s*=\s*defineCollection/,
-  "Projects content collection still configured",
+  /relatedPosts:\s*z\.array\(reference\("blog"\)\)/,
+  "academic project-to-article references missing",
 );
 assertHasText(
   path.join(repoRoot, "src/components/AcademicHome.astro"),
-  /PureAutoCodeQL[\s\S]*Wireshark-MCP/,
-  "homepage missing selected research projects",
+  /getCollection\("projects"\)[\s\S]*getCollection\("awards"\)/,
+  "homepage missing structured academic collections",
 );
 assertNoText(
   path.join(repoRoot, "src/components/AcademicHome.astro"),
