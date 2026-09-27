@@ -48,6 +48,7 @@ const notes = defineCollection({
       authors: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
       slug: z.string().optional(),
+      formerBlogSlug: z.string().optional(),
     }),
 });
 

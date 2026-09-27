@@ -1,0 +1,71 @@
+.mad-figure {
+  --mad-accent: #3da780;
+  margin: 1.3rem 0 1.7rem;
+  border: 1px solid color-mix(in srgb, var(--mad-accent) 34%, var(--border));
+  border-radius: .9rem;
+  padding: 1.2rem;
+  background: color-mix(in srgb, var(--surface) 94%, var(--background));
+  color: var(--foreground);
+}
+
+.mad-figure figcaption { display: grid; gap: .35rem; margin-bottom: 1rem; }
+.mad-figure figcaption strong { font-size: 1.02rem; line-height: 1.45; }
+.mad-eyebrow,
+.mad-path,
+.mad-package code,
+.mad-layer-num,
+.mad-layer code,
+.mad-version-root,
+.mad-version code,
+.mad-agent code,
+.mad-agent > span {
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+}
+.mad-eyebrow { color: var(--mad-accent); font-size: .65rem; font-weight: 700; letter-spacing: .14em; }
+.mad-figure code { border: 0; background: transparent; box-shadow: none; padding: 0; }
+.mad-footnote { margin: .85rem 0 0; color: color-mix(in srgb, var(--foreground) 66%, transparent); font-size: .72rem; line-height: 1.6; }
+
+.mad-path { display: flex; flex-wrap: wrap; gap: .3rem .12rem; align-items: center; margin-bottom: .9rem; font-size: .69rem; }
+.mad-path span { border-radius: .25rem; padding: .34rem .4rem; background: color-mix(in srgb, var(--mad-accent) 8%, var(--background)); overflow-wrap: anywhere; }
+.mad-path span + span::before { margin-right: .5rem; color: var(--mad-accent); content: "/"; }
+.mad-path span:last-child { border: 1px solid color-mix(in srgb, var(--mad-accent) 45%, transparent); color: var(--mad-accent); }
+.mad-package-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+.mad-package { min-width: 0; border: 1px solid color-mix(in srgb, var(--border) 45%, transparent); border-radius: .55rem; padding: .8rem; background: color-mix(in srgb, var(--background) 76%, transparent); }
+.mad-package-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .45rem; }
+.mad-package-kind { color: var(--mad-accent); font-size: .72rem; font-weight: 700; }
+.mad-package-dot { width: .4rem; height: .4rem; border-radius: 50%; background: var(--mad-accent); }
+.mad-package code { display: block; color: var(--foreground); font-size: .75rem; font-weight: 700; overflow-wrap: anywhere; }
+.mad-package p { margin: .3rem 0 0; color: color-mix(in srgb, var(--foreground) 69%, transparent); font-size: .72rem; line-height: 1.55; }
+.mad-resource { opacity: .78; }
+
+.mad-layer-stack { display: grid; gap: .4rem; }
+.mad-layer { display: grid; grid-template-columns: 2rem minmax(0, 1fr) auto; align-items: center; gap: .6rem; border: 1px solid color-mix(in srgb, var(--border) 38%, transparent); border-radius: .45rem; padding: .68rem .75rem; background: color-mix(in srgb, var(--background) 76%, transparent); }
+.mad-layer-num { color: var(--mad-accent); font-size: .65rem; }
+.mad-layer div { display: flex; flex-wrap: wrap; gap: .25rem .55rem; align-items: baseline; }
+.mad-layer strong { font-size: .8rem; }
+.mad-layer div span { color: color-mix(in srgb, var(--foreground) 65%, transparent); font-size: .7rem; }
+.mad-layer code { color: var(--mad-accent); font-size: .63rem; white-space: nowrap; }
+
+.mad-version-root { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin-bottom: .6rem; border: 1px solid color-mix(in srgb, var(--mad-accent) 29%, var(--border)); border-radius: .45rem; padding: .7rem; background: color-mix(in srgb, var(--mad-accent) 8%, var(--background)); }
+.mad-version-root code { font-size: .75rem; overflow-wrap: anywhere; }
+.mad-version-root span { margin-left: auto; color: var(--mad-accent); font-size: .6rem; }
+.mad-version-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+.mad-version { display: grid; align-content: start; gap: .36rem; border: 1px solid color-mix(in srgb, var(--border) 40%, transparent); border-radius: .5rem; padding: .75rem; }
+.mad-version-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .2rem; }
+.mad-version-head strong { color: var(--mad-accent); font-family: var(--font-cartograph), ui-monospace, monospace; font-size: .86rem; }
+.mad-version-head span { color: color-mix(in srgb, var(--foreground) 60%, transparent); font-size: .68rem; }
+.mad-figure .mad-version code { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem .4rem; border-radius: .28rem; padding: .36rem .45rem; background: color-mix(in srgb, var(--background) 77%, transparent); font-size: .67rem; overflow-wrap: anywhere; }
+.mad-version em { color: var(--mad-accent); font-family: system-ui, sans-serif; font-size: .64rem; font-style: normal; }
+
+.mad-agent-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+.mad-agent { display: flex; gap: .6rem; min-width: 0; border: 1px solid color-mix(in srgb, var(--border) 40%, transparent); border-radius: .45rem; padding: .65rem; background: color-mix(in srgb, var(--background) 74%, transparent); }
+.mad-agent > span { padding-top: .08rem; color: var(--mad-accent); font-size: .64rem; }
+.mad-agent code { display: block; font-size: .69rem; font-weight: 700; overflow-wrap: anywhere; }
+.mad-agent p { margin: .2rem 0 0; color: color-mix(in srgb, var(--foreground) 65%, transparent); font-size: .68rem; line-height: 1.45; }
+
+@media (max-width: 560px) {
+  .mad-figure { padding: 1rem; }
+  .mad-package-grid, .mad-version-grid, .mad-agent-grid { grid-template-columns: 1fr; }
+  .mad-layer { grid-template-columns: 1.4rem minmax(0, 1fr); }
+  .mad-layer code { grid-column: 2; }
+}

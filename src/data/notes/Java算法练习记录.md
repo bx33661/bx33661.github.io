@@ -1,6 +1,6 @@
 ---
-title: "Java 算法练习记录：常用题型与写法"
-description: "Java算法练习记录，基于LeetCode经典题目的解题思路与代码实现，包括两数之和等算法题的多种解法分析。"
+title: "Java 两数之和练习"
+description: "这份 Java 算法练习仅记录 LeetCode「两数之和」的暴力枚举与哈希表两种写法，尚未覆盖原标题所说的常用题型，因此归入日常练习笔记。"
 date: 2024-07-26
 tags:
   - "Java"
@@ -10,6 +10,8 @@ authors:
   - "bx"
 draft: false
 slug: "java-algorithm-practice"
+formerBlogSlug: "java-algorithm-practice"
+category: "算法练习"
 ---
 
 # Java算法练习记录

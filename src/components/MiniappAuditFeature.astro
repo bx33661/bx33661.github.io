@@ -1,0 +1,100 @@
+---
+import "@/styles/miniapp-audit-feature.css";
+
+type Props = { variant: "overview" | "pipeline" };
+const { variant } = Astro.props;
+
+const stages = [
+  { id: "collect", label: "采集", code: "01 / COLLECT", title: "先确认包是否齐全", detail: "对照主包、普通分包和独立分包，记录版本与来源；缺失材料先标记，不把未覆盖代码当作安全结论。", artifact: "__APP__.wxapkg + package inventory" },
+  { id: "restore", label: "还原", code: "02 / RESTORE", title: "重建可读的工程树", detail: "解包 wxapkg，恢复配置、页面与脚本，并将混淆代码还原到足以追踪调用链的程度。", artifact: "app-config.json + pages/*" },
+  { id: "surface", label: "建模", code: "03 / MAP", title: "把接口和身份放到一张图里", detail: "提取请求端点、参数、凭据与页面入口，再按用户、角色和租户建立测试矩阵。", artifact: "endpoints.txt + identity matrix" },
+  { id: "verify", label: "验证", code: "04 / VERIFY", title: "用第二身份验证假设", detail: "让证据链从前端调用延伸到实际请求与响应；没有必要的账号或资源时，明确保留为待验证。", artifact: "request / response / evidence refs" },
+  { id: "report", label: "报告", code: "05 / REPORT", title: "让每条结论能回溯", detail: "将确认、排除和受阻的发现分开记录，并关联原始包、源码位置与复现材料。", artifact: "artifact-manifest.json + finding" },
+] as const;
+---
+
+{
+  variant === "overview" ? (
+    <aside class="ma-feature ma-overview not-prose" aria-label="小程序自动化审计流程概览">
+      <div class="ma-overview-copy">
+        <div class="ma-kicker"><span class="ma-live-dot" aria-hidden="true" /> MINIAPP / AUDIT MAP</div>
+        <strong>从一个包，到一条可验证的证据链。</strong>
+        <p>先收齐材料，再还原代码；Agent 帮助整理线索，最终结论仍由请求、响应与源码共同支撑。</p>
+        <div class="ma-legend"><span>PACKAGE</span><span>CODE</span><span>API</span><span>EVIDENCE</span></div>
+      </div>
+      <div class="ma-device" aria-hidden="true">
+        <div class="ma-device-top"><span>WxLocated</span><span>● ● ●</span></div>
+        <div class="ma-device-body">
+          <span class="ma-device-caption">PACKAGE TREE</span>
+          <div class="ma-tree-row ma-tree-root"><i />__APP__.wxapkg <b>MAIN</b></div>
+          <div class="ma-tree-row ma-tree-child"><i />packageOrder/ <b>SUB</b></div>
+          <div class="ma-tree-row ma-tree-child"><i />packageShop/ <b>SUB</b></div>
+          <div class="ma-device-flow"><span>解包</span><span>→</span><span>建模</span><span>→</span><span>验证</span></div>
+        </div>
+      </div>
+    </aside>
+  ) : (
+    <section id="miniapp-audit-pipeline" class="ma-feature ma-pipeline not-prose" aria-labelledby="ma-pipeline-title" data-pagefind-ignore>
+      <div class="ma-pipeline-head">
+        <div>
+          <span class="ma-kicker">INTERACTIVE / AUDIT PIPELINE</span>
+          <div id="ma-pipeline-title" class="ma-pipeline-title" role="heading" aria-level="3">把审计过程拆成五个可检查的阶段</div>
+        </div>
+        <span class="ma-pipeline-count" aria-hidden="true">01 — 05</span>
+      </div>
+      <p class="ma-pipeline-intro">点击阶段，查看该阶段要回答的问题与应留下的材料。</p>
+      <div class="ma-stage-list" role="group" aria-label="选择审计阶段">
+        {stages.map((stage, index) => (
+          <button type="button" data-ma-stage={stage.id} aria-pressed={index === 0 ? "true" : "false"}>
+            <span>{String(index + 1).padStart(2, "0")}</span>{stage.label}
+          </button>
+        ))}
+      </div>
+      <div class="ma-stage-detail" aria-live="polite">
+        <div class="ma-stage-index" data-ma-code>{stages[0].code}</div>
+        <div class="ma-stage-title" role="heading" aria-level="4" data-ma-title>{stages[0].title}</div>
+        <p data-ma-detail>{stages[0].detail}</p>
+        <div class="ma-artifact"><span>OUTPUT / EVIDENCE</span><code data-ma-artifact>{stages[0].artifact}</code></div>
+      </div>
+      <p class="ma-pipeline-foot">每一步都可以停在“材料不足”；流程图不是自动确认漏洞的承诺。</p>
+    </section>
+  )
+}
+
+<script>
+  const stages = {
+    collect: { code: "01 / COLLECT", title: "先确认包是否齐全", detail: "对照主包、普通分包和独立分包，记录版本与来源；缺失材料先标记，不把未覆盖代码当作安全结论。", artifact: "__APP__.wxapkg + package inventory" },
+    restore: { code: "02 / RESTORE", title: "重建可读的工程树", detail: "解包 wxapkg，恢复配置、页面与脚本，并将混淆代码还原到足以追踪调用链的程度。", artifact: "app-config.json + pages/*" },
+    surface: { code: "03 / MAP", title: "把接口和身份放到一张图里", detail: "提取请求端点、参数、凭据与页面入口，再按用户、角色和租户建立测试矩阵。", artifact: "endpoints.txt + identity matrix" },
+    verify: { code: "04 / VERIFY", title: "用第二身份验证假设", detail: "让证据链从前端调用延伸到实际请求与响应；没有必要的账号或资源时，明确保留为待验证。", artifact: "request / response / evidence refs" },
+    report: { code: "05 / REPORT", title: "让每条结论能回溯", detail: "将确认、排除和受阻的发现分开记录，并关联原始包、源码位置与复现材料。", artifact: "artifact-manifest.json + finding" },
+  } as const;
+
+  function setupMiniappPipeline() {
+    const root = document.querySelector<HTMLElement>("#miniapp-audit-pipeline");
+    if (!root || root.dataset.bound === "true") return;
+    root.dataset.bound = "true";
+    const buttons = root.querySelectorAll<HTMLButtonElement>("[data-ma-stage]");
+    const code = root.querySelector<HTMLElement>("[data-ma-code]");
+    const title = root.querySelector<HTMLElement>("[data-ma-title]");
+    const detail = root.querySelector<HTMLElement>("[data-ma-detail]");
+    const artifact = root.querySelector<HTMLElement>("[data-ma-artifact]");
+    buttons.forEach((button) => button.addEventListener("click", () => {
+      const id = button.dataset.maStage as keyof typeof stages;
+      const stage = stages[id];
+      if (!stage) return;
+      if (code) code.textContent = stage.code;
+      if (title) title.textContent = stage.title;
+      if (detail) detail.textContent = stage.detail;
+      if (artifact) artifact.textContent = stage.artifact;
+      buttons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+    }));
+  }
+
+  document.addEventListener("astro:page-load", setupMiniappPipeline);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupMiniappPipeline, { once: true });
+  } else {
+    setupMiniappPipeline();
+  }
+</script>

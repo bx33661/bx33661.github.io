@@ -2,22 +2,43 @@
 import { type CollectionEntry } from "astro:content";
 import PostDetails from "@/layouts/PostDetails.astro";
 import { getAllPosts, getAllPostSlugs } from "@/lib/data-utils";
+import { getAllNotesWithSlugs } from "@/utils/notes";
 
 type Props = {
-  post: CollectionEntry<"blog">;
+  post?: CollectionEntry<"blog">;
+  redirectTo?: string;
 };
 
 export async function getStaticPaths() {
   const postSlugs = await getAllPostSlugs();
-  return postSlugs.map(({ slug, post }) => ({
+  const notes = await getAllNotesWithSlugs();
+  const posts = postSlugs.map(({ slug, post }) => ({
     params: { slug },
     props: { post },
   }));
+  const oldSlugs = new Set(postSlugs.map(({ slug }) => slug));
+  const redirects = notes
+    .filter(({ note }) => note.data.formerBlogSlug)
+    .map(({ note, slug }) => ({
+      params: { slug: note.data.formerBlogSlug! },
+      props: { redirectTo: `/notes/${slug}/` },
+    }));
+  for (const redirect of redirects) {
+    if (oldSlugs.has(redirect.params.slug)) {
+      throw new Error(`Moved note conflicts with active blog URL: ${redirect.params.slug}`);
+    }
+    oldSlugs.add(redirect.params.slug);
+  }
+  return [...posts, ...redirects];
 }
 
-const { post } = Astro.props as Props;
+const { post, redirectTo } = Astro.props as Props;
+
+if (redirectTo) {
+  return Astro.redirect(redirectTo, 301);
+}
 
 const sortedPosts = await getAllPosts();
 ---
 
-<PostDetails post={post} posts={sortedPosts} />
+{post && <PostDetails post={post} posts={sortedPosts} />}

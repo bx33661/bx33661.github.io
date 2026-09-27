@@ -1,6 +1,6 @@
 ---
-title: "DOM 树结构学习与前端安全相关分析"
-description: "深入学习DOM（Document Object Model）树形结构，了解浏览器如何解析HTML文档并为JavaScript提供访问接口的机制。"
+title: "DOM 树学习摘记"
+description: "这是一则尚未展开的 DOM 入门摘记，只记录浏览器解析 HTML、生成节点树及向 JavaScript 开放读写接口的基本概念，适合作为后续学习提纲。"
 date: 2025-07-21
 tags:
   - "Dom"
@@ -11,6 +11,8 @@ authors:
   - "bx"
 draft: false
 slug: "bx33661dom"
+formerBlogSlug: "bx33661dom"
+category: "前端基础"
 ---
 
 

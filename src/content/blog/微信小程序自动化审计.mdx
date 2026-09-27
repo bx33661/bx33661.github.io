@@ -1,24 +1,28 @@
 ---
-title: "微信小程序自动化审计：从解包到Agent智能分析"
-description: "深入探讨微信小程序安全审计的完整流程，包括wxapkg解包、反编译分析、WxLocated工具实践，以及基于Agent的自动化审计思路与实现。"
-date: 2026-08-01
+title: 微信小程序自动化审计：从解包到Agent智能分析
+description: 深入探讨微信小程序安全审计的完整流程，包括wxapkg解包、反编译分析、WxLocated工具实践，以及基于Agent的自动化审计思路与实现。
+date: 2026-08-01T00:00:00.000Z
 tags:
-  - "微信小程序"
-  - "安全审计"
-  - "逆向工程"
-  - "自动化审计"
-  - "Agent"
-  - "WxLocated"
+  - 微信小程序
+  - 安全审计
+  - 逆向工程
+  - 自动化审计
+  - Agent
+  - WxLocated
 authors:
-  - "bx"
+  - bx
 draft: false
-slug: "wechat-miniapp-security-audit"
+slug: wechat-miniapp-security-audit
 ---
 
+import MiniappAuditFeature from "@/components/MiniappAuditFeature.astro";
+import MiniappAuditDiagram from "@/components/MiniappAuditDiagram.astro";
 
 ## 本文概览
 
 本文系统记录近期针对微信小程序安全的研究与自动化审计思路，涵盖缓存定位、解包反编译、架构分析、本地工具研发（WxLocated）以及基于多 Agent 的自动化代码审计实践。
+
+<MiniappAuditFeature variant="overview" />
 
 ---
 
@@ -61,30 +65,7 @@ macOS 客户端版本演进较快，新版已普遍采用 `users/<账号哈希>/
 
 最新版微信的小程序缓存树形拓扑结构如下：
 
-```text
-radium/users/<账号哈希>/applet/packages
-                │
-                └── <AppID>
-                     │
-                     └── <版本>
-                          ├── __APP__.wxapkg
-                          │      └── 主包
-                          │          ├── App 启动逻辑
-                          │          ├── 主页面
-                          │          ├── tabBar
-                          │          └── 分包清单
-                          │
-                          ├── xxxx.wxapkg
-                          │      └── 普通分包
-                          │          └── 进入页面时下载
-                          │
-                          ├── yyyy.wxapkg
-                          │      └── 独立分包
-                          │          └── 可不加载主包启动
-                          │
-                          └── zzzz.wxapkg
-                                 └── 插件或其他资源包
-```
+<MiniappAuditDiagram variant="cache" />
 
 为了方便在 macOS 上快速查找与解析这些 wxapkg，我开发了原生 macOS 工具 [WxLocated](https://github.com/bx33661/WxLocated)（具体功能将在后文详细介绍）。
 
@@ -165,18 +146,7 @@ __APP__.wxapkg
 
 `.wxapkg` 是微信自定义的打包文件系统，**无法直接使用 unzip 等通用解压工具打开**。其结构由固定头部、文件索引表与正文数据区组成：
 
-```text
-.wxapkg 内部结构
-┌─────────────────────────────────┐
-│ 包头 (Header: 标识/段长/索引长)   │
-├─────────────────────────────────┤
-│ 文件索引表 (Index: 路径/偏移/大小)│
-├─────────────────────────────────┤
-│ 文件内容区 (Data Body)           │
-├─────────────────────────────────┤
-│ 包尾校验标记                     │
-└─────────────────────────────────┘
-```
+<MiniappAuditDiagram variant="package" />
 
 解包工具的核心逻辑是首先解析文件索引表，获取各个子文件的虚拟路径、起始偏移（offset）与字节长度（size），然后再从数据区精确截取对应文件内容。
 
@@ -248,17 +218,7 @@ project.config.json   # 开发者工具本地配置（通常不打包进线上�
 
 多版本目录层级示意：
 
-```text
-packages/
-└── wx1234567890abcdef/        # 小程序 AppID
-    ├── 12/                    # 版本目录 12
-    │   ├── __APP__.wxapkg     # 主包
-    │   ├── xxxxx.wxapkg       # 分包 A
-    │   └── yyyyy.wxapkg       # 分包 B
-    └── 13/                    # 版本目录 13
-        ├── __APP__.wxapkg
-        └── xxxxx.wxapkg
-```
+<MiniappAuditDiagram variant="versions" />
 
 #### 主包（`__APP__.wxapkg`）
 
@@ -455,19 +415,9 @@ xcodebuild build \
 
 ### 4.1 编排架构
 
-```text
-miniapp-audit (主编排引擎)
-├── material-check     (材料与完整性感知)
-├── attack-surface     (攻击面与接口清单推演)
-├── secret-scan        (硬编码凭证与敏感数据扫描)
-├── authz-analyzer     (越权与权限矩阵分析)
-├── payment-audit      (支付安全与金额篡改验证)
-├── dataflow-tracer    (污点与数据流追踪)
-├── privacy-compliance (用户隐私合规检查)
-├── dynamic-tester     (动态验证与 PoC 发包测试)
-├── code-restorer      (基于 LLM 的语义逆向还原)
-└── report-builder     (标准化 Markdown 审计报告生成)
-```
+<MiniappAuditFeature variant="pipeline" />
+
+<MiniappAuditDiagram variant="agents" />
 
 ### 4.2 核心设计理念
 

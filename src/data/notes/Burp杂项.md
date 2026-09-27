@@ -1,6 +1,6 @@
 ---
-title: "Burp Suite 实战技巧：代理、扫描与 Collaborator"
-description: "Burp Suite 实战杂项：代理抓包、过滤、扫描、Collaborator、Decoder 与常见排障技巧。"
+title: "Burp Suite 使用摘记"
+description: "记录 Burp Suite 代理抓包、过滤、Target、扫描、Collaborator 等模块的个人操作步骤与截图，内容偏工具速查而不是完整专题分析。"
 date: 2024-09-21
 tags:
   - "CTF"
@@ -11,6 +11,8 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "k8burp"          # 随机URL字符串
+formerBlogSlug: "k8burp"
+category: "工具笔记"
 ---
 
 # Burp杂项

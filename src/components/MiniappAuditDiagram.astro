@@ -1,0 +1,99 @@
+---
+import "@/styles/miniapp-audit-diagram.css";
+
+type Props = { variant: "cache" | "package" | "versions" | "agents" };
+const { variant } = Astro.props;
+
+const packageTypes = [
+  { name: "__APP__.wxapkg", kind: "主包", tone: "main", detail: "App 启动逻辑、主页面、tabBar、分包清单" },
+  { name: "xxxx.wxapkg", kind: "普通分包", tone: "sub", detail: "进入对应页面时下载" },
+  { name: "yyyy.wxapkg", kind: "独立分包", tone: "independent", detail: "可不加载主包直接启动" },
+  { name: "zzzz.wxapkg", kind: "扩展包", tone: "resource", detail: "插件或其他资源" },
+] as const;
+
+const layers = [
+  { name: "包头", english: "HEADER", detail: "标识 / 段长 / 索引长" },
+  { name: "文件索引表", english: "INDEX", detail: "路径 / 偏移 / 大小" },
+  { name: "文件内容区", english: "DATA BODY", detail: "按索引定位文件数据" },
+  { name: "包尾校验标记", english: "TRAILER", detail: "结束与校验信息" },
+] as const;
+
+const agents = [
+  ["material-check", "材料与完整性感知"],
+  ["attack-surface", "攻击面与接口清单"],
+  ["secret-scan", "硬编码凭证扫描"],
+  ["authz-analyzer", "越权与权限矩阵"],
+  ["payment-audit", "支付安全检查"],
+  ["dataflow-tracer", "污点与数据流追踪"],
+  ["privacy-compliance", "用户隐私合规"],
+  ["dynamic-tester", "动态验证与 PoC"],
+  ["code-restorer", "LLM 语义逆向还原"],
+  ["report-builder", "审计报告生成"],
+] as const;
+---
+
+{
+  variant === "cache" && (
+    <figure class="mad-figure not-prose" aria-label="微信小程序缓存目录和包类型">
+      <figcaption><span class="mad-eyebrow">CACHE TOPOLOGY</span><strong>从账号目录走到版本包</strong></figcaption>
+      <div class="mad-path" aria-label="缓存目录路径">
+        <span>radium</span><span>users</span><span>&lt;账号哈希&gt;</span><span>applet</span><span>packages</span><span>&lt;AppID&gt;</span><span>&lt;版本&gt;</span>
+      </div>
+      <div class="mad-package-grid">
+        {packageTypes.map((item) => (
+          <div class={`mad-package mad-${item.tone}`}>
+            <div class="mad-package-top"><span class="mad-package-kind">{item.kind}</span><span class="mad-package-dot" aria-hidden="true" /></div>
+            <code>{item.name}</code><p>{item.detail}</p>
+          </div>
+        ))}
+      </div>
+      <p class="mad-footnote">同一个 AppID 下可以有多个版本；实际包名和目录内容以采集结果为准。</p>
+    </figure>
+  )
+}
+
+{
+  variant === "package" && (
+    <figure class="mad-figure not-prose" aria-label="wxapkg 文件结构">
+      <figcaption><span class="mad-eyebrow">BINARY PACKAGE</span><strong>.wxapkg 的四层结构</strong></figcaption>
+      <div class="mad-layer-stack">
+        {layers.map((layer, index) => (
+          <div class="mad-layer">
+            <span class="mad-layer-num">{String(index + 1).padStart(2, "0")}</span>
+            <div><strong>{layer.name}</strong><span>{layer.detail}</span></div>
+            <code>{layer.english}</code>
+          </div>
+        ))}
+      </div>
+      <p class="mad-footnote">读取索引中的路径、offset 与 size，再从数据区截取对应文件。</p>
+    </figure>
+  )
+}
+
+{
+  variant === "versions" && (
+    <figure class="mad-figure not-prose" aria-label="同一小程序的两个版本包目录">
+      <figcaption><span class="mad-eyebrow">VERSION LAYOUT</span><strong>同一 AppID，不同版本分别存放</strong></figcaption>
+      <div class="mad-version-root"><code>packages / wx1234567890abcdef /</code><span>APP ID</span></div>
+      <div class="mad-version-grid">
+        <div class="mad-version"><div class="mad-version-head"><strong>12 /</strong><span>版本 12</span></div><code>__APP__.wxapkg <em>主包</em></code><code>xxxxx.wxapkg <em>分包 A</em></code><code>yyyyy.wxapkg <em>分包 B</em></code></div>
+        <div class="mad-version"><div class="mad-version-head"><strong>13 /</strong><span>版本 13</span></div><code>__APP__.wxapkg <em>主包</em></code><code>xxxxx.wxapkg <em>分包 A</em></code></div>
+      </div>
+      <p class="mad-footnote">采集时先按版本归档，避免将旧分包误配到新主包。</p>
+    </figure>
+  )
+}
+
+{
+  variant === "agents" && (
+    <figure class="mad-figure not-prose" aria-label="miniapp-audit 的十个审计子模块">
+      <figcaption><span class="mad-eyebrow">AGENT ORCHESTRATION</span><strong>miniapp-audit · 主编排引擎</strong></figcaption>
+      <div class="mad-agent-grid">
+        {agents.map(([name, detail], index) => (
+          <div class="mad-agent"><span>{String(index + 1).padStart(2, "0")}</span><div><code>{name}</code><p>{detail}</p></div></div>
+        ))}
+      </div>
+      <p class="mad-footnote">模块各自留下中间材料，最终由报告阶段关联证据与结论。</p>
+    </figure>
+  )
+}

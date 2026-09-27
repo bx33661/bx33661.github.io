@@ -241,6 +241,26 @@ if (fs.existsSync(blogIndex)) {
   }
 }
 
+// Moving an article to Notes must keep its old public URL usable.
+for (const name of fs.readdirSync(path.join(repoRoot, "src/data/notes"))) {
+  if (!/\.mdx?$/.test(name)) continue;
+  const source = fs.readFileSync(path.join(repoRoot, "src/data/notes", name), "utf8");
+  const oldSlug = source.match(/^formerBlogSlug:\s*["']?([^\s"']+)["']?/m)?.[1];
+  if (!oldSlug) continue;
+  const newSlug = source.match(/^slug:\s*["']?([^\s"']+)["']?/m)?.[1];
+  if (!newSlug) {
+    failures.push(`moved note missing slug: ${name}`);
+    continue;
+  }
+  requireBuiltFile(`notes/${newSlug}/index.html`);
+  const oldFile = requireBuiltFile(`blog/${oldSlug}/index.html`);
+  if (!fs.existsSync(oldFile)) continue;
+  const html = fs.readFileSync(oldFile, "utf8");
+  if (!/http-equiv=["']refresh["']/i.test(html) || !html.includes(`/notes/${newSlug}/`)) {
+    failures.push(`moved blog URL does not redirect to note: ${oldSlug}`);
+  }
+}
+
 const blogTagsIndex = requireBuiltFile("blog/tags/index.html");
 if (fs.existsSync(blogTagsIndex)) {
   const content = fs.readFileSync(blogTagsIndex, "utf8");
