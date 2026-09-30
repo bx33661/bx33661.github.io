@@ -589,7 +589,7 @@ Agent premain
 
 目前插入的是一条打印语句，没有策略判断或者阻断，我们继续深入形成 **业务方法 → Hook → 检测逻辑 → 返回业务方法**
 
-把上一阶段直接插入 println，改为在 process 入口插入对 [DetectionBridge.checkProcess](/Users/zhangboxiang/Progarm/shixi/agentt-hook-lab/agent/src/main/java/demo/agent/DetectionBridge.java) 的调用。[HookAgent.java](/Users/zhangboxiang/Progarm/shixi/agentt-hook-lab/agent/src/main/java/demo/agent/HookAgent.java) 仍只匹配 `demo/app/BusinessService`，但现在返回的是包含这次调用的新字节码
+把上一阶段直接插入 println，改为在 process 入口插入对 `DetectionBridge.checkProcess` 的调用。`HookAgent.java` 仍只匹配 `demo/app/BusinessService`，但现在返回的是包含这次调用的新字节码
 
 ```java
 package demo.agent;
@@ -676,7 +676,7 @@ Agent 能在目标类进入 JVM 时取得类的字节码，并返回修改后的
 
 ### Project Struct
 
-<img src="/Users/zhangboxiang/Library/Application Support/typora-user-images/image-20260930180001323.png" alt="image-20260930180001323" style="zoom:50%;" />
+![OpenRASP 项目目录结构](/blog/openrasp-sql-detect-bypass/09-openrasp-project-structure.png)
 
 ```text
 openrasp/
