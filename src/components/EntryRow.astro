@@ -1,9 +1,15 @@
 ---
+import { SITE } from "@/config.ts";
+import { getArticleDates } from "@/utils/article-discovery";
+
 type Props = {
   href: string;
   title: string;
   description: string;
   date: Date;
+  updatedDate?: Date | null;
+  tags?: { label: string; href: string }[];
+  variant?: "default" | "blog";
   category?: string;
   heading?: "h2" | "h3";
 };
@@ -13,24 +19,62 @@ const {
   title,
   description,
   date,
+  updatedDate,
+  tags = [],
+  variant = "default",
   category,
   heading: Heading = "h2",
 } = Astro.props;
 const dateLabel = new Intl.DateTimeFormat("zh-CN", {
+  timeZone: SITE.timezone,
   year: "numeric",
   month: "2-digit",
   day: "2-digit",
-}).format(date);
+});
+const dates = getArticleDates(date, updatedDate);
+const formatDate = (value: Date) => dateLabel.format(value);
 ---
 
-<li class="entry-row">
-  <time datetime={date.toISOString()}>{dateLabel}</time>
+<li class:list={["entry-row", { "entry-row--blog": variant === "blog" }]}>
+  {
+    variant === "blog" ? (
+      <div class="entry-dates">
+        <span class="entry-date-label">
+          {dates.updated ? "更新于" : "发表于"}
+        </span>
+        <time datetime={dates.latest.toISOString()}>
+          {formatDate(dates.latest)}
+        </time>
+        {dates.updated && (
+          <span class="entry-original-date">
+            发表于{" "}
+            <time datetime={dates.published.toISOString()}>
+              {formatDate(dates.published)}
+            </time>
+          </span>
+        )}
+      </div>
+    ) : (
+      <time datetime={date.toISOString()}>{formatDate(date)}</time>
+    )
+  }
   <div class="entry-content">
     <div class="entry-heading">
       <Heading><a href={href}>{title}</a></Heading>
       {category && <span class="entry-category">{category}</span>}
     </div>
     <p>{description}</p>
+    {
+      tags.length > 0 && (
+        <ul class="entry-tags" aria-label="文章主题">
+          {tags.map((tag) => (
+            <li>
+              <a href={tag.href}>{tag.label}</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </div>
   <span class="entry-arrow" aria-hidden="true">↗</span>
 </li>
@@ -115,5 +159,85 @@ const dateLabel = new Intl.DateTimeFormat("zh-CN", {
   :global(html[data-theme="dark"]) time,
   :global(html[data-theme="dark"]) .entry-category {
     color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  }
+
+  .entry-row--blog {
+    grid-template-columns: 7rem minmax(0, 1fr) auto;
+    gap: 1.2rem;
+    padding: 1.6rem 0;
+    border-color: color-mix(in srgb, var(--foreground) 15%, var(--background));
+  }
+  .entry-row--blog:first-child {
+    border-color: color-mix(in srgb, var(--foreground) 15%, var(--background));
+  }
+  .entry-row--blog :is(h2, h3) {
+    font-size: 1.13rem;
+    line-height: 1.65;
+    letter-spacing: -0.02em;
+  }
+  .entry-row--blog p {
+    color: color-mix(in srgb, var(--foreground) 72%, var(--background));
+    font-size: 0.9rem;
+    line-height: 1.85;
+  }
+  .entry-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    color: color-mix(in srgb, var(--foreground) 72%, var(--background));
+  }
+  .entry-date-label {
+    font-size: 0.68rem;
+  }
+  .entry-row--blog time {
+    padding: 0;
+    color: inherit;
+    font-variant-numeric: tabular-nums;
+  }
+  .entry-original-date {
+    font-size: 0.65rem;
+    line-height: 1.6;
+  }
+  .entry-original-date time {
+    font-size: inherit;
+  }
+  .entry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .entry-tags a {
+    display: block;
+    padding: 0.18rem 0.5rem;
+    border: 1px solid
+      color-mix(in srgb, var(--foreground) 15%, var(--background));
+    border-radius: 0.3rem;
+    color: color-mix(in srgb, var(--foreground) 72%, var(--background));
+    font-size: 0.7rem;
+  }
+  .entry-tags a:hover,
+  .entry-tags a:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  @media (max-width: 640px) {
+    .entry-row--blog {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.65rem;
+      padding-block: 1.35rem;
+    }
+    .entry-dates {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.4rem 0.6rem;
+    }
+    .entry-row--blog :is(h2, h3) {
+      font-size: 1.05rem;
+    }
   }
 </style>

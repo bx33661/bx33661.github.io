@@ -10,10 +10,10 @@
     "start": "astro dev",
     "typecheck": "NODE_OPTIONS=--max-old-space-size=8192 ASTRO_TELEMETRY_DISABLED=1 astro check",
     "lint": "eslint src scripts",
-    "test": "npm run smoke:source",
+    "test": "npm run test:unit && npm run smoke:source",
     "check": "npm run lint && npm run test",
     "harness:doctor": "node scripts/harness-doctor.mjs",
-    "verify:quick": "PUBLIC_ENABLE_ANALYTICS=false PUBLIC_ENABLE_COMMENTS=false npm run lint && PUBLIC_ENABLE_ANALYTICS=false PUBLIC_ENABLE_COMMENTS=false npm run typecheck && npm run smoke:source && npm run content:check",
+    "verify:quick": "PUBLIC_ENABLE_ANALYTICS=false PUBLIC_ENABLE_COMMENTS=false npm run lint && PUBLIC_ENABLE_ANALYTICS=false PUBLIC_ENABLE_COMMENTS=false npm run typecheck && npm run test && npm run content:check",
     "verify:full": "npm run verify:quick && PUBLIC_ENABLE_ANALYTICS=false PUBLIC_ENABLE_COMMENTS=false npm run build && npm run smoke:dist && npm run verify:visual",
     "verify:visual": "node scripts/visual-regression.mjs",
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && pagefind --site dist",
@@ -35,7 +35,8 @@
     "astro": "astro",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
-    "prettier": "prettier --write **/*.{ts,tsx,js,jsx,css,md,mdx,json} --ignore-path .gitignore"
+    "prettier": "prettier --write **/*.{ts,tsx,js,jsx,css,md,mdx,json} --ignore-path .gitignore",
+    "test:unit": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.1",

@@ -1,0 +1,365 @@
+/* CommonMark/GFM + KaTeX. Never reach inside component-owned .not-prose islands. */
+.post-page #article :is(p, li, dd):not(:where(.not-prose, .not-prose *)) {
+  overflow-wrap: anywhere;
+}
+.post-page #article :is(strong, b):not(:where(.not-prose, .not-prose *)) {
+  color: var(--foreground);
+  font-weight: 700;
+}
+.post-page #article :is(em, i):not(:where(.not-prose, .not-prose *, .katex *)) {
+  font-family: inherit;
+}
+.post-page #article :is(h5, h6):not(:where(.not-prose, .not-prose *)) {
+  margin-block: 1.5rem 0.7rem;
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 650;
+  scroll-margin-top: 6rem;
+}
+.post-page #article :is(h2, h3, h4):not(:where(.not-prose, .not-prose *)) {
+  font-family: inherit;
+  font-style: normal;
+  scroll-margin-top: 6rem;
+}
+.post-page #article del:not(:where(.not-prose, .not-prose *)) {
+  color: var(--reading-muted);
+  text-decoration-thickness: 1px;
+}
+.post-page #article :is(mark, kbd):not(:where(.not-prose, .not-prose *)) {
+  padding: 0.1em 0.35em;
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--accent) 12%, var(--background));
+  color: var(--foreground);
+}
+.post-page #article kbd:not(:where(.not-prose, .not-prose *)) {
+  border: 1px solid var(--reading-border);
+  box-shadow: 0 1px 0 var(--reading-border);
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.8em;
+}
+
+/* Keep nested list markers, spacing and task checkbox states readable. */
+.post-page #article :is(ul, ol):not(:where(.not-prose, .not-prose *)) {
+  overflow: visible;
+  padding-inline-start: 1.5rem;
+}
+.post-page #article li > :is(ul, ol):not(:where(.not-prose, .not-prose *)) {
+  margin-block: 0.55rem;
+}
+.post-page #article li > p:not(:where(.not-prose, .not-prose *)) {
+  margin-block: 0.65rem;
+}
+.post-page #article .contains-task-list:not(:where(.not-prose, .not-prose *)) {
+  padding-inline-start: 0.2rem;
+  list-style: none;
+}
+.post-page #article .task-list-item:not(:where(.not-prose, .not-prose *)) {
+  padding-inline-start: 1.65rem;
+  list-style: none;
+}
+.post-page
+  #article
+  .task-list-item
+  input[type="checkbox"]:not(:where(.not-prose, .not-prose *)) {
+  width: 1em;
+  height: 1em;
+  margin-inline: -1.65rem 0.65rem;
+  vertical-align: -0.05em;
+  accent-color: var(--accent);
+  opacity: 1;
+}
+.post-page #article blockquote:not(:where(.not-prose, .not-prose *)) {
+  margin-block: 1.5rem;
+  padding: 0.3rem 1rem;
+  border-inline-start: 3px solid var(--accent);
+  background: var(--reading-surface);
+  color: var(--reading-muted);
+  font-style: normal;
+  opacity: 1;
+}
+.post-page #article blockquote p:not(:where(.not-prose, .not-prose *))::before,
+.post-page #article blockquote p:not(:where(.not-prose, .not-prose *))::after {
+  content: none;
+}
+.post-page #article .article-callout:not(:where(.not-prose, .not-prose *)) {
+  --callout-color: var(--accent);
+  border-inline-start-color: var(--callout-color);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.post-page #article .article-callout[data-callout="tip"] {
+  --callout-color: color-mix(in srgb, #24824a 80%, var(--foreground));
+}
+.post-page
+  #article
+  .article-callout:is([data-callout="warning"], [data-callout="caution"]) {
+  --callout-color: color-mix(in srgb, #a76508 80%, var(--foreground));
+}
+.post-page #article .article-callout-title {
+  margin-block: 0.65rem 0.35rem;
+  color: var(--foreground);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Overflow belongs to the content region, never the page. Native keyboard scroll. */
+.post-page #article :is(.article-table-scroll, .article-math-block) {
+  max-width: 100%;
+  min-width: 0;
+  margin-block: 1.6rem;
+  overflow: auto;
+  overscroll-behavior-inline: contain;
+  border: 0;
+  border-radius: 0;
+  scrollbar-width: thin;
+}
+.post-page
+  #article
+  :is(
+    .article-table-scroll,
+    .article-math-block,
+    .article-inline-math
+  ):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.post-page #article table:not(:where(.not-prose, .not-prose *)) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.75;
+  border-collapse: collapse;
+}
+.post-page #article .article-table-scroll > table {
+  display: table;
+  width: max-content;
+  min-width: 100%;
+  max-width: none;
+  margin: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+}
+.post-page #article table :is(th, td):not(:where(.not-prose, .not-prose *)) {
+  max-width: 24rem;
+  padding: 0.7rem 0.9rem;
+  border: 0;
+  border-bottom: 1px solid var(--reading-border);
+  vertical-align: top;
+}
+.post-page #article table th:not(:where(.not-prose, .not-prose *)) {
+  background: transparent;
+  border-bottom-width: 2px;
+  font-weight: 650;
+}
+.post-page #article table [align="left"]:not(:where(.not-prose, .not-prose *)) {
+  text-align: left;
+}
+.post-page
+  #article
+  table
+  [align="center"]:not(:where(.not-prose, .not-prose *)) {
+  text-align: center;
+}
+.post-page
+  #article
+  table
+  [align="right"]:not(:where(.not-prose, .not-prose *)) {
+  text-align: right;
+}
+.post-page
+  #article
+  table
+  tbody
+  tr:nth-child(even):not(:where(.not-prose, .not-prose *)) {
+  background: color-mix(in srgb, var(--foreground) 3%, var(--background));
+}
+.post-page #article table code:not(:where(.not-prose, .not-prose *)) {
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+.post-page #article table caption:not(:where(.not-prose, .not-prose *)) {
+  padding: 0.65rem;
+  color: var(--reading-muted);
+  text-align: start;
+  caption-side: bottom;
+}
+.post-page #article pre:not(:where(.not-prose, .not-prose *)) {
+  max-width: 100%;
+  overflow: auto;
+  overscroll-behavior-inline: contain;
+  tab-size: 2;
+  white-space: pre;
+}
+.post-page #article pre > code:not(:where(.not-prose, .not-prose *)) {
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.post-page
+  #article
+  :is(p, li, dd, summary)
+  > code:not(:where(.not-prose, .not-prose *)) {
+  padding: 0.15em 0.35em;
+  border: 0;
+  border-radius: 0.3rem;
+  background: color-mix(in srgb, var(--accent) 5%, var(--background));
+  color: var(--foreground);
+  font-size: 0.85em;
+  overflow-wrap: anywhere;
+}
+
+/* Keep KaTeX's own font metrics, fraction/matrix heights and accessible MathML. */
+.post-page #article .article-math-block {
+  padding: 0.85rem 0.15rem;
+  background: transparent;
+  overflow-wrap: normal;
+}
+.post-page #article .article-math-block > .katex-display {
+  margin: 0;
+  max-width: none;
+  overflow: visible;
+  padding-block: 0.25rem;
+}
+.post-page #article .katex-display > .katex {
+  min-width: min-content;
+}
+.post-page #article .article-inline-math {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.35em 0.15em;
+  margin-block: -0.35em;
+  overflow-x: auto;
+  overflow-y: hidden;
+  vertical-align: middle;
+  overflow-wrap: normal;
+  scrollbar-width: thin;
+}
+.post-page #article .article-inline-math > .katex {
+  display: inline-block;
+  white-space: nowrap;
+}
+.post-page #article .katex:not(:where(.not-prose, .not-prose *)) {
+  font-size: 1.05em;
+  color: var(--foreground);
+}
+.post-page #article .katex-error:not(:where(.not-prose, .not-prose *)) {
+  color: var(--foreground) !important;
+  text-decoration: underline wavy;
+  text-decoration-color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+/* Ordinary disclosure content is not a TOC: never hide its paragraphs. */
+.post-page #article details:not(:where(.not-prose, .not-prose *)) {
+  margin-block: 1.5rem;
+  border: 1px solid var(--reading-border);
+  border-radius: 0.5rem;
+  background: var(--reading-surface);
+  cursor: auto;
+  user-select: text;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.post-page #article details summary:not(:where(.not-prose, .not-prose *)) {
+  padding: 0.85rem 1rem;
+  font-family: inherit;
+  line-height: 1.65;
+  cursor: pointer;
+}
+.post-page #article details p:not(:where(.not-prose, .not-prose *)) {
+  display: block;
+}
+.post-page
+  #article
+  details
+  > :not(summary):not(:where(.not-prose, .not-prose *)) {
+  margin-inline: 1rem;
+}
+.post-page
+  #article
+  details
+  > :last-child:not(summary):not(:where(.not-prose, .not-prose *)) {
+  margin-bottom: 1rem;
+}
+.post-page #article details :is(ul, ol):not(:where(.not-prose, .not-prose *)) {
+  margin-block: 0.8rem !important;
+  border: 0;
+  padding-inline-start: 1.5rem;
+}
+.post-page #article details li:not(:where(.not-prose, .not-prose *)) {
+  list-style: inherit;
+}
+.post-page #article details li a:not(:where(.not-prose, .not-prose *)) {
+  display: inline;
+  padding: 0;
+  font: inherit;
+  text-decoration: underline;
+}
+.post-page #article details li a:not(:where(.not-prose, .not-prose *))::before {
+  content: none;
+}
+.post-page #article dl:not(:where(.not-prose, .not-prose *)) {
+  margin-block: 1.5rem;
+}
+.post-page #article dt:not(:where(.not-prose, .not-prose *)) {
+  margin-top: 0.85rem;
+  font-weight: 650;
+}
+.post-page #article dd:not(:where(.not-prose, .not-prose *)) {
+  margin: 0.4rem 0 0.9rem 1.25rem;
+  color: var(--reading-muted);
+}
+.post-page #article [data-footnotes]:not(:where(.not-prose, .not-prose *)) {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--reading-border);
+  font-size: 0.85rem;
+  color: var(--reading-muted);
+}
+.post-page
+  #article
+  [data-footnotes]
+  > .sr-only:not(:where(.not-prose, .not-prose *)) {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: normal;
+  font-size: 1rem;
+  font-family: inherit;
+  font-style: normal;
+}
+.post-page #article [data-footnote-ref]:not(:where(.not-prose, .not-prose *)) {
+  padding: 0.15em 0.2em;
+  color: var(--accent);
+  text-decoration: none;
+}
+.post-page #article [data-footnotes] :is(li[id], p[id]),
+.post-page #article sup[id],
+.post-page #article [data-footnote-ref][id] {
+  scroll-margin-top: 6rem;
+}
+.post-page
+  #article
+  [data-footnote-backref]:not(:where(.not-prose, .not-prose *)) {
+  color: var(--accent);
+}
+@media (max-width: 639px) {
+  .post-page #article .katex:not(:where(.not-prose, .not-prose *)) {
+    font-size: 1em;
+  }
+  .post-page #article .article-math-block {
+    padding: 0.85rem 0.6rem;
+  }
+  .post-page #article table :is(th, td):not(:where(.not-prose, .not-prose *)) {
+    padding: 0.6rem 0.75rem;
+  }
+}

@@ -1,0 +1,104 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { articleSeries } from "@/data/article-series";
+import {
+  getArticleSeries,
+  getRelatedArticles,
+  type ArticleSummary,
+} from "@/utils/article-discovery";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { getPath } from "@/utils/getPath";
+
+type Props = {
+  post: CollectionEntry<"blog">;
+  posts: CollectionEntry<"blog">[];
+};
+const { post, posts } = Astro.props;
+const summarize = (entry: CollectionEntry<"blog">): ArticleSummary => ({
+  id: entry.id,
+  slug: resolveLegacyPostSlug(entry),
+  title: entry.data.title,
+  href: getPath(entry.id, entry.filePath, true, resolveLegacyPostSlug(entry)),
+  tags: entry.data.tags,
+  publishedAt: entry.data.pubDatetime,
+  updatedAt: entry.data.modDatetime,
+  draft: entry.data.draft,
+});
+const current = summarize(post);
+const summaries = posts.map(summarize);
+const related = getRelatedArticles(current, summaries);
+const series = getArticleSeries(current, summaries, articleSeries);
+---
+
+{
+  series && (
+    <section
+      class="post-series"
+      aria-labelledby="post-series-title"
+      data-pagefind-ignore
+    >
+      <div class="post-discovery-heading">
+        <h2 id="post-series-title">{series.title}</h2>
+        <span>
+          第 {series.position} / {series.chapters.length} 篇
+        </span>
+      </div>
+      <ol class="post-series-chapters">
+        {series.chapters.map((chapter, index) => (
+          <li>
+            <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            {chapter.id === current.id ? (
+              <span aria-current="page">
+                {chapter.title}
+                <small>正在阅读</small>
+              </span>
+            ) : (
+              <a href={chapter.href}>{chapter.title}</a>
+            )}
+          </li>
+        ))}
+      </ol>
+      <nav class="post-series-nav" aria-label="系列前后篇">
+        {series.previous && (
+          <a href={series.previous.href}>
+            <span>← 系列上一篇</span>
+            {series.previous.title}
+          </a>
+        )}
+        {series.next && (
+          <a href={series.next.href}>
+            <span>系列下一篇 →</span>
+            {series.next.title}
+          </a>
+        )}
+      </nav>
+    </section>
+  )
+}
+
+{
+  related.length > 0 && (
+    <section
+      class="post-related"
+      aria-labelledby="post-related-title"
+      data-pagefind-ignore
+    >
+      <div class="post-discovery-heading">
+        <>
+          <h2 id="post-related-title">继续阅读</h2>
+          <span>同主题文章</span>
+        </>
+      </div>
+      <ul>
+        {related.map((item) => (
+          <li>
+            <a href={item.href}>
+              {item.title}
+              <span aria-hidden="true">↗</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

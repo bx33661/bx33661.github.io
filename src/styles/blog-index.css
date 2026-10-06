@@ -1,0 +1,51 @@
+main.blog-index {
+  --index-border: color-mix(in srgb, var(--foreground) 15%, var(--background));
+  --index-muted: color-mix(in srgb, var(--foreground) 72%, var(--background));
+  max-width: 58rem;
+}
+main.blog-index .blog-head {
+  margin: 2rem 0 2rem;
+}
+main.blog-index .blog-kicker {
+  margin-bottom: 0.85rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+main.blog-index .blog-title {
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  line-height: 1.3;
+}
+main.blog-index .blog-desc {
+  margin-top: 0.9rem;
+  color: var(--index-muted);
+  line-height: 1.85;
+}
+main.blog-index .blog-meta {
+  color: var(--index-muted);
+  letter-spacing: 0;
+  font-size: 0.73rem;
+}
+main.blog-index .blog-topics {
+  margin: 0 0 0.6rem;
+  padding-block: 1rem;
+  border-color: var(--index-border);
+}
+main.blog-index .blog-topics-label,
+main.blog-index .blog-topic-count {
+  color: var(--index-muted);
+}
+main.blog-index .blog-topic {
+  border-color: var(--index-border);
+  border-radius: 0.35rem;
+  font-size: 0.76rem;
+  padding: 0.35rem 0.6rem;
+}
+main.blog-index .blog-topic:hover,
+main.blog-index .blog-topic:focus-visible {
+  border-color: var(--accent);
+}
+@media (max-width: 639px) {
+  main.blog-index .blog-head {
+    margin-top: 1.4rem;
+  }
+}

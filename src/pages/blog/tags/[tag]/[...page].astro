@@ -10,6 +10,7 @@ import getUniqueTags from "@/utils/getUniqueTags";
 import getPostsByTag from "@/utils/getPostsByTag";
 import { getPath } from "@/utils/getPath";
 import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { getTagPath } from "@/utils/tagPath";
 import { SITE } from "@/config.ts";
 import { getAllPosts } from "@/lib/data-utils";
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
@@ -55,6 +56,12 @@ const noindex = true;
             title={post.data.title}
             description={post.data.description}
             date={post.data.pubDatetime}
+            updatedDate={post.data.modDatetime}
+            variant="blog"
+            tags={post.data.tags
+              .filter((item) => !["bx", "others"].includes(item.toLowerCase()))
+              .slice(0, 3)
+              .map((item) => ({ label: item, href: getTagPath(item) }))}
           />
         ))
       }

@@ -1,5 +1,6 @@
 ---
 import type { GetStaticPaths } from "astro";
+import "@/styles/blog-index.css";
 import { type CollectionEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -47,11 +48,11 @@ const topics = getUniqueTags(topicPosts)
   <Header />
   <Breadcrumb />
 
-  <main id="main-content" class="app-layout pb-4">
+  <main id="main-content" class="blog-index app-layout pb-4">
     <header class="blog-head">
       <p class="blog-kicker">POSTS / ARCHIVE</p>
       <h1 class="blog-title">文章</h1>
-      <p class="blog-desc">按时间浏览技术研究与工程实践记录。</p>
+      <p class="blog-desc">技术研究与工程实践记录，按最近更新时间排列。</p>
       <p class="blog-meta">
         <span>共 {totalPosts} 篇</span>
         {
@@ -98,6 +99,12 @@ const topics = getUniqueTags(topicPosts)
             title={post.data.title}
             description={post.data.description}
             date={post.data.pubDatetime}
+            updatedDate={post.data.modDatetime}
+            variant="blog"
+            tags={post.data.tags
+              .filter((tag) => !["bx", "others"].includes(tag.toLowerCase()))
+              .slice(0, 3)
+              .map((tag) => ({ label: tag, href: getTagPath(tag) }))}
           />
         ))
       }

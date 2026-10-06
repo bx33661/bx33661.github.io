@@ -1,6 +1,6 @@
 ---
 type Heading = { depth: number; slug: string; text: string };
-type Props = { headings: Heading[]; variant: "inline" | "sidebar" };
+type Props = { headings: Heading[]; variant: "inline" | "sidebar" | "mobile" };
 
 const { headings, variant } = Astro.props;
 ---
@@ -12,7 +12,7 @@ const { headings, variant } = Astro.props;
         <summary>
           本文目录 <span>{headings.length} 个章节</span>
         </summary>
-        <nav aria-label="正文内嵌目录">
+        <nav aria-label="正文内嵌目录" data-post-toc>
           <ol>
             {headings.map((heading) => (
               <li class:list={[{ nested: heading.depth >= 3 }]}>
@@ -22,10 +22,10 @@ const { headings, variant } = Astro.props;
           </ol>
         </nav>
       </details>
-    ) : (
+    ) : variant === "sidebar" ? (
       <aside class="post-toc-sidebar" aria-label="文章快速目录">
         <p>本文目录</p>
-        <nav aria-label="正文侧边目录">
+        <nav aria-label="正文侧边目录" data-post-toc>
           <ol>
             {headings.map((heading) => (
               <li class:list={[{ nested: heading.depth >= 3 }]}>
@@ -35,6 +35,47 @@ const { headings, variant } = Astro.props;
           </ol>
         </nav>
       </aside>
+    ) : (
+      <div class="post-toc-mobile">
+        <button
+          type="button"
+          data-post-toc-open
+          aria-haspopup="dialog"
+          aria-controls="post-toc-dialog"
+        >
+          <>
+            <span class="post-toc-mobile-label">目录</span>
+            <span data-toc-current>本文目录</span>
+          </>
+        </button>
+        <dialog
+          id="post-toc-dialog"
+          aria-labelledby="post-toc-dialog-title"
+          data-pagefind-ignore
+        >
+          <header>
+            <>
+              <h2 id="post-toc-dialog-title">本文目录</h2>
+              <button
+                type="button"
+                data-post-toc-close
+                aria-label="关闭本文目录"
+              >
+                关闭 ×
+              </button>
+            </>
+          </header>
+          <nav aria-label="移动端快速目录" data-post-toc>
+            <ol>
+              {headings.map((heading) => (
+                <li class:list={[{ nested: heading.depth >= 3 }]}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </dialog>
+      </div>
     ))
 }
 

@@ -2,10 +2,15 @@
 import { render, type CollectionEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import "katex/dist/katex.min.css";
+import "@/styles/post-reading.css";
+import "@/styles/markdown-reading.css";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import EditPost from "@/components/EditPost.astro";
 import PostToc from "@/components/PostToc.astro";
+import PostDiscovery from "@/components/PostDiscovery.astro";
+import ArticleLightbox from "@/components/ArticleLightbox.astro";
+import { getArticleDates } from "@/utils/article-discovery";
 import ShareLinks from "@/components/ShareLinks.astro";
 import BackButton from "@/components/BackButton.astro";
 import BackToTopButton from "@/components/BackToTopButton.astro";
@@ -41,14 +46,17 @@ const {
 } = post.data;
 
 const { Content, headings } = await render(post);
-const tocHeadings = headings.filter((heading) => heading.depth <= 3);
-const displayDate =
-  modDatetime && modDatetime > pubDatetime ? modDatetime : pubDatetime;
-const dateLabel = new Intl.DateTimeFormat("zh-CN", {
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-}).format(displayDate);
+const tocHeadings = headings.filter(
+  (heading) => heading.depth <= 3 && heading.slug !== "footnote-label",
+);
+const dates = getArticleDates(pubDatetime, modDatetime);
+const dateLabel = (date: Date) =>
+  new Intl.DateTimeFormat("zh-CN", {
+    timeZone: SITE.timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
 
 let ogImageUrl: string | undefined;
 
@@ -104,11 +112,17 @@ const nextPost =
   <BackButton currentTitle={title} />
   <main
     id="main-content"
-    class:list={["relative app-layout pb-12", { "mt-8": !SITE.showBackButton }]}
+    class:list={[
+      "post-page relative app-layout pb-12",
+      { "mt-8": !SITE.showBackButton },
+    ]}
     data-pagefind-body
   >
     <!-- Post header section -->
     <header class="post-header">
+      <p class="post-kicker" data-pagefind-ignore>
+        <span aria-hidden="true"></span>WRITING / 文章
+      </p>
       <h1
         transition:name={slugifyStr(title.replaceAll(".", "-"))}
         class="post-title"
@@ -119,8 +133,21 @@ const nextPost =
       <div class="post-meta">
         <span>{author}</span>
         <span aria-hidden="true">·</span>
-        <time datetime={displayDate.toISOString()}>{dateLabel}</time>
-        {modDatetime && modDatetime > pubDatetime && <span>更新</span>}
+        <span class="post-date"
+          >发表于 <time datetime={dates.published.toISOString()}
+            >{dateLabel(dates.published)}</time
+          ></span
+        >
+        {
+          dates.updated && (
+            <span class="post-date post-date-updated">
+              更新于{" "}
+              <time datetime={dates.updated.toISOString()}>
+                {dateLabel(dates.updated)}
+              </time>
+            </span>
+          )
+        }
       </div>
       <div class="post-header-tags">
         {
@@ -192,6 +219,8 @@ const nextPost =
       <!-- Share links -->
       <ShareLinks />
     </div>
+
+    <PostDiscovery {post} {posts} />
 
     <GiscusComments />
 
@@ -269,117 +298,10 @@ const nextPost =
       }
     </div>
   </main>
+  <PostToc headings={tocHeadings} variant="mobile" />
+  <ArticleLightbox />
   <BackToTopButton />
   <Footer />
 </Layout>
 
 <script src="../scripts/post-enhancements.ts"></script>
-
-<style>
-  .post-header {
-    margin: 1.1rem 0 2rem;
-    padding-bottom: 1.6rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
-  }
-  .post-title {
-    max-width: 46rem;
-    margin: 0;
-    color: var(--foreground);
-    font-size: clamp(1.9rem, 3.6vw, 2.55rem);
-    font-weight: 700;
-    letter-spacing: -0.035em;
-    line-height: 1.25;
-  }
-  .post-description {
-    max-width: 42rem;
-    margin: 0.9rem 0 0;
-    color: color-mix(in srgb, var(--foreground) 68%, transparent);
-    font-size: 0.98rem;
-    line-height: 1.75;
-  }
-  .post-meta,
-  .post-header-tags {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .post-meta {
-    margin-top: 0.85rem;
-    color: color-mix(in srgb, var(--foreground) 48%, transparent);
-    font-size: 0.78rem;
-  }
-  .post-header-tags {
-    margin-top: 1rem;
-  }
-  .post-tag-badge {
-    padding: 0.28rem 0.55rem;
-    border: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
-    border-radius: 999px;
-    color: var(--accent);
-    font-size: 0.73rem;
-    text-decoration: none;
-  }
-  .post-tag-badge:hover {
-    border-color: var(--accent);
-  }
-  .post-tag-more {
-    color: color-mix(in srgb, var(--foreground) 48%, transparent);
-    font-size: 0.73rem;
-  }
-  .post-reading-content {
-    min-width: 0;
-  }
-  @media (min-width: 1500px) {
-    .post-reading {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 12rem;
-      gap: 2rem;
-      width: calc(100% + 14rem);
-    }
-  }
-
-  .post-nav-link {
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    background: color-mix(in srgb, var(--muted) 5%, transparent);
-    position: relative;
-  }
-
-  .post-nav-link:hover {
-    background: color-mix(in srgb, var(--accent) 4%, transparent);
-  }
-
-  /* Aurora glow layer — always visible, intensifies on hover */
-  .post-nav-bg {
-    position: absolute;
-    inset: -1px;
-    opacity: 0.5;
-    transition: opacity 0.4s ease;
-    background:
-      radial-gradient(
-        ellipse 80% 60% at 20% 80%,
-        color-mix(in oklab, var(--accent) 12%, transparent) 0%,
-        transparent 70%
-      ),
-      radial-gradient(
-        ellipse 60% 70% at 80% 20%,
-        color-mix(in oklab, var(--accent) 8%, transparent) 0%,
-        transparent 60%
-      ),
-      radial-gradient(
-        ellipse 90% 40% at 50% 100%,
-        color-mix(in oklab, var(--accent) 6%, transparent) 0%,
-        transparent 50%
-      );
-    filter: blur(16px);
-    pointer-events: none;
-    z-index: -1;
-    border-radius: inherit;
-  }
-
-  .post-nav-link:hover .post-nav-bg {
-    opacity: 1;
-    filter: blur(20px);
-  }
-</style>

@@ -1,5 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 import postFilter from "./postFilter";
+import { getArticleDates } from "./article-discovery";
 
 const getSortedPosts = (posts: CollectionEntry<"blog">[]) => {
   return posts
@@ -7,11 +8,17 @@ const getSortedPosts = (posts: CollectionEntry<"blog">[]) => {
     .sort(
       (a, b) =>
         Math.floor(
-          new Date(b.data.modDatetime ?? b.data.pubDatetime).getTime() / 1000
+          getArticleDates(
+            b.data.pubDatetime,
+            b.data.modDatetime,
+          ).latest.getTime() / 1000,
         ) -
         Math.floor(
-          new Date(a.data.modDatetime ?? a.data.pubDatetime).getTime() / 1000
-        )
+          getArticleDates(
+            a.data.pubDatetime,
+            a.data.modDatetime,
+          ).latest.getTime() / 1000,
+        ),
     );
 };
 

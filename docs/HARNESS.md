@@ -4,7 +4,7 @@
 
 Use Node from `.nvmrc` and `npm ci` against `package-lock.json`. `npm run harness:doctor` checks Node, local dependencies, Git state and preview port (default 4339; override with `HARNESS_PORT`). It reports feature-toggle values without exposing secrets.
 
-`npm run verify:quick` runs ESLint, Astro typecheck, source smoke, and content check. `npm run verify:full` adds the Astro/Pagefind build, dist smoke, and `verify:visual`. Local verification disables analytics and comments; it never runs `baidu:push`. CI uses the same full command and installs Playwright Chromium first. On macOS, visual checks use the installed Google Chrome.
+`npm run verify:quick` runs ESLint, Astro typecheck, Node unit tests, source smoke, and content check. `npm run verify:full` adds the Astro/Pagefind build, dist smoke, and `verify:visual`. Local verification disables analytics and comments; it never runs `baidu:push`. CI uses the same full command and installs Playwright Chromium first. On macOS, visual checks use the installed Google Chrome.
 
 `verify:visual` starts an isolated preview on the doctor port and captures 24 light/dark desktop/mobile screenshots of home, friends, article, search, archive, and gallery in `.visual-artifacts/`. It checks HTTP status, horizontal overflow, clipped visible headings, homepage secondary-text contrast (at least 4.5:1), early placement of featured research on mobile, and theme switching. The ignored screenshot directory and `report.txt` are uploaded by CI on failure. Screenshots are diagnostic artifacts, not pixel-perfect golden comparisons; review them for visual changes before delivery.
 
@@ -19,3 +19,11 @@ At start, record `git status --short` and the relevant baseline. At completion, 
 ## Next coverage
 
 P1: add fixed public/draft content fixtures, Pagefind query-and-click coverage, tag navigation, and a stable visual baseline or perceptual diff. Keep third-party comments outside the default gate. Do not treat existing text-marker smoke checks as reader-behavior proof.
+
+## Article reading experience
+
+The article browser gate checks listing date ordering, image viewing, focus/scroll restoration, code copying, table-of-contents navigation, series links and route cleanup in both themes and viewport sizes. Image enlargement is frameless; inline code has no border, tables retain horizontal dividers, and formulas have no card background.
+
+## Markdown reading formats
+
+The production MD/MDX configuration is shared in `src/utils/articleMarkdown.ts`. `scripts/markdown-reading.test.mjs` exercises KaTeX/MathML, GFM tables/alignment/tasks, alerts, fences, footnote labels/backlinks and component isolation. `verify:visual` also runs `scripts/markdown-reading-browser.mjs` in four theme/viewport combinations, with an additional 320px geometry check. It uses the production parser and article layout without publishing a fixture route or adding a search entry. Screenshots cover formula/table scrolling and visible disclosure paragraphs; keyboard, clipboard, footnote and image checks assert behavior. Authoring conventions are documented in `docs/MARKDOWN.md`.

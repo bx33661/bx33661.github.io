@@ -1,21 +1,9 @@
 import { defineConfig, envField, fontProviders } from "astro/config";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
-import { unified } from "@astrojs/markdown-remark";
-import tailwindcss from "@tailwindcss/vite";
-import remarkToc from "remark-toc";
-import remarkCollapse from "remark-collapse";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
 import mermaid from "astro-mermaid";
-import {
-  transformerNotationDiff,
-  transformerNotationHighlight,
-  transformerNotationWordHighlight,
-} from "@shikijs/transformers";
-import { transformerFileName } from "./src/utils/transformers/fileName";
-import { rehypeDemoteHeadings } from "./src/utils/rehypeDemoteHeadings";
-import { rehypeArticleImages } from "./src/utils/rehypeArticleImages";
+import tailwindcss from "@tailwindcss/vite";
+import { articleMarkdown } from "./src/utils/articleMarkdown";
 import { SITE } from "./src/config.ts";
 import securityToolbarIntegration from "./src/plugins/security-toolbar";
 
@@ -34,30 +22,15 @@ export default defineConfig({
     securityToolbarIntegration(),
   ],
   // Astro 7 defaults to Sätteri; keep unified so existing remark/rehype plugins still work.
-  markdown: {
-    processor: unified({
-      remarkPlugins: [
-        remarkMath,
-        remarkToc,
-        [remarkCollapse, { test: "Table of contents" }],
-      ],
-      rehypePlugins: [rehypeDemoteHeadings, rehypeArticleImages, rehypeKatex],
-    }),
-    shikiConfig: {
-      // For more themes, visit https://shiki.style/themes
-      themes: { light: "min-light", dark: "github-dark-default" },
-      defaultColor: false,
-      wrap: false,
-      transformers: [
-        transformerFileName({ style: "v2", hideDot: false }),
-        transformerNotationHighlight(),
-        transformerNotationWordHighlight(),
-        transformerNotationDiff({ matchAlgorithm: "v3" }),
-      ],
-    },
-  },
+  markdown: articleMarkdown,
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // ClientRouter inserts a data: module barrier for inline modules. Keep
+      // generated JS same-origin/external so navigation respects our CSP;
+      // images and CSS retain Vite's normal inline-size behavior.
+      assetsInlineLimit: (filePath) => /\.m?js$/.test(filePath) ? false : undefined,
+    },
     optimizeDeps: {
       exclude: ["@resvg/resvg-js"],
     },

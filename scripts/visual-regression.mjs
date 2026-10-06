@@ -2,6 +2,8 @@ import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
+import { checkArticleExperience } from "./article-experience-browser.mjs";
+import { checkMarkdownReading } from "./markdown-reading-browser.mjs";
 
 const root = process.cwd();
 const output = path.join(root, ".visual-artifacts");
@@ -21,6 +23,7 @@ const viewports = [
   ["mobile", { width: 390, height: 844 }],
 ];
 const failures = [];
+const passedFlows = [];
 let serverOutput = "";
 let serverExit = "running";
 const server = spawn(process.execPath, ["node_modules/astro/bin/astro.mjs", "preview", "--ignore-lock", "--host", "127.0.0.1", "--port", String(port)], {
@@ -68,6 +71,7 @@ try {
       page.on("console", (message) => {
         if (message.type() === "error" && message.location().url.startsWith(base)) errors.push(message.text());
       });
+      await page.goto(base, { waitUntil: "domcontentloaded" });
       for (const theme of ["light", "dark"]) {
         for (const [name, route] of routes) {
           const response = await page.goto(`${base}${route}`, { waitUntil: "domcontentloaded" });
@@ -113,6 +117,17 @@ try {
             if (viewportName === "mobile" && position && position.y > 844)
               failures.push(`mobile/${theme}/home: featured research starts at ${Math.round(position.y)}px`);
           }
+          if (name === "article") {
+            try {
+              await checkArticleExperience(page, { base, output, prefix: `${theme}-${viewportName}` });
+              await checkMarkdownReading(page, { base, output, prefix: `${theme}-${viewportName}` });
+              const label = `${viewportName}/${theme}/article-experience`;
+              passedFlows.push(label, `${viewportName}/${theme}/markdown-reading`);
+              console.log(`[OK] browser flow: ${label}`);
+            } catch (error) {
+              failures.push(`${viewportName}/${theme}/article-experience: ${error instanceof Error ? error.message : String(error)}`);
+            }
+          }
           if (name === "friends") {
             const cards = await page.locator("a.fc").count();
             if (cards !== 20) failures.push(`${viewportName}/${theme}/friends: expected 20 cards, found ${cards}`);
@@ -156,6 +171,6 @@ try {
   stopServer();
 }
 
-await fs.writeFile(path.join(output, "report.txt"), `${failures.length ? failures.join("\n") : "PASS: 28 route/theme/viewport screenshots, contrast, overflow, headings, theme toggle"}\n`);
+await fs.writeFile(path.join(output, "report.txt"), `${failures.length ? failures.join("\n") : "PASS: 28 route/theme/viewport screenshots; 8 article/markdown browser flows; contrast, overflow, headings, theme toggle"}\n`);
 console.log(await fs.readFile(path.join(output, "report.txt"), "utf8"));
 process.exitCode = failures.length ? 1 : 0;
