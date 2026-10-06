@@ -2,8 +2,10 @@
 import { ClientRouter } from "astro:transitions";
 import { Font } from "astro:assets";
 import { SITE } from "@/config.ts";
+import { serializeJsonLd } from "@/utils/serializeJsonLd";
 import SearchModal from "@/components/SearchModal.astro";
 import "@/styles/global.css";
+import "@/styles/reading-motion.css";
 
 type Props = {
   title?: string;
@@ -129,7 +131,7 @@ const structuredData = pubDatetime
     <script
       type="application/ld+json"
       is:inline
-      set:html={JSON.stringify(structuredData)}
+      set:html={serializeJsonLd(structuredData)}
     />
 
     <!-- Enable RSS feed auto-discovery  -->
@@ -148,31 +150,19 @@ const structuredData = pubDatetime
     <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
     <script is:inline>
       (function () {
-        const initialColorScheme = ""; // "light" | "dark"
-        const currentTheme = localStorage.getItem("theme");
-
-        function getPreferTheme() {
-          if (currentTheme === "light" || currentTheme === "dark")
-            return currentTheme;
-          if (initialColorScheme) return initialColorScheme;
-          return window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
+        let storedTheme = null;
+        try {
+          storedTheme = localStorage.getItem("theme");
+        } catch {
+          // A denied store must not interrupt first-paint theme selection.
         }
-
-        const themeValue = getPreferTheme();
-
-        // Set theme immediately to prevent flash
-        document.firstElementChild?.setAttribute("data-theme", themeValue);
-
-        // Export minimal API for external script
-        window.theme = {
-          themeValue: themeValue,
-          getTheme: () => window.theme.themeValue,
-          setTheme: (val) => {
-            window.theme.themeValue = val;
-          },
-        };
+        const themeValue =
+          storedTheme === "light" || storedTheme === "dark"
+            ? storedTheme
+            : window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+        document.documentElement.setAttribute("data-theme", themeValue);
       })();
     </script>
   </head>
@@ -188,6 +178,7 @@ const structuredData = pubDatetime
 
     <SearchModal />
     <script src="../scripts/theme.ts"></script>
+    <script src="../scripts/reading-navigation.ts"></script>
 
     <!-- Register SW only in production (not localhost / Lighthouse) -->
     <script is:inline>
@@ -280,10 +271,13 @@ const structuredData = pubDatetime
 
   .site-cursor-glow {
     position: absolute;
-    inset: 0;
-    transform: translateZ(0);
+    left: -550px;
+    top: -550px;
+    width: 1100px;
+    height: 1100px;
+    transform: translate3d(var(--site-cx, 0px), var(--site-cy, 0px), 0);
     background: radial-gradient(
-      550px circle at var(--site-cx, 50%) var(--site-cy, 50%),
+      550px circle at center,
       color-mix(in oklab, var(--accent) 6%, transparent) 0%,
       color-mix(in oklab, var(--accent) 4%, transparent) 15%,
       color-mix(in oklab, var(--accent) 2.5%, transparent) 25%,
@@ -295,7 +289,6 @@ const structuredData = pubDatetime
     filter: blur(40px);
     opacity: 0;
     transition: opacity 0.5s ease;
-    will-change: transform;
   }
 
   .site-cursor-glow.active {
@@ -314,41 +307,4 @@ const structuredData = pubDatetime
   }
 </style>
 
-<script>
-  let cursorCleanup: AbortController | null = null;
-
-  document.addEventListener("astro:page-load", () => {
-    // Cleanup previous listeners
-    if (cursorCleanup) cursorCleanup.abort();
-    cursorCleanup = new AbortController();
-    const { signal } = cursorCleanup;
-
-    const backdrop = document.querySelector<HTMLElement>(".site-backdrop");
-    const cursorGlow = document.querySelector<HTMLElement>(".site-cursor-glow");
-
-    if (backdrop && cursorGlow) {
-      document.addEventListener(
-        "mousemove",
-        (e: MouseEvent) => {
-          // Use requestAnimationFrame for performance optimization
-          requestAnimationFrame(() => {
-            backdrop.style.setProperty("--site-cx", `${e.clientX}px`);
-            backdrop.style.setProperty("--site-cy", `${e.clientY}px`);
-            if (!cursorGlow.classList.contains("active")) {
-              cursorGlow.classList.add("active");
-            }
-          });
-        },
-        { signal },
-      );
-
-      document.addEventListener(
-        "mouseleave",
-        () => {
-          cursorGlow.classList.remove("active");
-        },
-        { signal },
-      );
-    }
-  });
-</script>
+<script src="../scripts/cursor-glow.ts"></script>

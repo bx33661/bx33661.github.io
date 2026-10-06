@@ -33,49 +33,7 @@ import { SITE } from "@/config.ts";
   <Footer />
 </Layout>
 
-<script>
-  import { mountDevSearch } from "@/utils/devSearch";
-  import { createPagefindUI } from "@/utils/pagefind";
-
-  function setQueryParam(query: string) {
-    const url = new URL(window.location.href);
-    if (query) url.searchParams.set("q", query);
-    else url.searchParams.delete("q");
-    history.replaceState(history.state, "", url.pathname + url.search);
-  }
-
-  async function initSearchPage() {
-    const mount = document.querySelector<HTMLElement>("#pagefind-search");
-    if (!mount || mount.dataset.ready) return;
-    mount.dataset.ready = "true";
-    const query = new URLSearchParams(window.location.search).get("q") ?? "";
-
-    if (import.meta.env.DEV) {
-      await mountDevSearch(mount, {
-        initialQuery: query,
-        limit: 12,
-        onQueryChange: setQueryParam,
-      });
-      return;
-    }
-
-    try {
-      const search = await createPagefindUI({
-        element: "#pagefind-search",
-        processTerm: (term: string) => {
-          setQueryParam(term);
-          return term;
-        },
-      });
-      if (query) search.triggerSearch(query);
-    } catch {
-      mount.textContent = "搜索暂时不可用，请稍后重试。";
-    }
-  }
-
-  document.addEventListener("astro:page-load", initSearchPage);
-  initSearchPage();
-</script>
+<script src="../scripts/search-page.ts"></script>
 
 <style>
   .search-main {

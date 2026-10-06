@@ -1,60 +1,41 @@
-/**
- * 缓存工具函数
- * 用于优化数据获取性能
- */
+type CacheEntry = { promise: Promise<unknown>; expiresAt: number };
+const cache = new Map<string, CacheEntry>();
 
-// 简单的内存缓存
-const cache = new Map<string, { data: any; timestamp: number; ttl: number }>()
-
-/**
- * 缓存装饰器函数
- * @param key 缓存键
- * @param ttl 缓存时间（毫秒），默认5分钟
- */
+/** Share in-flight work; TTL starts on completion, not when loading begins. */
 export async function withCache<T>(
   key: string,
-  fn: () => Promise<T>,
-  ttl: number = 5 * 60 * 1000
+  load: () => Promise<T>,
+  ttl = 5 * 60 * 1000,
 ): Promise<T> {
-  const cached = cache.get(key)
-  const now = Date.now()
-
-  // 检查缓存是否有效
-  if (cached && now - cached.timestamp < cached.ttl) {
-    return cached.data
+  const cached = cache.get(key);
+  if (cached && Date.now() < cached.expiresAt) {
+    // Callers of one cache key must use one value type.
+    return cached.promise as Promise<T>;
   }
-
-  // 执行函数并缓存结果
-  const result = await fn()
-  cache.set(key, {
-    data: result,
-    timestamp: now,
-    ttl
-  })
-  return result
+  const entry: CacheEntry = {
+    promise: Promise.resolve().then(load),
+    expiresAt: Infinity,
+  };
+  cache.set(key, entry);
+  try {
+    const result = await entry.promise;
+    entry.expiresAt = Date.now() + ttl;
+    return result as T;
+  } catch (error) {
+    // An invalidated/replaced request must not evict a newer entry.
+    if (cache.get(key) === entry) cache.delete(key);
+    throw error;
+  }
 }
 
-/**
- * 清除指定缓存
- * @param key 缓存键
- */
 export function clearCache(key: string): void {
-  cache.delete(key)
+  cache.delete(key);
 }
 
-/**
- * 清除所有缓存
- */
 export function clearAllCache(): void {
-  cache.clear()
+  cache.clear();
 }
 
-/**
- * 获取缓存统计信息
- */
 export function getCacheStats() {
-  return {
-    size: cache.size,
-    keys: Array.from(cache.keys())
-  }
+  return { size: cache.size, keys: Array.from(cache.keys()) };
 }

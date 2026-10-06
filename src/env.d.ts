@@ -2,10 +2,10 @@
 
 interface Window {
   theme?: {
-    themeValue: string;
+    readonly themeValue: "light" | "dark";
     setPreference: () => void;
     reflectPreference: () => void;
-    getTheme: () => string;
-    setTheme: (val: string) => void;
+    getTheme: () => "light" | "dark";
+    setTheme: (val: "light" | "dark") => void;
   };
 }

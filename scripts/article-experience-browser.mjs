@@ -3,6 +3,14 @@ import path from "node:path";
 
 /** The image itself stays centered, with no card or toolbar around it. */
 async function assertLightboxCentered(page, viewer) {
+  await viewer.locator("[data-image-full]").evaluate(async (image) => {
+    await image.decode();
+    await Promise.all(
+      image
+        .getAnimations()
+        .map((animation) => animation.finished.catch(() => {})),
+    );
+  });
   const viewport = page.viewportSize();
   const rect = await viewer.locator("[data-image-full]").boundingBox();
   const styles = await viewer.evaluate((el) => ({

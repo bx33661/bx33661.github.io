@@ -11,7 +11,7 @@ import Layout from "@/layouts/Layout.astro";
 
 export async function getStaticPaths() {
   const galleries = await getCollection("galleries", ({ data }) => !data.draft);
-  return galleries.map(gallery => ({
+  return galleries.map((gallery) => ({
     params: {
       gallery: gallery.id
         .replace(/\\/g, "/")
@@ -23,7 +23,7 @@ export async function getStaticPaths() {
 }
 
 type Props = {
-  gallery: (Awaited<ReturnType<typeof getCollection<"galleries">>>)[number];
+  gallery: Awaited<ReturnType<typeof getCollection<"galleries">>>[number];
 };
 
 const { gallery } = Astro.props as Props;
@@ -34,12 +34,12 @@ const filenameToAlt = (filename: string) =>
     .replace(/\.[^.]+$/, "")
     .replace(/^\d+[-_]?/, "")
     .replace(/[-_]/g, " ")
-    .replace(/\b\w/g, char => char.toUpperCase())
+    .replace(/\b\w/g, (char) => char.toUpperCase())
     .trim() || gallery.data.title;
 
 const allImages = import.meta.glob<{ default: ImageMetadata }>(
   "/src/data/galleries/**/*.{jpg,jpeg,png,webp,avif,gif,JPG,JPEG,PNG,WEBP}",
-  { eager: true }
+  { eager: true },
 );
 
 const images = Object.entries(allImages)
@@ -67,7 +67,9 @@ const images = Object.entries(allImages)
     <section class="rounded-2xl border border-border/25 bg-muted/10 p-6">
       <h1 class="text-3xl font-bold tracking-tight">{gallery.data.title}</h1>
       <p class="mt-3 text-foreground/70">{gallery.data.description}</p>
-      <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-foreground/60">
+      <div
+        class="mt-4 flex flex-wrap items-center gap-3 text-sm text-foreground/60"
+      >
         <Datetime pubDatetime={gallery.data.pubDatetime} />
         <span class="rounded-full border border-border/40 px-3 py-1">
           {images.length} 张图片
@@ -77,13 +79,18 @@ const images = Object.entries(allImages)
 
     {
       images.length > 0 ? (
-        <ul class="gallery-grid mt-8" role="list" aria-label={gallery.data.title}>
+        <ul
+          class="gallery-grid mt-8"
+          role="list"
+          aria-label={gallery.data.title}
+        >
           {images.map((image, index) => (
             <li>
               <button
                 class="gallery-item"
                 type="button"
                 data-lightbox-trigger
+                data-gallery-target="gallery-lightbox"
                 data-index={index}
                 data-src={image.src.src}
                 data-alt={image.alt}
@@ -109,126 +116,50 @@ const images = Object.entries(allImages)
     }
   </main>
 
+  <dialog
+    id="gallery-lightbox"
+    data-gallery-viewer="wrap"
+    class="gallery-lightbox"
+    aria-label="图片查看器"
+    aria-modal="true"
+  >
+    <button
+      id="gallery-lightbox-close"
+      data-gallery-action="close"
+      class="gallery-lightbox-close"
+      type="button"
+      aria-label="关闭"
+    >
+      ×
+    </button>
+    <button
+      id="gallery-lightbox-prev"
+      data-gallery-action="prev"
+      class="gallery-lightbox-nav"
+      type="button"
+      aria-label="上一张"
+    >
+      ‹
+    </button>
+    <div class="gallery-lightbox-body">
+      <img id="gallery-lightbox-image" data-gallery-image src="" alt="" />
+      <p id="gallery-lightbox-caption" data-gallery-caption></p>
+      <span id="gallery-lightbox-counter" data-gallery-counter></span>
+    </div>
+    <button
+      id="gallery-lightbox-next"
+      data-gallery-action="next"
+      class="gallery-lightbox-nav"
+      type="button"
+      aria-label="下一张"
+    >
+      ›
+    </button>
+  </dialog>
   <Footer />
 </Layout>
 
-<dialog id="gallery-lightbox" class="gallery-lightbox" aria-label="图片查看器" aria-modal="true">
-  <button id="gallery-lightbox-close" class="gallery-lightbox-close" type="button" aria-label="关闭">
-    ×
-  </button>
-  <button id="gallery-lightbox-prev" class="gallery-lightbox-nav" type="button" aria-label="上一张">
-    ‹
-  </button>
-  <div class="gallery-lightbox-body">
-    <img id="gallery-lightbox-image" src="" alt="" />
-    <p id="gallery-lightbox-caption"></p>
-    <span id="gallery-lightbox-counter"></span>
-  </div>
-  <button id="gallery-lightbox-next" class="gallery-lightbox-nav" type="button" aria-label="下一张">
-    ›
-  </button>
-</dialog>
-
-<script>
-  let lightboxCleanup: (() => void) | null = null;
-
-  const initGalleryLightbox = () => {
-    if (lightboxCleanup) {
-      lightboxCleanup();
-      lightboxCleanup = null;
-    }
-
-    const dialog = document.getElementById("gallery-lightbox");
-    if (!(dialog instanceof HTMLDialogElement)) return;
-
-    const triggers = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-lightbox-trigger]"),
-    );
-    if (triggers.length === 0) return;
-
-    const img = document.getElementById("gallery-lightbox-image");
-    const caption = document.getElementById("gallery-lightbox-caption");
-    const counter = document.getElementById("gallery-lightbox-counter");
-    const closeBtn = document.getElementById("gallery-lightbox-close");
-    const prevBtn = document.getElementById("gallery-lightbox-prev");
-    const nextBtn = document.getElementById("gallery-lightbox-next");
-
-    if (!(img instanceof HTMLImageElement) || !caption || !counter) return;
-
-    let current = 0;
-
-    const open = (index: number) => {
-      if (index < 0 || index >= triggers.length) return;
-      current = index;
-      const trigger = triggers[current];
-      const src = trigger.getAttribute("data-src") || "";
-      const alt = trigger.getAttribute("data-alt") || "";
-      img.src = src;
-      img.alt = alt;
-      caption.textContent = alt;
-      counter.textContent = `${current + 1} / ${triggers.length}`;
-      dialog.showModal();
-      document.body.style.overflow = "hidden";
-    };
-
-    const close = () => {
-      dialog.close();
-      document.body.style.overflow = "";
-    };
-
-    const toPrev = () => open((current - 1 + triggers.length) % triggers.length);
-    const toNext = () => open((current + 1) % triggers.length);
-
-    const onKeydown = (event: KeyboardEvent) => {
-      if (!dialog.open) return;
-      if (event.key === "Escape") close();
-      if (event.key === "ArrowLeft") toPrev();
-      if (event.key === "ArrowRight") toNext();
-    };
-
-    const disposers: Array<() => void> = [];
-
-    triggers.forEach((trigger, index) => {
-      const handler = () => open(index);
-      trigger.addEventListener("click", handler);
-      disposers.push(() => trigger.removeEventListener("click", handler));
-    });
-
-    if (closeBtn) {
-      closeBtn.addEventListener("click", close);
-      disposers.push(() => closeBtn.removeEventListener("click", close));
-    }
-
-    if (prevBtn) {
-      prevBtn.addEventListener("click", toPrev);
-      disposers.push(() => prevBtn.removeEventListener("click", toPrev));
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener("click", toNext);
-      disposers.push(() => nextBtn.removeEventListener("click", toNext));
-    }
-
-    const onDialogClick = (event: MouseEvent) => {
-      if (event.target === dialog) close();
-    };
-
-    dialog.addEventListener("click", onDialogClick);
-    disposers.push(() => dialog.removeEventListener("click", onDialogClick));
-
-    document.addEventListener("keydown", onKeydown);
-    disposers.push(() => document.removeEventListener("keydown", onKeydown));
-
-    lightboxCleanup = () => {
-      disposers.forEach((dispose) => dispose());
-      if (dialog.open) dialog.close();
-      document.body.style.overflow = "";
-    };
-  };
-
-  document.addEventListener("astro:page-load", initGalleryLightbox);
-  document.addEventListener("astro:after-swap", initGalleryLightbox);
-</script>
+<script src="../../scripts/gallery-lightbox.ts"></script>
 
 <style>
   .gallery-grid {

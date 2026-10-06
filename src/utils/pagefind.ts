@@ -1,7 +1,7 @@
 import { pagefindTranslations } from "@/utils/pagefindTranslations";
 
 export type PagefindUIOptions = {
-  element: string;
+  element: string | HTMLElement;
   showImages?: boolean;
   showSubResults?: boolean;
   translations?: Record<string, string>;
@@ -10,7 +10,7 @@ export type PagefindUIOptions = {
 
 export type PagefindUIInstance = {
   triggerSearch: (term: string) => void;
-  destroy?: () => void;
+  destroy: () => void;
 };
 
 /**
@@ -19,14 +19,24 @@ export type PagefindUIInstance = {
  */
 export async function createPagefindUI(
   options: PagefindUIOptions,
-): Promise<PagefindUIInstance> {
+  signal?: AbortSignal,
+): Promise<PagefindUIInstance | null> {
+  const mount =
+    typeof options.element === "string"
+      ? document.querySelector<HTMLElement>(options.element)
+      : options.element;
+  if (!mount?.isConnected || signal?.aborted) return null;
   // Dynamic import required: @pagefind/default-ui relies on browser DOM and cannot be bundled during static SSR build time.
   // @ts-expect-error Pagefind's default UI does not publish TypeScript types.
   const { PagefindUI } = await import("@pagefind/default-ui");
-  return new PagefindUI({
+  if (!mount.isConnected || signal?.aborted) return null;
+  const search = new PagefindUI({
     showImages: false,
     showSubResults: true,
     translations: pagefindTranslations,
     ...options,
+    element: mount,
   }) as PagefindUIInstance;
+  signal?.addEventListener("abort", () => search.destroy(), { once: true });
+  return search;
 }

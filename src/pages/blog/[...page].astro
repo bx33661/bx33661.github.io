@@ -16,6 +16,7 @@ import { SITE } from "@/config.ts";
 import { getAllPosts } from "@/lib/data-utils";
 import { getPath } from "@/utils/getPath";
 import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { readingTransition } from "@/utils/reading-motion";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getAllPosts();
@@ -48,7 +49,12 @@ const topics = getUniqueTags(topicPosts)
   <Header />
   <Breadcrumb />
 
-  <main id="main-content" class="blog-index app-layout pb-4">
+  <main
+    id="main-content"
+    class="blog-index app-layout pb-4"
+    transition:name="reading-surface"
+    transition:animate={readingTransition}
+  >
     <header class="blog-head">
       <p class="blog-kicker">POSTS / ARCHIVE</p>
       <h1 class="blog-title">文章</h1>

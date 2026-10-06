@@ -127,6 +127,7 @@ const gridClass = {
               <button
                 class="ge-item group"
                 data-lb={lbId}
+                data-gallery-target={lbId}
                 data-index={idx}
                 aria-label={`查看图片：${img.alt}`}
                 type="button"
@@ -183,12 +184,14 @@ const gridClass = {
 <dialog
   id={lbId}
   class="ge-lightbox"
+  data-gallery-viewer="clamp"
   aria-label={`图片查看器：${entry?.data.title ?? slug}`}
   aria-modal="true"
 >
   <button
     class="ge-lb-close"
     data-lb-close={lbId}
+    data-gallery-action="close"
     aria-label="关闭"
     type="button"
   >
@@ -210,6 +213,7 @@ const gridClass = {
   <button
     class="ge-lb-nav ge-lb-prev"
     data-lb-prev={lbId}
+    data-gallery-action="prev"
     aria-label="上一张"
     type="button"
   >
@@ -228,13 +232,14 @@ const gridClass = {
     </svg>
   </button>
   <div class="ge-lb-content">
-    <img id={`${lbId}-img`} src="" alt="" class="ge-lb-image" />
-    <p id={`${lbId}-caption`} class="ge-lb-caption"></p>
-    <span id={`${lbId}-counter`} class="ge-lb-counter"></span>
+    <img id={`${lbId}-img`} data-gallery-image src="" alt="" class="ge-lb-image" />
+    <p id={`${lbId}-caption`} data-gallery-caption class="ge-lb-caption"></p>
+    <span id={`${lbId}-counter`} data-gallery-counter class="ge-lb-counter"></span>
   </div>
   <button
     class="ge-lb-nav ge-lb-next"
     data-lb-next={lbId}
+    data-gallery-action="next"
     aria-label="下一张"
     type="button"
   >
@@ -254,82 +259,7 @@ const gridClass = {
   </button>
 </dialog>
 
-<script>
-  function initEmbeds() {
-    // Inicializar todos los gallery-embeds que haya en la página
-    document
-      .querySelectorAll<HTMLElement>("[data-gallery-embed]")
-      .forEach(embed => {
-        const slug = embed.getAttribute("data-gallery-embed")!;
-        const lbId = `ge-lb-${slug}`;
-        const lb = document.getElementById(lbId) as HTMLDialogElement | null;
-        if (!lb) return;
-        const dialog = lb; // alias tipado para closures
-
-        const items = Array.from(
-          embed.querySelectorAll<HTMLButtonElement>("[data-lb]")
-        );
-        if (items.length === 0) return;
-
-        const lbImg = document.getElementById(
-          `${lbId}-img`
-        ) as HTMLImageElement | null;
-        const lbCaption = document.getElementById(`${lbId}-caption`);
-        const lbCounter = document.getElementById(`${lbId}-counter`);
-
-        let current = 0;
-
-        function open(idx: number) {
-          current = Math.max(0, Math.min(idx, items.length - 1));
-          const img = items[current].querySelector("img");
-          if (!img || !lbImg) return;
-          lbImg.src = img.src;
-          lbImg.alt = img.alt;
-          if (lbCaption) lbCaption.textContent = img.alt;
-          if (lbCounter)
-            lbCounter.textContent = `${current + 1} / ${items.length}`;
-          dialog.showModal();
-          document.body.style.overflow = "hidden";
-        }
-
-        function close() {
-          dialog.close();
-          document.body.style.overflow = "";
-        }
-
-        // Botones de las imágenes
-        items.forEach((btn, idx) => {
-          // Evitar duplicar listeners en re-init
-          btn.addEventListener("click", () => open(idx), { once: false });
-        });
-
-        // Controles del lightbox
-        lb.querySelector("[data-lb-close]")?.addEventListener("click", close);
-        lb.querySelector("[data-lb-prev]")?.addEventListener("click", () =>
-          open(current - 1)
-        );
-        lb.querySelector("[data-lb-next]")?.addEventListener("click", () =>
-          open(current + 1)
-        );
-
-        // Cerrar al clic en el backdrop
-        lb.addEventListener("click", e => {
-          if (e.target === dialog) close();
-        });
-
-        // Teclado — sólo si ESTE lightbox está abierto
-        document.addEventListener("keydown", e => {
-          if (!dialog.open) return;
-          if (e.key === "Escape") close();
-          if (e.key === "ArrowLeft") open(current - 1);
-          if (e.key === "ArrowRight") open(current + 1);
-        });
-      });
-  }
-
-  initEmbeds();
-  document.addEventListener("astro:after-swap", initEmbeds);
-</script>
+<script src="../scripts/gallery-lightbox.ts"></script>
 
 <style>
   /* ── Contenedor ── */

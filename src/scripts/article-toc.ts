@@ -40,6 +40,19 @@ export function setupArticleToc(signal: AbortSignal) {
 
   let frame = 0;
   let activeId = "";
+  const positionMarkers = () => {
+    for (const nav of document.querySelectorAll<HTMLElement>(
+      "[data-post-toc]",
+    )) {
+      const current = nav.querySelector<HTMLElement>(
+        'a[aria-current="location"]',
+      );
+      if (!current || !nav.getClientRects().length) continue;
+      nav.style.setProperty("--toc-marker-y", `${current.offsetTop}px`);
+      nav.style.setProperty("--toc-marker-h", `${current.offsetHeight}px`);
+      nav.dataset.tocActive = "true";
+    }
+  };
   const keepVisible = (link: HTMLAnchorElement) => {
     const nav = link.closest("nav");
     if (!nav || !nav.getClientRects().length) return;
@@ -53,6 +66,7 @@ export function setupArticleToc(signal: AbortSignal) {
     links
       .filter((link) => link.hasAttribute("aria-current"))
       .forEach(keepVisible);
+    positionMarkers();
   };
   document.querySelectorAll("details.post-toc-inline").forEach((details) => {
     details.addEventListener("toggle", ensureCurrentVisible, { signal });
@@ -80,6 +94,7 @@ export function setupArticleToc(signal: AbortSignal) {
       else link.removeAttribute("aria-current");
       if (current) keepVisible(link);
     }
+    positionMarkers();
     const label = active.textContent?.replace(/#\s*$/, "").trim() ?? "本文目录";
     const currentLabel = document.querySelector("[data-toc-current]");
     if (currentLabel) currentLabel.textContent = label;

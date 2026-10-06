@@ -1,0 +1,338 @@
+/* Editorial motion: continuity over decoration, never scroll-reveal the prose. */
+:root {
+  --reading-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --reading-exit-ease: cubic-bezier(0.4, 0, 1, 1);
+  --reading-micro: 180ms;
+}
+
+@keyframes reading-surface-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes reading-surface-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+::view-transition-group(*) {
+  animation-duration: 380ms;
+  animation-timing-function: var(--reading-ease);
+}
+::view-transition-old(*),
+::view-transition-new(*) {
+  mix-blend-mode: normal;
+}
+
+.entry-row--blog :is(h2, h3) a {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  transition:
+    color var(--reading-micro) ease,
+    text-decoration-color 240ms var(--reading-ease);
+}
+.entry-row--blog .entry-arrow {
+  transition:
+    transform 280ms var(--reading-ease),
+    opacity 180ms ease;
+}
+.entry-row--blog:focus-within .entry-arrow {
+  transform: translate(3px, -3px);
+}
+.entry-row--blog :is(h2, h3) a:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+@media (hover: hover) and (pointer: fine) {
+  .entry-row--blog:hover .entry-arrow {
+    transform: translate(3px, -3px);
+  }
+  .entry-row--blog :is(h2, h3) a:hover {
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+  }
+}
+
+/* The marker lives in the scrollable nav's coordinate space. */
+[data-post-toc] {
+  position: relative;
+}
+[data-post-toc][data-toc-active]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: var(--toc-marker-h, 0px);
+  border-radius: 2px;
+  background: var(--accent);
+  transform: translateY(var(--toc-marker-y, 0px));
+  transition:
+    transform 280ms var(--reading-ease),
+    height 280ms var(--reading-ease);
+  pointer-events: none;
+}
+.post-page [data-post-toc] a,
+.post-toc-mobile [data-post-toc] a {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease;
+}
+.post-page [data-post-toc][data-toc-active] a[aria-current],
+.post-toc-mobile [data-post-toc][data-toc-active] a[aria-current] {
+  box-shadow: none;
+}
+
+@keyframes reading-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes reading-backdrop-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+#post-toc-dialog,
+.article-lightbox {
+  --dialog-enter-time: 280ms;
+  --dialog-exit-time: 180ms;
+}
+.article-lightbox {
+  --dialog-enter-time: 380ms;
+  --dialog-exit-time: 240ms;
+}
+#post-toc-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  max-width: none;
+}
+@media (max-width: 639px) {
+  .post-toc-mobile #post-toc-dialog {
+    inset: auto 1rem max(1rem, env(safe-area-inset-bottom));
+    margin: 0;
+    border-color: color-mix(in srgb, var(--foreground) 14%, var(--background));
+  }
+}
+#post-toc-dialog[open]::backdrop,
+.article-lightbox[open]::backdrop {
+  animation: reading-backdrop-in var(--dialog-enter-time) var(--reading-ease)
+    both;
+}
+#post-toc-dialog[data-dialog-phase="closing"]::backdrop,
+.article-lightbox[data-dialog-phase="closing"]::backdrop {
+  animation: reading-backdrop-out var(--dialog-exit-time)
+    var(--reading-exit-ease) both;
+}
+.article-lightbox [data-image-full] {
+  transform-origin: center;
+}
+.article-lightbox [data-image-close] {
+  transition:
+    opacity 180ms ease,
+    transform 180ms var(--reading-ease);
+}
+.article-lightbox [data-image-close]:active {
+  transform: scale(0.92);
+}
+
+.post-page .copy-code {
+  min-width: 4.6rem;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+@keyframes reading-confirm {
+  from {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.post-page .copy-code[data-copy-state="copied"] {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--background));
+  animation: reading-confirm 200ms var(--reading-ease);
+}
+.progress-bar {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 100ms linear;
+}
+#btt-btn-container {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition:
+    opacity 200ms ease,
+    transform 280ms var(--reading-ease);
+}
+#btt-btn-container[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+[data-button="back-to-top"] {
+  transition:
+    transform 180ms var(--reading-ease),
+    box-shadow 180ms ease;
+}
+[data-button="back-to-top"]:active {
+  transform: scale(0.96);
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-button="back-to-top"]:hover {
+    transform: translateY(-2px);
+  }
+}
+html[data-theme-changing]:not([data-theme-reveal])
+  :is(
+    body,
+    body > header,
+    .post-title,
+    .post-description,
+    .entry-row--blog,
+    #article
+  ) {
+  transition:
+    background-color 240ms ease,
+    color 240ms ease,
+    border-color 240ms ease;
+}
+#theme-btn svg {
+  transition-property: scale, rotate, opacity;
+}
+
+/* Theme changes use one viewport snapshot, not dozens of article title groups. */
+html[data-theme-reveal] * {
+  view-transition-name: none !important;
+  /* Capture the complete new palette, not half-transitioned buttons/text. */
+  transition: none !important;
+  animation: none !important;
+}
+html[data-theme-reveal]::view-transition-group(root),
+html[data-theme-reveal]::view-transition-old(root),
+html[data-theme-reveal]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html[data-theme-reveal]::view-transition-old(root) {
+  z-index: 0;
+}
+html[data-theme-reveal]::view-transition-new(root) {
+  z-index: 1;
+}
+html[data-theme-reveal]::view-transition {
+  pointer-events: none;
+}
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .site-cursor-glow {
+    display: none;
+  }
+}
+
+/* Reading onward: animate the title, not the surrounding labels or boxes. */
+[data-reading-title] {
+  min-width: 0;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  transition:
+    color var(--reading-micro) ease,
+    text-decoration-color 240ms var(--reading-ease);
+}
+.post-related a > [data-reading-title] {
+  flex: 0 1 auto;
+  color: inherit;
+}
+.post-series-nav a > [data-reading-title] {
+  color: inherit;
+  font-size: inherit;
+}
+.post-related a > [aria-hidden] {
+  margin-left: auto;
+  transition: transform 280ms var(--reading-ease);
+}
+.post-page .post-nav-link {
+  transition-property: border-color, background-color, color;
+}
+.post-page .heading-link {
+  transition:
+    opacity 180ms ease,
+    color 180ms ease;
+}
+[data-reading-link]:focus-visible [data-reading-title],
+[data-reading-link][data-reading-title]:focus-visible {
+  text-decoration-color: currentColor;
+}
+.post-related a:focus-visible > [aria-hidden] {
+  transform: translate(3px, -3px);
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-reading-link]:hover [data-reading-title],
+  [data-reading-link][data-reading-title]:hover {
+    text-decoration-color: currentColor;
+  }
+  .post-related a:hover > [aria-hidden] {
+    transform: translate(3px, -3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  html[data-theme-changing] * {
+    transition: none !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.001ms !important;
+  }
+  .entry-row--blog a,
+  .entry-row--blog .entry-arrow,
+  [data-reading-title],
+  [data-reading-link],
+  [data-reading-link] svg,
+  .post-related a > [aria-hidden],
+  .post-page .heading-link,
+  [data-post-toc] a,
+  [data-post-toc]::before,
+  .post-page .copy-code,
+  .progress-bar,
+  #btt-btn-container,
+  [data-button="back-to-top"],
+  [data-button="back-to-top"] svg,
+  #theme-btn svg,
+  .article-lightbox [data-image-close],
+  #post-toc-dialog::backdrop,
+  .article-lightbox::backdrop {
+    animation: none !important;
+    transition: none !important;
+  }
+}

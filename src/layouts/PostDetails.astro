@@ -21,7 +21,10 @@ import {
   createDeterministicSlug,
   resolveLegacyPostSlug,
 } from "@/utils/legacySlug";
-import { slugifyStr } from "@/utils/slugify";
+import {
+  articleTransitionName,
+  readingTransition,
+} from "@/utils/reading-motion";
 import { getTagPath } from "@/utils/tagPath";
 import { SITE } from "@/config.ts";
 
@@ -112,6 +115,8 @@ const nextPost =
   <BackButton currentTitle={title} />
   <main
     id="main-content"
+    transition:name="reading-surface"
+    transition:animate={readingTransition}
     class:list={[
       "post-page relative app-layout pb-12",
       { "mt-8": !SITE.showBackButton },
@@ -124,7 +129,11 @@ const nextPost =
         <span aria-hidden="true"></span>WRITING / 文章
       </p>
       <h1
-        transition:name={slugifyStr(title.replaceAll(".", "-"))}
+        transition:name={articleTransitionName(
+          getPath(post.id, post.filePath, true, postSlug),
+        )}
+        transition:animate="initial"
+        data-article-title
         class="post-title"
       >
         {title}
@@ -238,6 +247,7 @@ const nextPost =
         prevPost ? (
           <a
             href={getPath(prevPost.id, prevPost.filePath, true, prevPost.slug)}
+            data-reading-link
             class="post-nav-link group relative flex flex-col gap-1 rounded-2xl border border-border/20 px-5 py-4 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5"
           >
             <div class="post-nav-bg" />
@@ -258,7 +268,10 @@ const nextPost =
                 上一篇
               </span>
             </div>
-            <span class="line-clamp-2 text-sm leading-snug font-medium text-foreground/70 transition-colors duration-200 group-hover:text-accent">
+            <span
+              data-reading-title
+              class="line-clamp-2 text-sm leading-snug font-medium text-foreground/70 transition-colors duration-200 group-hover:text-accent"
+            >
               {prevPost.title}
             </span>
           </a>
@@ -270,6 +283,7 @@ const nextPost =
         nextPost && (
           <a
             href={getPath(nextPost.id, nextPost.filePath, true, nextPost.slug)}
+            data-reading-link
             class="post-nav-link group relative col-start-2 flex flex-col items-end gap-1 rounded-2xl border border-border/20 px-5 py-4 text-end transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5"
           >
             <div class="post-nav-bg" />
@@ -290,7 +304,10 @@ const nextPost =
                 <polyline points="12 5 19 12 12 19" />
               </svg>
             </div>
-            <span class="line-clamp-2 text-sm leading-snug font-medium text-foreground/70 transition-colors duration-200 group-hover:text-accent">
+            <span
+              data-reading-title
+              class="line-clamp-2 text-sm leading-snug font-medium text-foreground/70 transition-colors duration-200 group-hover:text-accent"
+            >
               {nextPost.title}
             </span>
           </a>

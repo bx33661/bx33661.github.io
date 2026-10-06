@@ -1,6 +1,7 @@
 ---
 import { SITE } from "@/config.ts";
 import { getArticleDates } from "@/utils/article-discovery";
+import { articleTransitionName } from "@/utils/reading-motion";
 
 type Props = {
   href: string;
@@ -60,7 +61,17 @@ const formatDate = (value: Date) => dateLabel.format(value);
   }
   <div class="entry-content">
     <div class="entry-heading">
-      <Heading><a href={href}>{title}</a></Heading>
+      <Heading
+        ><a
+          href={href}
+          data-article-title={variant === "blog" ? "" : undefined}
+          transition:name={variant === "blog"
+            ? articleTransitionName(href)
+            : undefined}
+          transition:animate={variant === "blog" ? "initial" : undefined}
+          >{title}</a
+        ></Heading
+      >
       {category && <span class="entry-category">{category}</span>}
     </div>
     <p>{description}</p>

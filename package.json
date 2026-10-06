@@ -16,7 +16,7 @@
     "verify:quick": "PUBLIC_ENABLE_ANALYTICS=false PUBLIC_ENABLE_COMMENTS=false npm run lint && PUBLIC_ENABLE_ANALYTICS=false PUBLIC_ENABLE_COMMENTS=false npm run typecheck && npm run test && npm run content:check",
     "verify:full": "npm run verify:quick && PUBLIC_ENABLE_ANALYTICS=false PUBLIC_ENABLE_COMMENTS=false npm run build && npm run smoke:dist && npm run verify:visual",
     "verify:visual": "node scripts/visual-regression.mjs",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && pagefind --site dist",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build --force && pagefind --site dist",
     "build:vercel": "npm run build",
     "preview": "astro preview",
     "sync": "astro sync",

@@ -7,6 +7,7 @@ type SearchEntry = {
 };
 
 type SearchOptions = {
+  signal?: AbortSignal;
   initialQuery?: string;
   limit?: number;
   onQueryChange?: (query: string) => void;
@@ -30,7 +31,7 @@ async function getEntries(): Promise<SearchEntry[]> {
 /** Local development uses the existing JSON route; production uses Pagefind. */
 export async function mountDevSearch(
   mount: HTMLElement,
-  { initialQuery = "", limit = 8, onQueryChange }: SearchOptions = {},
+  { initialQuery = "", limit = 8, onQueryChange, signal }: SearchOptions = {},
 ): Promise<HTMLInputElement> {
   const form = document.createElement("form");
   form.className = "search-fallback-form";
@@ -57,11 +58,15 @@ export async function mountDevSearch(
   try {
     entries = await getEntries();
   } catch {
-    status.textContent = "搜索索引暂时不可用，请稍后重试。";
+    if (!signal?.aborted && mount.isConnected)
+      status.textContent = "搜索索引暂时不可用，请稍后重试。";
     return input;
   }
 
+  if (signal?.aborted || !mount.isConnected) return input;
+
   const render = () => {
+    if (signal?.aborted || !mount.isConnected) return;
     const query = input.value.trim().toLocaleLowerCase();
     onQueryChange?.(input.value.trim());
     list.replaceChildren();
@@ -94,11 +99,15 @@ export async function mountDevSearch(
     }
   };
 
-  input.addEventListener("input", render);
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    list.querySelector<HTMLAnchorElement>("a")?.click();
-  });
+  input.addEventListener("input", render, { signal });
+  form.addEventListener(
+    "submit",
+    (event) => {
+      event.preventDefault();
+      list.querySelector<HTMLAnchorElement>("a")?.click();
+    },
+    { signal },
+  );
   render();
   return input;
 }

@@ -53,22 +53,24 @@ const series = getArticleSeries(current, summaries, articleSeries);
                 <small>正在阅读</small>
               </span>
             ) : (
-              <a href={chapter.href}>{chapter.title}</a>
+              <a href={chapter.href} data-reading-link data-reading-title>
+                {chapter.title}
+              </a>
             )}
           </li>
         ))}
       </ol>
       <nav class="post-series-nav" aria-label="系列前后篇">
         {series.previous && (
-          <a href={series.previous.href}>
+          <a href={series.previous.href} data-reading-link>
             <span>← 系列上一篇</span>
-            {series.previous.title}
+            <span data-reading-title>{series.previous.title}</span>
           </a>
         )}
         {series.next && (
-          <a href={series.next.href}>
+          <a href={series.next.href} data-reading-link>
             <span>系列下一篇 →</span>
-            {series.next.title}
+            <span data-reading-title>{series.next.title}</span>
           </a>
         )}
       </nav>
@@ -92,8 +94,8 @@ const series = getArticleSeries(current, summaries, articleSeries);
       <ul>
         {related.map((item) => (
           <li>
-            <a href={item.href}>
-              {item.title}
+            <a href={item.href} data-reading-link>
+              <span data-reading-title>{item.title}</span>
               <span aria-hidden="true">↗</span>
             </a>
           </li>

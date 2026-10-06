@@ -140,12 +140,16 @@ const pathSegments = currentUrlPath.split("/").filter((s) => s.trim());
 </style>
 
 <script>
+  import { internalBackPath, readStorage } from "@/utils/browser-storage";
   /* Update back URL from session */
   function updateGoBackUrl() {
     const backButton: HTMLAnchorElement | null =
       document.querySelector("#back-button");
 
-    const backUrl = sessionStorage.getItem("backUrl");
+    const backUrl = internalBackPath(
+      readStorage(() => sessionStorage, "backUrl"),
+      location.origin,
+    );
 
     if (backUrl && backButton) {
       backButton.href = backUrl;

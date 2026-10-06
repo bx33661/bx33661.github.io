@@ -1,38 +1,27 @@
-// Constants
-const THEME = "theme";
-const LIGHT = "light";
-const DARK = "dark";
+import { finishThemeReveal, revealTheme } from "./theme-motion";
 
-// Initial color scheme
-// An explicit choice wins; otherwise follow the operating system.
-const initialColorScheme = "";
+import { createThemePreference, type Theme } from "../utils/theme-preference";
 
-function getPreferTheme(): string {
-  // get theme data from local storage (user's explicit choice)
-  const currentTheme = localStorage.getItem(THEME);
-  if (currentTheme === LIGHT || currentTheme === DARK) return currentTheme;
-
-  // return initial color scheme if it is set (site default)
-  if (initialColorScheme) return initialColorScheme;
-
-  // return user device's prefer color scheme (system fallback)
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? DARK
-    : LIGHT;
-}
-
-// Use existing theme value from inline script if available, otherwise detect
-let themeValue = window.theme?.themeValue ?? getPreferTheme();
+const preference = createThemePreference(
+  () => localStorage,
+  () => window.matchMedia("(prefers-color-scheme: dark)").matches,
+);
+let themeValue = preference.get();
+let themeMotionTimer = 0;
+const finishThemeMotion = () => {
+  clearTimeout(themeMotionTimer);
+  delete document.documentElement.dataset.themeChanging;
+};
 
 function setPreference(): void {
-  localStorage.setItem(THEME, themeValue);
+  preference.select(themeValue);
   reflectPreference();
 }
 
 function reflectPreference(): void {
   document.firstElementChild?.setAttribute("data-theme", themeValue);
 
-  const label = themeValue === DARK ? "切换到浅色模式" : "切换到深色模式";
+  const label = themeValue === "dark" ? "切换到浅色模式" : "切换到深色模式";
   for (const button of document.querySelectorAll(
     "#theme-btn, #theme-btn-mobile",
   )) {
@@ -48,7 +37,10 @@ function reflectPreference(): void {
     const computedStyles = window.getComputedStyle(body);
 
     // Get the background color property
-    const bgColor = computedStyles.backgroundColor;
+    const bgColor =
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--background")
+        .trim() || computedStyles.backgroundColor;
 
     // Set the background color in <meta theme-color ... />
     document
@@ -57,50 +49,62 @@ function reflectPreference(): void {
   }
 }
 
-// Update the global theme API
-if (window.theme) {
-  window.theme.setPreference = setPreference;
-  window.theme.reflectPreference = reflectPreference;
-} else {
-  window.theme = {
-    themeValue,
-    setPreference,
-    reflectPreference,
-    getTheme: () => themeValue,
-    setTheme: (val: string) => {
-      themeValue = val;
-    },
-  };
-}
+// The inline script only sets first-paint CSS. This module owns the live API.
+window.theme = {
+  get themeValue() {
+    return themeValue;
+  },
+  setPreference,
+  reflectPreference,
+  getTheme: () => themeValue,
+  setTheme: (value: Theme) => {
+    themeValue = value;
+  },
+};
 
 // Ensure theme is reflected (in case body wasn't ready when inline script ran)
 reflectPreference();
+
+let themeController: AbortController | null = null;
 
 function setThemeFeature(): void {
   // set on load so screen readers can get the latest value on the button
   reflectPreference();
 
   // now this script can find and listen for clicks on the control
-  const toggleTheme = () => {
-    themeValue = themeValue === LIGHT ? DARK : LIGHT;
-    window.theme?.setTheme(themeValue);
-    setPreference();
+  const toggleTheme = (event: Event) => {
+    finishThemeMotion();
+    finishThemeReveal();
+    const nextTheme = themeValue === "light" ? "dark" : "light";
+    // Persist the intent before the snapshot callback; system changes must not
+    // override an explicit choice during its brief preparation window.
+    preference.select(nextTheme);
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.dataset.themeChanging = "true";
+      themeMotionTimer = window.setTimeout(finishThemeMotion, 300);
+    }
+    const revealing = revealTheme(event.currentTarget as HTMLElement, () => {
+      // Another tab can choose a theme while the native snapshot prepares.
+      // Read the newest intent; never persist an older captured choice again.
+      themeValue = preference.get();
+      window.theme?.setTheme(themeValue);
+      reflectPreference();
+    });
+    if (revealing) {
+      clearTimeout(themeMotionTimer);
+      themeMotionTimer = window.setTimeout(finishThemeMotion, 650);
+    }
   };
 
   const themeBtn = document.querySelector("#theme-btn");
   const themeBtnMobile = document.querySelector("#theme-btn-mobile");
 
-  // Remove previous listeners to avoid duplicates on view transitions
-  const freshBtn = themeBtn?.cloneNode(true) as Element | null;
-  if (themeBtn && freshBtn) {
-    themeBtn.replaceWith(freshBtn);
-    freshBtn.addEventListener("click", toggleTheme);
-  }
-
-  const freshBtnMobile = themeBtnMobile?.cloneNode(true) as Element | null;
-  if (themeBtnMobile && freshBtnMobile) {
-    themeBtnMobile.replaceWith(freshBtnMobile);
-    freshBtnMobile.addEventListener("click", toggleTheme);
+  themeController?.abort();
+  themeController = new AbortController();
+  for (const button of [themeBtn, themeBtnMobile]) {
+    button?.addEventListener("click", toggleTheme, {
+      signal: themeController.signal,
+    });
   }
 }
 
@@ -113,6 +117,8 @@ document.addEventListener("astro:after-swap", setThemeFeature);
 // Set theme-color value before page transition
 // to avoid navigation bar color flickering in Android dark mode
 document.addEventListener("astro:before-swap", (event) => {
+  finishThemeReveal();
+  finishThemeMotion();
   const astroEvent = event;
   const bgColor = document
     .querySelector("meta[name='theme-color']")
@@ -125,25 +131,27 @@ document.addEventListener("astro:before-swap", (event) => {
   }
 });
 
-// sync with system changes
+// System preference only applies when no explicit choice exists.
 window
   .matchMedia("(prefers-color-scheme: dark)")
-  .addEventListener("change", ({ matches: isDark }) => {
-    // Do not overwrite a choice made with the site's theme button.
-    if (
-      localStorage.getItem(THEME) === LIGHT ||
-      localStorage.getItem(THEME) === DARK
-    ) {
-      return;
-    }
-    themeValue = isDark ? DARK : LIGHT;
-    window.theme?.setTheme(themeValue);
+  .addEventListener("change", () => {
+    themeValue = preference.get();
     reflectPreference();
   });
 
 window.addEventListener("storage", (event) => {
-  if (event.key !== THEME) return;
-  themeValue = getPreferTheme();
-  window.theme?.setTheme(themeValue);
+  // clear() emits a null key; sessionStorage events must not affect this state.
+  if (event.key !== "theme" && event.key !== null) return;
+  try {
+    if (event.storageArea !== null && event.storageArea !== localStorage)
+      return;
+  } catch {
+    // A peer can emit an event even when this tab has denied storage access.
+    return;
+  }
+  finishThemeReveal(false);
+  finishThemeMotion();
+  preference.sync();
+  themeValue = preference.get();
   reflectPreference();
 });

@@ -1,4 +1,5 @@
 ---
+import { readingTransition } from "@/utils/reading-motion";
 import type { GetStaticPathsOptions } from "astro";
 import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
@@ -43,7 +44,11 @@ const noindex = true;
     titleTransition={tag}
     pageDesc={`与「${tagName}」相关的文章。`}
   >
-    <ul class="entry-list">
+    <ul
+      class="entry-list"
+      transition:name="reading-surface"
+      transition:animate={readingTransition}
+    >
       {
         page.data.map((post) => (
           <EntryRow

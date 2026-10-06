@@ -2,8 +2,11 @@ import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
+
 import { checkArticleExperience } from "./article-experience-browser.mjs";
 import { checkMarkdownReading } from "./markdown-reading-browser.mjs";
+import { checkReadingMotion } from "./reading-motion-browser.mjs";
+import { checkCodeHardening, checkStorageAndSearchBoundaries } from "./code-hardening-browser.mjs";
 
 const root = process.cwd();
 const output = path.join(root, ".visual-artifacts");
@@ -63,7 +66,8 @@ try {
   const browser = await chromium.launch({ headless: true, ...launchOptions });
   try {
     for (const [viewportName, viewport] of viewports) {
-      const page = await browser.newPage({ viewport, deviceScaleFactor: 1 });
+      const context = await browser.newContext({ viewport, deviceScaleFactor: 1 });
+      const page = await context.newPage();
       const errors = [];
       const failuresBeforeViewport = failures.length;
       await page.context().tracing.start({ screenshots: true, snapshots: true, sources: true });
@@ -74,10 +78,12 @@ try {
       await page.goto(base, { waitUntil: "domcontentloaded" });
       for (const theme of ["light", "dark"]) {
         for (const [name, route] of routes) {
+          await page.evaluate((value) => localStorage.setItem("theme", value), theme);
           const response = await page.goto(`${base}${route}`, { waitUntil: "domcontentloaded" });
           if (!response?.ok()) failures.push(`${viewportName}/${theme}/${name}: HTTP ${response?.status() ?? "none"}`);
           await page.evaluate(async (value) => {
             document.documentElement.dataset.theme = value;
+            localStorage.setItem("theme", value);
             await document.fonts.ready;
           }, theme);
           const metrics = await page.evaluate(() => ({
@@ -120,9 +126,8 @@ try {
           if (name === "article") {
             try {
               await checkArticleExperience(page, { base, output, prefix: `${theme}-${viewportName}` });
-              await checkMarkdownReading(page, { base, output, prefix: `${theme}-${viewportName}` });
               const label = `${viewportName}/${theme}/article-experience`;
-              passedFlows.push(label, `${viewportName}/${theme}/markdown-reading`);
+              passedFlows.push(label);
               console.log(`[OK] browser flow: ${label}`);
             } catch (error) {
               failures.push(`${viewportName}/${theme}/article-experience: ${error instanceof Error ? error.message : String(error)}`);
@@ -146,21 +151,41 @@ try {
               if (!loaded) failures.push(`${viewportName}/${theme}/cybergym: image failed to decode`);
             }
           }
+          const flows = name === "article"
+            ? [["markdown-reading", checkMarkdownReading], ["reading-motion", checkReadingMotion]]
+            : name === "search"
+            ? [["code-hardening", checkCodeHardening]]
+            : [];
+          for (const [flowName, check] of flows) {
+            const label = `${viewportName}/${theme}/${flowName}`;
+            try {
+              await check(page, { base, output, prefix: `${theme}-${viewportName}` });
+              passedFlows.push(label);
+              console.log(`[OK] browser flow: ${label}`);
+            } catch (error) {
+              failures.push(`${label}: ${error instanceof Error ? error.message : String(error)}`);
+              await page.screenshot({ path: path.join(output, `failure-${flowName}-${theme}-${viewportName}.png`), fullPage: true });
+            }
+          }
         }
       }
       if (errors.length) failures.push(`${viewportName}: browser errors: ${errors.join(" | ")}`);
       if (failures.length > failuresBeforeViewport)
         await page.context().tracing.stop({ path: path.join(output, `trace-${viewportName}.zip`) });
       else await page.context().tracing.stop();
-      await page.close();
+      await context.close();
     }
-    const page = await browser.newPage();
+    const context = await browser.newContext();
+    const page = await context.newPage();
     await page.goto(base);
     const before = await page.locator("html").getAttribute("data-theme");
     await page.locator("#theme-btn").click();
+    await page.waitForFunction((value) => document.documentElement.dataset.theme !== value, before);
+    await page.waitForFunction(() => !document.documentElement.hasAttribute("data-theme-reveal"));
     const after = await page.locator("html").getAttribute("data-theme");
     if (before === after) failures.push("theme toggle did not change data-theme");
-    await page.close();
+    await context.close();
+    await checkStorageAndSearchBoundaries(browser, { base });
   } finally {
     await browser.close();
   }
@@ -171,6 +196,7 @@ try {
   stopServer();
 }
 
-await fs.writeFile(path.join(output, "report.txt"), `${failures.length ? failures.join("\n") : "PASS: 28 route/theme/viewport screenshots; 8 article/markdown browser flows; contrast, overflow, headings, theme toggle"}\n`);
+const summary = `PASS: ${routes.length * viewports.length * 2} route/theme/viewport screenshots; ${passedFlows.length} browser flows; contrast, overflow, headings, theme toggle`;
+await fs.writeFile(path.join(output, "report.txt"), `${failures.length ? failures.join("\n") : summary}\n${passedFlows.map((flow) => `[OK] ${flow}`).join("\n")}\n`);
 console.log(await fs.readFile(path.join(output, "report.txt"), "utf8"));
 process.exitCode = failures.length ? 1 : 0;

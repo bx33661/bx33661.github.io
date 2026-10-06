@@ -1,6 +1,7 @@
 import { setupArticleToc } from "./article-toc";
 import { setupArticleLightbox } from "./article-lightbox";
 import { setupArticleFormatting } from "./article-formatting";
+import { setupReadingControls } from "./reading-controls";
 
 let postController: AbortController | null = null;
 
@@ -9,7 +10,7 @@ function setupProgressBar(article: HTMLElement, signal: AbortSignal) {
   container.className =
     "progress-container fixed top-0 z-50 h-1 w-full bg-background";
   const bar = document.createElement("div");
-  bar.className = "progress-bar h-1 w-0 bg-accent";
+  bar.className = "progress-bar h-1 w-full bg-accent";
   bar.id = "myBar";
   bar.setAttribute("role", "progressbar");
   bar.setAttribute("aria-label", "正文阅读进度");
@@ -27,7 +28,7 @@ function setupProgressBar(article: HTMLElement, signal: AbortSignal) {
       0,
       Math.min(100, ((scrollY - start) / distance) * 100),
     );
-    bar.style.width = `${value}%`;
+    bar.style.transform = `scaleX(${value / 100})`;
     bar.setAttribute("aria-valuenow", String(Math.round(value)));
   };
   const schedule = () => {
@@ -89,23 +90,30 @@ function attachCopyButtons(article: HTMLElement, signal: AbortSignal) {
     }
     const copy = button;
     copy.textContent = "Copy";
+    delete copy.dataset.copyState;
     let timer = 0;
+    let sequence = 0;
     copy.addEventListener(
       "click",
       async () => {
+        const token = ++sequence;
+        clearTimeout(timer);
         try {
           await navigator.clipboard.writeText(
             block.querySelector("code")?.innerText ?? "",
           );
-          if (signal.aborted) return;
+          if (signal.aborted || token !== sequence) return;
           copy.textContent = "Copied";
+          copy.dataset.copyState = "copied";
         } catch {
-          if (signal.aborted) return;
+          if (signal.aborted || token !== sequence) return;
           copy.textContent = "复制失败";
+          copy.dataset.copyState = "error";
         }
         clearTimeout(timer);
         timer = window.setTimeout(() => {
           copy.textContent = "Copy";
+          delete copy.dataset.copyState;
         }, 1200);
       },
       { signal },
@@ -126,10 +134,8 @@ export function initPostEnhancements() {
   attachCopyButtons(article, signal);
   setupArticleToc(signal);
   setupArticleLightbox(signal);
+  setupReadingControls(signal);
 }
 
 document.addEventListener("astro:page-load", initPostEnhancements);
 document.addEventListener("astro:before-swap", () => postController?.abort());
-document.addEventListener("astro:after-swap", () =>
-  window.scrollTo({ left: 0, top: 0, behavior: "instant" }),
-);
