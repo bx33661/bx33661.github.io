@@ -20,6 +20,9 @@ import {
   readNotificationState,
   notificationDelta,
   requireBaiduSuccess,
+  normalizeBaiduSite,
+  baiduPushBudget,
+  isBaiduQuotaExhausted,
 } from "./seo-notification-state.mjs";
 
 import fs from "node:fs/promises";
@@ -31,7 +34,7 @@ const ROOT = path.resolve(__dirname, "..");
 const DIST_PATH = path.join(ROOT, "dist");
 const CACHE_PATH = path.join(ROOT, ".baidu-push-cache.json");
 const BAIDU_API = "http://data.zz.baidu.com/urls";
-const BATCH_SIZE = 2000; // Baidu allows up to 2000 URLs per request
+const BATCH_SIZE = 10; // Baidu allows up to 2000 URLs per request
 
 function log(...args) {
   console.log("[baidu-push]", ...args);
@@ -65,7 +68,7 @@ async function writeCache(cache) {
 
 async function pushBatch(urls, site, token) {
   const body = urls.join("\n");
-  const apiUrl = `${BAIDU_API}?site=${encodeURIComponent(site)}&token=${encodeURIComponent(token)}`;
+  const apiUrl = `${BAIDU_API}?site=${encodeURIComponent(new URL(site).host)}&token=${encodeURIComponent(token)}`;
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -83,6 +86,9 @@ async function pushBatch(urls, site, token) {
     data = { raw: text };
   }
 
+  if (!response.ok && isBaiduQuotaExhausted(data)) {
+    return { success: 0, remain: 0, quotaExhausted: true };
+  }
   if (!response.ok) {
     throw new Error(`Baidu API HTTP ${response.status}: ${text}`);
   }
@@ -107,18 +113,12 @@ async function main() {
     process.exit(args.includes("--require-config") ? 1 : 0);
   }
 
-  // Baidu API expects the site parameter without protocol (e.g. www.example.com)
-  site = site.replace(/^https?:\/\//, "").replace(/\/$/, "");
-
-  if (!site.includes(".")) {
-    error(`Invalid BAIDU_PUSH_SITE: ${process.env.BAIDU_PUSH_SITE}`);
-    process.exit(1);
-  }
+  site = normalizeBaiduSite(site);
 
   let current;
   let urls;
   try {
-    current = await readNotificationState(DIST_PATH, `https://${site}`);
+    current = await readNotificationState(DIST_PATH, site);
     urls = Object.keys(current);
   } catch (err) {
     error(
@@ -159,19 +159,33 @@ async function main() {
     process.exit(0);
   }
 
-  // Push in batches
+  const limitArg = args.find((arg) => arg.startsWith("--limit="));
+  const limit = baiduPushBudget(
+    limitArg?.split("=")[1] || process.env.BAIDU_PUSH_LIMIT || 10,
+  );
+  urlsToPush.sort(
+    (a, b) =>
+      Number(/\/(blog|notes)\/[^/]+\/$/.test(b)) -
+      Number(/\/(blog|notes)\/[^/]+\/$/.test(a)),
+  );
+  const attempted = urlsToPush.slice(0, limit);
+  // Push in bounded batches; unsubmitted URLs remain eligible next time.
   let totalSuccess = 0;
   let totalFailed = 0;
 
-  for (let i = 0; i < urlsToPush.length; i += BATCH_SIZE) {
-    const batch = urlsToPush.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < attempted.length; i += BATCH_SIZE) {
+    const batch = attempted.slice(i, i + BATCH_SIZE);
     const batchNum = Math.floor(i / BATCH_SIZE) + 1;
-    const totalBatches = Math.ceil(urlsToPush.length / BATCH_SIZE);
+    const totalBatches = Math.ceil(attempted.length / BATCH_SIZE);
 
     log(`Pushing batch ${batchNum}/${totalBatches} (${batch.length} URLs)...`);
 
     try {
       const result = await pushBatch(batch, site, token);
+      if (result.quotaExhausted) {
+        log("Daily quota exhausted; pending URLs retained for the next run.");
+        break;
+      }
       requireBaiduSuccess(result, batch.length);
       log(
         `  success: ${result.success ?? "?"}, remain: ${result.remain ?? "?"}`,
@@ -215,7 +229,9 @@ async function main() {
     lastPushAt: new Date().toISOString(),
   });
 
-  log(`Push complete. success=${totalSuccess}, failed=${totalFailed}`);
+  log(
+    `Push complete. success=${totalSuccess}, failed=${totalFailed}, queued=${urlsToPush.length - totalSuccess}`,
+  );
 
   if (totalFailed > 0) {
     process.exit(2);

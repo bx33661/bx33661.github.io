@@ -67,3 +67,27 @@ export function requireBaiduSuccess(result, count) {
     );
   }
 }
+
+export function normalizeBaiduSite(input) {
+  const url = new URL(input.includes("://") ? input : `https://${input}`);
+  if (
+    !["http:", "https:"].includes(url.protocol) ||
+    url.username ||
+    url.password ||
+    url.pathname !== "/" ||
+    url.search ||
+    url.hash
+  )
+    throw new Error("Invalid Baidu site resource");
+  return url.origin;
+}
+
+export function baiduPushBudget(value = 10) {
+  const limit = Number(value);
+  if (!Number.isInteger(limit) || limit < 1 || limit > 2000)
+    throw new Error("Invalid Baidu push limit");
+  return limit;
+}
+export function isBaiduQuotaExhausted(result) {
+  return result.error === 400 && /quota|配额/i.test(result.message || "");
+}

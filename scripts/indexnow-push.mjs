@@ -25,6 +25,7 @@ export async function submitIndexNow({ site, key, urls, fetcher = fetch }) {
   });
   if (!proof.ok || (await proof.text()).trim() !== key)
     throw new Error("Published IndexNow key file did not match");
+  let confirmed = true;
   for (let i = 0; i < urls.length; i += 10000) {
     const response = await fetcher("https://api.indexnow.org/indexnow", {
       method: "POST",
@@ -39,9 +40,11 @@ export async function submitIndexNow({ site, key, urls, fetcher = fetch }) {
       redirect: "error",
     });
     // 202 is pending validation: do not mark the snapshot delivered yet.
-    if (response.status !== 200)
+    if (![200, 202].includes(response.status))
       throw new Error(`IndexNow not confirmed: HTTP ${response.status}`);
+    if (response.status === 202) confirmed = false;
   }
+  return { confirmed };
 }
 
 async function main() {
@@ -66,7 +69,13 @@ async function main() {
     return;
   }
   if (!urls.length) return;
-  await submitIndexNow({ site, key, urls });
+  const result = await submitIndexNow({ site, key, urls });
+  if (!result.confirmed) {
+    console.log(
+      "[indexnow] HTTP 202: accepted, key validation pending; snapshot retained for retry",
+    );
+    return;
+  }
   await fs.writeFile(`${CACHE}.tmp`, JSON.stringify(current, null, 2) + "\n");
   await fs.rename(`${CACHE}.tmp`, CACHE);
   console.log(

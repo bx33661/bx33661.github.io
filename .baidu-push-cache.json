@@ -1,4 +1,27 @@
 {
-  "pushed": [],
-  "lastPushAt": null
+  "pushed": [
+    "https://www.bx33661.com/notes/list/",
+    "https://www.bx33661.com/blog/websocket-handshake-message-replay/",
+    "https://www.bx33661.com/blog/openrasp-sql-detect-bypass/",
+    "https://www.bx33661.com/blog/cybergym-ai-security-agent-benchmark/",
+    "https://www.bx33661.com/blog/threat-modeling-and-trust-boundaries/",
+    "https://www.bx33661.com/blog/wechat-miniapp-security-audit/",
+    "https://www.bx33661.com/blog/cnvd-2026-20654-lg-nas-rce/",
+    "https://www.bx33661.com/blog/oh-my-vul-1-0/",
+    "https://www.bx33661.com/blog/agent-teams/",
+    "https://www.bx33661.com/blog/mcp-security/"
+  ],
+  "fingerprints": {
+    "https://www.bx33661.com/notes/list/": "fab4df2a7e8d6abf111e12e3aff3ee407a25cf291751cef9d55c24ebf356dee5",
+    "https://www.bx33661.com/blog/websocket-handshake-message-replay/": "eec1a9c63c45f027e87e8b06f83a1f2a773b105004dfeb5dda60f4f50e322b38",
+    "https://www.bx33661.com/blog/openrasp-sql-detect-bypass/": "d4f0e44454358692b245d20b8af8eb00b6be000147c3f9b1a9b5d6f0c205bce1",
+    "https://www.bx33661.com/blog/cybergym-ai-security-agent-benchmark/": "8cda62ca563e2c038ce9438888e6068b5d4a9750270f4b7a789f13482a1f669b",
+    "https://www.bx33661.com/blog/threat-modeling-and-trust-boundaries/": "96871518d33e030ead93952c19720f8f399e41e7b1755a7d7f788f17255a5ef5",
+    "https://www.bx33661.com/blog/wechat-miniapp-security-audit/": "5d31df68372dddce01e8830ca54055752dcc88fee06c39426945da330fe1dde3",
+    "https://www.bx33661.com/blog/cnvd-2026-20654-lg-nas-rce/": "e063f9687015b9372d35c02e51e700aca05e6b4f962ab439b57463ec60e0eb3b",
+    "https://www.bx33661.com/blog/oh-my-vul-1-0/": "2a2b95e4465a05823df17cc12ced43df9c8aec8ae5e6d0d8531056cb972fff51",
+    "https://www.bx33661.com/blog/agent-teams/": "bce72f49a4ee2f23d1dc9b03696ce4a169cff37d42c2949a904b6f52ac387b4d",
+    "https://www.bx33661.com/blog/mcp-security/": "7d364ae824b98772ad19dac8099cdde6570bd375dbe6c7b8724303f36adba7d2"
+  },
+  "lastPushAt": "2026-10-08T05:50:05.631Z"
 }
