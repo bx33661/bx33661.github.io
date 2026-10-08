@@ -6,7 +6,7 @@ Use Node from `.nvmrc` and `npm ci` against `package-lock.json`. `npm run harnes
 
 `npm run verify:quick` runs ESLint, Astro typecheck, Node unit tests, source smoke, and content check. `npm run verify:full` adds the Astro/Pagefind build, dist smoke, and `verify:visual`. Local verification disables analytics and comments; it never runs `baidu:push`. CI uses the same full command and installs Playwright Chromium first. On macOS, visual checks use the installed Google Chrome.
 
-`verify:visual` starts an isolated preview on the doctor port and captures 24 light/dark desktop/mobile screenshots of home, friends, article, search, archive, and gallery in `.visual-artifacts/`. It checks HTTP status, horizontal overflow, clipped visible headings, homepage secondary-text contrast (at least 4.5:1), early placement of featured research on mobile, and theme switching. The ignored screenshot directory and `report.txt` are uploaded by CI on failure. Screenshots are diagnostic artifacts, not pixel-perfect golden comparisons; review them for visual changes before delivery.
+`verify:visual` starts an isolated preview on the doctor port and captures 24 light/dark desktop/mobile screenshots of home, friends, article, search, archive, and gallery in `.visual-artifacts/`. It checks HTTP status, horizontal overflow, clipped visible headings, homepage body-text contrast (at least 4.5:1), full introduction and education entries, loaded school emblems, removed resume details, blog navigation, and theme switching. The ignored screenshot directory and `report.txt` are uploaded by CI on failure. Screenshots are diagnostic artifacts, not pixel-perfect golden comparisons; review them for visual changes before delivery.
 
 ## Content contract
 

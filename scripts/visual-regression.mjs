@@ -103,11 +103,11 @@ try {
             failures.push(`${viewportName}/${theme}/${name}: clipped headings ${metrics.clippedHeadings.join(" | ")}`);
           await page.screenshot({ path: path.join(output, `${name}-${theme}-${viewportName}.png`), fullPage: true });
           if (name === "home") {
-            const labels = await page.locator(".hero-aside, .education-section").allTextContents();
-            if (!labels.join(" ").includes("Bachelor's Degree") || !labels.join(" ").includes("Master's Degree"))
+            const labels = await page.locator(".education-section").allTextContents();
+            if (!labels.join(" ").includes("Bachelor's studies in Information Security") || !labels.join(" ").includes("Master's studies"))
               failures.push(`${viewportName}/${theme}/home: degree labels missing`);
             const contrast = await page.evaluate(() => {
-              const element = document.querySelector(".home-section h2 span");
+              const element = document.querySelector(".intro-prose");
               if (!element) return 0;
               const rgb = (text) => text.match(/[\d.]+/g)?.slice(0, 3).map(Number) ?? [0, 0, 0];
               const light = (values) => values.map((value) => {
@@ -119,9 +119,25 @@ try {
               return (Math.max(foreground, background) + .05) / (Math.min(foreground, background) + .05);
             });
             if (contrast < 4.5) failures.push(`${viewportName}/${theme}/home: secondary text contrast ${contrast.toFixed(2)}:1`);
-            const position = await page.locator(".research-proof").boundingBox();
-            if (viewportName === "mobile" && position && position.y > 844)
-              failures.push(`mobile/${theme}/home: featured research starts at ${Math.round(position.y)}px`);
+            if (await page.locator(".intro-prose p").count() !== 4)
+              failures.push(`${viewportName}/${theme}/home: introduction paragraphs missing`);
+            if (await page.locator(".education-list li").count() !== 2)
+              failures.push(`${viewportName}/${theme}/home: expected two education entries`);
+            for (const image of await page.locator(".education-list img").all()) {
+              await image.scrollIntoViewIfNeeded();
+              if (!await image.evaluate(async (element) => {
+                try { await element.decode(); return element.naturalWidth > 0; }
+                catch { return false; }
+              })) failures.push(`${viewportName}/${theme}/home: school emblem failed to load`);
+            }
+            const mainText = await page.locator("main").innerText();
+            if (/Zhang Boxiang|张博翔|2023|2027|Honors & awards|Research interests/.test(mainText))
+              failures.push(`${viewportName}/${theme}/home: removed resume content remains`);
+            await page.locator(".read-link").click();
+            await page.waitForURL(`${base}/blog/`);
+            await page.goBack();
+            await page.locator(".academic-home").waitFor({ state: "visible" });
+
           }
           if (name === "article") {
             try {

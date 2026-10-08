@@ -47,52 +47,31 @@ if (fs.existsSync(homeFile)) {
   if (/rel="preload"[^>]*href="\/touxiang-512\.png"/.test(home))
     failures.push("homepage preloads an unused 512px avatar");
   for (const marker of [
-    "Zhang Boxiang",
-    "张博翔",
-    "Research interests",
-    "Selected work",
-    "PureAutoCodeQL",
-    "Wireshark-MCP",
-    "Honors &amp; awards",
-    "National First Prize",
-    "第九届强网杯全国网络安全挑战赛",
-    "Education",
-    "Hainan University",
-    "University of Chinese Academy of Sciences",
-    "UCAS",
-    "HNU",
-    "2027",
-    "BACHELOR'S DEGREE",
-    "MASTER'S DEGREE",
-    "Recent updates",
-    "Selected writing",
-    "Question",
-    "Method",
-    "Evidence",
-    "/schools/ucas-emblem.webp",
-    "/schools/hainan-university-emblem.webp",
-    "mailto:bx33661@gmail.com",
+    "Hey, I'm", "Welcome to my blog!", "Cybersecurity and Large Language Models (LLMs)",
+    "This is my little corner of the internet", "I don't expect every post",
+    "I hope this blog becomes a space", "Feel free to look around!",
+    "Let's explore the stars and beyond together.", "Education",
+    "Hainan University", "University of Chinese Academy of Sciences", "UCAS", "HNU",
+    "Bachelor's studies in Information Security", "Master's studies",
+    "/schools/ucas-emblem.webp", "/schools/hainan-university-emblem.webp",
+    'lang="en"', 'aria-labelledby="education-title"',
   ]) {
-    if (!home.includes(marker))
-      failures.push(`academic homepage missing: ${marker}`);
+    if (!home.includes(marker)) failures.push(`personal homepage missing: ${marker}`);
   }
-  if (!/href="\/blog\/"/.test(home))
-    failures.push("academic homepage missing blog entry");
-  if (/CURRENTLY|UP NEXT|EXPECTED|预计|Master's studies|undergraduate/.test(home))
-    failures.push("academic homepage still contains education status wording");
-  if (!home.includes("selected-list") || !home.includes("work-list"))
-    failures.push("academic homepage missing selected work or writing list");
-  const selectedWork = home.match(/<div class="work-list"[\s\S]*?<\/div>\s*<\/section>/)?.[0] ?? "";
-  if (!selectedWork.includes("PureAutoCodeQL") || !selectedWork.includes("Wireshark-MCP"))
-    failures.push("selected work must include both research projects");
-  const selectedWriting = home.match(/<ol class="selected-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
-  const latestUpdates = home.match(/<ol class="updates-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
-  if (!selectedWriting.includes("cnvd-2026-20654-lg-nas-rce"))
-    failures.push("selected writing missing vulnerability research article");
-  if (latestUpdates.includes("cnvd-2026-20654-lg-nas-rce"))
-    failures.push("recent updates duplicates selected writing");
-  if (home.includes("18768921736") || home.includes("bx33661@qq.com"))
-    failures.push("homepage exposes private resume contact details");
+  for (const href of ["/blog/", "/notes/", "https://github.com/bx33661"]) {
+    if (!home.includes(`href="${href}"`)) failures.push(`personal homepage missing entry: ${href}`);
+  }
+  const homeMain = home.match(/<main[\s\S]*?<\/main>/)?.[0] ?? "";
+  for (const marker of [
+    "Zhang Boxiang", "张博翔", "Research interests", "Selected work", "Honors &amp; awards",
+    "Recent updates", "2023", "2027", "mailto:", "research-proof", "awards-list",
+    "18768921736", "bx33661@qq.com",
+  ]) {
+    if (homeMain.includes(marker)) failures.push(`personal homepage retains removed content: ${marker}`);
+  }
+  if (!home.includes("bx · Cybersecurity, LLMs &amp; Personal Notes"))
+    failures.push("personal homepage missing updated title");
+
 }
 
 const cyberGymFile = requireBuiltFile("blog/cybergym-ai-security-agent-benchmark/index.html");
@@ -188,9 +167,9 @@ if (fs.existsSync(galleryFile)) {
 const aboutFile = requireBuiltFile("about/index.html");
 if (fs.existsSync(aboutFile)) {
   const about = fs.readFileSync(aboutFile, "utf8");
-  if (!about.includes("Zhang Boxiang") || !about.includes("Research interests"))
-    failures.push("about page missing academic homepage");
-  if (!about.includes("教育经历") || !about.includes("中国科学院大学"))
+  if (!about.includes("Hey, I'm") || !about.includes("Cybersecurity and Large Language Models (LLMs)"))
+    failures.push("about alias missing approved personal introduction");
+  if (!about.includes("Education") || !about.includes("University of Chinese Academy of Sciences"))
     failures.push("about page missing education section");
 }
 

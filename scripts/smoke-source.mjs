@@ -104,8 +104,8 @@ assertHasText(
 );
 assertHasText(
   path.join(repoRoot, "src/components/AcademicHome.astro"),
-  /getCollection\("projects"\)[\s\S]*getCollection\("awards"\)/,
-  "homepage missing structured academic collections",
+  /Cybersecurity and Large Language Models \(LLMs\)[\s\S]*education-section/,
+  "personal homepage missing focus or education section",
 );
 assertNoText(
   path.join(repoRoot, "src/components/AcademicHome.astro"),
