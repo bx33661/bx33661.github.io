@@ -429,3 +429,4 @@ if __name__ == "__main__":
 
 [MCP 简介 - MCP 中文文档](https://mcp-docs.cn/introduction)
 
+想把工具调用接到具体业务流程里，可以接着看[Dify 与 Coze 工作流搭建实践](/blog/dify-coze-workflow/)，其中记录了 GitHub 用户查询和 WP 考点提取两个例子的节点衔接与调试。

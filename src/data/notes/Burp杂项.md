@@ -170,4 +170,4 @@ BP的外带模块
 
 ![](https://gitee.com/bx33661/image/raw/master/path/image-20250108120432707.png)
 
-
+小程序抓包和代码分析的衔接可参考[微信小程序自动化审计实践](/blog/wechat-miniapp-security-audit/)，其中记录了解包、接口整理、身份矩阵和案例报告之间的关系。

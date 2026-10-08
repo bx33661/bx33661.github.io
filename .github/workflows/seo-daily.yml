@@ -1,0 +1,38 @@
+name: Daily published URL notifications
+on:
+  schedule:
+    - cron: "23 2 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: daily-seo-notifications
+  cancel-in-progress: false
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BAIDU_PUSH_SITE: ${{ vars.BAIDU_PUSH_SITE }}
+      BAIDU_PUSH_TOKEN: ${{ secrets.BAIDU_PUSH_TOKEN }}
+      BAIDU_PUSH_LIMIT: "10"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci
+      - uses: actions/cache/restore@v4
+        with:
+          path: .baidu-push-cache.json
+          key: baidu-daily-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: baidu-daily-
+      - name: Download and validate currently published pages
+        run: node scripts/download-published-seo.mjs
+      - name: Notify Baidu within daily budget
+        run: node scripts/baidu-push.mjs --require-config
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: .baidu-push-cache.json
+          key: baidu-daily-${{ github.run_id }}-${{ github.run_attempt }}
