@@ -3,12 +3,10 @@ import type { APIRoute } from "astro";
 const getRobotsTxt = (sitemapIndexURL: URL, sitemapURL: URL, imageSitemapURL: URL) => `
 User-agent: Baiduspider
 Allow: /
-Disallow: /search/
 Disallow: /offline/
 
 User-agent: *
 Allow: /
-Disallow: /search/
 Disallow: /offline/
 
 Sitemap: ${sitemapIndexURL.href}

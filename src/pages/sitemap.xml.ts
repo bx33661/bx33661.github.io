@@ -1,5 +1,6 @@
 import { SITE } from "@/config.ts";
 import type { APIContext } from "astro";
+import { escapeXml, getSitemapLastmod } from "@/utils/sitemap";
 import {
   getAllNotes,
   getAllNoteSlugs,
@@ -23,55 +24,41 @@ export async function GET(context: APIContext) {
     const baseUrl = site.toString().endsWith("/")
       ? site.toString().slice(0, -1)
       : site.toString();
-    const now = new Date().toISOString();
 
     const staticPages = [
       {
         url: buildUrl(baseUrl, "/"),
-        lastmod: now,
         changefreq: "daily",
         priority: "1.0",
       },
       {
         url: buildUrl(baseUrl, "/blog/"),
-        lastmod: now,
         changefreq: "daily",
         priority: "0.9",
       },
       {
         url: buildUrl(baseUrl, "/notes/"),
-        lastmod: now,
         changefreq: "weekly",
         priority: "0.8",
       },
       {
         url: buildUrl(baseUrl, "/galleries/"),
-        lastmod: now,
         changefreq: "weekly",
         priority: "0.8",
       },
       {
-        url: buildUrl(baseUrl, "/about/"),
-        lastmod: now,
-        changefreq: "monthly",
-        priority: "0.7",
-      },
-      {
         url: buildUrl(baseUrl, "/archives/"),
-        lastmod: now,
         changefreq: "weekly",
         priority: "0.7",
       },
       {
         url: buildUrl(baseUrl, "/friends/"),
-        lastmod: now,
         changefreq: "monthly",
         priority: "0.6",
       },
       // /blog/tags/* intentionally omitted — tags are UI filters (noindex), not SEO landing pages.
       {
         url: buildUrl(baseUrl, "/notes/list/"),
-        lastmod: now,
         changefreq: "weekly",
         priority: "0.6",
       },
@@ -79,7 +66,7 @@ export async function GET(context: APIContext) {
 
     const blogPosts = postSlugs.map(({ slug, post }) => ({
       url: buildUrl(baseUrl, `/blog/${encodePathSegment(slug)}/`),
-      lastmod: post.data.pubDatetime.toISOString(),
+      lastmod: getSitemapLastmod(post.data.pubDatetime, post.data.modDatetime),
       changefreq: "monthly",
       priority: "0.7",
     }));
@@ -97,7 +84,6 @@ export async function GET(context: APIContext) {
       { length: Math.max(notesPageCount - 1, 0) },
       (_, index) => ({
         url: buildUrl(baseUrl, `/notes/list/${index + 2}/`),
-        lastmod: now,
         changefreq: "weekly",
         priority: "0.5",
       }),
@@ -110,8 +96,8 @@ export async function GET(context: APIContext) {
 ${allUrls
   .map(
     (page) => `  <url>
-    <loc>${page.url}</loc>
-    <lastmod>${page.lastmod}</lastmod>
+    <loc>${escapeXml(page.url)}</loc>
+    ${"lastmod" in page ? `<lastmod>${page.lastmod}</lastmod>` : ""}
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
   </url>`,

@@ -7,12 +7,10 @@ export async function GET(context: APIContext) {
 
   const sitemaps = [
     {
-      loc: `${baseUrl}/sitemap.xml`,
-      lastmod: new Date().toISOString()
+      loc: `${baseUrl}/sitemap.xml`
     },
     {
-      loc: `${baseUrl}/image-sitemap.xml`,
-      lastmod: new Date().toISOString()
+      loc: `${baseUrl}/image-sitemap.xml`
     }
   ]
 
@@ -22,7 +20,6 @@ ${sitemaps
   .map(
     sitemap => `  <sitemap>
     <loc>${sitemap.loc}</loc>
-    <lastmod>${sitemap.lastmod}</lastmod>
   </sitemap>`
   )
   .join('\n')}
