@@ -1,6 +1,6 @@
 ---
 title: "CSP 绕过思路与 CTF 题目分析"
-description: "深入分析CSP（内容安全策略）规则绕过技术，通过HTB CTF中的Cursed Secret Party题目详细讲解CSP绕过方法和防护机制。"
+description: "以 HTB 的 Cursed Secret Party 为例，分析模板输出与 jsDelivr 脚本白名单如何形成 XSS 利用路径，并整理 CSP 指令、nonce 和脚本哈希的配置机制。"
 date: "2025-09-04"
 tags:
   - "CSP"

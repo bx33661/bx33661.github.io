@@ -1,6 +1,6 @@
 ---
 title: "Java 两数之和练习"
-description: "这份 Java 算法练习仅记录 LeetCode「两数之和」的暴力枚举与哈希表两种写法，尚未覆盖原标题所说的常用题型，因此归入日常练习笔记。"
+description: "以 LeetCode 两数之和为例，记录 Java 的双重循环枚举与哈希表匹配两种写法，用于比较同一问题的不同求解思路。"
 date: 2024-07-26
 tags:
   - "Java"

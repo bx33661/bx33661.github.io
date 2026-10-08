@@ -1,6 +1,6 @@
 ---
 title: "Pass the Hash 攻击原理与防护要点"
-description: "Pass The Hash攻击学习，将窃取到的NTLM Hash作为凭据，直接用于认证和访问网络中的其他主机"
+description: "解释 NTLM 质询响应为何依赖哈希凭据，整理 SAM、LSASS 与域内凭据获取场景，结合 Impacket、Mimikatz 认识 Pass the Hash，并列出凭据保护措施。"
 date: 2025-08-02
 tags:
   - "横向系统"

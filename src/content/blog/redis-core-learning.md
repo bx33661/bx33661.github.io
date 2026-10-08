@@ -1,6 +1,6 @@
 ---
 title: "Redis 与缓存基础：结构、持久化与安全注意点"
-description: "深度总结 Redis 的核心知识点，涵盖五大基本数据类型的应用场景、Python 实战操作，以及缓存穿透、击穿、雪崩等经典问题的解决方案（布隆过滤器等）。"
+description: "记录 Redis 常用命令、TTL、批量操作与 Pipeline，结合 Python 示例学习 Hash、List 和 ZSet，并比较缓存穿透、击穿、雪崩及对应的处理办法。"
 date: 2026-02-10
 tags:
   - "redis"

@@ -1,6 +1,6 @@
 ---
 title: "HTB CTF 题解与思路整理"
-description: "HackTheBox CTF Challenge做题记录，涵盖WEB、MOBILE、CRYPTO、REVERSE等多个安全方向的深入分析与解题思路分享。"
+description: "记录 HTB 的 Spookifier、Trapped Source、Breathtaking View 与 Primed for Action 题解，涉及 Mako 模板注入、前端源码分析、服务端 JavaScript 注入及质数筛选。"
 date: "2025-08-30"
 tags:
   - "HTB"

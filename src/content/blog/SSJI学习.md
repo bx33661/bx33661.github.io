@@ -1,6 +1,6 @@
 ---
 title: "SSJI / 服务端注入学习笔记"
-description: "深入学习服务器端JavaScript代码注入漏洞的原理、利用技巧、沙箱绕过方法以及实际CTF案例分析。"
+description: "从 eval、Function 等动态执行入口认识服务端 JavaScript 注入，整理上下文与构造器链的访问方式，并结合 HTB Breathtaking View 分析沙箱与代码执行边界。"
 date: "2025-09-05"
 tags:
   - "SSJI"

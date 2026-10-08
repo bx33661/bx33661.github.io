@@ -42,6 +42,7 @@ const structuredData = pubDatetime
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       headline: `${title}`,
+      description,
       image: `${socialImageURL}`,
       datePublished: pubDatetime.toISOString(),
       ...(modDatetime && { dateModified: modDatetime.toISOString() }),

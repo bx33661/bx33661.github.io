@@ -1,6 +1,6 @@
 ---
 title: "PsiTransfer DoS 漏洞分析与复现"
-description: "Analysis of a Denial of Service (DoS) vulnerability in psitransfer caused by improper exception handling in file upload logic."
+description: "A PsiTransfer upload PATCH request for an uninitialized file can trigger an unhandled rejection and terminate the server. This note traces lib/store.js, reproduces the crash, and reviews the exception-handling fix."
 date: 2026-02-05
 tags:
   - "psitransfer"

@@ -1,6 +1,6 @@
 ---
 title: "Jenkins 凭证解密与敏感信息获取实战"
-description: "Jenkins 凭证与敏感信息获取：常见暴露面、凭据解密思路与加固建议（授权环境）。"
+description: "在本地 Jenkins 环境中创建测试凭证，说明 credentials.xml、master.key 与 hudson.util.Secret 的作用，并记录密码和 SSH 私钥的解密验证过程。"
 date: 2025-08-10
 tags:
   - "jenkins"

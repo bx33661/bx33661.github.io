@@ -1,6 +1,6 @@
 ---
 title: "Windows 应急响应：日志、进程与持久化排查"
-description: "Windows 应急响应与安全分析笔记：日志、进程、持久化排查与常见加固要点清单。"
+description: "在 Windows Server 环境中记录 IIS 组件、注册表、句柄与常见目录，结合资源监视器、任务计划、用户管理和 Everything 排查异常进程及文件痕迹。"
 date: 2025-05-15
 tags:
   - "Windows"

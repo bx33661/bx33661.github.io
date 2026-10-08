@@ -1,6 +1,6 @@
 ---
 title: "MCP 安全应用场景与常见风险"
-description: "深入探讨MCP（Model Context Protocol）在安全领域的应用，包括安全检查清单、IDA-Pro-MCP等安全工具的实践使用与配置指南。"
+description: "记录 IDA-Pro-MCP 与 CloudSword-MCP 的配置及使用，结合安全检查清单认识 MCP 工具接入，并用官方 SDK、FastMCP 查看工具、提示模板与资源能力。"
 date: 2025-08-15
 tags:
   - "MCP"

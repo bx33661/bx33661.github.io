@@ -1,6 +1,6 @@
 ---
 title: "Metasploit 框架入门：TryHackMe 三关笔记"
-description: "基于 TryHackMe 的 Metasploit 学习笔记：模块、利用流程与渗透测试各阶段基础操作。"
+description: "基于 TryHackMe 练习 Metasploit 的模块搜索、参数设置与扫描，记录 msfvenom 生成测试载荷、会话连接，以及 Python HTTP 服务传输文件的基本操作。"
 date: 2024-01-01
 tags:
   - "Metasploit"

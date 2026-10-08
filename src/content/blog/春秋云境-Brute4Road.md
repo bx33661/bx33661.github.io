@@ -1,6 +1,6 @@
 ---
 title: "春秋云境 Brute4Road 靶场通关记录"
-description: "Brute4Road是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有4个flag，分布于不同的靶机。"
+description: "记录 Brute4Road 的 Redis 入口、Linux SUID 提权、代理转发与内网扫描，随后沿 WordPress、MSSQL 和域凭据线索完成四个 flag 的获取。"
 date: 2025-07-29
 tags:
   - "春秋云境"

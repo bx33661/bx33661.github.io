@@ -1,6 +1,6 @@
 ---
 title: "OpenHarmony CTF：ezAPP 与 SERVER 题解"
-description: "OpenHarmonyCTF-ezAPP_And_SERVER 主要是鸿蒙APP结合Web漏洞分析和学习"
+description: "从 OpenHarmony HAP 包的 ABC 反编译入手，还原客户端接口、字符串编码与认证逻辑，再结合服务端 SQLite 注入完成 ezAPP_And_SERVER 题目。"
 date: 2025-06-23
 tags:
   - "hap"

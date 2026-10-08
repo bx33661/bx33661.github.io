@@ -1,6 +1,6 @@
 ---
 title: "L3HCTF best_profile：Nginx 缓存与 Flask ProxyFix"
-description: "L3hCTF best_profile writeup - nginx cache and Flask ProxyFix"
+description: "复盘 L3HCTF best_profile，结合 Nginx 缓存配置与 Flask ProxyFix 分析请求数据的传递，记录缓存投毒与模板注入串联的解题过程。"
 date: 2024-01-15
 tags:
   - "CTF"

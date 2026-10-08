@@ -1,6 +1,6 @@
 ---
 title: "Dify 与 Coze 工作流搭建实践"
-description: "详细介绍Dify和Coze这两个AI应用开发平台的工作流搭建方法，包括GitHub用户信息查询工作流、CTF WP考点提取工作流等实际案例。涵盖HTTP请求节点、条件分支、LLM节点、代码节点的配置与使用，以及DSL导出、调试技巧等高级功能的实践应用。"
+description: "以 Dify 为主要实践平台，搭建 GitHub 用户信息查询与 CTF WP 考点提取两个工作流，记录 HTTP、条件分支、LLM 和代码节点的数据衔接、调试及 DSL 导出。"
 date: 2025-09-19
 tags:
   - "dify"

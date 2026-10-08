@@ -1,6 +1,6 @@
 ---
 title: "春秋云境 Initial 靶场通关记录"
-description: "春秋云境Initial靶场渗透测试实战记录，涵盖端口扫描、ThinkPHP漏洞利用、SUID提权等内网渗透技术的详细分析。"
+description: "记录 Initial 靶场的 ThinkPHP 入口、sudo mysql 提权与内网枚举，使用代理隧道访问信呼 OA，复盘已完成的前两段 flag 获取过程。"
 date: 2025-06-16
 tags:
   - "内网渗透"

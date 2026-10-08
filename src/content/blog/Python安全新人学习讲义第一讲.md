@@ -1,6 +1,6 @@
 ---
 title: "Python 安全新人第一讲：SSTI 与反序列化入门"
-description: "HnuSec Python 安全新人第一讲：SSTI、反序列化、沙箱逃逸等 CTF/Web 安全入门要点。"
+description: "HnuSec 的 Python Web 安全入门材料，以动态执行、对象反射和 Jinja2 SSTI 为主线，包含环境准备、Flask 示例、对象链分析、CTF 练习与修复思路。"
 date: 2025-07-20
 tags:
   - "Python"

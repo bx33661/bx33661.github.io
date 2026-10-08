@@ -1,6 +1,6 @@
 ---
 title: "蚁剑 Webshell 流量分析与应急溯源"
-description: "中国蚁剑 Webshell 流量特征分析与应急溯源：识别加密通信并定位受控主机。"
+description: "在本地 PHP 环境中抓取蚁剑通信，观察 HTTP POST 参数与回显格式，对比 default、chr 和 rot13 编解码方式，并用脚本还原响应内容。"
 date: 2024-01-15
 tags:
   - "webshell"

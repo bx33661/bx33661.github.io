@@ -1,6 +1,6 @@
 ---
 title: "Burp Suite 使用摘记"
-description: "记录 Burp Suite 代理抓包、过滤、Target、扫描、Collaborator 等模块的个人操作步骤与截图，内容偏工具速查而不是完整专题分析。"
+description: "记录 Burp Suite 的代理抓包、请求过滤与修改操作，以及 Target、扫描、Collaborator、Decoder 和 Comparer 等模块的使用步骤与常见配置问题。"
 date: 2024-09-21
 tags:
   - "CTF"

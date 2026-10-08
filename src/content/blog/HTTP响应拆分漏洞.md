@@ -1,6 +1,6 @@
 ---
 title: "HTTP 响应拆分漏洞原理与利用分析"
-description: "深入分析HTTP响应拆分漏洞（HTTP Response Splitting）的攻击原理、CRLF注入技术及防护措施，包含详细的攻击流程图解。"
+description: "从 CRLF 和 HTTP 响应头边界解释响应拆分，在本地 socket 服务中复现响应头注入，并讨论缓存投毒、会话固定与框架的换行过滤。"
 date: 2025-07-25
 tags:
   - "HTTP"

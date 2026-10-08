@@ -1,6 +1,6 @@
 ---
 title: "MCP 学习与实践：协议、工具与接入笔记"
-description: "MCP（Model Context Protocol）是由 Anthropic 于 2024 年 11 月推出的开源协议，旨在为大型语言模型（LLM）与外部工具、数据源之间建立统一、安全、标准化的通信接口。"
+description: "从 Host、Client、Server 和 JSON-RPC 消息认识 MCP，记录图标生成、搜索工具的接入，并用 Python 与 uv 编写和调用天气 MCP 服务。"
 date: 2025-08-10
 tags:
   - "Anthropic"

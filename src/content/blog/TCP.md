@@ -1,6 +1,6 @@
 ---
 title: "TCP/IP 核心协议学习笔记（TryHackMe）"
-description: "基于 TryHackMe 的 TCP/IP 核心协议学习笔记：握手、状态机与抓包观察要点。"
+description: "基于 TryHackMe 记录 DNS、WHOIS、FTP、SMTP、POP3 与 IMAP 的用途、常用命令和交互流程，结合抓包与 telnet 操作观察文件传输和邮件协议。"
 date: 2024-06-15
 tags:
   - "TCP"

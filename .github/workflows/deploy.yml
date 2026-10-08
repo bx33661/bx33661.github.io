@@ -139,3 +139,27 @@ jobs:
             git commit -m "chore: update baidu push cache [skip ci]"
             git push
           fi
+
+  indexnow-push:
+    name: Notify search engines via IndexNow
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: ./dist
+      - uses: actions/cache@v4
+        with:
+          path: .indexnow-cache.json
+          key: indexnow-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: indexnow-${{ github.ref_name }}-
+      - name: Submit only new, changed and removed URLs
+        run: node scripts/indexnow-push.mjs

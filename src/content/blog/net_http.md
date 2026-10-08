@@ -1,6 +1,6 @@
 ---
 title: "Go net/http 源码阅读与安全相关点"
-description: "从 Server 与 Client 两个视角梳理 Go net/http 的请求处理链路、路由分发与响应写回机制，结合源码理解关键设计。"
+description: "沿 Go net/http 的 ListenAndServe、Serve 与 Handler 调用阅读服务端源码，解释请求分发、响应头写入时机，并用 JSON 响应和中间件示例验证处理流程。"
 date: 2026-02-26
 tags:
   - "Go"

@@ -32,6 +32,7 @@ const { prev, next } = await getAdjacentNotes(slug);
   <main id="main-content" class="app-layout pb-10">
     <article class="app-prose w-full max-w-app">
       <h1 class="text-3xl font-bold tracking-tight">{note.data.title}</h1>
+      <p class="mt-4 leading-relaxed text-foreground/70" data-note-summary>{note.data.description}</p>
       <p class="mt-2 text-sm text-foreground/60">{note.data.date.toLocaleDateString("zh-CN")}</p>
       {
         note.data.tags &&

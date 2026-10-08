@@ -1,6 +1,6 @@
 ---
 title: "OWASP Juice Shop 靶场通关与漏洞练习"
-description: "OWASP Juice Shop 靶场学习记录：常见 Web 漏洞复现路径、解题思路与安全测试练习笔记。"
+description: "记录 OWASP Juice Shop 的 Docker 与 Node.js 部署，以及积分板、XSS、机密文件、编码处理等一星挑战的练习过程，补充 SQL 与 NoSQL 注入基础。"
 date: 2025-08-11
 tags:
   - "靶场"

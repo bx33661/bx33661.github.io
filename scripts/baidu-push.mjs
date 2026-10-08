@@ -16,6 +16,11 @@
  */
 
 import "dotenv/config";
+import {
+  readNotificationState,
+  notificationDelta,
+  requireBaiduSuccess,
+} from "./seo-notification-state.mjs";
 
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -23,7 +28,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-const SITEMAP_PATH = path.join(ROOT, "dist", "sitemap.xml");
+const DIST_PATH = path.join(ROOT, "dist");
 const CACHE_PATH = path.join(ROOT, ".baidu-push-cache.json");
 const BAIDU_API = "http://data.zz.baidu.com/urls";
 const BATCH_SIZE = 2000; // Baidu allows up to 2000 URLs per request
@@ -44,24 +49,18 @@ async function readCache() {
   try {
     const content = await fs.readFile(CACHE_PATH, "utf-8");
     return JSON.parse(content);
-  } catch {
+  } catch (err) {
+    if (err.code !== "ENOENT") throw err;
     return { pushed: [], lastPushAt: null };
   }
 }
 
 async function writeCache(cache) {
-  await fs.writeFile(CACHE_PATH, JSON.stringify(cache, null, 2) + "\n", "utf-8");
-}
-
-async function readSitemapUrls() {
-  const content = await fs.readFile(SITEMAP_PATH, "utf-8");
-  const urls = [];
-  const locRegex = /<loc>([^<]+)<\/loc>/g;
-  let match;
-  while ((match = locRegex.exec(content)) !== null) {
-    urls.push(match[1].trim());
-  }
-  return urls;
+  await fs.writeFile(
+    CACHE_PATH,
+    JSON.stringify(cache, null, 2) + "\n",
+    "utf-8",
+  );
 }
 
 async function pushBatch(urls, site, token) {
@@ -102,8 +101,10 @@ async function main() {
   if (!site || !token) {
     // Secrets are optional in forks/local CI — skip instead of failing the deploy run.
     warn("Missing BAIDU_PUSH_SITE or BAIDU_PUSH_TOKEN environment variables.");
-    warn("Skipping Baidu push. Get a token at: https://ziyuan.baidu.com/linksubmit/index");
-    process.exit(0);
+    warn(
+      "Skipping Baidu push. Get a token at: https://ziyuan.baidu.com/linksubmit/index",
+    );
+    process.exit(args.includes("--require-config") ? 1 : 0);
   }
 
   // Baidu API expects the site parameter without protocol (e.g. www.example.com)
@@ -114,11 +115,16 @@ async function main() {
     process.exit(1);
   }
 
+  let current;
   let urls;
   try {
-    urls = await readSitemapUrls();
+    current = await readNotificationState(DIST_PATH, `https://${site}`);
+    urls = Object.keys(current);
   } catch (err) {
-    error("Failed to read sitemap:", err.message);
+    error(
+      "Failed to read sitemap:",
+      String(err.message).split(token).join("[redacted]"),
+    );
     process.exit(1);
   }
 
@@ -131,14 +137,15 @@ async function main() {
 
   const cache = await readCache();
   const pushedSet = new Set(cache.pushed || []);
+  const fingerprints = { ...(cache.fingerprints || {}) };
 
   let urlsToPush;
   if (force) {
     urlsToPush = urls;
     log("Force mode: pushing all URLs.");
   } else {
-    urlsToPush = urls.filter(url => !pushedSet.has(url));
-    log(`${urlsToPush.length} new URLs since last push.`);
+    urlsToPush = notificationDelta(current, fingerprints).changed;
+    log(`${urlsToPush.length} new or updated URLs since last push.`);
   }
 
   if (urlsToPush.length === 0) {
@@ -148,7 +155,7 @@ async function main() {
 
   if (dryRun) {
     log("Dry run mode. URLs that would be pushed:");
-    urlsToPush.forEach(url => log("  -", url));
+    urlsToPush.forEach((url) => log("  -", url));
     process.exit(0);
   }
 
@@ -165,10 +172,16 @@ async function main() {
 
     try {
       const result = await pushBatch(batch, site, token);
-      log(`  success: ${result.success ?? "?"}, remain: ${result.remain ?? "?"}`);
+      requireBaiduSuccess(result, batch.length);
+      log(
+        `  success: ${result.success ?? "?"}, remain: ${result.remain ?? "?"}`,
+      );
 
       if (result.not_same_site?.length) {
-        warn(`  not_same_site: ${result.not_same_site.length}`, result.not_same_site);
+        warn(
+          `  not_same_site: ${result.not_same_site.length}`,
+          result.not_same_site,
+        );
       }
       if (result.not_valid?.length) {
         warn(`  not_valid: ${result.not_valid.length}`, result.not_valid);
@@ -178,18 +191,27 @@ async function main() {
 
       // Only mark URLs as pushed if Baidu reported success for the whole batch
       if ((result.success ?? 0) === batch.length) {
-        batch.forEach(url => pushedSet.add(url));
+        batch.forEach((url) => {
+          pushedSet.add(url);
+          fingerprints[url] = current[url];
+        });
       } else {
         totalFailed += batch.length - (result.success ?? 0);
       }
     } catch (err) {
-      error(`  batch ${batchNum} failed:`, err.message);
+      error(
+        `  batch ${batchNum} failed:`,
+        String(err.message).split(token).join("[redacted]"),
+      );
       totalFailed += batch.length;
     }
   }
 
   await writeCache({
-    pushed: Array.from(pushedSet),
+    pushed: Array.from(pushedSet).filter((url) => url in current),
+    fingerprints: Object.fromEntries(
+      Object.entries(fingerprints).filter(([url]) => url in current),
+    ),
     lastPushAt: new Date().toISOString(),
   });
 
@@ -200,7 +222,7 @@ async function main() {
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   error("Unexpected error:", err);
   process.exit(1);
 });

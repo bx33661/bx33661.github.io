@@ -19,7 +19,8 @@ const noteEntries = page.data as NoteWithSlug[];
 ---
 
 <Layout
-  title={`Notes List | ${SITE.title}`}
+  title={`全部笔记：学习与实践记录${page.currentPage > 1 ? ` · 第 ${page.currentPage} 页` : ""} | ${SITE.title}`}
+  description="BX 的技术笔记归档，按时间整理网络安全、CTF、开发工具与学习实践记录。"
   canonicalURL={Astro.url.toString()}
   noindex={page.currentPage > 1}
 >

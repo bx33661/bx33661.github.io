@@ -1,6 +1,6 @@
 ---
 title: "NTLM 协议与常见攻击手法梳理"
-description: "深入分析NTLM协议及其常见的攻击手法，包括NTLM中继、哈希传递等，并提供相应的防御策略。"
+description: "从 NTLM 协商、质询和响应流程认识 Windows 认证，结合 Python 哈希示例讨论彩虹表、加盐与 Pass the Hash，并整理 Impacket、Mimikatz 和防护要点。"
 date: "2025-09-05"
 tags:
   - "NTLM"

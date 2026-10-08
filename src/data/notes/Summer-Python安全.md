@@ -1,6 +1,6 @@
 ---
 title: "Python 安全培训材料索引"
-description: "原 Python 安全培训稿与已发布的「Python 安全新人第一讲」正文重复；本笔记保留材料入口，完整的 SSTI、反序列化与沙箱内容请阅读原文。"
+description: "Python 安全培训材料入口，完整课程、示例和练习保留在《Python 安全新人第一讲》中，本页用于快速找到对应原文。"
 date: 2025-01-20
 tags:
   - "Python"

@@ -1,6 +1,6 @@
 ---
 title: "HTB CTF 做题记录"
-description: "HTB-CTF是HackTheBox发起的一个CTF比赛，题目覆盖了多个领域，包括WEB、MOBILE、CRYPTO、REVERSE等。"
+description: "复盘 HTB CTF Try Out 的 Web 与 ICS 题目，记录命令注入、模板注入等 Web 解题过程，并用 Wireshark 分析 Modbus/TCP 抓包中的隐藏信息。"
 date: "2025-08-30"
 tags:
   - "HTB"

@@ -1,6 +1,6 @@
 ---
 title: "春秋云境 Tsclient 与 Cobalt Strike 学习记录"
-description: "Tsclient是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有3个flag，分布于不同的靶机。"
+description: "复盘 Tsclient 中从 MSSQL 凭据泄露、Windows 提权到 Cobalt Strike 会话与域内横向的路径，记录三个 flag 的线索，并整理 Beacon 和载荷的基本用法。"
 date: 2025-08-01
 tags:
   - "春秋云境"

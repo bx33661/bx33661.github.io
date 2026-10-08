@@ -1,6 +1,6 @@
 ---
 title: "Claude Code 使用笔记：CLI Agent 工作流实践"
-description: "Claude Code / 同类 CLI Agent 使用随笔：交互模式、常用工作流与安全审计场景下的实践记录。"
+description: "记录 Claude Code 的交互与非交互用法、CLAUDE.md 项目上下文、常用命令和 Agent 配置，并演示接入 GLM、DeepSeek 与不同传输方式的 MCP 服务。"
 date: 2025-08-25
 tags:
   - "Claude Code"
