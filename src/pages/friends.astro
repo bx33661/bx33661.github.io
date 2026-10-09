@@ -4,6 +4,7 @@ import Layout from '@/layouts/Layout.astro'
 import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
 import FriendCard from '@/components/FriendCard.astro'
+import FriendNetwork from '@/components/FriendNetwork.astro'
 import "@/styles/friends.css"
 
 const currentUrl = Astro.url.toString()
@@ -45,9 +46,9 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
     <header class="fp-hero fp-featured-intro">
       <div class="fp-hero-copy">
         <p class="fp-eyebrow"><span class="fp-signal" aria-hidden="true"></span> NETWORK / COMMUNITY</p>
-        <h1 class="fp-heading">Good people,<br /><em>good corners</em> of the web<span class="fp-period">.</span></h1>
+        <h1 class="fp-heading">Friends,<br /><em>in orbit</em><span class="fp-period">.</span></h1>
         <p class="fp-hero-cn">朋友们 · 同行者 · 值得反复访问的站点</p>
-        <p class="fp-lead">A small directory of people and communities I learn from—security research, curious engineering, and the occasional note on life.</p>
+        <p class="fp-lead">Good people. Interesting corners of the web.</p>
         <div class="fp-hero-actions">
           <a href="#friend-blogs" class="fp-primary-link">Explore the network <span aria-hidden="true">↘</span></a>
           <a href="mailto:bx33661@gmail.com?subject=友情链接申请" class="fp-apply-btn" aria-label="邮件申请互链">
@@ -59,13 +60,7 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
           </a>
         </div>
       </div>
-      <div class="fp-hero-art" aria-hidden="true">
-        <span class="fp-orbit fp-orbit-one"></span><span class="fp-orbit fp-orbit-two"></span>
-        <span class="fp-orbit-label fp-orbit-label-top">IDEAS</span>
-        <span class="fp-orbit-core">BX<span>.</span></span>
-        <span class="fp-orbit-label fp-orbit-label-bottom">CONNECTIONS</span>
-        <span class="fp-orbit-dot fp-orbit-dot-a"></span><span class="fp-orbit-dot fp-orbit-dot-b"></span><span class="fp-orbit-dot fp-orbit-dot-c"></span>
-      </div>
+      <FriendNetwork />
     </header>
 
     <nav class="fp-index" aria-label="友链分类导航">

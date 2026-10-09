@@ -36,7 +36,10 @@
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "prettier": "prettier --write **/*.{ts,tsx,js,jsx,css,md,mdx,json} --ignore-path .gitignore",
-    "test:unit": "node --test scripts/*.test.mjs"
+    "test:unit": "node --test scripts/*.test.mjs",
+    "shaders:compile": "node scripts/compile-home-shaders.mjs",
+    "shaders:check": "node scripts/compile-home-shaders.mjs --check",
+    "prebuild": "npm run shaders:compile"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.1",
@@ -76,6 +79,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@typescript-eslint/parser": "^8.55.0",
+    "@webgpu/types": "0.1.69",
     "dotenv": "^17.4.2",
     "eslint": "^10.0.0",
     "eslint-plugin-astro": "^3.0.1",
@@ -85,6 +89,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "shaders": "4.0.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.55.0"
   }

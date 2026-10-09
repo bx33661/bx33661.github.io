@@ -27,11 +27,26 @@ export async function checkReadingMotion(page, { base, output, prefix }) {
     if (window.__readingPhaseTwoInstrumented) return;
     window.__readingPhaseTwoInstrumented = true;
     window.__readingEntryAnimations = [];
+    window.__readingHold = null;
+    window.__readingHeldAnimation = null;
+    window.__readingStartedRunning = false;
     const animate = Element.prototype.animate;
     Element.prototype.animate = function (...args) {
       const animation = animate.apply(this, args);
       if (this.matches(".entry-row--blog"))
         window.__readingEntryAnimations.push(animation);
+      // Capture at creation, before a traced browser round-trip can outlive
+      // a 260/520ms animation. Production timing and every assertion stay intact.
+      const frames = animation.effect.getKeyframes();
+      const holdImage = window.__readingHold === "image" && this.matches("[data-image-full]");
+      const holdTheme = window.__readingHold === "theme" && frames.some((frame) => frame.clipPath?.startsWith("circle("));
+      if (holdImage || holdTheme) {
+        window.__readingStartedRunning = animation.playState === "running";
+        window.__readingHeldAnimation = animation;
+        window.__readingHold = null;
+        animation.pause();
+        animation.currentTime = Number(animation.effect.getTiming().duration) * 0.45;
+      }
       return animation;
     };
     document.addEventListener("astro:after-preparation", () => {
@@ -128,16 +143,13 @@ export async function checkReadingMotion(page, { base, output, prefix }) {
     await image.evaluate((node) => node.decode());
     console.log(`[motion] ${prefix}: source image decoded in viewport`);
     const position = await page.evaluate(() => scrollY);
+    await page.evaluate(() => { window.__readingHold = "image"; window.__readingHeldAnimation = null; });
     await trigger.click();
     const viewer = page.locator("#article-lightbox");
     const full = viewer.locator("[data-image-full]");
     await viewer.waitFor({ state: "visible" });
-    await page.waitForFunction(() =>
-      document
-        .querySelector("[data-image-full]")
-        .getAnimations()
-        .some((animation) => animation.playState === "running"),
-    );
+    await page.waitForFunction(() => window.__readingHeldAnimation?.playState === "paused");
+    assert.equal(await page.evaluate(() => window.__readingStartedRunning), true, "image animation really started before capture");
     const frames = await full.evaluate((node) => {
       const animation = node.getAnimations()[0];
       animation.pause();
@@ -239,17 +251,11 @@ export async function checkReadingMotion(page, { base, output, prefix }) {
         { once: true, capture: true },
       ),
     );
+    await page.evaluate(() => { window.__readingHold = "theme"; window.__readingHeldAnimation = null; });
     await revealButton.click();
     const origin = await page.evaluate(() => window.__themeRevealOrigin);
-    await page.waitForFunction(() =>
-      document
-        .getAnimations()
-        .some((a) =>
-          a.effect
-            ?.getKeyframes()
-            .some((f) => f.clipPath?.startsWith("circle(")),
-        ),
-    );
+    await page.waitForFunction(() => window.__readingHeldAnimation?.playState === "paused");
+    assert.equal(await page.evaluate(() => window.__readingStartedRunning), true, "native theme animation really started before capture");
     const revealFrames = await page.evaluate(() => {
       const animation = document
         .getAnimations()
@@ -347,6 +353,7 @@ export async function checkReadingMotion(page, { base, output, prefix }) {
     );
 
     // A live preference change settles an in-flight animation immediately.
+    await page.evaluate(() => { window.__readingHold = "image"; window.__readingHeldAnimation = null; });
     await trigger.click();
     await viewer.waitFor({ state: "visible" });
     await page.waitForFunction(

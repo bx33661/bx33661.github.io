@@ -1,0 +1,48 @@
+---
+import { FRIEND_LINKS, HNUSEC_MEMBER_LINKS, ORGANIZATION_LINKS } from "@/config/friends";
+const portals = [
+  ...FRIEND_LINKS.slice(1, 3),
+  ...HNUSEC_MEMBER_LINKS.slice(0, 2),
+  ...ORGANIZATION_LINKS.slice(0, 2),
+];
+const positions = [[23, 20], [77, 20], [17, 49], [83, 49], [30, 79], [71, 79]];
+---
+
+<div class="fp-network" data-star-map>
+  <div class="fp-network-field" aria-hidden="true">
+    <canvas data-star-map-canvas style="width: 100%; height: 100%;"></canvas>
+  </div>
+  <svg class="fp-network-lines" viewBox="0 0 400 360" fill="none" aria-hidden="true">
+    <defs><radialGradient id="friend-sphere" cx=".3" cy=".25" r=".8"><stop stop-color="#dceaff" stop-opacity=".36"/><stop offset=".65" stop-color="#83a9e0" stop-opacity=".08"/><stop offset="1" stop-color="#234075" stop-opacity=".16"/></radialGradient></defs>
+    <circle cx="200" cy="180" r="88" fill="url(#friend-sphere)" class="network-sphere"/>
+    <ellipse cx="200" cy="180" rx="158" ry="51" transform="rotate(-28 200 180)" class="network-orbit"/>
+    <ellipse cx="200" cy="180" rx="151" ry="63" transform="rotate(42 200 180)" class="network-orbit network-orbit-inner"/>
+    <circle cx="200" cy="180" r="136" class="network-outline"/>
+    <path d="M200 155L205 175L225 180L205 185L200 205L195 185L175 180L195 175Z" class="network-star"/>
+    <g class="network-dust"><circle cx="71" cy="73" r="1.8"/><circle cx="320" cy="109" r="2"/><circle cx="115" cy="285" r="2"/><circle cx="322" cy="256" r="1.2"/><circle cx="242" cy="48" r="1.2"/></g>
+  </svg>
+  <nav class="fp-network-portals" aria-label="星图中的精选友链">
+    {portals.map((friend, index) => (
+      <a class="fp-portal" href={friend.url} target="_blank" rel="noopener noreferrer"
+        style={`--portal-x:${positions[index][0]}%;--portal-y:${positions[index][1]}%`}
+        aria-label={`星图友链：${friend.name}`}>
+        <span class="fp-portal-dot" aria-hidden="true"></span><span>{friend.name}</span>
+      </a>
+    ))}
+  </nav>
+
+</div>
+
+<script>
+  import { mountStarMaps } from "@/utils/starMap";
+  import { mountFriendInteractions } from "@/utils/friendInteractions";
+  let cleanup: (() => void) | undefined;
+  const mount = () => {
+    cleanup?.();
+    const stopShader = mountStarMaps(".friends-main [data-star-map]");
+    const stopCards = mountFriendInteractions();
+    cleanup = () => { stopShader(); stopCards(); };
+  };
+  document.addEventListener("astro:page-load", mount);
+  document.addEventListener("astro:before-swap", () => { cleanup?.(); cleanup = undefined; });
+</script>
