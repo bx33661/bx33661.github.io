@@ -222,6 +222,7 @@ async function main() {
   }
 
   await writeCache({
+    ...cache,
     pushed: Array.from(pushedSet).filter((url) => url in current),
     fingerprints: Object.fromEntries(
       Object.entries(fingerprints).filter(([url]) => url in current),

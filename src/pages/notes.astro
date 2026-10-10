@@ -24,7 +24,11 @@ const categoryEntries = Array.from(categories.entries()).sort(
 );
 ---
 
-<Layout title={`Notes | ${SITE.title}`} canonicalURL={Astro.url.toString()}>
+<Layout
+  title={`Notes | ${SITE.title}`}
+  description="BX 的学习笔记索引，按分类整理编程语言、开发工具与安全技术的学习记录，提供最近更新和全部笔记入口。"
+  canonicalURL={Astro.url.toString()}
+>
   <Header />
   <Breadcrumb />
   <main id="main-content" class="app-layout pb-10">

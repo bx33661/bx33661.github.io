@@ -99,46 +99,11 @@ jobs:
   baidu-push:
     name: Push URLs to Baidu
     needs: deploy
-    runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: write
-    env:
-      BAIDU_PUSH_SITE: ${{ vars.BAIDU_PUSH_SITE }}
-      BAIDU_PUSH_TOKEN: ${{ secrets.BAIDU_PUSH_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Download dist artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: ./dist
-
-      - name: Push new URLs to Baidu
-        run: npm run baidu:push
-
-      - name: Commit push cache
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- .baidu-push-cache.json; then
-            echo "No cache changes to commit."
-          else
-            git add .baidu-push-cache.json
-            git commit -m "chore: update baidu push cache [skip ci]"
-            git push
-          fi
+    uses: ./.github/workflows/baidu-notify.yml
+    secrets: inherit
 
   indexnow-push:
     name: Notify search engines via IndexNow

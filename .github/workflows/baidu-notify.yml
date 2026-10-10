@@ -1,0 +1,69 @@
+name: Shared Baidu published URL ledger
+on:
+  workflow_call:
+permissions:
+  contents: write
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Both callers read, notify and persist under the same site-wide lock.
+    concurrency:
+      group: baidu-published-ledger
+      cancel-in-progress: false
+    env:
+      BAIDU_PUSH_SITE: ${{ vars.BAIDU_PUSH_SITE }}
+      BAIDU_PUSH_TOKEN: ${{ secrets.BAIDU_PUSH_TOKEN }}
+      BAIDU_PUSH_LIMIT: "10"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci
+      - name: Preserve durable ledger before one-time migration
+        id: ledger
+        run: |
+          if test -f .baidu-push-cache.json; then
+            cp .baidu-push-cache.json .baidu-ledger-base.json
+          else
+            echo '{}' > .baidu-ledger-base.json
+          fi
+          node --input-type=module -e "import fs from 'node:fs'; const c=JSON.parse(fs.readFileSync('.baidu-ledger-base.json')); fs.appendFileSync(process.env.GITHUB_OUTPUT, 'migrate='+(c.ledgerVersion !== 1)+'\n');"
+      - name: Recover receipts from the former daily cache once
+        if: steps.ledger.outputs.migrate == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: .baidu-push-cache.json
+          key: baidu-daily-migration-${{ github.run_id }}
+          restore-keys: baidu-daily-
+      - name: Validate published pages and merge acknowledged fingerprints
+        id: prepare
+        run: |
+          node scripts/download-published-seo.mjs
+          node scripts/merge-baidu-ledger.mjs .baidu-ledger-base.json .baidu-push-cache.json dist
+      - name: Notify Baidu within daily budget
+        run: node scripts/baidu-push.mjs --require-config
+      - name: Persist receipts even when a later batch fails
+        if: always() && steps.prepare.outcome == 'success'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .baidu-push-cache.json
+          if git diff --cached --quiet; then
+            echo "No ledger changes."
+            exit 0
+          fi
+          git commit -m "chore: update shared baidu ledger [skip ci]"
+          # A separate content push may advance main while the HTTP calls run.
+          # Only this shared job writes the ledger; rebase preserves that content.
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          echo "Ledger persistence failed."
+          exit 1
