@@ -18,7 +18,6 @@
     "https://www.bx33661.com/blog/dos-at-psitransfer/",
     "https://www.bx33661.com/blog/n8n-cve-2025-68613-analysis/",
     "https://www.bx33661.com/blog/opencode-vulnerability-analysis/",
-    "https://www.bx33661.com/blog/mcp-security/",
     "https://www.bx33661.com/blog/codeql-learning/",
     "https://www.bx33661.com/blog/ethereum-dex-sepolia/",
     "https://www.bx33661.com/blog/llm-attack-hackergame/",
@@ -28,7 +27,8 @@
     "https://www.bx33661.com/blog/ntlm-protocol-and-attack-techniques/",
     "https://www.bx33661.com/blog/ssji-learning/",
     "https://www.bx33661.com/blog/csp-bypass-analysis/",
-    "https://www.bx33661.com/blog/nginx-cache-poisoning/"
+    "https://www.bx33661.com/blog/nginx-cache-poisoning/",
+    "https://www.bx33661.com/blog/mcp-security/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/notes/list/": "fab4df2a7e8d6abf111e12e3aff3ee407a25cf291751cef9d55c24ebf356dee5",
@@ -49,7 +49,6 @@
     "https://www.bx33661.com/blog/dos-at-psitransfer/": "ba4b061064cd74cb443745b641869bf027d5a20767108a4126249440da71c96c",
     "https://www.bx33661.com/blog/n8n-cve-2025-68613-analysis/": "8eda702263c6e4354d880c8831c5495ad878a667f7ba4a996f198ee0b8fee4da",
     "https://www.bx33661.com/blog/opencode-vulnerability-analysis/": "96893ef6983661b77110b2cd55aa140af53e78adff6708a0de9c98e77d0ddd72",
-    "https://www.bx33661.com/blog/mcp-security/": "7d364ae824b98772ad19dac8099cdde6570bd375dbe6c7b8724303f36adba7d2",
     "https://www.bx33661.com/blog/codeql-learning/": "a89d895c1c21320a85b25458c412b4bb0ba120dbe26ea34b60402409b2b41cc6",
     "https://www.bx33661.com/blog/ethereum-dex-sepolia/": "ff29698d5eb2a59c2039e09daa17b3bf59dad0c95cdd79c788eca9a50b2335c2",
     "https://www.bx33661.com/blog/llm-attack-hackergame/": "4367ca8feeb50f6e8a193250e05c2489fd8f1cb415439402f5f55a12dff53940",
@@ -59,8 +58,9 @@
     "https://www.bx33661.com/blog/ntlm-protocol-and-attack-techniques/": "6e8239324099589fcbf52ca4ea236d86946b30206134e112a786c8d03548d4eb",
     "https://www.bx33661.com/blog/ssji-learning/": "a67997cd2da768ecb2701159221f22c5ac2e7419a34724da443beac3c8455409",
     "https://www.bx33661.com/blog/csp-bypass-analysis/": "3c77b230c09771f6fba542fb4df9dbc0980378867a357577840b23b1716ac172",
-    "https://www.bx33661.com/blog/nginx-cache-poisoning/": "1b35af70ee6b7792d1ed4b2c9f69a38e81bb9a8ed22db37a5c5975f589979856"
+    "https://www.bx33661.com/blog/nginx-cache-poisoning/": "1b35af70ee6b7792d1ed4b2c9f69a38e81bb9a8ed22db37a5c5975f589979856",
+    "https://www.bx33661.com/blog/mcp-security/": "7d364ae824b98772ad19dac8099cdde6570bd375dbe6c7b8724303f36adba7d2"
   },
-  "lastPushAt": "2026-10-10T03:13:10.254Z",
+  "lastPushAt": "2026-10-10T03:15:12.640Z",
   "ledgerVersion": 1
 }
