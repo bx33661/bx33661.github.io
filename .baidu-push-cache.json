@@ -28,7 +28,17 @@
     "https://www.bx33661.com/blog/ssji-learning/",
     "https://www.bx33661.com/blog/csp-bypass-analysis/",
     "https://www.bx33661.com/blog/nginx-cache-poisoning/",
-    "https://www.bx33661.com/blog/mcp-security/"
+    "https://www.bx33661.com/blog/mcp-security/",
+    "https://www.bx33661.com/blog/htb-challenge/",
+    "https://www.bx33661.com/blog/htb-ctf/",
+    "https://www.bx33661.com/blog/claude-code/",
+    "https://www.bx33661.com/blog/juice-shop/",
+    "https://www.bx33661.com/blog/jenkins-credential-crack/",
+    "https://www.bx33661.com/blog/mcp1/",
+    "https://www.bx33661.com/blog/passthehash/",
+    "https://www.bx33661.com/blog/tsclient/",
+    "https://www.bx33661.com/blog/brute4road/",
+    "https://www.bx33661.com/blog/bxhttpSplit/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/notes/list/": "fab4df2a7e8d6abf111e12e3aff3ee407a25cf291751cef9d55c24ebf356dee5",
@@ -59,8 +69,18 @@
     "https://www.bx33661.com/blog/ssji-learning/": "a67997cd2da768ecb2701159221f22c5ac2e7419a34724da443beac3c8455409",
     "https://www.bx33661.com/blog/csp-bypass-analysis/": "3c77b230c09771f6fba542fb4df9dbc0980378867a357577840b23b1716ac172",
     "https://www.bx33661.com/blog/nginx-cache-poisoning/": "1b35af70ee6b7792d1ed4b2c9f69a38e81bb9a8ed22db37a5c5975f589979856",
-    "https://www.bx33661.com/blog/mcp-security/": "7d364ae824b98772ad19dac8099cdde6570bd375dbe6c7b8724303f36adba7d2"
+    "https://www.bx33661.com/blog/mcp-security/": "7d364ae824b98772ad19dac8099cdde6570bd375dbe6c7b8724303f36adba7d2",
+    "https://www.bx33661.com/blog/htb-challenge/": "947fdca46576303c0d9e60f008b05c1fab9c7ce0d420737058543f68d1f33d5c",
+    "https://www.bx33661.com/blog/htb-ctf/": "8fa0d94d1b6707185df9a51562d7f90306de67ae80ac618c70778f6d542f3084",
+    "https://www.bx33661.com/blog/claude-code/": "d48cb7facc0b99571a3a4ce0ab9dff19d9045cea89d7aca73e85b064f3096772",
+    "https://www.bx33661.com/blog/juice-shop/": "9271dab436eb4c3278cb422e4facdd4d5d357bdae80559fd3c6f9b9f9af0ec35",
+    "https://www.bx33661.com/blog/jenkins-credential-crack/": "685610a2c5187b9d9db4a868caefba35ca129f2f3162ec1d159abd1a72424795",
+    "https://www.bx33661.com/blog/mcp1/": "b6023c0b12735a65f767579403afaac58f29edd8222ea0aa67109cbf7a90dfde",
+    "https://www.bx33661.com/blog/passthehash/": "7b11642787e1a4bb3a5fdc418ca48e36354949ee882fb8b053d7ec43a6151722",
+    "https://www.bx33661.com/blog/tsclient/": "c0cb4924d28e2b0230eef9e9b13ebce1997005bc0610a10b4937e1abf91201e4",
+    "https://www.bx33661.com/blog/brute4road/": "616bb1f7c002b97751c2014c7703ec2b6155d2f80559bbe81a22f2c87af61f80",
+    "https://www.bx33661.com/blog/bxhttpSplit/": "6b1e600022164c2360985c6305a4014ab8ab53de1b40116f3456e36ff9f7de88"
   },
-  "lastPushAt": "2026-10-10T08:38:37.883Z",
+  "lastPushAt": "2026-10-11T09:02:04.474Z",
   "ledgerVersion": 1
 }
