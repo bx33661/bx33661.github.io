@@ -58,7 +58,17 @@
     "https://www.bx33661.com/blog/metasploit-framework-1/",
     "https://www.bx33661.com/notes/javascript-advanced-learning/",
     "https://www.bx33661.com/notes/wechat-miniprogram-reverse-4/",
-    "https://www.bx33661.com/notes/bx33661dom/"
+    "https://www.bx33661.com/notes/bx33661dom/",
+    "https://www.bx33661.com/notes/algorithm-study/",
+    "https://www.bx33661.com/notes/summer-python-security/",
+    "https://www.bx33661.com/notes/machine-learning-classification-task/",
+    "https://www.bx33661.com/notes/k8burp/",
+    "https://www.bx33661.com/notes/java-algorithm-practice/",
+    "https://www.bx33661.com/notes/k8x9w55/",
+    "https://www.bx33661.com/",
+    "https://www.bx33661.com/blog/",
+    "https://www.bx33661.com/notes/",
+    "https://www.bx33661.com/galleries/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/notes/list/": "fab4df2a7e8d6abf111e12e3aff3ee407a25cf291751cef9d55c24ebf356dee5",
@@ -119,8 +129,18 @@
     "https://www.bx33661.com/blog/metasploit-framework-1/": "e87f129a9a7c921f9acf759262d31ab066a5094fdc84a83250d665394214e1cc",
     "https://www.bx33661.com/notes/javascript-advanced-learning/": "81dfbfdaa82570cc56237bdf12afe6aaa16f2f9d6893191514fbf45d7c4d4a10",
     "https://www.bx33661.com/notes/wechat-miniprogram-reverse-4/": "3050e1c4caad0699b768af73f69e8eb0ff92f21a5c7b699e299101ad8d93056a",
-    "https://www.bx33661.com/notes/bx33661dom/": "f0b06260ba5441844812647358ce1623ba63c288d9284b7cdc8e5aef0755e73d"
+    "https://www.bx33661.com/notes/bx33661dom/": "f0b06260ba5441844812647358ce1623ba63c288d9284b7cdc8e5aef0755e73d",
+    "https://www.bx33661.com/notes/algorithm-study/": "b1967908c8acdaf695af5de6d1cf8eadf224373b81174c1394904a49ef84d2c9",
+    "https://www.bx33661.com/notes/summer-python-security/": "3df829335509478b0a84b8e30d903f3a3f114bd1b84bc744cd63136c07e11b5d",
+    "https://www.bx33661.com/notes/machine-learning-classification-task/": "4c7a75778ff2b4f9bee90fb8df962b18ef7ba4edafba0c9333de2b4b3ec20212",
+    "https://www.bx33661.com/notes/k8burp/": "15e0aa245c50547f21ae421abdceaa76f24942f6be6dab5f5e65a3fa47ab1595",
+    "https://www.bx33661.com/notes/java-algorithm-practice/": "485929505f7f0e368d39493bd905a9333751c62162af78c66f756ecee074eaef",
+    "https://www.bx33661.com/notes/k8x9w55/": "23ac68f29a597312ec1c5e82a29bc9c72b7251e662b3915f59d3609789315e23",
+    "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
+    "https://www.bx33661.com/blog/": "11cee82929adf78b600d1de8bb78b8cc8ae58e6688c9706db7ae0f25495bd919",
+    "https://www.bx33661.com/notes/": "916e13776819148a7d3f2b4bd78441987e127730ffbe0a10fa891c5219f85710",
+    "https://www.bx33661.com/galleries/": "23e672b3aaa0be4a02a08745a56e8b31899ec73a1e5841367c8df60adeda55e8"
   },
-  "lastPushAt": "2026-10-13T09:33:09.198Z",
+  "lastPushAt": "2026-10-14T07:46:48.100Z",
   "ledgerVersion": 1
 }
