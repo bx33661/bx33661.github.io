@@ -4,6 +4,8 @@
     "https://www.bx33661.com/blog/",
     "https://www.bx33661.com/notes/",
     "https://www.bx33661.com/galleries/",
+    "https://www.bx33661.com/archives/",
+    "https://www.bx33661.com/friends/",
     "https://www.bx33661.com/notes/list/",
     "https://www.bx33661.com/blog/websocket-handshake-message-replay/",
     "https://www.bx33661.com/blog/openrasp-sql-detect-bypass/",
@@ -68,15 +70,15 @@
     "https://www.bx33661.com/notes/machine-learning-classification-task/",
     "https://www.bx33661.com/notes/k8burp/",
     "https://www.bx33661.com/notes/java-algorithm-practice/",
-    "https://www.bx33661.com/notes/k8x9w55/",
-    "https://www.bx33661.com/archives/",
-    "https://www.bx33661.com/friends/"
+    "https://www.bx33661.com/notes/k8x9w55/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
     "https://www.bx33661.com/blog/": "11cee82929adf78b600d1de8bb78b8cc8ae58e6688c9706db7ae0f25495bd919",
     "https://www.bx33661.com/notes/": "916e13776819148a7d3f2b4bd78441987e127730ffbe0a10fa891c5219f85710",
     "https://www.bx33661.com/galleries/": "23e672b3aaa0be4a02a08745a56e8b31899ec73a1e5841367c8df60adeda55e8",
+    "https://www.bx33661.com/archives/": "4ab2f177f75d5deccc3f46003a192d41ba3c60f27fea125d24c75542789b4181",
+    "https://www.bx33661.com/friends/": "1720fc291999982d2a5a73beb1e6f590977c67a43d684f652203b4a06431ac82",
     "https://www.bx33661.com/notes/list/": "fab4df2a7e8d6abf111e12e3aff3ee407a25cf291751cef9d55c24ebf356dee5",
     "https://www.bx33661.com/blog/websocket-handshake-message-replay/": "eec1a9c63c45f027e87e8b06f83a1f2a773b105004dfeb5dda60f4f50e322b38",
     "https://www.bx33661.com/blog/openrasp-sql-detect-bypass/": "d4f0e44454358692b245d20b8af8eb00b6be000147c3f9b1a9b5d6f0c205bce1",
@@ -141,9 +143,7 @@
     "https://www.bx33661.com/notes/machine-learning-classification-task/": "4c7a75778ff2b4f9bee90fb8df962b18ef7ba4edafba0c9333de2b4b3ec20212",
     "https://www.bx33661.com/notes/k8burp/": "15e0aa245c50547f21ae421abdceaa76f24942f6be6dab5f5e65a3fa47ab1595",
     "https://www.bx33661.com/notes/java-algorithm-practice/": "485929505f7f0e368d39493bd905a9333751c62162af78c66f756ecee074eaef",
-    "https://www.bx33661.com/notes/k8x9w55/": "23ac68f29a597312ec1c5e82a29bc9c72b7251e662b3915f59d3609789315e23",
-    "https://www.bx33661.com/archives/": "4ab2f177f75d5deccc3f46003a192d41ba3c60f27fea125d24c75542789b4181",
-    "https://www.bx33661.com/friends/": "1720fc291999982d2a5a73beb1e6f590977c67a43d684f652203b4a06431ac82"
+    "https://www.bx33661.com/notes/k8x9w55/": "23ac68f29a597312ec1c5e82a29bc9c72b7251e662b3915f59d3609789315e23"
   },
   "lastPushAt": "2026-10-15T07:34:02.661Z",
   "ledgerVersion": 1
