@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1280" viewBox="0 0 1280 1280" fill="none">
+<title>BX mascot — editable vector redraw</title>
+<g id="Face">
+<path id="Face-silhouette" d="M270 492 C392 460 875 455 978 500 C1020 558 1059 624 1088 708 C1120 786 1115 867 1080 934 C1023 1041 904 1118 719 1127 C532 1141 369 1114 263 1044 C176 986 137 902 145 787 C149 709 191 594 270 492Z" fill="#F4F0E6" stroke="#242220" stroke-width="19" stroke-linejoin="round"/>
+</g>
+<g id="Cap">
+<path id="Cap-button" d="M575 179 C575 126 706 124 716 178Z" fill="#383633" stroke="#242220" stroke-width="16" stroke-linejoin="round"/>
+<path id="Cap-crown" d="M219 572 C184 487 219 365 276 304 C360 211 450 184 571 177 C699 166 816 190 890 230 C959 269 1001 345 1011 463 L967 505 C813 481 596 498 445 504 C359 514 278 537 219 572Z" fill="#33312F" stroke="#242220" stroke-width="18" stroke-linejoin="round"/>
+<path id="Cap-panel-seam" d="M568 181 C502 197 465 258 456 334 C450 385 448 443 447 493" stroke="#242220" stroke-width="13" stroke-linecap="round"/>
+<path id="Cap-brim" d="M443 492 C605 447 822 436 1010 463 C1074 471 1120 483 1131 503 C1146 529 1112 557 1068 565 C1048 547 1022 525 995 515 C854 476 635 533 484 515 C461 513 441 509 443 492Z" fill="#302E2B" stroke="#242220" stroke-width="17" stroke-linejoin="round"/>
+<path id="B-letter" fill-rule="evenodd" d="M718 247 L796 249 C833 250 858 267 861 294 C863 314 853 328 841 336 C867 346 880 363 880 385 C880 416 858 433 825 433 L729 429 C717 429 711 423 711 411 L704 263 C703 252 708 247 718 247Z M760 291 L761 320 L788 320 C803 320 812 316 812 306 C812 296 804 292 788 292Z M764 358 L765 389 L797 390 C815 391 823 387 823 375 C823 365 814 359 799 359Z" fill="#F4F0E6" stroke="#242220" stroke-width="6" stroke-linejoin="round"/>
+</g>
+<g id="Sunglasses">
+<path id="Bridge" d="M592 571 C616 562 644 562 668 572 L668 605 C644 595 617 595 593 605Z" fill="#33312F" stroke="#242220" stroke-width="10"/>
+<path id="Left-temple" d="M278 590 L241 606 C232 610 231 629 239 632 L279 620Z" fill="#292724" stroke="#242220" stroke-width="10" stroke-linejoin="round"/>
+<path id="Right-temple" d="M981 591 L1016 606 C1026 611 1027 630 1018 632 L982 620Z" fill="#292724" stroke="#242220" stroke-width="10" stroke-linejoin="round"/>
+<path id="Left-frame" d="M278 563 C335 540 493 540 568 555 C590 559 602 568 601 585 C596 642 571 695 541 720 C510 745 471 748 416 747 C358 747 326 737 306 708 C283 675 276 637 274 603 C272 583 273 570 278 563Z" fill="#383633" stroke="#242220" stroke-width="12" stroke-linejoin="round"/>
+<path id="Left-lens" d="M321 587 C372 571 489 575 544 585 C563 588 577 595 575 611 C567 655 550 690 527 709 C503 730 463 731 415 730 C370 729 342 722 328 702 C309 675 303 640 306 612 C307 598 312 590 321 587Z" fill="#252321"/>
+<path id="Right-frame" d="M684 555 C763 540 920 540 981 562 C993 566 995 580 993 603 C989 642 977 686 957 710 C932 739 897 748 842 747 C788 748 751 743 721 719 C690 695 669 645 663 588 C661 570 667 560 684 555Z" fill="#383633" stroke="#242220" stroke-width="12" stroke-linejoin="round"/>
+<path id="Right-lens" d="M715 586 C768 575 895 571 946 587 C958 591 965 599 966 612 C968 642 959 677 941 702 C927 723 898 730 849 730 C803 731 764 729 738 709 C715 690 697 653 690 611 C687 597 700 589 715 586Z" fill="#252321"/>
+<path id="Left-reflection" d="M326 598 C337 591 354 589 363 592 C375 597 364 609 359 621 C352 638 351 660 349 675 C346 691 335 679 328 662 C319 643 317 608 326 598Z" fill="#F4F0E6"/>
+<path id="Right-reflection" d="M699 598 C710 591 727 589 736 592 C748 597 737 609 732 621 C725 638 724 660 722 675 C719 691 708 679 701 662 C692 643 690 608 699 598Z" fill="#F4F0E6"/>
+</g>
+<g id="Whiskers" stroke="#242220" stroke-width="18" stroke-linecap="round">
+<path id="Left-upper" d="M119 707 L232 746"/>
+<path id="Left-middle" d="M101 790 Q166 780 224 785"/>
+<path id="Left-lower" d="M109 872 L229 828"/>
+<path id="Right-upper" d="M1136 707 L1023 746"/>
+<path id="Right-middle" d="M1151 790 Q1086 780 1029 785"/>
+<path id="Right-lower" d="M1144 872 L1026 828"/>
+</g>
+<g id="Features">
+<path id="Nose-line" d="M628 747 L628 822" stroke="#242220" stroke-width="16" stroke-linecap="round"/>
+<path id="Nose" d="M591 693 C606 687 650 687 665 694 C681 702 676 716 664 723 C649 730 650 748 631 750 C613 751 609 736 598 728 C583 719 574 703 591 693Z" fill="#C99C9E" stroke="#242220" stroke-width="10" stroke-linejoin="round"/>
+<path id="Closed-smile" d="M556 889 Q628 910 699 888" stroke="#242220" stroke-width="18" stroke-linecap="round"/>
+</g>
+</svg>
