@@ -20,6 +20,8 @@ export async function GET(context: APIContext) {
     const postSlugs = await getAllPostSlugs();
     const noteSlugs = await getAllNoteSlugs();
     const allNotes = await getAllNotes();
+    const englishPosts = await getAllPostSlugs("en");
+    const englishNotes = await getAllNoteSlugs("en");
     const site = context.site ?? SITE.website;
     const baseUrl = site.toString().endsWith("/")
       ? site.toString().slice(0, -1)
@@ -89,7 +91,23 @@ export async function GET(context: APIContext) {
       }),
     );
 
-    const allUrls = [...staticPages, ...blogPosts, ...notes, ...notePages];
+    // Empty English collection pages are noindex until real content exists.
+    const englishPages = ["/en/",
+      ...(englishPosts.length ? ["/en/blog/", "/en/archives/"] : []),
+      ...(englishNotes.length ? ["/en/notes/", "/en/notes/list/"] : []),
+    ].map((path) => ({ url: buildUrl(baseUrl, path), changefreq: "weekly", priority: "0.6" }));
+    const englishEntries = [
+      ...englishPosts.map(({ slug, post }) => ({
+        url: buildUrl(baseUrl, `/en/blog/${encodePathSegment(slug)}/`),
+        lastmod: getSitemapLastmod(post.data.pubDatetime, post.data.modDatetime),
+        changefreq: "monthly", priority: "0.7",
+      })),
+      ...englishNotes.map(({ slug, note }) => ({
+        url: buildUrl(baseUrl, `/en/notes/${encodePathSegment(slug)}/`),
+        lastmod: note.data.date.toISOString(), changefreq: "monthly", priority: "0.6",
+      })),
+    ];
+    const allUrls = [...staticPages, ...blogPosts, ...notes, ...notePages, ...englishPages, ...englishEntries];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">

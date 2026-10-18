@@ -1,4 +1,8 @@
 ---
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
 import type { CollectionEntry } from "astro:content";
 import { articleSeries } from "@/data/article-series";
 import {
@@ -18,7 +22,7 @@ const summarize = (entry: CollectionEntry<"blog">): ArticleSummary => ({
   id: entry.id,
   slug: resolveLegacyPostSlug(entry),
   title: entry.data.title,
-  href: getPath(entry.id, entry.filePath, true, resolveLegacyPostSlug(entry)),
+  href: localizedPath(getPath(entry.id, entry.filePath, true, resolveLegacyPostSlug(entry)), locale),
   tags: entry.data.tags,
   publishedAt: entry.data.pubDatetime,
   updatedAt: entry.data.modDatetime,
@@ -40,7 +44,7 @@ const series = getArticleSeries(current, summaries, articleSeries);
       <div class="post-discovery-heading">
         <h2 id="post-series-title">{series.title}</h2>
         <span>
-          第 {series.position} / {series.chapters.length} 篇
+          {t.seriesPosition(series.position, series.chapters.length)}
         </span>
       </div>
       <ol class="post-series-chapters">
@@ -50,7 +54,7 @@ const series = getArticleSeries(current, summaries, articleSeries);
             {chapter.id === current.id ? (
               <span aria-current="page">
                 {chapter.title}
-                <small>正在阅读</small>
+                <small>{t.readingNow}</small>
               </span>
             ) : (
               <a href={chapter.href} data-reading-link data-reading-title>
@@ -60,16 +64,16 @@ const series = getArticleSeries(current, summaries, articleSeries);
           </li>
         ))}
       </ol>
-      <nav class="post-series-nav" aria-label="系列前后篇">
+      <nav class="post-series-nav" aria-label={t.seriesNav}>
         {series.previous && (
           <a href={series.previous.href} data-reading-link>
-            <span>← 系列上一篇</span>
+            <span>← {t.seriesPrevious}</span>
             <span data-reading-title>{series.previous.title}</span>
           </a>
         )}
         {series.next && (
           <a href={series.next.href} data-reading-link>
-            <span>系列下一篇 →</span>
+            <span>{t.seriesNext} →</span>
             <span data-reading-title>{series.next.title}</span>
           </a>
         )}
@@ -87,8 +91,8 @@ const series = getArticleSeries(current, summaries, articleSeries);
     >
       <div class="post-discovery-heading">
         <>
-          <h2 id="post-related-title">继续阅读</h2>
-          <span>同主题文章</span>
+          <h2 id="post-related-title">{t.continueReading}</h2>
+          <span>{t.sameTopic}</span>
         </>
       </div>
       <ul>

@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "websocket-handshake-message-replay"
+translationKey: "websocket-handshake-message-replay"
 ---
 
 聊天、实时通知和协同编辑都需要页面及时收到新消息。WebSocket 为客户端和服务端提供了一条双向通信通道。理解这条通道，再看握手报文、消息记录和回显实验，抓包中的各个部分就容易对应起来。

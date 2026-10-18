@@ -1,0 +1,12 @@
+---
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+interface Props { kind: "posts" | "notes"; }
+const { kind } = Astro.props;
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+---
+<p class="my-6 leading-relaxed text-foreground/70" data-content-empty>
+  {kind === "posts" ? t.emptyPosts : t.emptyNotes}
+  {locale === "en" && <a class="ml-2 text-accent underline underline-offset-4" href={kind === "posts" ? "/blog/" : "/notes/"} lang="zh-CN">{t.originals} →</a>}
+</p>

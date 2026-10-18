@@ -1,0 +1,11 @@
+---
+import NoteDetails from "@/layouts/NoteDetails.astro";
+import { getAllNotesWithSlugs } from "@/utils/notes";
+export async function getStaticPaths() {
+  return (await getAllNotesWithSlugs("en")).map(({ note, slug }) => ({
+    params: { slug: slug }, props: { note, slug },
+  }));
+}
+const { note, slug } = Astro.props;
+---
+<NoteDetails {note} {slug} />

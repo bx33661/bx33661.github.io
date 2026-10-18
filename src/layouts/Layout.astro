@@ -6,6 +6,12 @@ import { serializeJsonLd } from "@/utils/serializeJsonLd";
 import SearchModal from "@/components/SearchModal.astro";
 import "@/styles/global.css";
 import "@/styles/reading-motion.css";
+import { englishDescription, localeFromPath } from "@/i18n";
+import { languagePaths, hasEnglishContent } from "@/i18n/content";
+
+const locale = localeFromPath(Astro.url.pathname);
+const alternates = await languagePaths(Astro.url.pathname);
+const searchEmpty = locale === "en" && !(await hasEnglishContent());
 
 type Props = {
   title?: string;
@@ -25,7 +31,7 @@ const {
   title = SITE.title,
   author = SITE.author,
   profile = SITE.profile,
-  description = SITE.desc,
+  description = locale === "en" ? englishDescription : SITE.desc,
   ogImage = SITE.ogImage ? `/${SITE.ogImage}` : "/og.png",
   canonicalURL = new URL(Astro.url.pathname, Astro.url),
   pubDatetime,
@@ -43,6 +49,7 @@ const structuredData = pubDatetime
       "@type": "BlogPosting",
       headline: `${title}`,
       description,
+      inLanguage: locale,
       image: `${socialImageURL}`,
       datePublished: pubDatetime.toISOString(),
       ...(modDatetime && { dateModified: modDatetime.toISOString() }),
@@ -58,15 +65,17 @@ const structuredData = pubDatetime
       "@context": "https://schema.org",
       "@type": "WebSite",
       name: `${SITE.title}`,
-      url: new URL("/", Astro.site ?? Astro.url).toString(),
-      description: `${SITE.desc}`,
+      url: new URL(locale === "en" ? "/en/" : "/", Astro.site ?? Astro.url).toString(),
+      description,
+      inLanguage: locale,
     };
 ---
 
 <!doctype html>
 <html
   dir={SITE.dir}
-  lang=`${SITE.lang ?? "en"}`
+  lang={locale}
+  data-search-empty={searchEmpty ? "true" : undefined}
   class:list={[{ "scroll-smooth": scrollSmooth }]}
 >
   <head>
@@ -79,6 +88,9 @@ const structuredData = pubDatetime
     <link rel="shortcut icon" href="/brand/favicon.ico" />
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
     <link rel="canonical" href={canonicalURL} />
+    {Object.keys(alternates).length === 2 && Object.entries(alternates).map(([language, path]) => (
+      <link rel="alternate" hreflang={language} href={new URL(path!, Astro.site ?? Astro.url)} />
+    ))}
     <meta
       name="robots"
       content={`${noindex ? "noindex" : "index"}, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1`}
@@ -101,6 +113,7 @@ const structuredData = pubDatetime
     <!-- Open Graph / Facebook -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:locale" content={locale === "en" ? "en_US" : "zh_CN"} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={socialImageURL} />
 
@@ -141,8 +154,8 @@ const structuredData = pubDatetime
     <link
       rel="alternate"
       type="application/rss+xml"
-      title={SITE.title}
-      href={new URL("rss.xml", Astro.site)}
+      title={locale === "en" ? `${SITE.title} — English` : SITE.title}
+      href={new URL(locale === "en" ? "en/rss.xml" : "rss.xml", Astro.site)}
     />
 
     <meta name="theme-color" content="" />

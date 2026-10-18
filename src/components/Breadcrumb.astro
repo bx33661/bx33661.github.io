@@ -1,6 +1,8 @@
 ---
+import { localeFromPath, localizedPath } from "@/i18n";
+const locale = localeFromPath(Astro.url.pathname);
 // Remove current url path and remove trailing slash if exists
-const currentUrlPath = Astro.url.pathname.replace(/\/+$/, "");
+const currentUrlPath = Astro.url.pathname.replace(/^\/en(?=\/|$)/, "").replace(/\/+$/, "");
 
 // Get url array from path
 // eg: /blog/tags/tailwindcss => ['blog', 'tags', 'tailwindcss']
@@ -29,11 +31,11 @@ if (
 const getBreadcrumbHref = (index: number) =>
   breadcrumbList[0] === "blog" && breadcrumbList[1] === "tags" && index === 1
     ? "/blog/#topics"
-    : `/${breadcrumbList.slice(0, index + 1).join("/")}/`;
+    : localizedPath(`/${breadcrumbList.slice(0, index + 1).join("/")}/`, locale);
 
 const routeLabelMap = new Map([
   ["blog", "Blog"],
-  ["tags", "主题"],
+  ["tags", locale === "en" ? "Topics" : "主题"],
   ["notes", "Notes"],
   ["archives", "Archives"],
   ["galleries", "Galleries"],
@@ -50,7 +52,7 @@ const getBreadcrumbLabel = (breadcrumb: string) =>
   <div class="breadcrumb-bar flex items-center gap-1 text-sm">
     {/* Home icon */}
     <a
-      href="/"
+      href={localizedPath("/", locale)}
       class="breadcrumb-link inline-flex shrink-0 items-center transition-colors duration-200 hover:text-accent"
       aria-label="Home"
       title="Home"

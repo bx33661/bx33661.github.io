@@ -3,6 +3,10 @@ import type { HTMLAttributes } from "astro/types";
 import { SOCIALS } from "@/constants";
 import LinkButton from "./LinkButton.astro";
 import { SITE } from "@/config.ts";
+import { localeFromPath, localizedPath } from "@/i18n";
+
+const locale = localeFromPath(Astro.url.pathname);
+const isEnglish = locale === "en";
 
 const currentYear = new Date().getFullYear();
 
@@ -31,7 +35,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
       <!-- Brand column -->
       <div class="flex flex-col items-center gap-3 sm:items-start">
         <a
-          href="/"
+          href={localizedPath("/", locale)}
           class="group flex items-center gap-2 text-lg font-bold tracking-tight"
         >
           <img
@@ -46,7 +50,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
         <p
           class="max-w-xs text-center text-xs leading-relaxed opacity-50 sm:text-start"
         >
-          记录网络安全与工程实践，持续分享真实可复现的技术经验。
+          {isEnglish ? "Notes on cybersecurity and engineering, grounded in reproducible work." : "记录网络安全与工程实践，持续分享真实可复现的技术经验。"}
         </p>
       </div>
 
@@ -54,7 +58,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
       <div class="flex flex-col items-center gap-2 sm:items-end">
         <span
           class="font-cartograph text-[10px] tracking-wider text-foreground/35 uppercase select-none dark:text-foreground/65"
-          >联系与关注</span
+          >{isEnglish ? "Connect" : "联系与关注"}</span
         >
         <div class="flex items-center gap-1">
           {
@@ -86,10 +90,10 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
     >
       <p class="font-cartograph text-[11px] tracking-wide opacity-35 dark:opacity-65">
         &copy; {currentYear}
-        {SITE.title}. 保留所有权利。
+        {SITE.title}. {isEnglish ? "All rights reserved." : "保留所有权利。"}
       </p>
       <p class="font-cartograph text-[11px] tracking-wide opacity-30 dark:opacity-65">
-        由热爱驱动，长期维护更新
+        {isEnglish ? "Built with curiosity. Maintained over time." : "由热爱驱动，长期维护更新"}
       </p>
     </div>
   </div>

@@ -1,6 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content'
 import { withCache } from './cache-utils'
 import postFilter from '@/utils/postFilter'
+import { isEntryLocale, type Locale } from '@/i18n'
 import {
   resolveLegacyPostSlug,
   resolveLegacyNoteSlug,
@@ -29,11 +30,12 @@ function ensureUniqueSlug<T extends { id: string }>(
   return candidate
 }
 
-export async function getAllPosts(): Promise<CollectionEntry<'blog'>[]> {
-  return withCache('all-public-posts', async () => {
+export async function getAllPosts(locale: Locale = 'zh-CN'): Promise<CollectionEntry<'blog'>[]> {
+  return withCache(`all-public-posts:${locale}`, async () => {
     const posts = await getCollection('blog')
     return posts
       .filter(postFilter)
+      .filter((post) => isEntryLocale(post.data, locale))
       .sort((a, b) => getBlogDate(b).valueOf() - getBlogDate(a).valueOf())
   })
 }
@@ -51,8 +53,8 @@ export function getPostSlug(post: CollectionEntry<'blog'>): string {
  * 为所有文章生成slug映射
  * @returns Promise<Map<string, CollectionEntry<'blog'>>> slug到文章的映射
  */
-export async function getPostSlugMap(): Promise<Map<string, CollectionEntry<'blog'>>> {
-  const posts = await getAllPosts()
+export async function getPostSlugMap(locale: Locale = 'zh-CN'): Promise<Map<string, CollectionEntry<'blog'>>> {
+  const posts = await getAllPosts(locale)
   const slugMap = new Map<string, CollectionEntry<'blog'>>()
 
   for (const post of posts) {
@@ -78,37 +80,9 @@ export async function getPostBySlug(slug: string): Promise<CollectionEntry<'blog
  * 获取所有文章的slug路径（用于静态路由生成）
  * @returns Promise<Array<{slug: string, post: CollectionEntry<'blog'>}>>
  */
-export async function getAllPostSlugs(): Promise<Array<{slug: string, post: CollectionEntry<'blog'>}>> {
-  const slugMap = await getPostSlugMap()
+export async function getAllPostSlugs(locale: Locale = 'zh-CN'): Promise<Array<{slug: string, post: CollectionEntry<'blog'>}>> {
+  const slugMap = await getPostSlugMap(locale)
   return Array.from(slugMap.entries()).map(([slug, post]) => ({ slug, post }))
-}
-
-function getDayKey(date: string | Date): string {
-  const d = new Date(date)
-  return d.toISOString().split('T')[0]
-}
-
-export async function getRecentPosts(
-  count: number,
-): Promise<CollectionEntry<'blog'>[]> {
-  const posts = await getAllPosts()
-  const postsByDay = posts.reduce<Record<string, CollectionEntry<'blog'>[]>>((acc, post) => {
-    const key = getDayKey(getBlogDate(post))
-    if (!acc[key]) {
-      acc[key] = []
-    }
-    acc[key].push(post)
-    return acc
-  }, {})
-
-  const randomPostsPerDay = Object.values(postsByDay).map(postsForDay => {
-    const randomIndex = Math.floor(Math.random() * postsForDay.length)
-    return postsForDay[randomIndex]
-  })
-
-  const shuffled = randomPostsPerDay.sort(() => Math.random() - 0.5)
-
-  return shuffled.slice(0, count)
 }
 
 export async function getAdjacentPosts(currentSlug: string): Promise<{
@@ -183,11 +157,12 @@ export async function getPostsByTag(
 }
 
 // Notes相关函数
-export async function getAllNotes(): Promise<CollectionEntry<'notes'>[]> {
-  return withCache('all-notes', async () => {
+export async function getAllNotes(locale: Locale = 'zh-CN'): Promise<CollectionEntry<'notes'>[]> {
+  return withCache(`all-notes:${locale}`, async () => {
     const notes = await getCollection('notes')
     return notes
       .filter((note) => !note.data.draft)
+      .filter((note) => isEntryLocale(note.data, locale))
       .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   })
 }
@@ -205,8 +180,8 @@ export function getNoteSlug(note: CollectionEntry<'notes'>): string {
  * 为所有笔记生成slug映射
  * @returns Promise<Map<string, CollectionEntry<'notes'>>> slug到笔记的映射
  */
-export async function getNoteSlugMap(): Promise<Map<string, CollectionEntry<'notes'>>> {
-  const notes = await getAllNotes()
+export async function getNoteSlugMap(locale: Locale = 'zh-CN'): Promise<Map<string, CollectionEntry<'notes'>>> {
+  const notes = await getAllNotes(locale)
   const slugMap = new Map<string, CollectionEntry<'notes'>>()
 
   for (const note of notes) {
@@ -232,8 +207,8 @@ export async function getNoteBySlug(slug: string): Promise<CollectionEntry<'note
  * 获取所有笔记的slug路径（用于静态路由生成）
  * @returns Promise<Array<{slug: string, note: CollectionEntry<'notes'>}>>
  */
-export async function getAllNoteSlugs(): Promise<Array<{slug: string, note: CollectionEntry<'notes'>}>> {
-  const slugMap = await getNoteSlugMap()
+export async function getAllNoteSlugs(locale: Locale = 'zh-CN'): Promise<Array<{slug: string, note: CollectionEntry<'notes'>}>> {
+  const slugMap = await getNoteSlugMap(locale)
   return Array.from(slugMap.entries()).map(([slug, note]) => ({ slug, note }))
 }
 

@@ -98,13 +98,17 @@ test("both workflows use one locked durable writer without CI feedback loops", a
   assert.match(push, /await writeCache\(\{\s*\.\.\.cache,/);
 });
 test("blog and notes list descriptions are distinct and explicit", async () => {
-  const blog = await fs.readFile("src/pages/blog/[...page].astro", "utf8");
-  const notes = await fs.readFile("src/pages/notes.astro", "utf8");
-  const description = (source) =>
-    source.match(/<Layout[\s\S]*?description="([^"]+)"/)?.[1];
-  assert.ok(description(blog));
-  assert.ok(description(notes));
-  assert.notEqual(description(blog), description(notes));
+  const blog = await fs.readFile("src/components/BlogIndex.astro", "utf8");
+  const notes = await fs.readFile("src/components/NotesIndex.astro", "utf8");
+  const { ui } = await import("../src/i18n/ui.ts");
+  assert.match(blog, /description=\{t\.blogDescription\}/);
+  assert.match(notes, /description=\{t\.notesDescription\}/);
+  for (const locale of ["zh-CN", "en"]) {
+    const t = ui(locale);
+    assert.ok(t.blogDescription);
+    assert.ok(t.notesDescription);
+    assert.notEqual(t.blogDescription, t.notesDescription);
+  }
 });
 
 test("two sequential callers preserve durable version and never resend accepted content", async () => {

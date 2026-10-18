@@ -1,4 +1,8 @@
 ---
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
 import { SITE } from "@/config.ts";
 import { getArticleDates } from "@/utils/article-discovery";
 import { articleTransitionName } from "@/utils/reading-motion";
@@ -26,7 +30,7 @@ const {
   category,
   heading: Heading = "h2",
 } = Astro.props;
-const dateLabel = new Intl.DateTimeFormat("zh-CN", {
+const dateLabel = new Intl.DateTimeFormat(locale, {
   timeZone: SITE.timezone,
   year: "numeric",
   month: "2-digit",
@@ -41,14 +45,14 @@ const formatDate = (value: Date) => dateLabel.format(value);
     variant === "blog" ? (
       <div class="entry-dates">
         <span class="entry-date-label">
-          {dates.updated ? "更新于" : "发表于"}
+          {dates.updated ? t.updated : t.published}
         </span>
         <time datetime={dates.latest.toISOString()}>
           {formatDate(dates.latest)}
         </time>
         {dates.updated && (
           <span class="entry-original-date">
-            发表于{" "}
+            {t.published}{" "}
             <time datetime={dates.published.toISOString()}>
               {formatDate(dates.published)}
             </time>
@@ -77,7 +81,7 @@ const formatDate = (value: Date) => dateLabel.format(value);
     <p>{description}</p>
     {
       tags.length > 0 && (
-        <ul class="entry-tags" aria-label="文章主题">
+        <ul class="entry-tags" aria-label={t.topics}>
           {tags.map((tag) => (
             <li>
               <a href={tag.href}>{tag.label}</a>

@@ -41,8 +41,8 @@ test("homepage keeps only the requested education details, without dates or resu
 });
 
 test("homepage keeps existing reader entry routes and uses bx metadata", () => {
-  assert.match(home, /href="\/blog\/"/);
-  assert.match(home, /href="\/notes\/"/);
+  assert.match(home, /localizedPath\("\/blog\/", locale\)/);
+  assert.match(home, /localizedPath\("\/notes\/", locale\)/);
   assert.match(home, /href=\{SITE.profile\}/);
   assert.match(index, /title="bx · Cybersecurity, LLMs & Personal Notes"/);
   assert.doesNotMatch(index, /Zhang Boxiang|张博翔/);

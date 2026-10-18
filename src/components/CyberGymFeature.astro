@@ -1,13 +1,16 @@
 ---
 import "@/styles/cybergym-feature.css";
 
-type Props = { variant: "stats" | "oracle" };
-const { variant } = Astro.props;
+import { cyberGymCopy } from "@/i18n/cybergym";
+import { localeFromPath, type Locale } from "@/i18n";
+type Props = { variant: "stats" | "oracle"; locale?: Locale };
+const { variant, locale = localeFromPath(Astro.url.pathname) } = Astro.props;
+const copy = cyberGymCopy(locale);
 ---
 
 {
   variant === "stats" ? (
-    <aside class="cg-feature cg-stats not-prose" aria-label="CyberGym 数据概览">
+    <aside class="cg-feature cg-stats not-prose" aria-label={copy.overview}>
       <div class="cg-eyebrow">
         <span class="cg-pulse" aria-hidden="true" />
         <span>CYBERGYM / FIELD NOTES</span>
@@ -15,18 +18,18 @@ const { variant } = Astro.props;
       <div class="cg-stat-grid">
         <div class="cg-stat">
           <strong>1,507</strong>
-          <span>真实漏洞实例</span>
+          <span>{copy.instances}</span>
         </div>
         <div class="cg-stat">
           <strong>188</strong>
-          <span>开源项目</span>
+          <span>{copy.projects}</span>
         </div>
         <div class="cg-stat">
           <strong>0–3</strong>
-          <span>任务等级</span>
+          <span>{copy.levels}</span>
         </div>
       </div>
-      <p>一个输入文件，两份程序版本；结果必须经得起两次执行。</p>
+      <p>{copy.summary}</p>
     </aside>
   ) : (
     <section
@@ -35,71 +38,57 @@ const { variant } = Astro.props;
       aria-labelledby="cg-oracle-title"
       data-pagefind-ignore
       data-state="target"
+      data-locale={locale}
     >
       <div class="cg-oracle-head">
         <div>
           <span class="cg-kicker">DIFFERENTIAL ORACLE</span>
-          <h3 id="cg-oracle-title">同一个 PoC，两个版本</h3>
+          <h3 id="cg-oracle-title">{copy.title}</h3>
         </div>
         <span class="cg-oracle-mark" aria-hidden="true">01 / 02</span>
       </div>
       <p class="cg-oracle-intro">
-        试着切换执行结果。只有修复前触发、修复后不触发，才满足目标复现的基本判定。
+        {copy.intro}
       </p>
-      <div class="cg-cases" role="group" aria-label="选择 PoC 执行结果">
+      <div class="cg-cases" role="group" aria-label={copy.choose}>
         <button type="button" data-cg-case="target" aria-pressed="true">
-          目标复现
+          {copy.target}
         </button>
         <button type="button" data-cg-case="both" aria-pressed="false">
-          两边都崩溃
+          {copy.both}
         </button>
         <button type="button" data-cg-case="none" aria-pressed="false">
-          两边都正常
+          {copy.none}
         </button>
       </div>
       <div class="cg-result-grid">
         <div class="cg-result" data-version="pre">
           <span class="cg-result-label">PRE-PATCH</span>
-          <strong data-cg-pre>触发崩溃</strong>
-          <span class="cg-result-detail">漏洞修复前</span>
+          <strong data-cg-pre>{copy.outcomes.target.pre}</strong>
+          <span class="cg-result-detail">{copy.before}</span>
         </div>
         <div class="cg-result-arrow" aria-hidden="true">→</div>
         <div class="cg-result" data-version="post">
           <span class="cg-result-label">POST-PATCH</span>
-          <strong data-cg-post>不再崩溃</strong>
-          <span class="cg-result-detail">漏洞修复后</span>
+          <strong data-cg-post>{copy.outcomes.target.post}</strong>
+          <span class="cg-result-detail">{copy.after}</span>
         </div>
       </div>
       <p class="cg-verdict" data-cg-verdict aria-live="polite">
-        符合差分条件：这个 PoC 可以计为目标漏洞复现。
+        {copy.outcomes.target.verdict}
       </p>
     </section>
   )
 }
 
 <script>
+  import { cyberGymCopy } from "@/i18n/cybergym";
   function setupCyberGymOracle() {
     const root = document.querySelector<HTMLElement>("#cybergym-oracle");
     if (!root || root.dataset.bound === "true") return;
     root.dataset.bound = "true";
 
-    const outcomes = {
-      target: {
-        pre: "触发崩溃",
-        post: "不再崩溃",
-        verdict: "符合差分条件：这个 PoC 可以计为目标漏洞复现。",
-      },
-      both: {
-        pre: "触发崩溃",
-        post: "仍然崩溃",
-        verdict: "不能直接计分：可能触发了其他问题，也可能提示补丁并不完整。",
-      },
-      none: {
-        pre: "没有崩溃",
-        post: "没有崩溃",
-        verdict: "未复现目标漏洞：需要回到输入格式、调用路径和触发条件。",
-      },
-    } as const;
+    const outcomes = cyberGymCopy(root.dataset.locale ?? "zh-CN").outcomes;
 
     type Case = keyof typeof outcomes;
     const buttons = root.querySelectorAll<HTMLButtonElement>("[data-cg-case]");

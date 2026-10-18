@@ -1,0 +1,83 @@
+---
+import type { Page } from "astro";
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import ContentEmpty from "@/components/ContentEmpty.astro";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import EntryRow from "@/components/EntryRow.astro";
+import Pagination from "@/components/Pagination.astro";
+import { SITE } from "@/config.ts";
+import { type NoteWithSlug } from "@/utils/notes";
+
+interface Props { page: Page<NoteWithSlug>; }
+const { page } = Astro.props;
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+const noteEntries = page.data as NoteWithSlug[];
+---
+
+<Layout
+  title={`${t.notesArchiveTitle}${page.currentPage > 1 ? ` · ${t.pageCount(page.currentPage, page.lastPage)}` : ""} | ${SITE.title}`}
+  description={t.notesArchiveDescription}
+  canonicalURL={Astro.url.toString()}
+  noindex={!page.total || page.currentPage > 1}
+>
+  <Header />
+  <Breadcrumb />
+  <main id="main-content" class="app-layout pb-6">
+    <header class="page-head">
+      <p class="page-kicker">NOTES / ARCHIVE</p>
+      <h1>{t.allNotes}</h1>
+      <p>{t.notesArchiveLead}</p>
+    </header>
+    {!page.total && <ContentEmpty kind="notes" />}
+    <ul class="entry-list">
+      {
+        noteEntries.map(({ note, slug }) => (
+          <EntryRow
+            href={localizedPath(`/notes/${slug}/`, locale)}
+            title={note.data.title}
+            description={note.data.description}
+            date={note.data.date}
+            category={note.data.category || t.uncategorized}
+          />
+        ))
+      }
+    </ul>
+  </main>
+  <Pagination {page} />
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>
+
+<style>
+  .page-head {
+    margin: 0.4rem 0 1.8rem;
+  }
+  .page-kicker {
+    margin: 0 0 0.45rem;
+    color: var(--accent);
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(1.85rem, 3.5vw, 2.35rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+  }
+  .page-head > p:last-child {
+    margin: 0.55rem 0 0;
+    color: color-mix(in srgb, var(--foreground) 68%, transparent);
+    line-height: 1.7;
+  }
+  .entry-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

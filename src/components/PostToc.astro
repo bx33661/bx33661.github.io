@@ -1,4 +1,8 @@
 ---
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
 type Heading = { depth: number; slug: string; text: string };
 type Props = { headings: Heading[]; variant: "inline" | "sidebar" | "mobile" };
 
@@ -10,9 +14,9 @@ const { headings, variant } = Astro.props;
     (variant === "inline" ? (
       <details class="post-toc-inline">
         <summary>
-          本文目录 <span>{headings.length} 个章节</span>
+          {t.toc} <span>{t.tocCount(headings.length)}</span>
         </summary>
-        <nav aria-label="正文内嵌目录" data-post-toc>
+        <nav aria-label={t.tocInline} data-post-toc>
           <ol>
             {headings.map((heading) => (
               <li class:list={[{ nested: heading.depth >= 3 }]}>
@@ -23,9 +27,9 @@ const { headings, variant } = Astro.props;
         </nav>
       </details>
     ) : variant === "sidebar" ? (
-      <aside class="post-toc-sidebar" aria-label="文章快速目录">
-        <p>本文目录</p>
-        <nav aria-label="正文侧边目录" data-post-toc>
+      <aside class="post-toc-sidebar" aria-label={t.tocQuick}>
+        <p>{t.toc}</p>
+        <nav aria-label={t.tocSidebar} data-post-toc>
           <ol>
             {headings.map((heading) => (
               <li class:list={[{ nested: heading.depth >= 3 }]}>
@@ -44,8 +48,8 @@ const { headings, variant } = Astro.props;
           aria-controls="post-toc-dialog"
         >
           <>
-            <span class="post-toc-mobile-label">目录</span>
-            <span data-toc-current>本文目录</span>
+            <span class="post-toc-mobile-label">{t.tocShort}</span>
+            <span data-toc-current>{t.toc}</span>
           </>
         </button>
         <dialog
@@ -55,17 +59,17 @@ const { headings, variant } = Astro.props;
         >
           <header>
             <>
-              <h2 id="post-toc-dialog-title">本文目录</h2>
+              <h2 id="post-toc-dialog-title">{t.toc}</h2>
               <button
                 type="button"
                 data-post-toc-close
-                aria-label="关闭本文目录"
+                aria-label={t.closeToc}
               >
-                关闭 ×
+                {t.close} ×
               </button>
             </>
           </header>
-          <nav aria-label="移动端快速目录" data-post-toc>
+          <nav aria-label={t.tocMobile} data-post-toc>
             <ol>
               {headings.map((heading) => (
                 <li class:list={[{ nested: heading.depth >= 3 }]}>

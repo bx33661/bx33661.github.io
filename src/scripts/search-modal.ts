@@ -31,7 +31,7 @@ function setupSearchModal() {
           getInput()?.focus({ preventScroll: true });
       } catch {
         if (signal.aborted) return;
-        mount.textContent = "搜索暂时不可用，请前往完整搜索页重试。";
+        mount.textContent = document.documentElement.lang === "en" ? "Search is unavailable. Please try the full search page." : "搜索暂时不可用，请前往完整搜索页重试。";
         loading = null; // Retry on the next opening, not a permanently rejected mount.
       }
     })();
@@ -91,6 +91,13 @@ function setupSearchModal() {
   dialog.addEventListener(
     "keydown",
     (event) => {
+      // Native search inputs consume the first Escape to clear their value.
+      // Keep the modal's advertised Escape-to-close behavior in both editions.
+      if (event.key === "Escape") {
+        event.preventDefault();
+        modal.close();
+        return;
+      }
       const links = [
         ...dialog.querySelectorAll<HTMLAnchorElement>(
           ".pagefind-ui__result-link, .search-fallback-link",

@@ -1,10 +1,16 @@
+---
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+---
 <dialog
   id="article-lightbox"
   class="article-lightbox"
-  aria-label="放大图片，点击图片或空白处关闭"
+  aria-label={t.imageViewer}
   data-pagefind-ignore
 >
-  <button type="button" data-image-close aria-label="关闭图片查看器">
+  <button type="button" data-image-close aria-label={t.closeImage}>
     <span aria-hidden="true">×</span>
   </button>
   <img data-image-full alt="" />

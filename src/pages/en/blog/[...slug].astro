@@ -1,0 +1,10 @@
+---
+import PostDetails from "@/layouts/PostDetails.astro";
+import { getAllPosts, getAllPostSlugs } from "@/lib/data-utils";
+export async function getStaticPaths() {
+  return (await getAllPostSlugs("en")).map(({ slug, post }) => ({ params: { slug }, props: { post } }));
+}
+const { post } = Astro.props;
+const posts = await getAllPosts("en");
+---
+<PostDetails {post} {posts} />

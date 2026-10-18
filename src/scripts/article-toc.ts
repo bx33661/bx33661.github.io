@@ -95,7 +95,7 @@ export function setupArticleToc(signal: AbortSignal) {
       if (current) keepVisible(link);
     }
     positionMarkers();
-    const label = active.textContent?.replace(/#\s*$/, "").trim() ?? "本文目录";
+    const label = active.textContent?.replace(/#\s*$/, "").trim() ?? (document.documentElement.lang === "en" ? "On this page" : "本文目录");
     const currentLabel = document.querySelector("[data-toc-current]");
     if (currentLabel) currentLabel.textContent = label;
   };

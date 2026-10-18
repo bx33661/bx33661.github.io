@@ -21,7 +21,7 @@ Keep `unified()` until the remark/rehype behavior has been ported and browser/se
 
 ## Deferred
 
-- Astro i18n routing: the homepage is already English-first, but there is no separate translated page corpus. Enabling locale routing now would duplicate content and risk existing URLs. Add it when there are real translated pages, keeping current blog URLs as the default routes.
+- Astro built-in i18n routing configuration remains off. Explicit `/en/` routes reuse the original page components and styles. Three real translated posts were added on 2026-10-18, with explicit translation pairs and unchanged Chinese URLs. See `docs/I18N.md` and `docs/ENGLISH_PUBLICATION.md`; no separate English visual framework is maintained.
 - Experimental incremental builds: 58 posts and 424 generated pages do not yet justify cache-key and CI complexity. Revisit after measuring a genuine build-time bottleneck.
 - Bulk movement of public article images: keep stable image URLs; move only measured high-impact assets with preserved fallbacks.
 

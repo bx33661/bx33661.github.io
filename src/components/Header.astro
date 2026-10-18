@@ -6,41 +6,29 @@ import IconArchive from "@/assets/icons/IconArchive.svg";
 import IconGallery from "@/assets/icons/IconGallery.svg";
 import { SITE } from "@/config.ts";
 import "@/styles/header.css";
+import { localeFromPath, localizedPath, switchDestination } from "@/i18n";
+import { languagePaths } from "@/i18n/content";
 
 const { pathname } = Astro.url;
+const locale = localeFromPath(pathname);
+const isEnglish = locale === "en";
+const languageRoutes = await languagePaths(pathname);
+const languageHref = switchDestination(pathname, languageRoutes);
+const exactLanguageSwitch = Object.keys(languageRoutes).length === 2;
 
 // Remove trailing slash from current pathname if exists
 const currentPath =
   pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
 
-const isActive = (path: string) => {
-  const currentPathArray = currentPath.split("/").filter((p) => p.trim());
-  const pathArray = path.split("/").filter((p) => p.trim());
-
-  return currentPath === path || currentPathArray[0] === pathArray[0];
-};
+const sectionPath = currentPath.replace(/^\/en(?=\/|$)/, "") || "/";
+const isActive = (path: string) => sectionPath === path || sectionPath.startsWith(`${path}/`);
 
 const navItems = [
-  {
-    label: "Home",
-    href: "/",
-    active: currentPath === "/" || currentPath === "/about",
-  },
-  {
-    label: "Posts",
-    href: "/blog/",
-    active: isActive("/blog"),
-  },
-  {
-    label: "Notes",
-    href: "/notes/",
-    active: isActive("/notes"),
-  },
-  {
-    label: "Friends",
-    href: "/friends/",
-    active: isActive("/friends"),
-  },
+  { label: "Home", href: localizedPath("/", locale), active: sectionPath === "/" || sectionPath === "/about" },
+  { label: "Posts", href: localizedPath("/blog/", locale), active: isActive("/blog") },
+  { label: "Notes", href: localizedPath("/notes/", locale), active: isActive("/notes") },
+  // Shared resources retain their existing URLs; no untranslated mirror pages.
+  { label: "Friends", href: "/friends/", active: isActive("/friends") },
 ];
 
 const quickItems = [
@@ -48,10 +36,11 @@ const quickItems = [
     ? [
         {
           label: "Archives",
-          href: "/archives/",
+          href: localizedPath("/archives/", locale),
           active:
             currentPath === "/archives" ||
             currentPath.startsWith("/archives/") ||
+            currentPath === "/en/archives" ||
             currentPath === "/archive" ||
             currentPath.startsWith("/archive/"),
           icon: IconArchive,
@@ -95,7 +84,7 @@ const brandText = SITE.title.trim();
     >
       <!-- Logo -->
       <a
-        href="/"
+        href={localizedPath("/", locale)}
         class="group relative z-20 flex items-center gap-2.5 text-xl font-bold tracking-tight sm:text-2xl"
       >
         <img
@@ -110,6 +99,14 @@ const brandText = SITE.title.trim();
 
       <!-- Nav area -->
       <nav id="nav-menu" class="flex items-center sm:gap-1">
+        <a
+          href={languageHref}
+          class="language-switch"
+          data-language-switch
+          lang={isEnglish ? "zh-CN" : "en"}
+          aria-label={isEnglish ? (exactLanguageSwitch ? "切换到中文" : "查看中文内容") : (exactLanguageSwitch ? "Switch to English" : "Browse the English edition; this page has no English version")}
+          title={isEnglish ? "中文" : (exactLanguageSwitch ? "English" : "English edition (no translation of this page)")}
+        >{isEnglish ? "中文" : "EN"}</a>
         <!-- Mobile hamburger -->
         <button
           id="menu-btn"
@@ -258,6 +255,12 @@ const brandText = SITE.title.trim();
   >
   </div>
 </header>
+
+<style>
+  .language-switch { display: inline-flex; align-items: center; justify-content: center; min-width: 2.5rem; min-height: 2.5rem; margin-inline: .25rem; border: 1px solid var(--border); border-radius: .5rem; color: var(--foreground); font-size: .75rem; font-weight: 600; }
+  .language-switch:hover { color: var(--accent); border-color: var(--accent); }
+  .language-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
 
 <script>
   let headerCleanup: AbortController | null = null;

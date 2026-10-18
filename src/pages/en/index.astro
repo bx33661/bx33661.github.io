@@ -1,0 +1,12 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import AcademicHome from "@/components/AcademicHome.astro";
+import { englishDescription } from "@/i18n";
+---
+<Layout title="bx · Cybersecurity, LLMs & Personal Notes" description={englishDescription}>
+  <Header />
+  <AcademicHome locale="en" />
+  <Footer />
+</Layout>

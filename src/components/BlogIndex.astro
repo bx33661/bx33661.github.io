@@ -1,0 +1,239 @@
+---
+import type { Page } from "astro";
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import ContentEmpty from "@/components/ContentEmpty.astro";
+import "@/styles/blog-index.css";
+import { type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import EntryRow from "@/components/EntryRow.astro";
+import Pagination from "@/components/Pagination.astro";
+import getUniqueTags from "@/utils/getUniqueTags";
+import getPostsByTag from "@/utils/getPostsByTag";
+import { getTagPath } from "@/utils/tagPath";
+import { SITE } from "@/config.ts";
+import { getAllPosts } from "@/lib/data-utils";
+import { getPath } from "@/utils/getPath";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { readingTransition } from "@/utils/reading-motion";
+
+interface Props { page: Page<CollectionEntry<"blog">>; }
+const { page } = Astro.props;
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+const tagHref = (tag: string) => locale === "en" ? `/en/search/?q=${encodeURIComponent(tag)}` : getTagPath(tag);
+const totalPosts = page.total;
+const pageData = page.data as CollectionEntry<"blog">[];
+const topicPosts = page.currentPage === 1 ? await getAllPosts(locale) : [];
+const topics = getUniqueTags(topicPosts)
+  .filter(({ tag }) => tag !== "bx")
+  .map(({ tag, tagName }) => ({
+    tag,
+    tagName,
+    count: getPostsByTag(topicPosts, tag).length,
+  }))
+  .filter(({ count }) => count >= 4)
+  .sort(
+    (a, b) => b.count - a.count || a.tagName.localeCompare(b.tagName, locale),
+  )
+  .slice(0, 8);
+---
+
+<Layout
+  title={`Blog | ${SITE.title}`}
+  description={t.blogDescription}
+  canonicalURL={Astro.url.toString()}
+  noindex={page.total === 0 || page.currentPage > 1}
+>
+  <Header />
+  <Breadcrumb />
+
+  <main
+    id="main-content"
+    class="blog-index app-layout pb-4"
+    transition:name="reading-surface"
+    transition:animate={readingTransition}
+  >
+    <header class="blog-head">
+      <p class="blog-kicker">POSTS / ARCHIVE</p>
+      <h1 class="blog-title">{t.posts}</h1>
+      <p class="blog-desc">{t.blogLead}</p>
+      <p class="blog-meta">
+        <span>{t.postCount(totalPosts)}</span>
+        {
+          page.lastPage > 1 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>
+                {t.pageCount(page.currentPage, page.lastPage)}
+              </span>
+            </>
+          )
+        }
+      </p>
+    </header>
+
+    {
+      topics.length > 0 && (
+        <nav id="topics" class="blog-topics" aria-label={t.browseTopics}>
+          <span class="blog-topics-label">{t.browseTopics}</span>
+          <ul class="blog-topics-list">
+            {topics.map(({ tag, tagName, count }) => (
+              <li>
+                <a href={tagHref(tag)} class="blog-topic">
+                  <span>{tagName}</span>
+                  <span class="blog-topic-count">{count}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    {page.total === 0 && <ContentEmpty kind="posts" />}
+    <ul class="entry-list">
+      {
+        pageData.map((post) => (
+          <EntryRow
+            href={localizedPath(getPath(
+              post.id,
+              post.filePath,
+              true,
+              resolveLegacyPostSlug(post),
+            ), locale)}
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.pubDatetime}
+            updatedDate={post.data.modDatetime}
+            variant="blog"
+            tags={post.data.tags
+              .filter((tag) => !["bx", "others"].includes(tag.toLowerCase()))
+              .slice(0, 3)
+              .map((tag) => ({ label: tag, href: tagHref(tag) }))}
+          />
+        ))
+      }
+    </ul>
+  </main>
+
+  <Pagination {page} />
+
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>
+
+<style>
+  .blog-head {
+    margin: 0.4rem 0 1.8rem;
+    max-width: 40rem;
+  }
+
+  .blog-kicker {
+    margin: 0 0 0.45rem;
+    color: var(--accent);
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  .blog-title {
+    margin: 0;
+    font-size: clamp(1.85rem, 3.5vw, 2.35rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--foreground);
+  }
+
+  .blog-desc {
+    margin: 0.55rem 0 0;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--foreground) 62%, transparent);
+  }
+
+  .blog-meta {
+    margin: 0.7rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.55rem;
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--foreground) 42%, transparent);
+  }
+
+  .entry-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .blog-topics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.65rem 1rem;
+    margin: -0.45rem 0 1.45rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 6rem;
+  }
+
+  .blog-topics-label {
+    flex: none;
+    color: color-mix(in srgb, var(--foreground) 56%, transparent);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .blog-topics-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .blog-topic {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    padding: 0.25rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--foreground);
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .blog-topic:hover,
+  .blog-topic:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .blog-topic:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .blog-topic-count {
+    color: color-mix(in srgb, var(--foreground) 45%, transparent);
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.75rem;
+  }
+  :global(html[data-theme="dark"]) .blog-meta,
+  :global(html[data-theme="dark"]) .blog-topic-count {
+    color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  }
+</style>

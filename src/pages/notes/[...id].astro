@@ -1,72 +1,11 @@
 ---
-import { render } from "astro:content";
-import Layout from "@/layouts/Layout.astro";
-import "katex/dist/katex.min.css";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
-import Breadcrumb from "@/components/Breadcrumb.astro";
-import { SITE } from "@/config.ts";
-import { getAdjacentNotes, getAllNotesWithSlugs } from "@/utils/notes";
-
+import NoteDetails from "@/layouts/NoteDetails.astro";
+import { getAllNotesWithSlugs } from "@/utils/notes";
 export async function getStaticPaths() {
-  const notes = await getAllNotesWithSlugs();
-  return notes.map(({ note, slug }) => ({
-    params: { id: slug },
-    props: { note, slug },
+  return (await getAllNotesWithSlugs("zh-CN")).map(({ note, slug }) => ({
+    params: { id: slug }, props: { note, slug },
   }));
 }
-
 const { note, slug } = Astro.props;
-const { Content } = await render(note);
-const { prev, next } = await getAdjacentNotes(slug);
 ---
-
-<Layout
-  title={`${note.data.title} | ${SITE.title}`}
-  description={note.data.description}
-  pubDatetime={note.data.date}
-  canonicalURL={Astro.url.toString()}
->
-  <Header />
-  <Breadcrumb />
-  <main id="main-content" class="app-layout pb-10">
-    <article class="app-prose w-full max-w-app">
-      <h1 class="text-3xl font-bold tracking-tight">{note.data.title}</h1>
-      <p class="mt-4 leading-relaxed text-foreground/70" data-note-summary>{note.data.description}</p>
-      <p class="mt-2 text-sm text-foreground/60">{note.data.date.toLocaleDateString("zh-CN")}</p>
-      {
-        note.data.tags &&
-        note.data.tags.length > 0 && (
-          <div class="mt-3 flex flex-wrap gap-2">
-            {note.data.tags.map((tag: string) => (
-              <span class="rounded-full border border-border/30 px-2 py-0.5 text-xs">#{tag}</span>
-            ))}
-          </div>
-        )
-      }
-      <div class="mt-8">
-        <Content />
-      </div>
-    </article>
-
-    <div class="mt-10 grid gap-3 sm:grid-cols-2">
-      {prev ? (
-        <a class="rounded-xl border border-border/25 bg-muted/5 p-4" href={`/notes/${prev.slug}/`}>
-          <p class="text-xs text-foreground/55">上一篇</p>
-          <p class="mt-1 font-medium">{prev.note.data.title}</p>
-        </a>
-      ) : (
-        <div></div>
-      )}
-      {next ? (
-        <a class="rounded-xl border border-border/25 bg-muted/5 p-4 text-right" href={`/notes/${next.slug}/`}>
-          <p class="text-xs text-foreground/55">下一篇</p>
-          <p class="mt-1 font-medium">{next.note.data.title}</p>
-        </a>
-      ) : (
-        <div></div>
-      )}
-    </div>
-  </main>
-  <Footer />
-</Layout>
+<NoteDetails {note} {slug} />

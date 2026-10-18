@@ -1,4 +1,8 @@
 ---
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
 import type { CollectionEntry } from "astro:content";
 import IconEdit from "@/assets/icons/IconEdit.svg";
 import { SITE } from "@/config.ts";
@@ -28,7 +32,7 @@ const showEditPost =
       ]}
     >
       <IconEdit class="inline-block" />
-      <span>{SITE.editPost.text}</span>
+      <span>{locale === "en" ? t.edit : SITE.editPost.text}</span>
     </a>
   )
 }

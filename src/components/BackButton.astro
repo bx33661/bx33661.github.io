@@ -1,4 +1,8 @@
 ---
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
 import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import { SITE } from "@/config.ts";
 
@@ -6,7 +10,7 @@ type Props = { currentTitle?: string };
 const { currentTitle } = Astro.props;
 
 // Build breadcrumb from current URL
-const currentUrlPath = Astro.url.pathname.replace(/\/+$/, "");
+const currentUrlPath = Astro.url.pathname.replace(/^\/en(?=\/|$)/, "").replace(/\/+$/, "");
 const pathSegments = currentUrlPath.split("/").filter((s) => s.trim());
 ---
 
@@ -17,11 +21,11 @@ const pathSegments = currentUrlPath.split("/").filter((s) => s.trim());
         {/* Back button pill */}
         <a
           id="back-button"
-          href="/"
+          href={localizedPath("/", locale)}
           class="back-btn group inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border/30 bg-muted/10 px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 hover:text-accent hover:shadow-sm hover:shadow-accent/10"
         >
           <IconChevronLeft class="size-4 transition-transform duration-200 group-hover:-translate-x-0.5 rtl:rotate-180 rtl:group-hover:translate-x-0.5" />
-          <span>返回</span>
+          <span>{t.back}</span>
         </a>
 
         {/* Breadcrumb trail */}
@@ -50,10 +54,10 @@ const pathSegments = currentUrlPath.split("/").filter((s) => s.trim());
 
             {/* Home */}
             <a
-              href="/"
+              href={localizedPath("/", locale)}
               class="breadcrumb-link shrink-0 transition-colors duration-200 hover:text-accent"
-              aria-label="回到首页"
-              title="首页"
+              aria-label={t.backHome}
+              title={t.home}
             >
               <svg
                 class="size-3.5"
@@ -98,10 +102,10 @@ const pathSegments = currentUrlPath.split("/").filter((s) => s.trim());
                   </span>
                 ) : (
                   <a
-                    href={`/${pathSegments.slice(0, index + 1).join("/")}/`}
+                    href={localizedPath(`/${pathSegments.slice(0, index + 1).join("/")}/`, locale)}
                     class="breadcrumb-link shrink-0 capitalize transition-colors duration-200 hover:text-accent"
                   >
-                    {segment === "blog" ? "文章" : decodeURIComponent(segment)}
+                    {segment === "blog" ? t.posts : decodeURIComponent(segment)}
                   </a>
                 )}
               </>
@@ -151,7 +155,7 @@ const pathSegments = currentUrlPath.split("/").filter((s) => s.trim());
       location.origin,
     );
 
-    if (backUrl && backButton) {
+    if (backUrl && backButton && /^\/en(?:\/|$)/.test(backUrl) === (document.documentElement.lang === "en")) {
       backButton.href = backUrl;
     }
   }

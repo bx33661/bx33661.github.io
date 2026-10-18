@@ -26,7 +26,7 @@ test("sitemap omits noncanonical about alias and invented static dates", () => {
 });
 
 test("search noindex is crawlable while offline remains excluded", () => {
-  const search = fs.readFileSync("src/pages/search.astro", "utf8");
+  const search = fs.readFileSync("src/components/SearchPage.astro", "utf8");
   const robots = fs.readFileSync("src/pages/robots.txt.ts", "utf8");
   assert.match(search, /<Layout[^>]*noindex>/);
   assert.ok(!robots.includes("Disallow: /search/"));

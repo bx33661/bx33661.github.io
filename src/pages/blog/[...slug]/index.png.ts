@@ -4,6 +4,7 @@ import { resolveLegacyPostSlug } from "@/utils/legacySlug";
 import { generateOgImageForPost } from "@/utils/generateOgImages";
 import { SITE } from "@/config.ts";
 import postFilter from "@/utils/postFilter";
+import { isEntryLocale } from "@/i18n";
 
 export async function getStaticPaths() {
   if (!SITE.dynamicOgImage) {
@@ -11,7 +12,7 @@ export async function getStaticPaths() {
   }
 
   const posts = await getCollection("blog").then(p =>
-    p.filter(post => postFilter(post) && !post.data.ogImage)
+    p.filter(post => postFilter(post) && isEntryLocale(post.data, "zh-CN") && !post.data.ogImage)
   );
 
   return posts.map(post => ({

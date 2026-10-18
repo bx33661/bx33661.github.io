@@ -1,4 +1,8 @@
 ---
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
 import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
 ---
 
@@ -11,7 +15,7 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
 >
   <button
     data-button="back-to-top"
-    aria-label="返回顶部"
+    aria-label={t.backToTop}
     class:list={[
       "group relative flex flex-col items-center justify-center gap-0.5",
       "size-14 rounded-full",

@@ -1,5 +1,8 @@
 ---
 import { SITE } from "@/config.ts";
+import { localizedPath, type Locale } from "@/i18n";
+interface Props { locale?: Locale; }
+const { locale = "zh-CN" } = Astro.props;
 ---
 
 <main id="main-content" class="app-layout academic-home" lang="en">
@@ -47,10 +50,11 @@ import { SITE } from "@/config.ts";
       </div>
       <p class="closing"><strong>Let's explore the stars and beyond together. <span class="closing-star">🌟</span></strong></p>
       <nav class="home-links" aria-label="Explore the blog">
-        <a class="read-link" href="/blog/">Read the blog <span aria-hidden="true">↗</span></a>
-        <a href="/notes/">Notes <span aria-hidden="true">↗</span></a>
+        <a class="read-link" href={localizedPath("/blog/", locale)}>Read the blog <span aria-hidden="true">↗</span></a>
+      <a href={localizedPath("/notes/", locale)}>Notes <span aria-hidden="true">↗</span></a>
         <a href={SITE.profile} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
       </nav>
+
     </div>
 
     <aside class="home-sidebar">

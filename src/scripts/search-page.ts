@@ -47,7 +47,7 @@ async function initSearchPage() {
     }
   } catch {
     if (!signal.aborted) {
-      mount.textContent = "搜索暂时不可用，请稍后重试。";
+      mount.textContent = document.documentElement.lang === "en" ? "Search is unavailable. Please try again later." : "搜索暂时不可用，请稍后重试。";
       delete mount.dataset.ready;
     }
   }

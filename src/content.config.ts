@@ -17,6 +17,8 @@ const blog = defineCollection({
         modDatetime: z.coerce.date().optional().nullable(),
         date: z.coerce.date().optional(),
         title: z.string(),
+        lang: z.enum(["zh-CN", "en"]).default("zh-CN"),
+        translationKey: z.string().min(1).optional(),
         featured: z.boolean().optional(),
         draft: z.boolean().optional(),
         tags: z.array(z.string()).default(["others"]),
@@ -40,6 +42,8 @@ const notes = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      lang: z.enum(["zh-CN", "en"]).default("zh-CN"),
+      translationKey: z.string().min(1).optional(),
       description: z.string(),
       date: z.coerce.date(),
       image: image().optional(),

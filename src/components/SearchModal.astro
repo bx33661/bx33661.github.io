@@ -1,6 +1,9 @@
 ---
 import "@pagefind/default-ui/css/ui.css";
 import "@/styles/search-modal.css";
+import { localeFromPath, localizedPath } from "@/i18n";
+const locale = localeFromPath(Astro.url.pathname);
+const isEnglish = locale === "en";
 ---
 
 <dialog
@@ -12,18 +15,18 @@ import "@/styles/search-modal.css";
     class="search-backdrop"
     type="button"
     tabindex="-1"
-    aria-label="关闭搜索"
+    aria-label={isEnglish ? "Close search" : "关闭搜索"}
     data-search-close></button>
   <div class="search-dialog-card">
     <header class="search-dialog-head">
       <div>
         <p class="search-dialog-kicker">SEARCH / QUICK FIND</p>
-        <h2 id="search-dialog-title">站内搜索</h2>
+        <h2 id="search-dialog-title">{isEnglish ? "Search English content" : "站内搜索"}</h2>
       </div>
       <button
         class="search-dialog-close"
         type="button"
-        aria-label="关闭搜索"
+        aria-label={isEnglish ? "Close search" : "关闭搜索"}
         data-search-close
       >
         <span aria-hidden="true">×</span>
@@ -33,19 +36,19 @@ import "@/styles/search-modal.css";
     <div class="search-dialog-body">
       <div id="modal-pagefind-search"></div>
       <div class="search-suggestions" data-search-suggestions>
-        <span>试试搜索</span>
+        <span>{isEnglish ? "Try searching" : "试试搜索"}</span>
         <button type="button" data-search-suggestion="CTF">CTF</button>
         <button type="button" data-search-suggestion="Web">Web</button>
-        <button type="button" data-search-suggestion="安全审计">安全审计</button
+        <button type="button" data-search-suggestion={isEnglish ? "Security" : "安全审计"}>{isEnglish ? "Security" : "安全审计"}</button
         >
       </div>
     </div>
 
     <footer class="search-dialog-foot">
       <span
-        ><kbd>↑</kbd><kbd>↓</kbd> 选择 <kbd>↵</kbd> 打开 <kbd>Esc</kbd> 关闭</span
+        ><kbd>↑</kbd><kbd>↓</kbd> {isEnglish ? "Select" : "选择"} <kbd>↵</kbd> {isEnglish ? "Open" : "打开"} <kbd>Esc</kbd> {isEnglish ? "Close" : "关闭"}</span
       >
-      <a href="/search/">前往完整搜索 <span aria-hidden="true">↗</span></a>
+      <a href={localizedPath("/search/", locale)}>{isEnglish ? "Full search" : "前往完整搜索"} <span aria-hidden="true">↗</span></a>
     </footer>
   </div>
 </dialog>

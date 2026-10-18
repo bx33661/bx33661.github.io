@@ -121,7 +121,9 @@ export function setupArticleLightbox(signal: AbortSignal) {
       trigger.type = "button";
       trigger.setAttribute(
         "aria-label",
-        label ? `放大图片：${label}` : "放大正文图片",
+        document.documentElement.lang === "en"
+          ? (label ? `Enlarge image: ${label}` : "Enlarge article image")
+          : (label ? `放大图片：${label}` : "放大正文图片"),
       );
       trigger.setAttribute("aria-haspopup", "dialog");
       target.replaceWith(frame);

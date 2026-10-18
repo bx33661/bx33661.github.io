@@ -13,7 +13,7 @@ function setupProgressBar(article: HTMLElement, signal: AbortSignal) {
   bar.className = "progress-bar h-1 w-full bg-accent";
   bar.id = "myBar";
   bar.setAttribute("role", "progressbar");
-  bar.setAttribute("aria-label", "正文阅读进度");
+  bar.setAttribute("aria-label", document.documentElement.lang === "en" ? "Article reading progress" : "正文阅读进度");
   bar.setAttribute("aria-valuemin", "0");
   bar.setAttribute("aria-valuemax", "100");
   container.appendChild(bar);
@@ -57,7 +57,7 @@ function attachHeadingLinks(article: HTMLElement) {
     link.className =
       "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
     link.href = `#${heading.id}`;
-    link.setAttribute("aria-label", `跳转到：${heading.textContent?.trim()}`);
+    link.setAttribute("aria-label", `${document.documentElement.lang === "en" ? "Jump to: " : "跳转到："}${heading.textContent?.trim()}`);
     const span = document.createElement("span");
     span.ariaHidden = "true";
     span.textContent = "#";
@@ -81,7 +81,7 @@ function attachCopyButtons(article: HTMLElement, signal: AbortSignal) {
       button = document.createElement("button");
       button.type = "button";
       button.className = `copy-code absolute end-3 ${hasOffset ? "top-(--file-name-offset)" : "-top-3"} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
-      button.setAttribute("aria-label", "复制代码");
+      button.setAttribute("aria-label", document.documentElement.lang === "en" ? "Copy code" : "复制代码");
       button.setAttribute("aria-live", "polite");
       block.setAttribute("tabindex", "0");
       block.appendChild(button);
@@ -107,7 +107,7 @@ function attachCopyButtons(article: HTMLElement, signal: AbortSignal) {
           copy.dataset.copyState = "copied";
         } catch {
           if (signal.aborted || token !== sequence) return;
-          copy.textContent = "复制失败";
+          copy.textContent = document.documentElement.lang === "en" ? "Copy failed" : "复制失败";
           copy.dataset.copyState = "error";
         }
         clearTimeout(timer);

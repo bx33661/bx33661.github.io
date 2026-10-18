@@ -1,4 +1,8 @@
 ---
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
 import { render, type CollectionEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import "katex/dist/katex.min.css";
@@ -35,6 +39,8 @@ type Props = {
 
 const { post, posts } = Astro.props;
 const postSlug = resolveLegacyPostSlug(post);
+const postPath = (id: string, filePath: string | undefined, slug: string) => localizedPath(getPath(id, filePath, true, slug), locale);
+const tagHref = (tag: string) => locale === "en" ? `/en/search/?q=${encodeURIComponent(tag)}` : getTagPath(tag);
 
 const {
   title,
@@ -54,7 +60,7 @@ const tocHeadings = headings.filter(
 );
 const dates = getArticleDates(pubDatetime, modDatetime);
 const dateLabel = (date: Date) =>
-  new Intl.DateTimeFormat("zh-CN", {
+  new Intl.DateTimeFormat(locale, {
     timeZone: SITE.timezone,
     year: "numeric",
     month: "2-digit",
@@ -71,7 +77,7 @@ if (typeof initOgImage === "string") {
 }
 
 // Use dynamic OG image if enabled and no remote|local ogImage
-if (!ogImageUrl && SITE.dynamicOgImage) {
+if (!ogImageUrl && SITE.dynamicOgImage && locale !== "en") {
   ogImageUrl = `${getPath(post.id, post.filePath, true, postSlug)}index.png`;
 }
 
@@ -126,11 +132,11 @@ const nextPost =
     <!-- Post header section -->
     <header class="post-header">
       <p class="post-kicker" data-pagefind-ignore>
-        <span aria-hidden="true"></span>WRITING / 文章
+        <span aria-hidden="true"></span>{t.writing}
       </p>
       <h1
         transition:name={articleTransitionName(
-          getPath(post.id, post.filePath, true, postSlug),
+          postPath(post.id, post.filePath, postSlug),
         )}
         transition:animate="initial"
         data-article-title
@@ -143,14 +149,14 @@ const nextPost =
         <span>{author}</span>
         <span aria-hidden="true">·</span>
         <span class="post-date"
-          >发表于 <time datetime={dates.published.toISOString()}
+          >{t.published} <time datetime={dates.published.toISOString()}
             >{dateLabel(dates.published)}</time
           ></span
         >
         {
           dates.updated && (
             <span class="post-date post-date-updated">
-              更新于{" "}
+              {t.updated}{" "}
               <time datetime={dates.updated.toISOString()}>
                 {dateLabel(dates.updated)}
               </time>
@@ -161,7 +167,7 @@ const nextPost =
       <div class="post-header-tags">
         {
           tags.slice(0, 3).map((tag: string) => (
-            <a href={getTagPath(tag)} class="post-tag-badge">
+            <a href={tagHref(tag)} class="post-tag-badge">
               <span aria-hidden="true">#</span>
               {tag}
             </a>
@@ -169,7 +175,7 @@ const nextPost =
         }
         {
           tags.length > 3 && (
-            <span class="post-tag-more">等 {tags.length} 个标签</span>
+            <span class="post-tag-more">{t.moreTags(tags.length)}</span>
           )
         }
       </div>
@@ -196,7 +202,7 @@ const nextPost =
       </div>
       <span
         class="font-cartograph text-[10px] tracking-widest text-accent/25 uppercase select-none"
-        >// 结束</span
+        >// {t.end}</span
       >
       <div
         class="h-px flex-1 bg-linear-to-r from-transparent via-border/30 to-accent/20"
@@ -215,7 +221,7 @@ const nextPost =
         {
           tags.map((tag: string) => (
             <a
-              href={getTagPath(tag)}
+              href={tagHref(tag)}
               class="inline-flex items-center gap-1 rounded-full border border-border/25 bg-muted/10 px-2.5 py-1 font-cartograph text-xs transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 hover:text-accent"
             >
               <span class="opacity-40">#</span>
@@ -246,7 +252,7 @@ const nextPost =
       {
         prevPost ? (
           <a
-            href={getPath(prevPost.id, prevPost.filePath, true, prevPost.slug)}
+            href={postPath(prevPost.id, prevPost.filePath, prevPost.slug)}
             data-reading-link
             class="post-nav-link group relative flex flex-col gap-1 rounded-2xl border border-border/20 px-5 py-4 transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5"
           >
@@ -265,7 +271,7 @@ const nextPost =
                 <polyline points="12 19 5 12 12 5" />
               </svg>
               <span class="font-cartograph text-[10px] tracking-wider text-foreground/35 uppercase">
-                上一篇
+                {t.previous}
               </span>
             </div>
             <span
@@ -282,14 +288,14 @@ const nextPost =
       {
         nextPost && (
           <a
-            href={getPath(nextPost.id, nextPost.filePath, true, nextPost.slug)}
+            href={postPath(nextPost.id, nextPost.filePath, nextPost.slug)}
             data-reading-link
             class="post-nav-link group relative col-start-2 flex flex-col items-end gap-1 rounded-2xl border border-border/20 px-5 py-4 text-end transition-all duration-300 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5"
           >
             <div class="post-nav-bg" />
             <div class="flex items-center gap-1.5">
               <span class="font-cartograph text-[10px] tracking-wider text-foreground/35 uppercase">
-                下一篇
+                {t.next}
               </span>
               <svg
                 class="size-3.5 text-accent/50 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180"

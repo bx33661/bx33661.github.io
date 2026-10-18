@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "openrasp-sql-detect-bypass"
+translationKey: "openrasp-sql-detect-bypass"
 ---
 
 > 最近在学 RASP，把 OpenRASP 的代码翻了一遍，这篇文章就是学习记录
