@@ -99,29 +99,6 @@ const brandText = SITE.title.trim();
 
       <!-- Nav area -->
       <nav id="nav-menu" class="flex items-center sm:gap-1">
-        <a
-          href={languageHref}
-          class="language-switch"
-          data-language-switch
-          lang={isEnglish ? "zh-CN" : "en"}
-          aria-label={isEnglish ? (exactLanguageSwitch ? "切换到中文" : "查看中文内容") : (exactLanguageSwitch ? "Switch to English" : "Browse the English edition; this page has no English version")}
-          title={isEnglish ? "中文" : (exactLanguageSwitch ? "English" : "English edition (no translation of this page)")}
-        >{isEnglish ? "中文" : "EN"}</a>
-        <!-- Mobile hamburger -->
-        <button
-          id="menu-btn"
-          class="hamburger-btn sm:hidden"
-          aria-label="Open menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-        >
-          <div class="hamburger-box">
-            <span class="hamburger-line hamburger-line--1"></span>
-            <span class="hamburger-line hamburger-line--2"></span>
-            <span class="hamburger-line hamburger-line--3"></span>
-          </div>
-        </button>
-
         <!-- Desktop links -->
         <ul class="hidden sm:flex sm:flex-row sm:items-center sm:gap-1">
           {
@@ -196,6 +173,33 @@ const brandText = SITE.title.trim();
             )
           }
         </ul>
+        <a
+          href={languageHref}
+          class="language-switch"
+          data-language-switch
+          lang={isEnglish ? "zh-CN" : "en"}
+          aria-label={isEnglish ? (exactLanguageSwitch ? "切换到中文" : "查看中文内容") : (exactLanguageSwitch ? "Switch to English" : "Browse the English edition; this page has no English version")}
+          title={isEnglish ? "中文" : (exactLanguageSwitch ? "English" : "English edition (no translation of this page)")}
+        >
+          <span class="language-switch__label" data-current={!isEnglish} aria-hidden="true">中</span>
+          <span class="language-switch__divider" aria-hidden="true">/</span>
+          <span class="language-switch__label" data-current={isEnglish} aria-hidden="true">EN</span>
+        </a>
+        <!-- Mobile hamburger -->
+        <button
+          id="menu-btn"
+          class="hamburger-btn sm:hidden"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <div class="hamburger-box">
+            <span class="hamburger-line hamburger-line--1"></span>
+            <span class="hamburger-line hamburger-line--2"></span>
+            <span class="hamburger-line hamburger-line--3"></span>
+          </div>
+        </button>
+
       </nav>
     </div>
   </div>
@@ -257,9 +261,49 @@ const brandText = SITE.title.trim();
 </header>
 
 <style>
-  .language-switch { display: inline-flex; align-items: center; justify-content: center; min-width: 2.5rem; min-height: 2.5rem; margin-inline: .25rem; border: 1px solid var(--border); border-radius: .5rem; color: var(--foreground); font-size: .75rem; font-weight: 600; }
-  .language-switch:hover { color: var(--accent); border-color: var(--accent); }
-  .language-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .language-switch {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    min-width: 3.5rem;
+    min-height: 2.75rem;
+    margin-inline-start: 0.375rem;
+    padding-inline: 0.375rem;
+    border: 0;
+    border-radius: 0.5rem;
+    color: color-mix(in srgb, var(--foreground) 68%, transparent);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+
+  .language-switch__label[data-current="true"] {
+    color: var(--foreground);
+    font-weight: 700;
+  }
+
+  .language-switch__divider {
+    color: color-mix(in srgb, var(--foreground) 30%, transparent);
+    font-weight: 400;
+  }
+
+  .language-switch:hover {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+  }
+
+  .language-switch:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .language-switch { transition: none; }
+  }
 </style>
 
 <script>
