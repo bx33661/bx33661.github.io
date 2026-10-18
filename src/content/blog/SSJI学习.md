@@ -12,6 +12,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "ssji-learning"    # 随机URL字符串
+translationKey: "ssji-learning"
 ---
 
 # SSJI

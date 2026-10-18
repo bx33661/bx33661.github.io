@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "juice-shop"          # 随机URL字符串
+translationKey: "juice-shop"
 ---
 
 # OWAP-juice-shop靶场学习

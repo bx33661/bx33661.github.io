@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "agent-teams"
+translationKey: "agent-teams"
 ---
 
 # Claude Code Agent Teams 代码安全审计初体验

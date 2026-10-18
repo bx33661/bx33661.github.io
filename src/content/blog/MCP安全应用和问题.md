@@ -10,6 +10,7 @@ authors:
   - "bpple"
 draft: false              # 设为 true 则为草稿
 slug: "mcp-security"          # 随机URL字符串
+translationKey: "mcp-security"
 ---
 
 # MCP安全应用和问题

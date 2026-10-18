@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "metasploit-framework-1"
+translationKey: "metasploit-framework-1"
 ---
 
 # Metasploit框架学习-1

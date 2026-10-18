@@ -11,6 +11,7 @@ authors:
   - "bx-云安全"
 draft: false
 slug: "k8s-goat-walkthrough"
+translationKey: "k8s-goat-walkthrough"
 ---
 
 # K8s Goat 靶场实战记录

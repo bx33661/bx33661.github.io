@@ -12,6 +12,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "csp-bypass-analysis"          # 随机URL字符串
+translationKey: "csp-bypass-analysis"
 ---
 
 # CSP规则绕过与题目分析

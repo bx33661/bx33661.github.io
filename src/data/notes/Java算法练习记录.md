@@ -12,6 +12,7 @@ draft: false
 slug: "java-algorithm-practice"
 formerBlogSlug: "java-algorithm-practice"
 category: "算法练习"
+translationKey: "java-algorithm-practice"
 ---
 
 # Java算法练习记录

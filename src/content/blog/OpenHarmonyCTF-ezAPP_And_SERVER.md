@@ -11,6 +11,7 @@ authors:
   - "hnusec"
 draft: false
 slug: "OpenHarmonyCTF"
+translationKey: "OpenHarmonyCTF"
 ---
 
 

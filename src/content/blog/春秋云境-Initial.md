@@ -12,6 +12,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "chunqiu-Initial"          # 随机URL字符串
+translationKey: "chunqiu-Initial"
 ---
 
 # 春秋云境-Initial

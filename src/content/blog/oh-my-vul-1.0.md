@@ -12,6 +12,7 @@ authors:
   - "bx"
 draft: false
 slug: "oh-my-vul-1-0"
+translationKey: "oh-my-vul-1-0"
 ---
 
 最近把 [oh-my-vul](https://github.com/bx33661/oh-my-vul) 正式发到了 1.0，这个项目也算完成了第一个比较稳定的版本。

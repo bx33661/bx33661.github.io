@@ -12,6 +12,7 @@ authors:
   - "bx"
 draft: false
 slug: "redis-core-guide"
+translationKey: "redis-core-guide"
 ---
 
 

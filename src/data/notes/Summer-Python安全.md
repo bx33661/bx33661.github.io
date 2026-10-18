@@ -14,6 +14,7 @@ draft: false
 slug: "summer-python-security"
 formerBlogSlug: "summer-python-security"
 category: "培训笔记"
+translationKey: "summer-python-security"
 ---
 
 这份培训稿与[《Python 安全新人第一讲：SSTI 与反序列化入门》](/blog/z8x9w23/)的正文重复。完整课程内容、示例和练习保留在原文章中。

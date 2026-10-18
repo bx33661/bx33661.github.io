@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "bx1go"
+translationKey: "bx1go"
 ---
 
 

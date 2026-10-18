@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "ntlm-protocol-and-attack-techniques"
+translationKey: "ntlm-protocol-and-attack-techniques"
 ---
 
 # NTLM协议&攻击手法

@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "jenkins-credential-crack"          # 随机URL字符串
+translationKey: "jenkins-credential-crack"
 ---
 
 # Jenkins凭证破解&敏感信息获取

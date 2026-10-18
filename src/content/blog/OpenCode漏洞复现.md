@@ -12,6 +12,7 @@ authors:
   - "bx"
 draft: false
 slug: "opencode-vulnerability-analysis"
+translationKey: "opencode-vulnerability-analysis"
 ---
 
 # OpenCode漏洞复现(GHSA-vxw4-wv6m-9hhh)

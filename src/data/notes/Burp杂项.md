@@ -13,6 +13,7 @@ draft: false              # 设为 true 则为草稿
 slug: "k8burp"          # 随机URL字符串
 formerBlogSlug: "k8burp"
 category: "工具笔记"
+translationKey: "k8burp"
 ---
 
 # Burp杂项

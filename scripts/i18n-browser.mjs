@@ -104,9 +104,10 @@ try {
       }
       // Navigation must carry locale through Astro's client router.
       await page.goto(`${base}/blog/codeql-learning/`, { waitUntil: "domcontentloaded" });
-      assert.equal(await page.locator('link[hreflang="en"]').count(), 0);
+      const codeqlTranslated = englishIndex.some(entry => entry.href === '/en/blog/codeql-learning-en/');
+      assert.equal(await page.locator('link[hreflang="en"]').count(), Number(codeqlTranslated));
       await page.locator("[data-language-switch]").click();
-      await page.waitForURL("**/en/blog/");
+      await page.waitForURL(codeqlTranslated ? "**/en/blog/codeql-learning-en/" : "**/en/blog/");
       assert.equal(await page.locator("html").getAttribute("lang"), "en");
       if (name === "mobile") {
         await page.locator("#menu-btn").click();
@@ -124,7 +125,7 @@ try {
       await page.keyboard.press("Escape");
       await page.waitForFunction(() => !document.querySelector("#search-modal").open);
       await page.locator("[data-language-switch]").click();
-      await page.waitForURL(`${base}${name === "mobile" ? "/notes/" : "/blog/"}`);
+      await page.waitForURL(`${base}${name === "mobile" ? "/notes/" : codeqlTranslated ? "/blog/codeql-learning/" : "/blog/"}`);
       assert.equal(await page.locator("html").getAttribute("lang"), "zh-CN");
       // Same browser session: Chinese -> English -> Chinese search still works.
       await page.goto(`${base}/search/`, { waitUntil: "domcontentloaded" });

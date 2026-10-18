@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "bx33661win1"          # 随机URL字符串
+translationKey: "bx33661win1"
 ---
 
 

@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "go-net-http-source-analysis"
+translationKey: "go-net-http-source-analysis"
 ---
 
 ![](https://cdn.nlark.com/yuque/0/2026/png/42994824/1771943787882-76177644-8587-49b7-b36b-2e3d0cec2ae5.png)

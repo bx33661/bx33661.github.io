@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "tsclient"          # 随机URL字符串
+translationKey: "tsclient"
 ---
 
 # 春秋云境-Tsclient&Cobalt Strike学习

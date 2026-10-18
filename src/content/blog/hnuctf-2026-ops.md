@@ -13,6 +13,7 @@ authors:
   - "bx"
 draft: false
 slug: "hnuctf-2026-ops"
+translationKey: "hnuctf-2026-ops"
 ---
 
 总的来说这次平台运维和搭建还是比较成功的，比赛期间没有出现大规模的崩溃和数据丢失。

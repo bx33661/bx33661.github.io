@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "claude-code"
+translationKey: "claude-code"
 ---
 
 # Claude Code使用记录&随笔

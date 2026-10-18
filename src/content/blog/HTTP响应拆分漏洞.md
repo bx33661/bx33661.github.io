@@ -11,6 +11,7 @@ authors:
   - "bx3"
 draft: false
 slug: "bxhttpSplit"
+translationKey: "bxhttpSplit"
 ---
 
 # HTTP响应拆分漏洞分析

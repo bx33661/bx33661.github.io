@@ -12,6 +12,7 @@ authors:
   - "bx"
 draft: false
 slug: "wiz-cloud-hunting-games-writeup"
+translationKey: "wiz-cloud-hunting-games-writeup"
 ---
 
 # Wiz Cloud Hunting Games 挑战复盘：一条完整的云上攻击链

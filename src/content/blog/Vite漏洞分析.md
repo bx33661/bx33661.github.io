@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "bxvite"
+translationKey: "bxvite"
 ---
 
 # Vite漏洞分析

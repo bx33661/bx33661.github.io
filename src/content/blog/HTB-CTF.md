@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "htb-ctf"          # 随机URL字符串
+translationKey: "htb-ctf"
 ---
 
 # HTB-CTF Try Out分析与题解

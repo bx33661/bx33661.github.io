@@ -13,6 +13,7 @@ authors:
 draft: false
 slug: "ethereum-dex-sepolia"
 cover: "/blog/ethereum-dex-sepolia/step-00.png"
+translationKey: "ethereum-dex-sepolia"
 ---
 
 # 基于以太坊测试网络的DEX合约发布和学习

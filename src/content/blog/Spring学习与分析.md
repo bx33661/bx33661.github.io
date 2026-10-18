@@ -13,6 +13,7 @@ authors:
 draft: false
 slug: "spring-learning-analysis"
 cover: "/blog/spring-learning-analysis/spring-mvc-flow.png"
+translationKey: "spring-learning-analysis"
 ---
 
 

@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "codeql-learning"
+translationKey: "codeql-learning"
 ---
 
 前段时间我们团队搞了一个AI4CodeQL的智能漏洞挖掘项目，这里总结几篇关于CodeQL的文章

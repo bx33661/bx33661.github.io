@@ -17,6 +17,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "p2p-bittorrent-protocol-deep-dive"          # 随机URL字符串
+translationKey: "p2p-bittorrent-protocol-deep-dive"
 ---
 
 # p2p&BT种子

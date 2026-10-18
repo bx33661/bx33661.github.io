@@ -1,0 +1,450 @@
+[
+  {
+    "source": "src/content/blog/2025轩辕杯.md",
+    "target": "src/content/blog/k8x9w26-en.md",
+    "key": "k8x9w26",
+    "slug": "k8x9w26-en",
+    "sourceBodySha256": "099b3e585660f7ebf59ac126def47bfdefe75bd17d53ff7c0b2d7295baa5ab83"
+  },
+  {
+    "source": "src/content/blog/CNVD-2026-20654-LG-NAS命令注入.mdx",
+    "target": "src/content/blog/cnvd-2026-20654-lg-nas-rce-en.mdx",
+    "key": "cnvd-2026-20654-lg-nas-rce",
+    "slug": "cnvd-2026-20654-lg-nas-rce-en",
+    "sourceBodySha256": "d5c43a38ae4b5f0dd11477af218da8eee61572f6f191ceec7d391ac1271ae002"
+  },
+  {
+    "source": "src/content/blog/CSP规则绕过与题目分析.md",
+    "target": "src/content/blog/csp-bypass-analysis-en.md",
+    "key": "csp-bypass-analysis",
+    "slug": "csp-bypass-analysis-en",
+    "sourceBodySha256": "23400e196cbf86fbe26bcc423dffb056831014d93469fea02be14bd3182788fc"
+  },
+  {
+    "source": "src/content/blog/CVE-2024-1561.md",
+    "target": "src/content/blog/cve-2024-1561-en.md",
+    "key": "CVE-2024-1561",
+    "slug": "cve-2024-1561-en",
+    "sourceBodySha256": "4ee5a984db26a9edc92a16ffdc5ca05a52b1452312963c4d14ca2155823a9b86"
+  },
+  {
+    "source": "src/content/blog/Claude-Code-Agent-Teams.md",
+    "target": "src/content/blog/agent-teams-en.md",
+    "key": "agent-teams",
+    "slug": "agent-teams-en",
+    "sourceBodySha256": "1d7a7e54e3916824689b25a6dbcf765bfcd403db41db795b89baf0579d4ecf68"
+  },
+  {
+    "source": "src/content/blog/Claude-Code.md",
+    "target": "src/content/blog/claude-code-en.md",
+    "key": "claude-code",
+    "slug": "claude-code-en",
+    "sourceBodySha256": "e2e900179232f416e7a45415dc125261569688aac9c08ff631ba938a289ef4ba"
+  },
+  {
+    "source": "src/content/blog/CodeQL学习-数据库创建与查询.md",
+    "target": "src/content/blog/codeql-learning-en.md",
+    "key": "codeql-learning",
+    "slug": "codeql-learning-en",
+    "sourceBodySha256": "0cc839eb6c5c97cdb0130e54ed994e36a4d305df7cf21be62a282bfc48651b5a"
+  },
+  {
+    "source": "src/content/blog/Denial-of-Service-DoS-at-psitransfer.md",
+    "target": "src/content/blog/dos-at-psitransfer-en.md",
+    "key": "dos-at-psitransfer",
+    "slug": "dos-at-psitransfer-en",
+    "sourceBodySha256": "56fbf870b77797a6d050fa40a524ec9869f990cfe3c6444e87a7b99e4655c07f"
+  },
+  {
+    "source": "src/content/blog/Dify-Coze工作流搭建.md",
+    "target": "src/content/blog/dify-coze-workflow-en.md",
+    "key": "dify-coze-workflow",
+    "slug": "dify-coze-workflow-en",
+    "sourceBodySha256": "e50b5aa6b2358c945e1c592d0de19bc91b0f7030eb3d0b8dfa5dea59857aa404"
+  },
+  {
+    "source": "src/content/blog/Go下template的SSTI分析.md",
+    "target": "src/content/blog/bx1go-en.md",
+    "key": "bx1go",
+    "slug": "bx1go-en",
+    "sourceBodySha256": "4b5b24353e6fe0f99b842029223f65fd84d8ab6f25d4d341cd3d0ad32c52299e"
+  },
+  {
+    "source": "src/content/blog/HTB-CTF-记录.md",
+    "target": "src/content/blog/htb-challenge-en.md",
+    "key": "htb-challenge",
+    "slug": "htb-challenge-en",
+    "sourceBodySha256": "e8193e62cc7e7153acee0ebe72e3a1e49528785499e1bb89f15f61be92fa7563"
+  },
+  {
+    "source": "src/content/blog/HTB-CTF.md",
+    "target": "src/content/blog/htb-ctf-en.md",
+    "key": "htb-ctf",
+    "slug": "htb-ctf-en",
+    "sourceBodySha256": "a9faeb476122f4cdbbd4766cd47a5f3f63a1f4cab93172e65b537b71c1279a5e"
+  },
+  {
+    "source": "src/content/blog/HTTP响应拆分漏洞.md",
+    "target": "src/content/blog/bxhttpsplit-en.md",
+    "key": "bxhttpSplit",
+    "slug": "bxhttpsplit-en",
+    "sourceBodySha256": "188a50efd5ce1d07842d7bc672e8ae848a9b84313183699bcc8c1e7cdf45b614"
+  },
+  {
+    "source": "src/content/blog/HTTP请求走私.md",
+    "target": "src/content/blog/bx33661http-en.md",
+    "key": "bx33661http",
+    "slug": "bx33661http-en",
+    "sourceBodySha256": "5abae3456711eb97cc8a646453c57e17f4c77e9a1f803e12c7851adbb75bf92f"
+  },
+  {
+    "source": "src/content/blog/Jenkins凭证破解.md",
+    "target": "src/content/blog/jenkins-credential-crack-en.md",
+    "key": "jenkins-credential-crack",
+    "slug": "jenkins-credential-crack-en",
+    "sourceBodySha256": "ea56a9100a76e807ced7e04594148a0f2e7a01e261bca3f6d33ed1de77a8675c"
+  },
+  {
+    "source": "src/content/blog/K8s-GOAT.md",
+    "target": "src/content/blog/k8s-goat-walkthrough-en.md",
+    "key": "k8s-goat-walkthrough",
+    "slug": "k8s-goat-walkthrough-en",
+    "sourceBodySha256": "a1d42ed4ee89458d2585ea5f839368cc7d2e58d947c935a37b7a359a91f66433"
+  },
+  {
+    "source": "src/content/blog/L3Hctf-best_profile.md",
+    "target": "src/content/blog/k8x9w2m7-en.md",
+    "key": "k8x9w2m7",
+    "slug": "k8x9w2m7-en",
+    "sourceBodySha256": "fa7ffb01dea85e4e902560621d54406dd483d611b3a39cd036580d8788bde5f6"
+  },
+  {
+    "source": "src/content/blog/LLM-attack&Hackergame学习.md",
+    "target": "src/content/blog/llm-attack-hackergame-en.md",
+    "key": "llm-attack-hackergame",
+    "slug": "llm-attack-hackergame-en",
+    "sourceBodySha256": "08b8b047c57dd13df2f639384abb287ec701b479492118bcf3105cec276b797d"
+  },
+  {
+    "source": "src/content/blog/MCP学习&实践.md",
+    "target": "src/content/blog/mcp1-en.md",
+    "key": "mcp1",
+    "slug": "mcp1-en",
+    "sourceBodySha256": "5a8ae64e6aeba142774a9907d65b0156645949a252e064a6af6100735a7cec89"
+  },
+  {
+    "source": "src/content/blog/MCP安全应用和问题.md",
+    "target": "src/content/blog/mcp-security-en.md",
+    "key": "mcp-security",
+    "slug": "mcp-security-en",
+    "sourceBodySha256": "706b0c6eeacb986c97ce04b4da795371614f793e3fa9b6d26ead3bc4289b9dee"
+  },
+  {
+    "source": "src/content/blog/Metasploit框架学习-1.md",
+    "target": "src/content/blog/metasploit-framework-1-en.md",
+    "key": "metasploit-framework-1",
+    "slug": "metasploit-framework-1-en",
+    "sourceBodySha256": "c1529ba2fd0ff1afd9effc7837f816cc5059ba60fdb28a5ed3f1db9f500c58b0"
+  },
+  {
+    "source": "src/content/blog/OWAP-juice-shop靶场学习.md",
+    "target": "src/content/blog/juice-shop-en.md",
+    "key": "juice-shop",
+    "slug": "juice-shop-en",
+    "sourceBodySha256": "90170fd877f55df266820aef1b29fb7ba77febcf75137e345378dc1af9a3a8c9"
+  },
+  {
+    "source": "src/content/blog/OpenCode漏洞复现.md",
+    "target": "src/content/blog/opencode-vulnerability-analysis-en.md",
+    "key": "opencode-vulnerability-analysis",
+    "slug": "opencode-vulnerability-analysis-en",
+    "sourceBodySha256": "2e07ea7c9fd2a0a6511edb815e2119b4958a2e6723028978dff530fd683f1ed8"
+  },
+  {
+    "source": "src/content/blog/OpenHarmonyCTF-ezAPP_And_SERVER.md",
+    "target": "src/content/blog/openharmonyctf-en.md",
+    "key": "OpenHarmonyCTF",
+    "slug": "openharmonyctf-en",
+    "sourceBodySha256": "9530e95939c6709c282e4f697e42099c294ba8af289981de2066e08f2177570f"
+  },
+  {
+    "source": "src/content/blog/Pass-The-Hash攻击学习.md",
+    "target": "src/content/blog/passthehash-en.md",
+    "key": "passthehash",
+    "slug": "passthehash-en",
+    "sourceBodySha256": "56bc2def6e5a54e5797e4f950cbcf266e0556f40405e659916bc961135178b99"
+  },
+  {
+    "source": "src/content/blog/Python安全新人学习讲义第一讲.md",
+    "target": "src/content/blog/z8x9w23-en.md",
+    "key": "z8x9w23",
+    "slug": "z8x9w23-en",
+    "sourceBodySha256": "3cba2c46c6dd706c553e6b20e71763c4baa4f2e222712fef7d4498a0fccda93d"
+  },
+  {
+    "source": "src/content/blog/Redis与Lua脚本Part2.md",
+    "target": "src/content/blog/redis-lua-script-part2-en.md",
+    "key": "redis-lua-script-part2",
+    "slug": "redis-lua-script-part2-en",
+    "sourceBodySha256": "30f5edc8454f8fea56e49c77d96580e723f01a400cee0becad28177869358954"
+  },
+  {
+    "source": "src/content/blog/SSJI学习.md",
+    "target": "src/content/blog/ssji-learning-en.md",
+    "key": "ssji-learning",
+    "slug": "ssji-learning-en",
+    "sourceBodySha256": "911fd0060022067232b9ee3a79393e18c75294c0428c104d3fc2b1bf12feff54"
+  },
+  {
+    "source": "src/content/blog/Spring学习与分析.md",
+    "target": "src/content/blog/spring-learning-analysis-en.md",
+    "key": "spring-learning-analysis",
+    "slug": "spring-learning-analysis-en",
+    "sourceBodySha256": "d08958f2a4adcc57f702347a75725223b86e56ea788c5c7039ca127af7133394"
+  },
+  {
+    "source": "src/content/blog/TCP.md",
+    "target": "src/content/blog/bxtcp-en.md",
+    "key": "bxtcp",
+    "slug": "bxtcp-en",
+    "sourceBodySha256": "d732809e1a275a5281ce24eecadec9b660bd309eb975be431967ca70a1b3730d"
+  },
+  {
+    "source": "src/content/blog/Vite漏洞分析.md",
+    "target": "src/content/blog/bxvite-en.md",
+    "key": "bxvite",
+    "slug": "bxvite-en",
+    "sourceBodySha256": "a7443c64810cb2c1adf194cf50b9527e3ff769b37e66b64c9046214b11054b42"
+  },
+  {
+    "source": "src/content/blog/Webshell流量分析和溯源.md",
+    "target": "src/content/blog/k8x9w22-en.md",
+    "key": "k8x9w22",
+    "slug": "k8x9w22-en",
+    "sourceBodySha256": "fc0f26a6647f432d0deb856bdce6b854d10a2fa26ea6bef586b3bc92e7380290"
+  },
+  {
+    "source": "src/content/blog/Wiz-挑战.md",
+    "target": "src/content/blog/wiz-cloud-hunting-games-writeup-en.md",
+    "key": "wiz-cloud-hunting-games-writeup",
+    "slug": "wiz-cloud-hunting-games-writeup-en",
+    "sourceBodySha256": "32d1a8b4e3e4b1d4e93b9d7bfd381e04dc6703fa1b995c27e0c6616ec0a22683"
+  },
+  {
+    "source": "src/content/blog/Xpath注入.md",
+    "target": "src/content/blog/bx33661xpath-en.md",
+    "key": "bx33661xpath",
+    "slug": "bx33661xpath-en",
+    "sourceBodySha256": "8d83f5407e33281cfeb5ca8d1642fe9e28a92431ddc442d060a3f31bd6c9dcb5"
+  },
+  {
+    "source": "src/content/blog/hnuctf-2026-ops.md",
+    "target": "src/content/blog/hnuctf-2026-ops-en.md",
+    "key": "hnuctf-2026-ops",
+    "slug": "hnuctf-2026-ops-en",
+    "sourceBodySha256": "f8541b67a8a921f2365d1dd304d84bad5a24b869244ff0f30ef832280104d24b"
+  },
+  {
+    "source": "src/content/blog/n8n.mdx",
+    "target": "src/content/blog/n8n-cve-2025-68613-analysis-en.mdx",
+    "key": "n8n-cve-2025-68613-analysis",
+    "slug": "n8n-cve-2025-68613-analysis-en",
+    "sourceBodySha256": "367859ad3f5a890168ca9624cadf255aa360ccef06a5cacfd1a34977b7e8d3e4"
+  },
+  {
+    "source": "src/content/blog/net_http.md",
+    "target": "src/content/blog/go-net-http-source-analysis-en.md",
+    "key": "go-net-http-source-analysis",
+    "slug": "go-net-http-source-analysis-en",
+    "sourceBodySha256": "fe4e084b41775588beac491cc03e932146a3f598fabad3e636eedc8a3cfa127b"
+  },
+  {
+    "source": "src/content/blog/ntlm-protocol-and-attack-techniques.md",
+    "target": "src/content/blog/ntlm-protocol-and-attack-techniques-en.md",
+    "key": "ntlm-protocol-and-attack-techniques",
+    "slug": "ntlm-protocol-and-attack-techniques-en",
+    "sourceBodySha256": "b8a44f012e32f2cf03af6200ffa248f5e4ad3589770b3e21c3c2ea49d61c9199"
+  },
+  {
+    "source": "src/content/blog/oh-my-vul-1.0.md",
+    "target": "src/content/blog/oh-my-vul-1-0-en.md",
+    "key": "oh-my-vul-1-0",
+    "slug": "oh-my-vul-1-0-en",
+    "sourceBodySha256": "e92b43c7ec0af9eb8909f7d26aec853905a5f29a4e95bdee2583007ff2f62b54"
+  },
+  {
+    "source": "src/content/blog/p2p&bt.md",
+    "target": "src/content/blog/p2p-bittorrent-protocol-deep-dive-en.md",
+    "key": "p2p-bittorrent-protocol-deep-dive",
+    "slug": "p2p-bittorrent-protocol-deep-dive-en",
+    "sourceBodySha256": "2b538f6afb86d7dafbcec9d3bb9247b9dc3ff3c79501a6db180796873cd3a13a"
+  },
+  {
+    "source": "src/content/blog/redis-core-learning.md",
+    "target": "src/content/blog/redis-core-guide-en.md",
+    "key": "redis-core-guide",
+    "slug": "redis-core-guide-en",
+    "sourceBodySha256": "a4e8eceb5327dd49ca7888ba93b61e37faee61cf8f2008c07c44b71e33266a20"
+  },
+  {
+    "source": "src/content/blog/threat-modeling-and-trust-boundaries.mdx",
+    "target": "src/content/blog/threat-modeling-and-trust-boundaries-en.mdx",
+    "key": "threat-modeling-and-trust-boundaries",
+    "slug": "threat-modeling-and-trust-boundaries-en",
+    "sourceBodySha256": "7f50802f886a0a674eff90a15f5486e975c8df496e7710e7ec43c38b4333a774"
+  },
+  {
+    "source": "src/content/blog/webpack.md",
+    "target": "src/content/blog/bxwebpack-en.md",
+    "key": "bxwebpack",
+    "slug": "bxwebpack-en",
+    "sourceBodySha256": "3448e65a76c3bb764fb1fa39c0e19ad429dc18f06da44a2a70d539261d5def9d"
+  },
+  {
+    "source": "src/content/blog/windows-sec.md",
+    "target": "src/content/blog/bx33661win1-en.md",
+    "key": "bx33661win1",
+    "slug": "bx33661win1-en",
+    "sourceBodySha256": "e7bef92d943cb3dd76ced93bf74438ff5d26db8d315bb3705d5ecf0aa2829272"
+  },
+  {
+    "source": "src/content/blog/储存桶的安全应用问题.md",
+    "target": "src/content/blog/k8x10w24-en.md",
+    "key": "k8x10w24",
+    "slug": "k8x10w24-en",
+    "sourceBodySha256": "20ecbca0319cb22c52ff7a464715dacfcad51e137bb2a65f0b252939ed363649"
+  },
+  {
+    "source": "src/content/blog/哥斯拉流量分析和溯源.md",
+    "target": "src/content/blog/k8x9w23-en.md",
+    "key": "k8x9w23",
+    "slug": "k8x9w23-en",
+    "sourceBodySha256": "c14a1bdeedaa9e77644f914fc5ebc9b3f18f07fbf42fe3da0a1893cd30c42700"
+  },
+  {
+    "source": "src/content/blog/基于以太坊测试网络的DEX合约发布和学习.md",
+    "target": "src/content/blog/ethereum-dex-sepolia-en.md",
+    "key": "ethereum-dex-sepolia",
+    "slug": "ethereum-dex-sepolia-en",
+    "sourceBodySha256": "a8558760145a29cb5d75893b94a09d52d68d67ee0e868a756d11c98b0cd5527c"
+  },
+  {
+    "source": "src/content/blog/微信小程序自动化审计.mdx",
+    "target": "src/content/blog/wechat-miniapp-security-audit-en.mdx",
+    "key": "wechat-miniapp-security-audit",
+    "slug": "wechat-miniapp-security-audit-en",
+    "sourceBodySha256": "e6bc4dcc714e70902ae24195a629362ee35e8a5543191ab4cc144529a39aa2d8"
+  },
+  {
+    "source": "src/content/blog/春秋云境-Brute4Road.md",
+    "target": "src/content/blog/brute4road-en.md",
+    "key": "brute4road",
+    "slug": "brute4road-en",
+    "sourceBodySha256": "6afcbfadbec61d6dc46e64d7ec9066a3339aa5b2957268865af23584db17dba2"
+  },
+  {
+    "source": "src/content/blog/春秋云境-Initial.md",
+    "target": "src/content/blog/chunqiu-initial-en.md",
+    "key": "chunqiu-Initial",
+    "slug": "chunqiu-initial-en",
+    "sourceBodySha256": "bda2ddcdc53ebc395d8d315a0078943bfe27e8d9a6df1e9bfc75cc127ae5d81e"
+  },
+  {
+    "source": "src/content/blog/春秋云境-Tsclient-Cobalt-Strike学习.md",
+    "target": "src/content/blog/tsclient-en.md",
+    "key": "tsclient",
+    "slug": "tsclient-en",
+    "sourceBodySha256": "92f74a1984a542caa5ed07a96442dd968c1d5c06b760c9f94fb175cae25dbd98"
+  },
+  {
+    "source": "src/content/blog/缓存机制学习&缓存投毒.md",
+    "target": "src/content/blog/nginx-cache-poisoning-en.md",
+    "key": "nginx-cache-poisoning",
+    "slug": "nginx-cache-poisoning-en",
+    "sourceBodySha256": "b58e27d527d9510c6c2237bf85794c65d471fce50dbf166958a8138f59bd1ae0"
+  },
+  {
+    "source": "src/data/notes/Burp杂项.md",
+    "target": "src/data/notes/k8burp-en.md",
+    "key": "k8burp",
+    "slug": "k8burp-en",
+    "sourceBodySha256": "0962ada591dfc5d1c3c17a1357b4e84365c5e10e7621646bdd1afbdd56715406"
+  },
+  {
+    "source": "src/data/notes/Dom树学习分析.md",
+    "target": "src/data/notes/bx33661dom-en.md",
+    "key": "bx33661dom",
+    "slug": "bx33661dom-en",
+    "sourceBodySha256": "25b60f36b161c6a7e10664d341aa53821e42635cec80c0a1f4afedad8e3cbe49"
+  },
+  {
+    "source": "src/data/notes/Java算法练习记录.md",
+    "target": "src/data/notes/java-algorithm-practice-en.md",
+    "key": "java-algorithm-practice",
+    "slug": "java-algorithm-practice-en",
+    "sourceBodySha256": "dacb5a77491b4ea6880de49ec623fef84695b9c4dd85f8119fe59f078fead4fb"
+  },
+  {
+    "source": "src/data/notes/Js深入学习.md",
+    "target": "src/data/notes/javascript-advanced-learning-en.md",
+    "key": "javascript-advanced-learning",
+    "slug": "javascript-advanced-learning-en",
+    "sourceBodySha256": "339657db3cc46ef6e3b362bcc83537eabcb71d7c7713fe4290f8d2856165018a"
+  },
+  {
+    "source": "src/data/notes/Next.CVE-2025-29927.md",
+    "target": "src/data/notes/k8x9w55-en.md",
+    "key": "k8x9w55",
+    "slug": "k8x9w55-en",
+    "sourceBodySha256": "03c631a316aacc8ee68e48baa288204b3dd5b6e0c60dce227d1fd2ed7d22cb8b"
+  },
+  {
+    "source": "src/data/notes/Summer-Python安全.md",
+    "target": "src/data/notes/summer-python-security-en.md",
+    "key": "summer-python-security",
+    "slug": "summer-python-security-en",
+    "sourceBodySha256": "0c0abcdc7797d896266bd114bbb2e86b34fee02c4976e808f690c66d2df02288"
+  },
+  {
+    "source": "src/data/notes/algorithm-study.md",
+    "target": "src/data/notes/algorithm-study-en.md",
+    "key": "algorithm-study",
+    "slug": "algorithm-study-en",
+    "sourceBodySha256": "18988786e0535cbd2b62fb894496e316cdee9fffe75db032f87037eddaf4164f"
+  },
+  {
+    "source": "src/data/notes/微信4.0小程序逆向.md",
+    "target": "src/data/notes/wechat-miniprogram-reverse-4-en.md",
+    "key": "wechat-miniprogram-reverse-4",
+    "slug": "wechat-miniprogram-reverse-4-en",
+    "sourceBodySha256": "6473686e745b0399438803ee7b05fd826cfb9c9d3b120a839ac3d4a266505857"
+  },
+  {
+    "source": "src/data/notes/机器学习算法-分类任务.md",
+    "target": "src/data/notes/machine-learning-classification-task-en.md",
+    "key": "machine-learning-classification-task",
+    "slug": "machine-learning-classification-task-en",
+    "sourceBodySha256": "f18afcf568ac607f5ad20e39ed8cb5ca1de5821fec640f98cce62c1abe3d225f"
+  },
+  {
+    "source": "src/content/blog/websocket-handshake-message-replay.md",
+    "target": "src/content/blog/websocket-handshake-message-replay-en.md",
+    "key": "websocket-handshake-message-replay",
+    "slug": "websocket-handshake-message-replay-en",
+    "sourceBodySha256": "bae022d4040e78fbe0e5f12c68bf5b759be4e5b0895c5a676bc3832e4c09f411"
+  },
+  {
+    "source": "src/content/blog/rasp.md",
+    "target": "src/content/blog/openrasp-sql-detect-bypass-en.md",
+    "key": "openrasp-sql-detect-bypass",
+    "slug": "openrasp-sql-detect-bypass-en",
+    "sourceBodySha256": "c2ad393d606e8f78c2efc9b74355e0eaba0b223349ecda50d442974e553113b8"
+  },
+  {
+    "source": "src/content/blog/cybergym-ai-security-agent-benchmark.mdx",
+    "target": "src/content/blog/cybergym-ai-security-agent-benchmark-en.mdx",
+    "key": "cybergym-ai-security-agent-benchmark",
+    "slug": "cybergym-ai-security-agent-benchmark-en",
+    "sourceBodySha256": "fdebdd535cb1ec0bdcc62852ac26c75384b2af6e01d32e9ffad5dc4705fd45b3"
+  }
+]

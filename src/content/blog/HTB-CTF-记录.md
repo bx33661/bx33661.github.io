@@ -14,6 +14,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "htb-challenge"          # 随机URL字符串
+translationKey: "htb-challenge"
 ---
 
 # HTB-CTF-记录

@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "dos-at-psitransfer"
+translationKey: "dos-at-psitransfer"
 ---
 
 [Build software better, together](https://github.com/psi-4ward/psitransfer/security/advisories/GHSA-7hc3-jppp-9rcr)

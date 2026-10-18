@@ -1,0 +1,215 @@
+---
+title: "Threat Model"
+description: "Trust boundaries in path configuration, webhooks, and admin endpoints: attacker control, permissions, deployment, and AI audit false positives and misses."
+date: 2026-09-25T00:00:00.000Z
+tags:
+  - "AI"
+  - "Security Auditing"
+  - "Automated Auditing"
+  - "Vulnerability Research"
+authors:
+  - "bx"
+draft: false
+slug: "threat-modeling-and-trust-boundaries-en"
+lang: "en"
+translationKey: "threat-modeling-and-trust-boundaries"
+---
+
+import TrustBoundarySimulator from "@/components/TrustBoundarySimulator.astro";
+
+<meta name="referrer" content="no-referrer" />
+
+> “The most common cause of false positives is that the model lacks a good understanding of your trust boundaries.”
+
+This is my most profound recent takeaway from hands-on AI vulnerability auditing.
+
+## What Is a Threat Model?
+
+A Threat Model clarifies several questions before analyzing a system:
+
+Who is the attacker? What can they control? What can't they control? What does the system trust?
+
+```python
+path = config["backup_path"]
+open(path, "w").write(data)
+```
+
+During an Agent security audit, it might identify that:
+
+`path` is not validated; an attacker might provide `../../etc/passwd`, creating Path Traversal / Arbitrary File Write.
+
+But in real production and code, if this setting can only be changed by a server administrator:
+
+```text
+管理员
+  │
+  ▼
+config.yaml     ← Trusted
+  │
+  ▼
+backup_path
+  │
+  ▼
+open()
+```
+
+An ordinary attacker cannot control it at all, so the attack path “attacker modifies path through an HTTP request to write arbitrary files” does not exist.
+
+So the LLM found:
+
+```text
+Source → Sink
+```
+
+But what we actually care about is:
+
+```text
+Attacker-controlled Source
+        ↓
+    Data Flow
+        ↓
+Dangerous Sink
+```
+
+This Source point must really be within the attacker's control.
+
+## Trust Boundary
+
+For the concept of a trust boundary, let's assume a typical web system:
+
+```text
+                    Untrusted
+                        │
+Internet Attacker ── HTTP Request
+                        │
+================ Trust Boundary ================
+                        │
+                   Web Server
+                        │
+                Application Code
+                   │          │
+                Database    Config
+                             ↑
+                           Trusted
+```
+
+Generally, HTTP parameter `request.args["url"]` is Untrusted Input, while the server environment variable `os.environ["DATABASE_URL"]` is Trusted Input.
+
+However, this is determined not by the code layer, but by the deployment environment.
+
+For example:
+
+```python
+url = os.getenv("WEBHOOK_URL")
+requests.get(url)
+```
+
+Viewed in isolation, this looks a lot like SSRF:
+
+```text
+url
+ ↓
+requests.get()
+ ↓
+SSRF?
+```
+
+But if only an administrator can configure `WEBHOOK_URL`, an ordinary internet attacker cannot control it:
+
+```text
+Attacker
+   X
+   │ 无法控制
+   ▼
+WEBHOOK_URL
+   │
+   ▼
+requests.get()
+```
+
+Therefore, under the defined Threat Model of a “remote unauthenticated attacker,” this may not be an exploitable SSRF vulnerability.
+
+<TrustBoundarySimulator locale="en" />
+
+## Why False Positives?
+
+Because when the model sees code:
+
+```java
+String url = config.getWebhookUrl();
+httpClient.get(url);
+```
+
+it easily pattern-matches based on patterns in its training data:
+
+```text
+用户可控 URL
+      ↓
+HTTP Client
+      ↓
+SSRF
+```
+
+But the information that is actually missing is:
+
+> Is `config.getWebhookUrl()` attacker-controlled?
+
+This is what the article means by:
+
+> model lacks a good understanding of your trust boundaries
+
+The LLM may misinterpret:
+
+```text
+Config
+```
+
+as:
+
+```text
+Untrusted Input
+```
+
+This produces a False Positive, which can be more dangerous.
+
+Suppose:
+
+```java
+@PostMapping("/admin/import")
+public void importData(String url) {
+    importer.load(url);
+}
+```
+
+The model might infer from `/admin/`:
+
+> This is an internal admin interface, so the risk is low.
+
+But the actual deployment is:
+
+```text
+Internet
+   │
+   ▼
+/admin/import
+   │
+   ▼
+No Authentication
+   │
+   ▼
+importer.load(url)
+```
+
+Then the real attack path is:
+
+```text
+Attacker-controlled URL
+        ↓
+     load(url)
+        ↓
+ Internal HTTP Request
+        ↓
+       SSRF
+```
+
+So this doesn't mean our Agent or model is incapable. The code analysis itself may be completely correct; what was wrong was the AI's assumptions about the system environment.

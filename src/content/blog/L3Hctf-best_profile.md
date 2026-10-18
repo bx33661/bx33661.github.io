@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "k8x9w2m7"          # 随机URL字符串
+translationKey: "k8x9w2m7"
 ---
 
 ![PixPin_2026-04-19_13-41-14](/blog/l3hctf-best-profile/01-profile-bypass-flow.png)

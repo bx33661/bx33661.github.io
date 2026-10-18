@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false              # 设为 true 则为草稿
 slug: "z8x9w23"          # 随机URL字符串
+translationKey: "z8x9w23"
 ---
 
 # Python安全 - CTF新手培训

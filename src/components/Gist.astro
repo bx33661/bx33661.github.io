@@ -1,4 +1,8 @@
 ---
+import { articleCopy } from "@/i18n/articles";
+import { localeFromPath } from "@/i18n";
+const locale = Astro.props.locale ?? localeFromPath(Astro.url.pathname);
+const t = (text: string) => articleCopy(locale, text);
 /**
  * Gist — 在文章中显示 GitHub Gist 代码片段的链接
  *
@@ -7,11 +11,12 @@
  */
 
 interface Props {
+  locale?: "en" | "zh-CN";
   id: string;
   title?: string;
 }
 
-const { id, title = "完整代码" } = Astro.props;
+const { id, title = t("完整代码") } = Astro.props;
 
 const gistUrl = `https://gist.github.com/${id}`;
 ---

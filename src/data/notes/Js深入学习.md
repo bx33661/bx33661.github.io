@@ -7,6 +7,7 @@ tags: ["JavaScript", "Promise", "链式调用", "原型链", "异步编程", "Le
 authors: ["bx33661"]
 draft: false
 slug: "javascript-advanced-learning"
+translationKey: "javascript-advanced-learning"
 ---
 
 # Js特性学习

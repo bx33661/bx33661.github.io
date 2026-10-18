@@ -11,6 +11,7 @@ authors:
   - "bx"
 draft: false
 slug: "bxtcp"
+translationKey: "bxtcp"
 ---
 
 # TCP/IP-Core Protocols

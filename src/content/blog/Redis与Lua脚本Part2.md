@@ -12,6 +12,7 @@ authors:
   - "bx"
 draft: false
 slug: "redis-lua-script-part2"
+translationKey: "redis-lua-script-part2"
 ---
 
 

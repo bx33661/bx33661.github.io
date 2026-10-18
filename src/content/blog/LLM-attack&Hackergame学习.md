@@ -12,6 +12,7 @@ authors:
   - "bx"
 draft: false
 slug: "llm-attack-hackergame"
+translationKey: "llm-attack-hackergame"
 ---
 
 # LLM-attack & Hackergame学习
