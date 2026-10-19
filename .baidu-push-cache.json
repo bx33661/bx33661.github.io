@@ -71,7 +71,17 @@
     "https://www.bx33661.com/notes/k8burp/",
     "https://www.bx33661.com/notes/java-algorithm-practice/",
     "https://www.bx33661.com/notes/k8x9w55/",
-    "https://www.bx33661.com/en/"
+    "https://www.bx33661.com/en/",
+    "https://www.bx33661.com/en/notes/list/",
+    "https://www.bx33661.com/en/blog/websocket-handshake-message-replay-en/",
+    "https://www.bx33661.com/en/blog/openrasp-sql-detect-bypass-en/",
+    "https://www.bx33661.com/en/blog/cybergym-ai-security-agent-benchmark-en/",
+    "https://www.bx33661.com/en/blog/threat-modeling-and-trust-boundaries-en/",
+    "https://www.bx33661.com/en/blog/wechat-miniapp-security-audit-en/",
+    "https://www.bx33661.com/en/blog/cnvd-2026-20654-lg-nas-rce-en/",
+    "https://www.bx33661.com/en/blog/oh-my-vul-1-0-en/",
+    "https://www.bx33661.com/en/blog/agent-teams-en/",
+    "https://www.bx33661.com/en/blog/go-net-http-source-analysis-en/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
@@ -145,8 +155,18 @@
     "https://www.bx33661.com/notes/k8burp/": "15e0aa245c50547f21ae421abdceaa76f24942f6be6dab5f5e65a3fa47ab1595",
     "https://www.bx33661.com/notes/java-algorithm-practice/": "485929505f7f0e368d39493bd905a9333751c62162af78c66f756ecee074eaef",
     "https://www.bx33661.com/notes/k8x9w55/": "23ac68f29a597312ec1c5e82a29bc9c72b7251e662b3915f59d3609789315e23",
-    "https://www.bx33661.com/en/": "14aca22d47b9f330405af288ef4b1276dbee1fac5662eb828623010dfa4b0139"
+    "https://www.bx33661.com/en/": "14aca22d47b9f330405af288ef4b1276dbee1fac5662eb828623010dfa4b0139",
+    "https://www.bx33661.com/en/notes/list/": "3ec205991717927b2b8bd99f595d7618afdb2abb41d9465eb12fcf93b6a605a7",
+    "https://www.bx33661.com/en/blog/websocket-handshake-message-replay-en/": "dc0664573a1b74bc1a18b26fc4aac88754351bfb01569920837b6e1255e685c7",
+    "https://www.bx33661.com/en/blog/openrasp-sql-detect-bypass-en/": "57201e82e915470fb47f7e234363148a0d775cccb81315e19c763ce37fbbd833",
+    "https://www.bx33661.com/en/blog/cybergym-ai-security-agent-benchmark-en/": "f94e839fcdfc5ff3610709e621bd3c4d8b8d475e95fc16c39a5683092dd17671",
+    "https://www.bx33661.com/en/blog/threat-modeling-and-trust-boundaries-en/": "a5d13069ba86008c1775df3a0dd801aa1261432c58e930a65a45cfdffe31dfb8",
+    "https://www.bx33661.com/en/blog/wechat-miniapp-security-audit-en/": "9f0c47fcb63916f1080a45d72f56dfe55ca666419418890f5c9b4fa07901a2dc",
+    "https://www.bx33661.com/en/blog/cnvd-2026-20654-lg-nas-rce-en/": "f751ea57c15ca94331818a3605acee125ebf36f93bb5dab7da11d23c7b31a526",
+    "https://www.bx33661.com/en/blog/oh-my-vul-1-0-en/": "f64fbf5bace40e8a8aabb88aa4a2e67c201e12391df4f575992e9a1370f58c94",
+    "https://www.bx33661.com/en/blog/agent-teams-en/": "e2734edefb20979dc7a1339d731c7264da4a81fda82d27aa6db4fd611a1d3868",
+    "https://www.bx33661.com/en/blog/go-net-http-source-analysis-en/": "ee495de18fdbff58028493831ea1f0bde2f60dea60c59234d1e3323a23ef2f7f"
   },
-  "lastPushAt": "2026-10-18T09:06:50.175Z",
+  "lastPushAt": "2026-10-19T07:54:55.380Z",
   "ledgerVersion": 1
 }
