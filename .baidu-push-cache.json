@@ -81,7 +81,17 @@
     "https://www.bx33661.com/en/blog/cnvd-2026-20654-lg-nas-rce-en/",
     "https://www.bx33661.com/en/blog/oh-my-vul-1-0-en/",
     "https://www.bx33661.com/en/blog/agent-teams-en/",
-    "https://www.bx33661.com/en/blog/go-net-http-source-analysis-en/"
+    "https://www.bx33661.com/en/blog/go-net-http-source-analysis-en/",
+    "https://www.bx33661.com/en/blog/wiz-cloud-hunting-games-writeup-en/",
+    "https://www.bx33661.com/en/blog/k8s-goat-walkthrough-en/",
+    "https://www.bx33661.com/en/blog/redis-lua-script-part2-en/",
+    "https://www.bx33661.com/en/blog/redis-core-guide-en/",
+    "https://www.bx33661.com/en/blog/hnuctf-2026-ops-en/",
+    "https://www.bx33661.com/en/blog/dos-at-psitransfer-en/",
+    "https://www.bx33661.com/en/blog/n8n-cve-2025-68613-analysis-en/",
+    "https://www.bx33661.com/en/blog/opencode-vulnerability-analysis-en/",
+    "https://www.bx33661.com/en/blog/codeql-learning-en/",
+    "https://www.bx33661.com/en/blog/ethereum-dex-sepolia-en/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
@@ -165,8 +175,18 @@
     "https://www.bx33661.com/en/blog/cnvd-2026-20654-lg-nas-rce-en/": "f751ea57c15ca94331818a3605acee125ebf36f93bb5dab7da11d23c7b31a526",
     "https://www.bx33661.com/en/blog/oh-my-vul-1-0-en/": "f64fbf5bace40e8a8aabb88aa4a2e67c201e12391df4f575992e9a1370f58c94",
     "https://www.bx33661.com/en/blog/agent-teams-en/": "e2734edefb20979dc7a1339d731c7264da4a81fda82d27aa6db4fd611a1d3868",
-    "https://www.bx33661.com/en/blog/go-net-http-source-analysis-en/": "ee495de18fdbff58028493831ea1f0bde2f60dea60c59234d1e3323a23ef2f7f"
+    "https://www.bx33661.com/en/blog/go-net-http-source-analysis-en/": "ee495de18fdbff58028493831ea1f0bde2f60dea60c59234d1e3323a23ef2f7f",
+    "https://www.bx33661.com/en/blog/wiz-cloud-hunting-games-writeup-en/": "01c0bcb6095f7ed7690a9e754d930a13be9a1456b642a924824c5aeb0622b58d",
+    "https://www.bx33661.com/en/blog/k8s-goat-walkthrough-en/": "9df5360a57556bcee3355ca9a9fdedc05f70fef46f83cf02467e7edc7c685440",
+    "https://www.bx33661.com/en/blog/redis-lua-script-part2-en/": "b2064a692b2f35a27b69bec634f9118b56d2483df3cd6dde42fccad4529c266f",
+    "https://www.bx33661.com/en/blog/redis-core-guide-en/": "c6f8df799e5c9c74d2afc46aae4145c73ad8a4fa7e7cb4388c02eab29976bee9",
+    "https://www.bx33661.com/en/blog/hnuctf-2026-ops-en/": "d60b60f467998f58bd98263f3031a3b5e6edad34f6800ff2606108c1c3809c6e",
+    "https://www.bx33661.com/en/blog/dos-at-psitransfer-en/": "27ed68af560466a487dc63c968ff581189629e854dd2bfb536cf0bd3436f734b",
+    "https://www.bx33661.com/en/blog/n8n-cve-2025-68613-analysis-en/": "6fa185c3c23b16f419e008786e59dba22ff9a239a338eeee9d40963a950f267c",
+    "https://www.bx33661.com/en/blog/opencode-vulnerability-analysis-en/": "cd61004967be9b19bdd69699f0bd06a82ee9b4900edfcc25af15389d86208fa5",
+    "https://www.bx33661.com/en/blog/codeql-learning-en/": "2deb9fee1cd51068bded8ff44ef79662834b525f6133995ec8e296134c69a417",
+    "https://www.bx33661.com/en/blog/ethereum-dex-sepolia-en/": "d36700b8fa7fd8e9149acd618c1919189acbd28427b01a38100bb45fe558e6a6"
   },
-  "lastPushAt": "2026-10-19T07:54:55.380Z",
+  "lastPushAt": "2026-10-20T07:43:40.605Z",
   "ledgerVersion": 1
 }
