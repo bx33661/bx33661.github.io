@@ -91,7 +91,17 @@
     "https://www.bx33661.com/en/blog/n8n-cve-2025-68613-analysis-en/",
     "https://www.bx33661.com/en/blog/opencode-vulnerability-analysis-en/",
     "https://www.bx33661.com/en/blog/codeql-learning-en/",
-    "https://www.bx33661.com/en/blog/ethereum-dex-sepolia-en/"
+    "https://www.bx33661.com/en/blog/ethereum-dex-sepolia-en/",
+    "https://www.bx33661.com/en/blog/llm-attack-hackergame-en/",
+    "https://www.bx33661.com/en/blog/spring-learning-analysis-en/",
+    "https://www.bx33661.com/en/blog/dify-coze-workflow-en/",
+    "https://www.bx33661.com/en/blog/p2p-bittorrent-protocol-deep-dive-en/",
+    "https://www.bx33661.com/en/blog/ntlm-protocol-and-attack-techniques-en/",
+    "https://www.bx33661.com/en/blog/ssji-learning-en/",
+    "https://www.bx33661.com/en/blog/csp-bypass-analysis-en/",
+    "https://www.bx33661.com/en/blog/nginx-cache-poisoning-en/",
+    "https://www.bx33661.com/en/blog/htb-challenge-en/",
+    "https://www.bx33661.com/en/blog/htb-ctf-en/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
@@ -185,8 +195,18 @@
     "https://www.bx33661.com/en/blog/n8n-cve-2025-68613-analysis-en/": "6fa185c3c23b16f419e008786e59dba22ff9a239a338eeee9d40963a950f267c",
     "https://www.bx33661.com/en/blog/opencode-vulnerability-analysis-en/": "cd61004967be9b19bdd69699f0bd06a82ee9b4900edfcc25af15389d86208fa5",
     "https://www.bx33661.com/en/blog/codeql-learning-en/": "2deb9fee1cd51068bded8ff44ef79662834b525f6133995ec8e296134c69a417",
-    "https://www.bx33661.com/en/blog/ethereum-dex-sepolia-en/": "d36700b8fa7fd8e9149acd618c1919189acbd28427b01a38100bb45fe558e6a6"
+    "https://www.bx33661.com/en/blog/ethereum-dex-sepolia-en/": "d36700b8fa7fd8e9149acd618c1919189acbd28427b01a38100bb45fe558e6a6",
+    "https://www.bx33661.com/en/blog/llm-attack-hackergame-en/": "c2a7b852e88205b8c19e2d13aefa7269afa0216db125518e6fea15981bfdb1f0",
+    "https://www.bx33661.com/en/blog/spring-learning-analysis-en/": "90f92db1eafbf274053048fa1e10f9bb631d849e6fa0b1da55088373c873c6d8",
+    "https://www.bx33661.com/en/blog/dify-coze-workflow-en/": "7e8e2d13748712d443e9440428a3b6b9d89a581e6e7cb106c8361fcc9d1a8cc9",
+    "https://www.bx33661.com/en/blog/p2p-bittorrent-protocol-deep-dive-en/": "0a5d48bd9381358220e39ee711c7ba017354cedeebecd992fd297b144a925e3c",
+    "https://www.bx33661.com/en/blog/ntlm-protocol-and-attack-techniques-en/": "6cbeb9b03a7ece59935c61992da4f3d463cd7fe0b0cedb083ff572424c94879f",
+    "https://www.bx33661.com/en/blog/ssji-learning-en/": "4bdd86382308423ec554db4181be7800ad889694b8c5fb39245cceedba72e762",
+    "https://www.bx33661.com/en/blog/csp-bypass-analysis-en/": "e43a5f0950e74cebd8688799174566f305e72ab348b4023929bb6f38075b9594",
+    "https://www.bx33661.com/en/blog/nginx-cache-poisoning-en/": "81a64b1af27f3022e866a3809a04abe3e104f9bf67da8b7cc87197f2efd0dd02",
+    "https://www.bx33661.com/en/blog/htb-challenge-en/": "8ad1fe978767b88496e4c5f4d2697195b5df6c5db315d8d213bd49b7d8afdcdf",
+    "https://www.bx33661.com/en/blog/htb-ctf-en/": "c1318f24f975ca2b000d0a17cf86d16c4d2a5b83d109ef187536da0b46fb3de0"
   },
-  "lastPushAt": "2026-10-20T07:43:40.605Z",
+  "lastPushAt": "2026-10-21T07:48:19.986Z",
   "ledgerVersion": 1
 }
