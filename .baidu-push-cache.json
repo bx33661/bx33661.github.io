@@ -101,7 +101,17 @@
     "https://www.bx33661.com/en/blog/csp-bypass-analysis-en/",
     "https://www.bx33661.com/en/blog/nginx-cache-poisoning-en/",
     "https://www.bx33661.com/en/blog/htb-challenge-en/",
-    "https://www.bx33661.com/en/blog/htb-ctf-en/"
+    "https://www.bx33661.com/en/blog/htb-ctf-en/",
+    "https://www.bx33661.com/en/blog/claude-code-en/",
+    "https://www.bx33661.com/en/blog/mcp-security-en/",
+    "https://www.bx33661.com/en/blog/juice-shop-en/",
+    "https://www.bx33661.com/en/blog/jenkins-credential-crack-en/",
+    "https://www.bx33661.com/en/blog/mcp1-en/",
+    "https://www.bx33661.com/en/blog/passthehash-en/",
+    "https://www.bx33661.com/en/blog/tsclient-en/",
+    "https://www.bx33661.com/en/blog/brute4road-en/",
+    "https://www.bx33661.com/en/blog/bxhttpsplit-en/",
+    "https://www.bx33661.com/en/blog/bx1go-en/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
@@ -205,8 +215,18 @@
     "https://www.bx33661.com/en/blog/csp-bypass-analysis-en/": "e43a5f0950e74cebd8688799174566f305e72ab348b4023929bb6f38075b9594",
     "https://www.bx33661.com/en/blog/nginx-cache-poisoning-en/": "81a64b1af27f3022e866a3809a04abe3e104f9bf67da8b7cc87197f2efd0dd02",
     "https://www.bx33661.com/en/blog/htb-challenge-en/": "8ad1fe978767b88496e4c5f4d2697195b5df6c5db315d8d213bd49b7d8afdcdf",
-    "https://www.bx33661.com/en/blog/htb-ctf-en/": "c1318f24f975ca2b000d0a17cf86d16c4d2a5b83d109ef187536da0b46fb3de0"
+    "https://www.bx33661.com/en/blog/htb-ctf-en/": "c1318f24f975ca2b000d0a17cf86d16c4d2a5b83d109ef187536da0b46fb3de0",
+    "https://www.bx33661.com/en/blog/claude-code-en/": "7a9c134551f20f7b2fdede07b22f02f73d90f0aeaf9386199ac1c0ad67914927",
+    "https://www.bx33661.com/en/blog/mcp-security-en/": "2b6ec5cbb49c8109822b7254f8b4cbd0d79aa2552e280844ca9aff74dd8e3afe",
+    "https://www.bx33661.com/en/blog/juice-shop-en/": "0bb3e53d1c130e6a2eb0dd6836084f67bf6ea82e01d5de97d100fddba0c0d478",
+    "https://www.bx33661.com/en/blog/jenkins-credential-crack-en/": "25f692f50596293c612b50e196dcced79fd861c8cffc058069d885f27614dd68",
+    "https://www.bx33661.com/en/blog/mcp1-en/": "53c691c2b6de5e0c74255d85651ae717e9f21e0ff86910918fc2e2ba9469cacb",
+    "https://www.bx33661.com/en/blog/passthehash-en/": "9681de1c7204cb883f30f30b8a6cf867724158cd0810b0f472a46251a6e9721b",
+    "https://www.bx33661.com/en/blog/tsclient-en/": "b7607410998c47c480226d8e2d38df06a3b53b9e5a62989f867b795ea04b2971",
+    "https://www.bx33661.com/en/blog/brute4road-en/": "d338273a4225aa653f0d89b4eff21c1686d1317f13cd647cccd1220747e91f88",
+    "https://www.bx33661.com/en/blog/bxhttpsplit-en/": "8f67ec08dc5023dcb89c812b90d85bc3b0214c0ac9188a35749f93e465cb6dff",
+    "https://www.bx33661.com/en/blog/bx1go-en/": "85492b1601d751e2e382ddf191acb3b494aa80a7984596517f5af9ed47ae671d"
   },
-  "lastPushAt": "2026-10-21T07:48:19.986Z",
+  "lastPushAt": "2026-10-22T07:43:45.979Z",
   "ledgerVersion": 1
 }
