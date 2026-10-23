@@ -111,7 +111,17 @@
     "https://www.bx33661.com/en/blog/tsclient-en/",
     "https://www.bx33661.com/en/blog/brute4road-en/",
     "https://www.bx33661.com/en/blog/bxhttpsplit-en/",
-    "https://www.bx33661.com/en/blog/bx1go-en/"
+    "https://www.bx33661.com/en/blog/bx1go-en/",
+    "https://www.bx33661.com/en/blog/bx33661http-en/",
+    "https://www.bx33661.com/en/blog/bx33661xpath-en/",
+    "https://www.bx33661.com/en/blog/z8x9w23-en/",
+    "https://www.bx33661.com/en/blog/openharmonyctf-en/",
+    "https://www.bx33661.com/en/blog/chunqiu-initial-en/",
+    "https://www.bx33661.com/en/blog/k8x10w24-en/",
+    "https://www.bx33661.com/en/blog/bxvite-en/",
+    "https://www.bx33661.com/en/blog/cve-2024-1561-en/",
+    "https://www.bx33661.com/en/blog/k8x9w23-en/",
+    "https://www.bx33661.com/en/blog/bxwebpack-en/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
@@ -225,8 +235,18 @@
     "https://www.bx33661.com/en/blog/tsclient-en/": "b7607410998c47c480226d8e2d38df06a3b53b9e5a62989f867b795ea04b2971",
     "https://www.bx33661.com/en/blog/brute4road-en/": "d338273a4225aa653f0d89b4eff21c1686d1317f13cd647cccd1220747e91f88",
     "https://www.bx33661.com/en/blog/bxhttpsplit-en/": "8f67ec08dc5023dcb89c812b90d85bc3b0214c0ac9188a35749f93e465cb6dff",
-    "https://www.bx33661.com/en/blog/bx1go-en/": "85492b1601d751e2e382ddf191acb3b494aa80a7984596517f5af9ed47ae671d"
+    "https://www.bx33661.com/en/blog/bx1go-en/": "85492b1601d751e2e382ddf191acb3b494aa80a7984596517f5af9ed47ae671d",
+    "https://www.bx33661.com/en/blog/bx33661http-en/": "d81ca7c4920eb6ba4e3d6e87c62a57791597addde604a05a34218b680de193cd",
+    "https://www.bx33661.com/en/blog/bx33661xpath-en/": "c2840e07f1bb08b7c92ce0768751cd5147a188d45f6ab0c51321798be80ea699",
+    "https://www.bx33661.com/en/blog/z8x9w23-en/": "d7517d0b0209485381456e26a3b2c604218d42d223f9d968674050270ded3097",
+    "https://www.bx33661.com/en/blog/openharmonyctf-en/": "bd86e84f5a43a93a59346dedd4639af5ec2bfe278e0be8fc6947e22597bbfaeb",
+    "https://www.bx33661.com/en/blog/chunqiu-initial-en/": "14650f90e629473f2cd7dac3df6e02bf9222ac2fbb5a3df0c108270f2f9f7ad4",
+    "https://www.bx33661.com/en/blog/k8x10w24-en/": "fa8f8850253fcdc76293b50772e000bf01cbd3889e75078356ac2cf2828ef462",
+    "https://www.bx33661.com/en/blog/bxvite-en/": "7c7e2dc3e6d6edae008c9d61ea55334683807677a48578e5479f379cc940b4c8",
+    "https://www.bx33661.com/en/blog/cve-2024-1561-en/": "bab19bed039cc116f9479f9e5ae67571584249c0cae718791365c99a8742e934",
+    "https://www.bx33661.com/en/blog/k8x9w23-en/": "4f0a731111da7af9d3d402ae7754156724c453377471716e4553cee58c23a390",
+    "https://www.bx33661.com/en/blog/bxwebpack-en/": "3bd114831696194f7506988675255e71530c3c1c709655fca5007b48251b9f1b"
   },
-  "lastPushAt": "2026-10-22T07:43:45.979Z",
+  "lastPushAt": "2026-10-23T07:41:19.442Z",
   "ledgerVersion": 1
 }
