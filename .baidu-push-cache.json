@@ -121,7 +121,17 @@
     "https://www.bx33661.com/en/blog/bxvite-en/",
     "https://www.bx33661.com/en/blog/cve-2024-1561-en/",
     "https://www.bx33661.com/en/blog/k8x9w23-en/",
-    "https://www.bx33661.com/en/blog/bxwebpack-en/"
+    "https://www.bx33661.com/en/blog/bxwebpack-en/",
+    "https://www.bx33661.com/en/blog/bx33661win1-en/",
+    "https://www.bx33661.com/en/blog/k8x9w26-en/",
+    "https://www.bx33661.com/en/blog/bxtcp-en/",
+    "https://www.bx33661.com/en/blog/k8x9w22-en/",
+    "https://www.bx33661.com/en/blog/k8x9w2m7-en/",
+    "https://www.bx33661.com/en/blog/metasploit-framework-1-en/",
+    "https://www.bx33661.com/en/notes/javascript-advanced-learning-en/",
+    "https://www.bx33661.com/en/notes/wechat-miniprogram-reverse-4-en/",
+    "https://www.bx33661.com/en/notes/bx33661dom-en/",
+    "https://www.bx33661.com/en/notes/algorithm-study-en/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
@@ -245,8 +255,18 @@
     "https://www.bx33661.com/en/blog/bxvite-en/": "7c7e2dc3e6d6edae008c9d61ea55334683807677a48578e5479f379cc940b4c8",
     "https://www.bx33661.com/en/blog/cve-2024-1561-en/": "bab19bed039cc116f9479f9e5ae67571584249c0cae718791365c99a8742e934",
     "https://www.bx33661.com/en/blog/k8x9w23-en/": "4f0a731111da7af9d3d402ae7754156724c453377471716e4553cee58c23a390",
-    "https://www.bx33661.com/en/blog/bxwebpack-en/": "3bd114831696194f7506988675255e71530c3c1c709655fca5007b48251b9f1b"
+    "https://www.bx33661.com/en/blog/bxwebpack-en/": "3bd114831696194f7506988675255e71530c3c1c709655fca5007b48251b9f1b",
+    "https://www.bx33661.com/en/blog/bx33661win1-en/": "3decb09673bbfb4ee69eb7903463a4afdb920e411b03649ec801ed29d0b090e1",
+    "https://www.bx33661.com/en/blog/k8x9w26-en/": "fde4dbbc0c2b3ae972aba57e230367dd308d5409b43041a3b0cc2202599a4aaf",
+    "https://www.bx33661.com/en/blog/bxtcp-en/": "de560afbe93effba041f3142b42e14d29d70ad7f10f0ddb4665971b6a2d63291",
+    "https://www.bx33661.com/en/blog/k8x9w22-en/": "c39f5133199fb98466b07ad323496b6e83d70e7632a15c8300fe1176301f4ee5",
+    "https://www.bx33661.com/en/blog/k8x9w2m7-en/": "73d57a0f2c6a8a67a132942861b8f01b97fb0e09ce9b7fe66b2c471b0332cf61",
+    "https://www.bx33661.com/en/blog/metasploit-framework-1-en/": "bbbff25f6db6a60a132a2abc1802cb1e4baac2e10d9671db83ee0855224343fe",
+    "https://www.bx33661.com/en/notes/javascript-advanced-learning-en/": "8cb7e5d6f8cda5599113e6feeddc12745a07696ce01845ac4b3b662b5bcc529c",
+    "https://www.bx33661.com/en/notes/wechat-miniprogram-reverse-4-en/": "f01773f23fe60d3cccf21da6519276655abf56e4337ba51f6d8757c3f43cc7d4",
+    "https://www.bx33661.com/en/notes/bx33661dom-en/": "50ec170b875d95191010e0b9022bbec40e7b664c8043f4a7fbb88e2932a018bf",
+    "https://www.bx33661.com/en/notes/algorithm-study-en/": "9d0c9f4b3147125a54352d02be6f25f57cbe7a0525fcada5e22abffe143666ea"
   },
-  "lastPushAt": "2026-10-23T07:41:19.442Z",
+  "lastPushAt": "2026-10-24T07:25:04.196Z",
   "ledgerVersion": 1
 }
