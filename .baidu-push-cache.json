@@ -131,7 +131,15 @@
     "https://www.bx33661.com/en/notes/javascript-advanced-learning-en/",
     "https://www.bx33661.com/en/notes/wechat-miniprogram-reverse-4-en/",
     "https://www.bx33661.com/en/notes/bx33661dom-en/",
-    "https://www.bx33661.com/en/notes/algorithm-study-en/"
+    "https://www.bx33661.com/en/notes/algorithm-study-en/",
+    "https://www.bx33661.com/en/notes/summer-python-security-en/",
+    "https://www.bx33661.com/en/notes/machine-learning-classification-task-en/",
+    "https://www.bx33661.com/en/notes/k8burp-en/",
+    "https://www.bx33661.com/en/notes/java-algorithm-practice-en/",
+    "https://www.bx33661.com/en/notes/k8x9w55-en/",
+    "https://www.bx33661.com/en/blog/",
+    "https://www.bx33661.com/en/archives/",
+    "https://www.bx33661.com/en/notes/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
@@ -265,8 +273,16 @@
     "https://www.bx33661.com/en/notes/javascript-advanced-learning-en/": "8cb7e5d6f8cda5599113e6feeddc12745a07696ce01845ac4b3b662b5bcc529c",
     "https://www.bx33661.com/en/notes/wechat-miniprogram-reverse-4-en/": "f01773f23fe60d3cccf21da6519276655abf56e4337ba51f6d8757c3f43cc7d4",
     "https://www.bx33661.com/en/notes/bx33661dom-en/": "50ec170b875d95191010e0b9022bbec40e7b664c8043f4a7fbb88e2932a018bf",
-    "https://www.bx33661.com/en/notes/algorithm-study-en/": "9d0c9f4b3147125a54352d02be6f25f57cbe7a0525fcada5e22abffe143666ea"
+    "https://www.bx33661.com/en/notes/algorithm-study-en/": "9d0c9f4b3147125a54352d02be6f25f57cbe7a0525fcada5e22abffe143666ea",
+    "https://www.bx33661.com/en/notes/summer-python-security-en/": "7bb987fe3cff312359fae4e067663f2f1e5b3966aad92efe17bfb551d5e36d4c",
+    "https://www.bx33661.com/en/notes/machine-learning-classification-task-en/": "c4d37c9be9fd24765f5b9cc19620feb576cfbef1d703c707b514f8b96a4ed602",
+    "https://www.bx33661.com/en/notes/k8burp-en/": "a295556892d580cb759c669ff5cb2294efd051f9f516dc214be45f4fab389af2",
+    "https://www.bx33661.com/en/notes/java-algorithm-practice-en/": "f2183f896c715e5da0e3a84b0a321712742d822e6e5c02849d23a6d352c42613",
+    "https://www.bx33661.com/en/notes/k8x9w55-en/": "766b8f4bb475de9c1ac746f52d6803c462a3d9229712fe6359c00173f64f9eda",
+    "https://www.bx33661.com/en/blog/": "d077ddab2144c1776c7f374ef0818d1b4d7b8241cb0013ee2fa90f4bec9d33ba",
+    "https://www.bx33661.com/en/archives/": "84a87c403282ea1406b0eae616cbb7f9036622ef190aba499742ca62d0ecda18",
+    "https://www.bx33661.com/en/notes/": "9d1257b4c6dbe1c3ba577192021184ebde59ba6470d314ebeaea256375e6f96e"
   },
-  "lastPushAt": "2026-10-24T07:25:04.196Z",
+  "lastPushAt": "2026-10-25T07:40:40.894Z",
   "ledgerVersion": 1
 }
