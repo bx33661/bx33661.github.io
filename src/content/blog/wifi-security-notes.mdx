@@ -1,0 +1,765 @@
+---
+title: "WiFi 安全：从空口到认证"
+description: "用绿联 USB 网卡和 Kali 走一遍 WiFi 安全测试：网卡选型、热点发现、RSN 与加密识别、802.11 抓包、伪AP 验证，以及 AP DDoS 分析与 WPA2-PSK 离线口令审计。"
+date: 2026-10-30
+tags:
+  - "WiFi"
+  - "Security"
+  - "流量分析"
+authors:
+  - "bx"
+draft: false
+slug: "wifi-security-notes"
+translationKey: "wifi-security-notes"
+---
+
+import WifiSecurityDiagram from "@/components/WifiSecurityDiagram.astro";
+import WifiKnowledgePanel from "@/components/WifiKnowledgePanel.astro";
+
+WiFi 安全测试需要区分三个层次：**发现网络、建立受保护连接、判断业务数据是否泄露**。SSID 和安全模式是网络宣告的能力，关联与密钥协商决定连接实际采用的保护，抓包结果则受观察位置、信道和会话密钥条件限制。
+
+实验环境为 VMware 中的 Kali、绿联 AC1300 USB 网卡和测试手机，无线接口记为 `wlan0`。以下按网卡准备、热点发现、认证与密钥机制、空口分析、伪AP 验证、可用性与口令审计展开；截图承载实测现象，协议推导与离线命令用于解释和复核，不冒充已经取得的会话数据。
+
+截图已对设备地址、邻近网络名称与个人界面信息作发布脱敏；技术字段和实验计数保留。
+
+## 分析范围与观察条件
+
+<WifiKnowledgePanel variant="scope" label="观察位置决定结论边界" rows={[
+  [
+    "不持有密钥的空口监听",
+    "可接收的管理帧、地址、时序和受保护帧的外部特征",
+    "不能把加密载荷视作已读取的业务内容"
+  ],
+  [
+    "具备目标会话解密条件的分析端",
+    "解密后的链路层载荷",
+    "仍需继续判断 TLS 等应用保护"
+  ],
+  [
+    "已接入网络的普通终端",
+    "自身连接、分配地址及可访问的业务",
+    "终端视角不同于外部监听者"
+  ],
+  [
+    "伪AP 与管理平台",
+    "终端请求、平台发现和响应事件",
+    "接入点日志与终端实际状态需交叉验证"
+  ]
+]} />
+
+同一份 CAP 中出现哪些帧，是捕获结果；连接采用哪种保护，是协议状态；是否构成风险，则需要把两者与具体观察条件对应起来。
+
+## 外接网卡选型与环境准备
+
+### 实验设备与识别结果
+
+绿联 AC1300 双频双天线 USB 网卡，插在扩展坞上，经 VMware 的 USB 直通交给 Kali：
+
+<figure>
+<img src="/blog/wifi-security-notes/15-ugreen-usb-adapter-photo.jpg" width="3072" height="4096" alt="实测使用的绿联双天线 USB 无线网卡，连接于扩展坞" style="max-height:640px;width:auto;max-width:100%;margin-inline:auto;object-fit:contain" />
+<figcaption>绿联 AC1300 USB 网卡与扩展坞。天线数量和外观不决定监听能力。</figcaption>
+</figure>
+
+选网卡要分三层看：商品页是销售规格，USB ID 是系统认出的身份，Linux 驱动才决定能做什么。**宣传、芯片、驱动要分开记。**
+
+![Kali 中的 lsusb 与 iw dev：0bda:b812 无线设备，wlan0 处于 monitor 模式](/blog/wifi-security-notes/16-usb-id-monitor-verification.png)
+
+识别结果里值得看的几行：
+
+```text
+ID 0bda:8153 Realtek Semiconductor Corp. RTL8153 Gigabit Ethernet Adapter
+ID 0bda:b812 Realtek Semiconductor Corp. RTL88x2bu [AC1200 Techkey]
+
+phy#1
+    Interface wlan0
+        type monitor
+```
+
+`0bda:8153` 是千兆以太网设备，`0bda:b812` 才是无线网卡。`Techkey` 只是 USB ID 数据库里的描述文字，和实物是不是绿联无关。
+
+Linux 主线的 [rtw8822bu 设备匹配表](https://github.com/torvalds/linux/blob/v6.14/drivers/net/wireless/realtek/rtw88/rtw8822bu.c)（v6.14）里有 `0xb812`，因此按 **RTL88x2BU 系列**记录，具体封装和硬件修订还得看设备标签。内核版本和驱动模块名截图里没有，用下面的命令查。
+
+<details>
+<summary>查看购买时的 AC1300 商品规格截图</summary>
+
+![购买时的绿联 AC1300 双频双天线 USB 网卡商品页，价格与活动仅为截图时状态](/blog/wifi-security-notes/17-ugreen-ac1300-product-listing.jpg)
+
+“免驱”要看指哪些系统；AC1300 只是速率等级，不代表实测吞吐，更不代表能监听、注入。绿联的 [AC1300 系列](https://www.lulian.cn/download/437.html)和 [AX1800 系列](https://www.lulian.cn/download/436.html) Linux 驱动是分开的，下载前核对型号和产品编码。
+
+</details>
+
+### 选型依据与芯片对照
+
+只做热点发现、Beacon/RSN 分析和一般抓包，优先看**主线驱动、目标频段、长时间接收是否稳定**。只用 2.4/5 GHz 没必要为了“更新一代 WiFi”折腾驱动；要碰 6 GHz，再一起核对射频能力、内核、固件和当地允许的信道。
+
+<WifiKnowledgePanel variant="selection" label="外接网卡 · 六项核对" rows={[
+  [
+    "芯片与修订",
+    "商品编码、硬件版本、USB VID:PID",
+    "同一外壳或相近型号就使用同一芯片"
+  ],
+  [
+    "Linux 支持",
+    "内核版本、模块、固件、USB ID 匹配",
+    "支持 Windows 就等于支持 Kali"
+  ],
+  [
+    "工作模式",
+    "managed、monitor、AP 各自的支持情况",
+    "能监听就一定能建 AP 或注入"
+  ],
+  [
+    "频段与信道",
+    "2.4/5/6 GHz、信道限制、DFS、带宽",
+    "WiFi 6 一定支持 6 GHz；双频一定能同时监听"
+  ],
+  [
+    "USB 与供电",
+    "直通、控制器、线材、扩展坞、掉线日志",
+    "USB 能枚举就已经有稳定无线接收"
+  ],
+  [
+    "接收质量",
+    "固定位置下的 Beacon 连续性、信号与异常日志",
+    "天线更多、宣传速率更高就更适合抓包"
+  ]
+]} />
+
+**WiFi 6 和 6E 要分开看**：前者不自动带 6 GHz。天线数量不等于空间流数量，更不等于独立射频设备数量；空间流能力需要查芯片和具体硬件设计，一块双频网卡通常不能同时完整捕获两个不同信道。
+
+<details>
+<summary>展开芯片、示例设备与 Linux 驱动对照（只用来缩小范围）</summary>
+
+| 芯片系列 / 示例设备 | 频段定位 | Linux 驱动路径 | 适用取舍 |
+| --- | --- | --- | --- |
+| AR9271 / AWUS036NHA | 2.4 GHz、802.11n | `ath9k_htc`，需要匹配固件 | 2.4 GHz 学习与对照；不覆盖 5 GHz |
+| MT7612U / AWUS036ACM | 2.4/5 GHz、802.11ac | 主线 `mt76` 家族，常见模块 `mt76x2u` | 双频抓包的优先考察路线，仍需实测目标信道 |
+| MT7921AUN / AWUS036AXML | 2.4/5/6 GHz、802.11ax | `mt7921u`；USB 支持始于 Linux 5.18 | 有 6 GHz 需求时考察；同时核对固件与监管域 |
+| RTL8812AU 系列 | 2.4/5 GHz、802.11ac | 较新内核已有 `rtw88` 路径；旧教程常用外置驱动 | 按实际内核评估，避免照搬多年前的 DKMS 安装流程 |
+| RTL88x2BU 系列 / 本次设备 | 2.4/5 GHz、802.11ac | 看 `ethtool -i` 显示的驱动名（主线为 `rtw_8822bu`）或实际绑定的外置模块 | 本次已验证进入监听；持续捕获、AP 和注入分别验收 |
+
+频段与驱动依据来自 [Linux Wireless 的 MediaTek 驱动说明](https://wireless.docs.kernel.org/en/latest/en/users/drivers/mediatek.html)、[ath9k_htc 文档](https://wireless.docs.kernel.org/en/latest/en/users/drivers/ath9k_htc.html)、[ALFA 的 ACM 资料](https://docs.alfa.com.tw/Product/AWUS036ACM/)以及 [AXML 规格](https://www.alfa.com.tw/products/awus036axml)。
+
+Realtek 的老经验要更新：Linux 6.14 的 [rtw88 配置](https://github.com/torvalds/linux/blob/v6.14/drivers/net/wireless/realtek/rtw88/Kconfig)已包含 RTL8812AU，Aircrack-ng 的 [rtl8812au 仓库](https://github.com/aircrack-ng/rtl8812au)也已标记 DEPRECATED，README 建议改用 mac80211 驱动（外置仓库 `lwfinger/rtw88`，不是内核主线）。“AU/BU 都得装旧版外置驱动”不再是通用结论，是否可用还要看发行版的内核编译选项、设备 ID 和实际工作模式。
+
+</details>
+
+### VMware：USB 直通与网络桥接不同
+
+虚拟机能上网，只说明虚拟网络通了。NAT 和普通桥接给 Kali 的是虚拟以太网卡，宿主机 WiFi 的信道控制和 802.11 帧不会过来；要抓空口，得在 VMware 里把 USB 网卡连接给客户机，再到 Kali 里看 `lsusb` 和 `iw dev`（[Kali FAQ](https://www.kali.org/faq/) 也区分了虚拟机里访问无线硬件的情况）。
+
+<WifiSecurityDiagram variant="hardware" />
+
+验收先记下内核、USB 设备、驱动和无线接口，再切模式（接口名以 `iw dev` 为准）：
+
+```bash
+uname -r
+lsusb
+lsusb -t
+iw dev
+iw list
+iw reg get
+ethtool -i wlan0
+readlink -f /sys/class/net/wlan0/device/driver
+```
+
+`ethtool -i` 和 sysfs 路径确认实际驱动（主线驱动显示为 `rtw_8822bu`）。外置 DKMS 模块可能在内核升级后编译失败，Secure Boot 也可能拒绝未签名模块，“安装成功”后要再确认模块真的加载。
+
+`iw list` 要看 `Supported interface modes`、`valid interface combinations` 和频率列表：支持 `monitor`、支持 `AP`、能同时跑多个接口是三种能力，标为 `disabled`、`no IR` 或需要 DFS 的信道还会限制操作。验收的顺序是：确认枚举和驱动 → 进入监听 → 固定信道连续抓一段时间 → 检查掉线、Beacon 连续性和 USB reset/固件错误；注入和 AP 模式单独验收。
+
+## 热点探测
+
+### Beacon 与扫描方式
+
+手机还没连任何网络、也不知道密码，为什么能看到附近的 WiFi 名称？
+
+AP（Access Point）是提供无线接入的设备，STA（Station）是手机、电脑这类终端；家用路由器一般自带 AP 功能，但 AP、路由、上网是三件事。答案是 Beacon（信标帧）：AP 周期性广播这种管理帧，其中包含 SSID、支持速率、信道和 RSN 安全能力，BSSID 在帧头里。整个过程不需要密码。
+
+<WifiSecurityDiagram variant="discovery" />
+
+扫描分两种：被动扫描听 AP 的 Beacon；主动扫描由终端发 Probe Request，AP 回 Probe Response。两者都只是“发现”，关联和密钥建立在后面。
+
+### SSID、BSSID 与 MAC
+
+SSID 是网络名称，BSSID 标识具体的基本服务集，MAC 是接口的链路层地址。常见网络里 BSSID 就是 AP 为该无线服务用的 MAC，一台物理 AP 可以提供多个 BSSID。所以**一个 SSID 不一定对应一台 AP**，扫描表要按 BSSID 记。
+
+隐藏 SSID 只是让名称不出现在普通 Beacon 里：AP 照样发管理帧，BSSID 照样看得到，SSID 也会出现在 Probe Response 和终端的 Probe/Association Request 里。**隐藏 SSID ≠ 隐藏 AP，更不等于加密。**
+
+### Kali 中扫描 AP
+
+先看 `iw list` 的 `Supported interface modes` 有没有 `monitor`，再用 `iw dev` 确认接口状态。驱动声明支持不等于真能用，最终要靠实际抓包验证：
+
+![iw list 显示网卡支持的工作模式与加密套件](/blog/wifi-security-notes/08-adapter-capabilities.png)
+
+手动切模式不会改接口名；`wlan0mon` 是 `airmon-ng` 等工具创建监听接口时常见的名字，照抄命令前先看自己的接口列表（`iw` 用法见 [Linux Wireless 文档](https://wireless.docs.kernel.org/en/latest/en/users/documentation/iw.html)）：
+
+```bash
+sudo ip link set wlan0 down
+sudo iw dev wlan0 set type monitor
+sudo ip link set wlan0 up
+iw dev
+```
+
+![切换后 iw dev 显示 wlan0 的 type 为 monitor](/blog/wifi-security-notes/09-monitor-mode.png)
+
+输出是 `type monitor` 就可以扫描了。`airodump-ng` 默认只在 2.4 GHz 信道间跳，加 `--band abg` 才会跳到 5 GHz（能扫哪些信道受网卡和监管域限制，参数见[官方文档](https://www.aircrack-ng.org/doku.php?id=airodump-ng)）；“跳”不等于“同时听”，6 GHz 也不适用：
+
+```bash
+sudo airodump-ng --band abg wlan0
+```
+
+![airodump-ng 扫描得到的 AP、信道、安全模式与终端列表](/blog/wifi-security-notes/05-airodump-survey.png)
+
+上半部分是 AP，下半部分是观察到的终端。截图中的 48 秒采样只显示信道 1 和 11，没有 5 GHz 条目。扫描配置、跳频窗口和环境中的热点分布都会影响可见范围，缺少对应记录时不推断具体原因，也不据此确认或否定 5 GHz 接收能力。`Beacons` 和 `#Data` 是帧计数，只代表这个采样窗口。
+
+<WifiKnowledgePanel variant="fieldnotes" label="扫描摘要 · 字段释义" rows={[
+  [
+    "BSSID / ESSID",
+    "基本服务集标识 / 网络名称",
+    "同名网络需要继续按 BSSID 区分"
+  ],
+  [
+    "CH",
+    "观察到的信道",
+    "固定抓包前重新核对，避免监听错信道"
+  ],
+  [
+    "PWR",
+    "网卡报告的信号水平",
+    "含义依赖驱动，不总是标准 dBm 数值"
+  ],
+  [
+    "ENC / CIPHER / AUTH",
+    "安全模式 / 密码套件 / 认证方式",
+    "扫描摘要不等于完整安全评估"
+  ]
+]} />
+
+### OUI 能提供什么线索？
+
+扫描到的 MAC 还能拿前缀去查厂商：
+
+![按 MAC 地址前缀进行厂商归属查询页面](/blog/wifi-security-notes/07-oui-lookup.png)
+
+传统 MA-L 分配里，MAC 前三个字节是 OUI，对应 IEEE 登记的厂商。这只是线索：本地管理地址、虚拟接口和被改过的地址都会误导结果。
+
+### 信道、带宽与信号质量
+
+把信道想成道路：不同 AP 走不同频率范围，互相少干扰。`CH` 一般只显示主信道，48、64、149 都是 5 GHz 信道编号；80 MHz 由多个 20 MHz 子信道拼成，吞吐潜力更高，但还要看干扰、设备能力和用户密度；DFS 信道有雷达避让要求，以 `iw reg get` 为准。
+
+信号强度有个常见的坑：dBm 是负数，**-46 dBm 比 -80 dBm 强**。`PWR` 的含义依赖驱动；相差 10 dB 约是 10 倍功率，不能线性换算成吞吐。字段定义见 [Airodump-ng 文档](https://www.aircrack-ng.org/doku.php?id=airodump-ng)。
+
+## 无线加密检测
+
+**检测加密 ≠ 破解密码**：这一步只判断 AP 用了什么认证方式和加密算法，有没有明显的配置问题。先看 `ENC`、`CIPHER`、`AUTH` 三列，截图中的组合为：
+
+```text
+ENC     CIPHER    AUTH
+WPA2    CCMP      PSK
+```
+
+即 WPA2-Personal：WPA2 协议、AES-CCMP 加密、PSK（预共享密钥，家里常见的密码认证）。扫描器给的只是摘要，往下查要看 Beacon/Probe Response 里的 RSN 信息元素：
+
+<WifiKnowledgePanel variant="glossary" label="RSN / AKM / PMF" rows={[
+  [
+    "RSN 信息元素",
+    "声明 Robust Security Network 的安全能力",
+    "单播/组播密码套件与终端协商结果"
+  ],
+  [
+    "AKM（Authentication and Key Management）",
+    "认证与密钥管理套件",
+    "PSK、SAE、802.1X、OWE 等路径"
+  ],
+  [
+    "PMF（Protected Management Frames）",
+    "保护部分健壮管理帧",
+    "capable 与 required 分别表示支持与要求，不是同一配置"
+  ]
+]} />
+
+Wireshark 里可以看 `wlan.rsn.akms.type`、`wlan.rsn.capabilities.mfpc` 和 `wlan.rsn.capabilities.mfpr`（字段见 [802.11 参考](https://www.wireshark.org/docs/dfref/w/wlan.html)），这些是 AP 宣告的能力，终端实际协商要另外对照。
+
+<WifiKnowledgePanel variant="spectrum" label="安全模式 · 分开判断保护与身份" rows={[
+  [
+    "传统开放网络（常见标识 OPN）",
+    "不提供 WiFi 链路加密",
+    "业务内容是否有 TLS 等独立保护"
+  ],
+  [
+    "OWE",
+    "不要求共享口令，但提供无线链路加密",
+    "对端身份仍未经认证；与传统开放网络分别核对"
+  ],
+  [
+    "WEP",
+    "已淘汰的保护机制",
+    "替换配置及设备兼容性"
+  ],
+  [
+    "WPA / TKIP",
+    "遗留配置，应升级",
+    "是否因兼容模式继续允许旧客户端"
+  ],
+  [
+    "WPA2 / CCMP",
+    "具备常见的链路保护",
+    "密钥管理、WPS、PMF、固件与客户端策略"
+  ],
+  [
+    "WPA3-Personal / SAE",
+    "使用 SAE 认证机制",
+    "是否为过渡模式、PMF 要求及终端实际协商结果"
+  ]
+]} />
+
+OWE（Opportunistic Wireless Encryption）把“不用输密码”和“链路不加密”拆开了：它给链路加密，但不认证热点身份，也替代不了 HTTPS/TLS（见 [RFC 8110](https://www.rfc-editor.org/rfc/rfc8110.html)），所以列表里没有小锁，不能直接断定没加密。WPA3-Personal 用 SAE，纯 WPA3 要求 PMF，过渡模式要再查兼容路径（见 [Cisco 的 WPA3 配置文档](https://www.cisco.com/c/en/us/td/docs/wireless/controller/9800/17-12/config-guide/b_wl_17_12_cg/m_wpa3.html)）；PMF 保护部分管理帧，不隐藏网络发现信息。
+
+### 从能力声明到实际协商
+
+Beacon 里的套件列表表示 AP **允许什么**，Association Request 中的 RSN 参数表示终端 **选择什么**，Association Response 的状态码表示 AP 是否接受这一轮关联。支持 WPA2/WPA3 过渡模式的 AP 可以同时宣告 PSK 和 SAE，但某个终端实际走哪条路径，要看该终端的认证与关联交换，不能从 Beacon 中出现 SAE 就认定所有会话都是 WPA3。
+
+一次核对以 BSSID、终端地址和时间窗口为范围，至少对照以下三处：
+
+<WifiKnowledgePanel variant="timeline" label="能力宣告 → 协商 → 密钥建立" rows={[
+  [
+    "能力宣告",
+    "Beacon / Probe Response 的 RSN",
+    "AP 宣告哪些 AKM、单播/组播套件及 PMF 策略？"
+  ],
+  [
+    "终端选择与关联",
+    "Association Request 的 RSN；Response 的 wlan.fixed.status_code",
+    "终端选了什么，AP 是否返回成功状态？"
+  ],
+  [
+    "密钥建立",
+    "目标会话的 EAPOL-Key 消息和后续受保护数据",
+    "关联之后是否继续建立密钥，业务帧是否按协商方式保护？"
+  ]
+]} />
+
+WPA2 连接过程还会把相关安全参数带入密钥交换并做一致性核对，避免仅靠未认证的广播内容决定整个连接的信任状态。过程可对照 [iwd 的 WPA 认证实现说明](https://kernel.googlesource.com/pub/scm/network/wireless/iwd/+/90dc2e5547cd8c386d8b90c9683bf2d59dd9900b/doc/wpa-auth.txt)。**关联响应成功只覆盖关联阶段，尚不等于四次握手、地址配置和业务访问都成功。**
+
+### 认证方式与连接阶段
+
+Personal 与 Enterprise 的区别首先在于主密钥材料怎样获得。WPA2-Personal 通常由预共享密钥提供 PMK，WPA3-Personal 通过 SAE 建立密钥材料；Enterprise 则通过具体的 EAP 方法完成身份认证和密钥建立。它们并不是把同一套密码输入框换一个名字。
+
+企业无线尤其需要检查 EAP 方法和终端信任配置。以依赖服务器证书的方式为例，信任任意证书、只检查证书链而不约束服务器名称，都会削弱终端对认证服务身份的确认；采用客户端证书还是口令，也会改变终端需要保护的凭据。WPS 是独立的配置入口，另查启用状态、PIN/PBC 设置及访问策略。
+
+802.11 Authentication 也不等于用户登录。典型 WPA2-Personal 初始连接先经过开放系统认证和关联，再进行 EAPOL 四次握手；WPA3-Personal 的 SAE 发生在关联之前，之后仍需四次握手建立具体会话的保护。以下机制讨论普通初始连接，不把快速漫游等扩展流程混入同一时序。
+
+### 四次握手到底建立了什么
+
+“WPA2 + CCMP + PSK”并不表示每一帧直接用 WiFi 口令加密。长期凭据提供主密钥材料，AP 与终端再结合本轮随机数和双方地址派生会话密钥。可以用逻辑关系表达：
+
+```text
+长期凭据 / 认证过程 → PMK
+PMK + AP/STA 地址 + ANonce + SNonce → PTK
+PTK 中的 KCK / KEK / TK → 握手完整性 / 密钥数据保护 / 单播数据保护
+AP 分发的 GTK → 下行组播与广播数据保护
+```
+
+这是一组依赖关系，不是可直接照抄的字节拼接或跨套件统一 KDF 公式。PMK 是 Pairwise Master Key，PTK 是 Pairwise Transient Key；ANonce 和 SNonce 分别由 AP、终端生成。**Nonce 可以在空口交换，PMK 和完整 PTK 并不会随它们明文发送。** 同一共享凭据下，不同终端或不同连接仍应建立各自的 PTK。
+
+<WifiSecurityDiagram variant="keys" />
+
+<WifiKnowledgePanel variant="exchange" label="M1—M4 · 消息职责" rows={[
+  [
+    "M1",
+    "AP → STA，ANonce 与 Replay Counter",
+    "提供 AP 的本轮随机数；常见 M1 尚无 Key MIC"
+  ],
+  [
+    "M2",
+    "STA → AP，SNonce 与 MIC",
+    "终端证明具备对应密钥材料，AP 据此派生 PTK 并校验"
+  ],
+  [
+    "M3",
+    "AP → STA，MIC 与受保护的密钥数据",
+    "确认密钥上下文并分发 GTK 等材料；启用 PMF 时还可涉及 IGTK"
+  ],
+  [
+    "M4",
+    "STA → AP，MIC 与确认",
+    "确认本轮交换；后续再观察受保护的数据通信"
+  ]
+]} />
+
+握手职责可对照 [Cisco 的四次握手说明](https://www.cisco.com/en/US/docs/wireless/wlan_adapter/secure_client/5.1.0/administration/guide/C1_Network_Security.html)。KCK 用于 EAPOL-Key 的完整性校验，KEK 保护密钥数据，TK 用于具体的数据保护，三者的用途应分开看；GTK 也不是单播 PTK 的另一种名字。终端向 AP 发送的组播业务，在空口这一跳仍可能是发往 AP 的单播帧，因此不能只根据上层目的 IP 判断使用哪把链路密钥。
+
+四次握手既建立会话保护，也提供可用于校验密钥一致性的材料。这解释了 WPA2-PSK 为什么仍依赖共享口令强度：观察到握手不等于自动得到密码，但弱口令会削弱长期凭据的保护。WPA3-SAE 的离线分析条件不同，不应直接套用“已知口令加被动握手即可恢复所有会话”的经验。
+
+实际抓包可能出现重传、缺帧和组密钥更新，看到四个 EAPOL 包不能直接当作完整的 M1～M4。应结合消息类型、方向、Nonce、Replay Counter、MIC 标志及关联上下文配对；相同 Replay Counter 出现在相互对应的消息或重传中也未必异常。关于安装状态与重放计数器的区别，可参见 [WPA2 形式化分析](https://www.usenix.org/system/files/sec20-cremers.pdf)，而不是仅凭消息数量推导安全性。
+
+### PMF 保护的是哪一部分
+
+PMF 的核心对象是已建立安全关联中的健壮管理帧，例如 Deauthentication、Disassociation 和部分 Action 帧。它不等于把所有管理帧加密，更不会隐藏普通 Beacon 和 Probe。对单播与组播管理帧的保护机制也不同：组播/广播健壮管理帧可通过 IGTK 与 BIP 提供完整性、来源验证和重放保护，**完整性保护不等于载荷保密**。这些边界可对照 [Cisco 的 802.11w 说明](https://www.cisco.com/c/en/us/td/docs/wireless/controller/9800/config-guide/b_wl_16_10_cg/802-11w.pdf)。
+
+`MFPC=1` 表示支持，`MFPR=1` 表示要求，最终还要结合终端的协商和安全关联状态。PMF 配置与射频可用性分开评估；高功率干扰、覆盖不足或接收链路故障，不会因为管理帧具备完整性校验就消失。
+
+## 空口捕获
+
+监听模式下，网卡会收下支持信道上的原始 802.11 帧，包括不是发给自己的。能不能收到取决于信道、距离和驱动，收到后能不能读出内容还要看加密和解密条件。所以：**能抓到包 ≠ 能看到明文 ≠ 存在安全问题。**
+
+空口捕获是被动分析，不需要连接目标 WiFi，也不需要密码。单块网卡一次只能听一个主信道：跳频适合发现热点，分析某个 AP 就得固定信道，否则容易漏帧。
+
+### 固定信道并留存结果
+
+下面以信道 11 为例，BSSID 替换成实验 AP 的地址；这组参数和后面伪AP 的信道 36 无关：
+
+```bash
+sudo airodump-ng \
+  --channel 11 \
+  --bssid AA:BB:CC:11:22:33 \
+  --write wifi_lab \
+  --output-format pcap,csv \
+  wlan0
+```
+
+`--write` 指定输出前缀，`pcap,csv` 同时存抓包和表格，`Ctrl+C` 结束后一般得到 `wifi_lab-01.cap` 和 `wifi_lab-01.csv`。现场的前缀和保存格式不同，只存了 pcap：
+
+![固定信道与 BSSID 后，airodump-ng 创建 cap 文件并显示捕获计数](/blog/wifi-security-notes/10-channel-capture.png)
+
+截图显示监听约 4 分钟、`Beacons=1600`、`#Data=0`、`RXQ=69`，固定在信道 11，安全摘要为 WPA2/CCMP/PSK。可直接支持的判断是：当前采样窗口内收到了目标 AP 的 Beacon，而界面的数据计数为零。
+
+**`#Data=0` 不能扩大为“CAP 中只有管理帧”。** 控制帧不属于这个数据计数，计数本身也不是完整协议清单；是否包含控制帧、特定终端的交换或可分析业务，需要打开 CAP 统计。RXQ 是工具计算的接收质量指标，不是信号强度百分比，也不直接等于业务丢包率。当前材料保留截图，未随附可逐帧复核的 CAP，因而不把界面计数写成文件级结论。
+
+### CAP 文件里包含什么
+
+监听抓包的每一帧前面通常有 Radiotap 头，记录接收信道、信号功率、速率等元数据，后面才是 802.11 MAC 帧。它由捕获链路添加，不是 AP 广播的内容，字段随驱动而异（见 [Wireshark 的 Radiotap 文档](https://www.wireshark.org/docs/dfref/r/radiotap.html)）。
+
+<WifiSecurityDiagram variant="frames" />
+
+MAC 头里有多组地址，含义要结合 To DS / From DS 位判断，BSSID 只是其中一种。FCS 是否交给抓包程序取决于网卡和驱动，看到校验错误先怀疑捕获链路，别直接归因于攻击。
+
+### 四个地址字段怎样对应通信方向
+
+802.11 要同时描述“这一跳谁发给谁”和“业务从谁到谁”。RA/TA 是当前无线跳的接收/发送地址，DA/SA 是对应的目的/源地址；DS 是分布系统。常见数据帧的简化映射如下，管理帧、控制帧和 Mesh 扩展另看各自格式：
+
+| To DS / From DS | Address 1 | Address 2 | Address 3 | Address 4 |
+| --- | --- | --- | --- | --- |
+| 0 / 0 | DA / RA | SA / TA | BSSID | 无 |
+| 1 / 0，STA → AP | BSSID / RA | STA / SA / TA | DA | 无 |
+| 0 / 1，AP → STA | STA / DA / RA | BSSID / TA | SA | 无 |
+| 1 / 1，常见四地址转发 | RA | TA | DA | SA |
+
+例如手机访问有线侧服务时，上行帧的无线接收者是 AP，但业务目的节点是服务端。因此，TA 是某 AP 并不表示应用内容由 AP 产生，RA 是 AP 也不表示业务终点就是 AP。地址映射可对照 [Cisco 的 802.11 帧解析](https://community.cisco.com/t5/networking-knowledge-base/802-11-frames-a-starter-guide-to-learn-wireless-sniffer-traces/ta-p/3110019)。
+
+### 在 Wireshark 中看什么？
+
+```bash
+wireshark wifi_lab-01.cap
+```
+
+常用显示过滤器（字段对照 [Wireshark 的 802.11 过滤器参考](https://www.wireshark.org/docs/dfref/w/wlan.html)）：
+
+| 目的 | 显示过滤器 |
+| --- | --- |
+| 指定基本服务集 | `wlan.bssid == aa:bb:cc:11:22:33` |
+| 管理帧 | `wlan.fc.type == 0` |
+| 控制帧 | `wlan.fc.type == 1` |
+| Beacon | `wlan.fc.type_subtype == 0x08` |
+| Probe Request / Response | `wlan.fc.type_subtype == 0x04` / `wlan.fc.type_subtype == 0x05` |
+| Authentication | `wlan.fc.type_subtype == 0x0b` |
+| Deauthentication / Disassociation | `wlan.fc.type_subtype == 0x0c` / `wlan.fc.type_subtype == 0x0a` |
+| 数据帧 | `wlan.fc.type == 2` |
+| EAPOL | `eapol` |
+| 未设置保护标志的数据帧 | `wlan.fc.type == 2 && wlan.fc.protected == 0` |
+
+管理帧负责发现、认证、关联和连接维护，控制帧（ACK、RTS、CTS）协调传输，数据帧承载上层通信。部分控制帧没有 BSSID 字段，只按 BSSID 过滤会漏帧。Beacon、Probe、ACK 和 EAPOL 都是正常通信，**出现这些帧本身不代表有漏洞**。
+
+`Protected = 1` 只表示设置了保护标志，还要结合密码套件分析；`Protected = 0` 也不一定有问题，密钥协商阶段的 EAPOL、Null Data 本来就可能未保护。过滤器没结果，只说明这次捕获里没有匹配的帧。
+
+<WifiSecurityDiagram variant="layers" />
+
+### 业务明文的判读条件
+
+“能不能看到明文”要分两层：链路层（WPA2/WPA3 保护设备与 AP 之间的通信）和应用层（HTTPS/TLS）。WPA2-Personal 常见的分析条件是已知口令和 SSID（或相应密钥）并抓到目标会话的握手，WPA3-SAE 则不能只靠口令和被动抓到的握手恢复明文（见 [Wireshark 的 802.11 解密说明](https://wiki.wireshark.org/HowToDecrypt802.11)）。这些只是分析前提，**这次实验没有做解密**。
+
+<WifiKnowledgePanel variant="verdict" label="业务明文 · 四种观察结果" rows={[
+  [
+    "只看到 Beacon、握手或受保护的数据帧",
+    "记录协议与保护状态，尚无业务泄露证据"
+  ],
+  [
+    "持有密钥完成链路解密后，看到 HTTP 明文",
+    "应用通信未加密；需要保留解密条件"
+  ],
+  [
+    "无需链路密钥即可从捕获中读取敏感业务内容",
+    "对应观察条件下存在泄露风险，保留帧号与数据类型"
+  ],
+  [
+    "链路解密后仍为 TLS 加密数据",
+    "业务内容继续受应用层保护"
+  ]
+]} />
+
+记录至少带上 BSSID、信道、时间段、解密条件、帧号和可见数据类型，分别说明持有会话密钥和不持有密钥时能够观察到的内容。
+
+### 把截图判断变成可复核的离线记录
+
+分析 CAP 时，先按协议范围导出字段，再回到特定帧核对，避免只凭 Wireshark 的单行摘要或终端计数作结论。下面三组命令只读本地 `wifi_lab-01.cap`，`-r` 指定文件、`-Y` 是显示过滤器，`-T fields` 按字段输出；选项见 [TShark 手册](https://www.wireshark.org/docs/man-pages/tshark.html)。示例不代表已经取得本次 CAP 的输出。
+
+先检查捕获文件实际包含哪些帧及地址方向：
+
+```bash
+tshark -r wifi_lab-01.cap -Y 'wlan' -T fields \
+  -E header=y -E separator=, -E quote=d \
+  -e frame.number -e frame.time_relative \
+  -e wlan.fc.type_subtype -e wlan.fc.tods -e wlan.fc.fromds \
+  -e wlan.ta -e wlan.ra -e wlan.bssid \
+  -e wlan.fc.protected -e wlan.fc.retry -e wlan.seq
+```
+
+再对照安全能力和关联状态。字段为空可能只是该帧不承载相应信息，不能把所有空值当作缺少安全机制：
+
+```bash
+tshark -r wifi_lab-01.cap \
+  -Y 'wlan.fc.type_subtype == 0x08 || wlan.fc.type_subtype == 0x00 || wlan.fc.type_subtype == 0x01' \
+  -T fields -E header=y -E separator=, -E quote=d \
+  -e frame.number -e wlan.fc.type_subtype -e wlan.bssid \
+  -e wlan.rsn.pcs.type -e wlan.rsn.akms.type \
+  -e wlan.rsn.capabilities.mfpc -e wlan.rsn.capabilities.mfpr \
+  -e wlan.fixed.status_code
+```
+
+最后确认是否存在可配对的 EAPOL-Key；`msgnr` 是解析器对消息的识别，仍需结合方向和会话上下文。这里采用当前的 `wlan_rsna_eapol` 字段，而不是旧教程中已经迁移的部分 `eapol.keydes.*` 字段：
+
+```bash
+tshark -r wifi_lab-01.cap -Y 'eapol.type == 3' -T fields \
+  -E header=y -E separator=, -E quote=d \
+  -e frame.number -e wlan.ta -e wlan.ra \
+  -e wlan_rsna_eapol.keydes.msgnr -e eapol.keydes.replay_counter \
+  -e wlan_rsna_eapol.keydes.key_info.key_ack \
+  -e wlan_rsna_eapol.keydes.key_info.key_mic \
+  -e wlan_rsna_eapol.keydes.key_info.install
+```
+
+RSNA EAPOL-Key 字段可查 [Wireshark 参考](https://www.wireshark.org/docs/dfref/w/wlan_rsna_eapol.html)。若怀疑字段版本差异，先用 `tshark -G fields` 查本机支持情况。取证时保留 CAP 原件和 SHA256，导出表格写入另一文件；报告引用帧号，并记录工具版本、过滤器及是否启用解密。
+
+<span id="模拟-ap-实测" aria-hidden="true"></span>
+
+## 伪AP 实测
+
+SSID 不唯一，两台 AP 可以广播同一个名字，所以不能凭 WiFi 名称判断网络真假。这一节在隔离环境里放一个测试热点，看手机能不能发现、关联。Rogue AP 指未经管理者认可的 AP；Evil Twin 更进一步，模仿已有网络的身份。
+
+实验使用独立测试 SSID `Lab_WiFi_Test`，没有仿冒任何现有网络，只观察了热点广播、手机发现和终端关联；同名仿冒检测需要合法 AP 做对照。**AP 能被扫到不等于攻击成功，手机连上开放 AP 也不等于认证被破解。**
+
+### 启动实验热点
+
+`airbase-ng` 在监听接口上构建伪AP，`hostapd` 通常经 `nl80211` 用真正的 AP 模式，选哪个要看驱动支持什么；同一块射频兼任 AP 和监听不稳，条件允许就用两块网卡。下面是截图里的命令：
+
+```bash
+sudo airbase-ng \
+  -a 02:11:22:33:44:55 \
+  --essid Lab_WiFi_Test \
+  -c 36 \
+  wlan0
+```
+
+`-a` 指定实验 BSSID，信道 36 需要设备、驱动和当地频谱规则都支持（参数见 [Airbase-ng 官方文档](https://www.aircrack-ng.org/doku.php?id=airbase-ng)）。这次只建了开放热点，没配置业务转发。
+
+![airbase-ng 启动实验 AP，日志显示创建 at0 并开始广播](/blog/wifi-security-notes/11-lab-ap-start.png)
+
+`Access Point ... started` 之后，手机的 WLAN 列表里就出现了这个名字：
+
+![手机 WLAN 列表出现 Lab_WiFi_Test 测试网络](/blog/wifi-security-notes/12-phone-discovery.png)
+
+详情里“安全性”是“无”，也就是开放网络；“自动连接”开着，实验后要关掉：
+
+![Lab_WiFi_Test 的手机网络详情与自动连接设置](/blog/wifi-security-notes/13-phone-network-details.png)
+
+手动点连接后，`airbase-ng` 里出现了 `associated (unencrypted)`：
+
+![airbase-ng 输出测试终端与开放实验 AP 的关联日志](/blog/wifi-security-notes/14-client-association.png)
+
+日志说明伪AP 处理了该终端的关联请求；手机详情截图仍显示连接过程，不能据此确认 IP 已分配。重复的同一终端日志也不是多个客户端，更不是连续稳定会话的计数。
+
+进一步定位要把假设拆开，而不是直接归因为“手机被骗”或“网卡不支持”：
+
+<WifiKnowledgePanel variant="hypotheses" label="重复关联日志 · 四条排查分支" rows={[
+  [
+    "同一请求在空口重传",
+    "终端地址、Sequence Number、Retry 位与时间间隔",
+    "同一序号结合重传标志，可支持重传解释"
+  ],
+  [
+    "终端重新发起关联",
+    "完整认证/关联交换、不同序号、前后断连事件",
+    "判断是否重复开启连接过程，而非简单重发"
+  ],
+  [
+    "AP 发出响应，但终端未完成预期状态转换",
+    "Association Response 的状态码、双向帧及终端状态",
+    "AP 侧打印一行日志不足以证明双端状态一致"
+  ],
+  [
+    "无线关联后等待地址配置",
+    "空口关联成功记录、DHCP 或其他 IP 配置记录",
+    "分开链路失败和 IP 配置停滞"
+  ]
+]} />
+
+序号判断还要结合帧子类型、发送者、时间窗口，以及 QoS 流量的 TID 等上下文；序号会回绕，不能在整个文件里按一个数字粗暴去重。当前截图没有这些配套帧，所以上表保留为排查路径，不指定其中某项就是实际原因。
+
+<WifiSecurityDiagram variant="evidence" />
+
+### 平台告警需要另外取证
+
+平台部分没有配套截图和事件日志，以下为独立验证设计。WIDS/WIPS（无线入侵检测/防御系统）和 WLC（无线控制器）要单独建对照记录：先登记合法 AP 的 SSID、BSSID、安全模式和位置，再在约定范围内开启测试 AP，核对平台记录的 BSSID、首次发现时间、告警时间和风险分类。
+
+检测设计至少包含一个合法 AP 基线、一个固定配置的测试 AP 和停止测试后的恢复阶段。测试窗口内尽量保持位置、发射配置和观察时长一致；先核对传感器是否覆盖对应频段，再判断规则是否触发。平台未告警时，传感器没听到、采样错过和听到后未匹配规则，是三种不同问题。
+
+“发现”“告警”“响应”和终端恢复分别记录时间与结果。检测时延按“首次发现时间 − 测试 AP 开启时间”计算，并注明时钟同步与观察窗口；如果只有人工截图时间，时延精度也受截图时点限制。阻断效果则按处置动作前后的终端状态单独复测，不从告警条目推导。
+
+## AP DDoS 与可用性分析
+
+WiFi 断网并不自动等于 AP 遭到 DDoS。DoS 指服务不可用，DDoS 还要求存在分布式来源；单设备制造的大量帧仍可能只是 DoS。空口里出现许多源 MAC 也不能直接证明来源分布，因为地址可以伪造。判断对象应明确到无线信道、AP、控制器、认证后端或上联链路，而不是笼统写“WiFi 被打掉”。
+
+### 先定位耗尽的是哪一层资源
+
+<WifiKnowledgePanel variant="availability" label="可用性故障 · 四层定位" rows={[
+  ["射频与空口竞争", "干扰或大量占用使有效通信时间减少；普通拥塞、隐藏节点和覆盖问题也可能产生类似现象。", "信道利用率、重传、终端信号、频谱数据；普通监听网卡不能完整识别非 WiFi 干扰。"],
+  ["802.11 管理与关联状态", "伪造断连消息可能破坏未受相应保护的连接；认证、关联请求异常还可能消耗处理资源。", "帧子类型与时间分布、重传标志、状态/原因码、PMF 协商以及终端实际断连记录。"],
+  ["AP / 控制器 / 认证后端", "会话表、CPU 或 RADIUS 处理能力成为瓶颈时，可能先表现为新终端接入失败。", "CPU、内存、队列、会话数、认证超时与后端日志；已接入终端和新接入终端分别观察。"],
+  ["IP 服务与上联", "DHCP、DNS、网关或上联服务异常，也会表现为已连接但不能访问业务。", "地址租约、网关可达性、DNS 与业务探测；与无线关联状态分开记录。"]
+]} />
+
+这些是机制分类，不是对本次截图的攻击归因。认证洪泛、管理帧异常与后端资源耗尽可对照 [Cisco wIPS 的 DoS 分类](https://www.cisco.com/c/en/us/td/docs/wireless/mse/7-6/MSE_wIPS/MSE_wIPS_7_6/MSE_wIPS_7_5_appendix_0110.pdf)；其中旧产品的告警名称和阈值不能直接当成所有 AP 的通用标准。
+
+**Deauthentication 不等于 DDoS，也不等于密码破解。** 它是解除认证的管理帧；Disassociation 解除关联。正常漫游、主动断开和故障恢复也会产生这些帧。PMF 在安全关联建立后保护相应的健壮管理帧，降低伪造断连消息被接受的风险；它不保证空口容量、设备计算资源或上联服务永不耗尽。
+
+### 用时间轴证明影响，而不是只数异常帧
+
+离线筛出已有捕获中的断连帧，保留帧号、时间、收发地址、原因码与重传上下文：
+
+```bash
+tshark -r wifi_lab-01.cap \
+  -Y 'wlan.bssid == 02:11:22:33:44:55 && (wlan.fc.type_subtype == 0x0c || wlan.fc.type_subtype == 0x0a)' \
+  -T fields -E header=y -E separator=, -E quote=d \
+  -e frame.number -e frame.time_relative -e wlan.ta -e wlan.ra \
+  -e wlan.fc.type_subtype -e wlan.fixed.reason_code \
+  -e wlan.fc.protected -e wlan.fc.retry -e wlan.seq
+```
+
+BSSID 是示例，需要替换为被观察 AP 的地址；字段见 [Wireshark 802.11 参考](https://www.wireshark.org/docs/dfref/w/wlan.html)。受保护且未解密的帧可能读不到原因码，过滤结果为空也可能源于信道错位或漏捕。`Protected=1` 只表示标志被设置，不等于分析端已经验证 MIC，更不能据此认定接收端接受了该帧。
+
+固定同一信道、相同采样位置和时间窗口，分别记录基线、异常阶段、恢复阶段。每秒帧数是**传感器接收到的帧数**，不是发送端总量；结合发送者、子类型、序号和 Retry 位区分重传，不把 MAC 数量当作物理发射器数量。
+
+可用性指标同时覆盖三个面：
+
+- **连接面**：成功关联次数 / 有效接入尝试次数，并记录认证与密钥建立是否完成；只统计关联日志容易漏掉后续失败。
+- **业务面**：业务探测成功率、时延分位数和丢包；注明探测间隔、样本量及目标服务，别把 DNS 故障当作无线断连。
+- **恢复面**：从异常结束到预先定义的连续正常窗口开始的时间；“正常”可以定义为连接与业务探测同时恢复，但需事先写清窗口长度和允许失败数。
+
+治理措施跟随瓶颈选择：健壮管理帧问题核对 PMF 的实际协商；接入处理异常核对厂商支持的限速、资源保护与固件修复；DHCP、DNS 和认证后端分别做容量与隔离检查；射频问题结合频谱和信道规划定位。阈值以基线、设备能力和业务容忍度确定，不杜撰一个“每秒多少帧必然被攻击”的固定数字。本次没有断连攻击或容量测试记录，此节保留为分析与验收方法。
+
+## WiFi 密码爆破与口令强度审计
+
+“WiFi 密码爆破”需要先说明验证的是哪一种凭据。WPA2-PSK 常见的是**离线候选口令验证**：已有合适的握手材料后，逐个计算候选并检查是否与记录匹配，不需要每次向 AP 登录。它针对弱口令，不是直接穷举 AES-CCMP 的会话密钥。
+
+### WPA2-PSK 为什么能离线验证
+
+对常见的 8～63 字符口令，WPA2-Personal 使用口令与 SSID 派生 256 位 PSK，并作为 PMK 使用。其参数可对照 [wpa_supplicant 的 wpa_passphrase 实现](https://android.googlesource.com/platform/external/wpa_supplicant_8/+/refs/heads/main/wpa_supplicant/wpa_passphrase.c)：
+
+```text
+PMK = PBKDF2-HMAC-SHA1(passphrase, SSID, 4096 iterations, 32 bytes)
+```
+
+64 位十六进制形式可以直接表示 256 位 PSK，不能再按上面的口令路径重复派生。SSID 是盐而不是秘密；相同口令用于不同 SSID 时，派生结果不同。仅拿到 SSID 和 Beacon 仍不足以判断候选是否正确，还需要目标连接的验证材料。
+
+<WifiKnowledgePanel variant="password" label="离线候选验证 · WPA2-PSK" rows={[
+  ["输入与会话配对", "确认 SSID、AP/STA 地址、Nonce、带 MIC 的 EAPOL-Key 消息及对应会话上下文。", "不把不同终端、不同连接或重传拼成一轮握手；只有 M1 通常不足以做 MIC 验证。"],
+  ["候选 → PMK → PTK", "对每个候选派生 PMK，再用双方地址和本轮随机数派生 PTK，取相应的完整性校验密钥。", "计算路径必须匹配 AKM、密钥描述符与协商算法；不能对所有 WPA 变体硬套同一个 MIC 算法。"],
+  ["重算 MIC 并比对", "按协议处理 MIC 字段后重算消息完整性码，与捕获值比对；匹配说明候选与验证材料一致。", "MIC 不是口令本身；可验证的材料也不一定必须是四条消息各一条，取决于工具支持的有效组合。"]
+]} />
+
+某些 WPA2 场景还存在基于 PMKID 的验证路径，但 AP 是否提供、采用哪种 AKM、工具是否支持都要另查，不能写成“任何 AP 都能直接取得”。本节以 EAPOL-Key 材料为例；工具接受的消息组合参见 [Aircrack-ng 文档](https://www.aircrack-ng.org/doku.php?id=aircrack-ng)。
+
+### 一个可核对的离线审计流程
+
+在自有实验 AP 上设置已知测试口令，固定信道捕获测试手机正常连接产生的握手，保存 CAP 和哈希。用一个很小、预先确定的候选集做阳性与阴性对照：阳性集合包含测试口令，阴性集合不包含它；两次保持同一份捕获与工具参数。这样才能区分材料无效、参数不匹配与候选未命中。
+
+下面只读取已有实验文件，不进行无线发包；候选是演示值，并不代表当前热点的真实密码：
+
+```bash
+printf '%s\n' 'LabOnly-Example-01' 'LabOnly-Example-02' > lab-candidates.txt
+aircrack-ng -a 2 -b 02:11:22:33:44:55 \
+  -w lab-candidates.txt wifi_lab-01.cap
+```
+
+`-a 2` 选择 WPA/WPA2-PSK 路径，`-b` 限定目标 BSSID，`-w` 指定候选文件。CAP 必须来自对应的加密实验网络；前一节的开放伪AP 没有 WPA2-PSK 握手，不能直接拿来做这个实验。当前材料只有截图，没有可复核的实际握手 CAP，因此这里不写“已跑出密码”或虚构运行时长。
+
+结果需要分三类解读。**命中**证明该候选可通过对应材料的验证；**候选耗尽但未命中**只排除了这一批候选；**没有可用握手或工具报错**则不能对口令强度作结论。记录工具版本、CAP 哈希、候选集哈希与数量、实际验证速率、运行时间及工具状态，报告不必公开真实口令。
+
+### 强度、认证方式与防护边界
+
+若口令确实由大小为 `A` 的字符表独立、均匀生成，长度为 `L`，穷举空间为 `N = A^L`；固定验证速率 `r` 下，平均尝试时间约为 `N / (2r)`。这只是模型，不适用于有结构的人选口令；词典、复用和规律会改变候选顺序，GPU 型号或网上截图的速度也不能直接当成本机实测。
+
+- **WPA2-PSK**：使用独立随机长口令，避免复用，泄露后轮换；离线猜测不访问 AP，登录失败限速不能阻止对既有捕获的计算。PMF 也不会把弱 PSK 变强。
+- **WPA3-SAE**：不能套用 WPA2 的被动握手候选验证路径；已知口令加被动四次握手也不足以恢复会话 PMK。过渡模式需核对终端究竟走 SAE 还是 WPA2 兼容路径。这里讨论协议条件，不承诺实现没有漏洞。
+- **WPS**：PIN/PBC 是另一条配置与接入路径，不是 WPA2 口令字典的别称。按需要关闭 WPS，并分别核对支持方式、锁定策略与固件状态。
+- **Enterprise**：具体 EAP 方法、服务端证书校验和终端配置决定信任边界；不能把个人版的 PSK 字典命令用于所有企业认证。支持条件具备时可采用证书型认证，仍需管理证书与终端配置。
+
+WPA3 会话解密条件见 [Wireshark 的 WPA3 说明](https://wiki.wireshark.org/HowToDecrypt802.11#WPA3_Per-Connection_Decryption)。口令审计与业务解密是两个结论：即使确认了某个 WPA2 口令，也还要具备对应会话材料；无线链路解密成功后，TLS 仍可能继续保护应用内容。
+
+## 检查重点与实验收尾
+
+复核重点包括**设备/驱动身份、固定信道捕获、RSN 与实际协商、业务明文的可见条件、终端与平台结果、可用性时间轴和口令审计边界**。截图用来说明，CAP 和日志用来复核。
+
+| 项目 | 已记录的现象 | 复核所需材料 |
+| --- | --- | --- |
+| 热点扫描 | 已取得 AP 和终端列表截图 | 留存同一时间段的 CSV 与环境信息 |
+| 加密识别 | 截图包含 WPA2 / CCMP / PSK | 核对 RSN、PMF、WPS 及实际配置 |
+| 空口捕获 | 截图显示已创建捕获文件 | 留存 CAP 原件、哈希及帧号分析 |
+| 伪AP | 已有启动、手机发现与关联截图 | 记录 IP 获取、对照组与恢复情况 |
+| 平台检测 / 阻断 | 独立验证项 | 记录告警事件、响应动作与终端复测 |
+| AP DDoS / 可用性 | 本文补充分析方法，暂无实测数据 | 留存 CAP、资源指标、业务探测及恢复时间轴 |
+| 口令强度审计 | 本文补充离线验证流程，暂无实际握手 CAP | 已知口令对照、候选集范围、工具状态与哈希 |
+
+### 常见异常的定位顺序
+
+| 现象 | 先检查什么 | 定位依据 |
+| --- | --- | --- |
+| `lsusb` 有设备，`iw dev` 无接口 | USB 直通、驱动绑定、固件加载 | `lsusb -t` 与内核日志 |
+| 切换监听失败，或很快回到 managed | 射频开关状态、模式支持、连接管理进程 | `rfkill list`、`iw list`、`airmon-ng check` |
+| 能看到 2.4 GHz，扫描不到 5 GHz | 扫描频段、硬件频率列表、目标信道 | `--band abg`、`iw list` 与 AP 配置 |
+| 能看到 AP，但目标数据帧很少 | 跳频、目标业务是否存在、信号及接收条件 | 固定信道后对照同一时间窗口 |
+| 抓包中断或网卡反复重连 | USB 供电、控制器、线材与驱动错误 | `journalctl -k -b` 中的 reset/firmware 记录 |
+
+`airmon-ng check` 会列出可能干扰监听的进程（说明见[官方文档](https://www.aircrack-ng.org/doku.php?id=airmon-ng)）；停进程前先确认它管哪个接口，实验后按记录恢复被停的网络管理服务。
+
+### 恢复接口与连接
+
+实验结束先停掉 `airbase-ng` 和抓包程序，再让测试手机忘记这个网络（自动连接也要关）。网卡模式是手动切过的，按原接口切回来：
+
+```bash
+sudo ip link set wlan0 down
+sudo iw dev wlan0 set type managed
+sudo ip link set wlan0 up
+iw dev
+```
+
+输出应为 `type managed`。再恢复网络管理服务并确认网络连接正常，只看命令有没有报错不够。复测时按 BSSID、信道和时间轴把终端日志、CAP 文件和平台事件对起来。
+
+## 补充图解
+
+<details>
+<summary>展开无线概念与信号强度图解</summary>
+
+![无线安全概念总览](/blog/wifi-security-notes/01-wireless-concepts.png)
+
+![被动扫描与主动扫描图解](/blog/wifi-security-notes/02-passive-active-scanning.png)
+
+![AP 与手机、电脑、平板的关系](/blog/wifi-security-notes/03-ap-station-topology.png)
+
+![同一 SSID 对应多个 BSSID](/blog/wifi-security-notes/04-ssid-bssid.png)
+
+![接收信号强度示意，条长不代表线性功率比例](/blog/wifi-security-notes/06-signal-strength.png)
+
+信号强度图只用于比较方向，不是本次测量统计，也不表示功率的线性比例。
+
+</details>

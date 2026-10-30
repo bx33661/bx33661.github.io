@@ -1,0 +1,663 @@
+---
+import { wifiCopy } from "@/i18n/wifi";
+const isEnglish = /^\/en(?:\/|$)/.test(Astro.url.pathname);
+const t = (text: string) => wifiCopy(isEnglish, text);
+interface Props {
+  variant:
+    | "scope"
+    | "selection"
+    | "fieldnotes"
+    | "glossary"
+    | "spectrum"
+    | "timeline"
+    | "exchange"
+    | "verdict"
+    | "hypotheses"
+    | "availability"
+    | "password";
+  label: string;
+  rows: string[][];
+}
+const { variant, label, rows } = Astro.props;
+const index = (i: number) => String(i + 1).padStart(2, "0");
+const isPath = variant === "timeline" || variant === "password";
+---
+
+<section
+  class:list={["wifi-knowledge", "not-prose", `wk-${variant}`]}
+  data-wifi-locale={isEnglish ? "en" : "zh-CN"}
+  aria-label={label}
+>
+  <div class="wk-caption">
+    <span class="wk-caption-line"></span><strong>{label}</strong>
+  </div>
+  {
+    variant === "selection" ? (
+      <div class="wk-checklist">
+        <p class="wk-hint">{t("六项独立验收 · 展开查看常见误判")}</p>
+        {rows.map(([title, detail, note], i) => (
+          <details class="wk-check" open={i === 0}>
+            <summary>
+              <span class="wk-number">{index(i)}</span>
+              <span class="wk-check-copy">
+                <strong>{title}</strong>
+                <span>{detail}</span>
+              </span>
+              <span class="wk-toggle" aria-hidden="true" />
+            </summary>
+            <p class="wk-caution">
+              <span>{t("避免误判")}</span>
+              {note}
+            </p>
+          </details>
+        ))}
+      </div>
+    ) : isPath ? (
+      <ol class="wk-path">
+        {rows.map(([title, detail, note], i) => (
+          <li>
+            <span class="wk-stop" aria-hidden="true">
+              {index(i)}
+            </span>
+            <div>
+              <strong>{title}</strong>
+              <p class="wk-path-detail">{detail}</p>
+              <p class="wk-footnote">{note}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    ) : variant === "glossary" ? (
+      <dl class="wk-definitions">
+        {rows.map(([title, detail, note], i) => (
+          <div>
+            <span class="wk-number" aria-hidden="true">
+              {index(i)}
+            </span>
+            <dt>{title}</dt>
+            <dd>
+              {detail}
+              <span class="wk-footnote">
+                {t("核对：")}
+                {note}
+              </span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    ) : variant === "spectrum" ? (
+      <ul class="wk-modes">
+        {rows.map(([title, detail, note], i) => (
+          <li>
+            <span class="wk-mode-mark" aria-hidden="true">
+              {["OPEN", "OWE", "LEGACY", "LEGACY", "PSK", "SAE"][i]}
+            </span>
+            <div>
+              <strong>{title}</strong>
+              <p>{detail}</p>
+              <p class="wk-footnote">
+                {t("核对：")}
+                {note}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : variant === "exchange" ? (
+      <dl class="wk-messages">
+        {rows.map(([title, detail, note], i) => (
+          <div class:list={["wk-message", { "wk-reverse": i % 2 === 1 }]}>
+            <dt>{title}</dt>
+            <dd>
+              <span class="wk-direction">
+                {i % 2 === 0 ? "AP → STA" : "STA → AP"}
+              </span>
+              <strong>
+                {detail.replace(/^(AP → STA|STA → AP)[，,]\s*/, "")}
+              </strong>
+              <span class="wk-footnote">{note}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    ) : variant === "verdict" ? (
+      <ol class="wk-decisions">
+        {rows.map(([title, detail], i) => (
+          <li>
+            <span class="wk-verdict-label">
+              {
+                [
+                  t("尚无泄露证据"),
+                  t("应用未加密"),
+                  t("可见内容构成风险"),
+                  t("应用保护仍存在"),
+                ][i]
+              }
+            </span>
+            <strong>{title}</strong>
+            <p>{detail}</p>
+          </li>
+        ))}
+      </ol>
+    ) : variant === "hypotheses" ? (
+      <ol class="wk-branches">
+        {rows.map(([title, detail, note], i) => (
+          <li>
+            <span class="wk-branch-mark">H{index(i)}</span>
+            <div>
+              <strong>{title}</strong>
+              <p>
+                <span class="wk-inline-label">{t("取证")}</span>
+                {detail}
+              </p>
+              <p class="wk-footnote">
+                {t("判别：")}
+                {note}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    ) : variant === "availability" ? (
+      <ol class="wk-layer-list">
+        {rows.map(([title, detail, note], i) => (
+          <li>
+            <span class="wk-layer">{index(i)}</span>
+            <div>
+              <strong>{title}</strong>
+              <p>{detail}</p>
+              <p class="wk-footnote">
+                {t("观测：")}
+                {note}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <dl class="wk-notes">
+        {rows.map(([title, detail, note], i) => (
+          <div>
+            <dt>
+              <span class="wk-number">{index(i)}</span>
+              {title}
+            </dt>
+            <dd>
+              {detail}
+              <span class="wk-footnote">{note}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+</section>
+<style>
+  .wifi-knowledge {
+    --wk-ink: #273c40;
+    --wk-muted: #53666a;
+    --wk-rule: #bdceca;
+    --wk-accent: #236b60;
+    --wk-soft: #edf3ee;
+    --wk-warm: #88552e;
+    --wk-paper: #f8faf7;
+    color: var(--wk-ink);
+    margin: 2rem 0 2.6rem;
+    font-size: 0.94rem;
+    line-height: 1.75;
+    isolation: isolate;
+  }
+  :global([data-theme="dark"]) .wifi-knowledge,
+  :global(.dark) .wifi-knowledge {
+    --wk-ink: #e0e8e4;
+    --wk-muted: #abbdb6;
+    --wk-rule: #435950;
+    --wk-accent: #a4d4be;
+    --wk-soft: #23352e;
+    --wk-warm: #edbe94;
+    --wk-paper: #1b2822;
+  }
+  .wifi-knowledge * {
+    box-sizing: border-box;
+  }
+  .wifi-knowledge p,
+  .wifi-knowledge dl,
+  .wifi-knowledge dd,
+  .wifi-knowledge ol,
+  .wifi-knowledge ul {
+    margin: 0;
+  }
+  .wifi-knowledge ol,
+  .wifi-knowledge ul {
+    list-style: none;
+    padding: 0;
+  }
+  .wifi-knowledge strong,
+  .wifi-knowledge dt {
+    font-weight: 650;
+  }
+  .wifi-knowledge p,
+  .wifi-knowledge dd,
+  .wifi-knowledge strong {
+    overflow-wrap: anywhere;
+  }
+  .wk-caption {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 1.15rem;
+    font-size: 0.87rem;
+    letter-spacing: 0.03em;
+  }
+  .wk-caption-line {
+    width: 1.4rem;
+    height: 3px;
+    background: var(--wk-accent);
+  }
+  .wk-number,
+  .wk-stop,
+  .wk-layer,
+  .wk-branch-mark,
+  .wk-direction,
+  .wk-mode-mark {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .wk-number {
+    color: var(--wk-accent);
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
+  }
+  .wk-footnote {
+    display: block;
+    color: var(--wk-muted);
+    font-size: 0.85rem;
+    margin-top: 0.35rem !important;
+  }
+  .wk-hint {
+    font-size: 0.78rem;
+    color: var(--wk-muted);
+    padding: 0 0 0.9rem 3.3rem;
+  }
+  .wk-checklist {
+    border-block: 1px solid var(--wk-rule);
+    padding-top: 1rem;
+  }
+  .wk-check {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--wk-rule);
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+  }
+  .wk-check summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    list-style: none;
+    padding: 1.1rem 0.5rem;
+    transition: background-color 0.18s ease;
+  }
+  .wk-check summary::-webkit-details-marker {
+    display: none;
+  }
+  .wk-check summary::before,
+  .wk-check summary::after {
+    display: none !important;
+  }
+  .wk-check summary {
+    font-family: inherit;
+    font-weight: 400;
+    color: var(--wk-ink);
+  }
+  .wk-check,
+  .wk-check[open] {
+    box-shadow: none !important;
+    backdrop-filter: none;
+    user-select: text;
+  }
+  .wk-check .wk-caution {
+    display: block !important;
+  }
+  .wk-check summary:hover {
+    background: var(--wk-soft);
+  }
+  .wk-check summary:focus-visible {
+    outline: 2px solid var(--wk-accent);
+    outline-offset: -2px;
+  }
+  .wk-check summary > .wk-number {
+    width: 1.8rem;
+    flex-shrink: 0;
+  }
+  .wk-check-copy {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: 0.8rem;
+    flex: 1;
+    align-items: baseline;
+  }
+  .wk-check-copy > span {
+    color: var(--wk-muted);
+    font-size: 0.86rem;
+  }
+  .wk-toggle {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-right: 1.5px solid var(--wk-accent);
+    border-bottom: 1.5px solid var(--wk-accent);
+    transform: rotate(45deg);
+    margin: 0 0.5rem 0.3rem;
+    transition: transform 0.18s ease;
+    flex-shrink: 0;
+  }
+  .wk-check[open] .wk-toggle {
+    transform: rotate(225deg);
+    margin-top: 0.4rem;
+  }
+  .wk-caution {
+    margin: 0 1rem 1rem 3.3rem !important;
+    padding: 0.7rem 1rem;
+    border-left: 2px solid var(--wk-warm);
+    background: var(--wk-paper);
+    font-size: 0.86rem;
+  }
+  .wk-caution > span {
+    font-size: 0.72rem;
+    color: var(--wk-warm);
+    display: block;
+    font-weight: 650;
+    margin-bottom: 0.2rem;
+  }
+  .wk-notes > div {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: 1.4rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--wk-rule);
+  }
+  .wk-notes dt .wk-number {
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .wk-scope .wk-notes > div:first-child {
+    border-top: 1px solid var(--wk-rule);
+  }
+  .wk-fieldnotes .wk-notes {
+    padding-left: 1rem;
+    border-left: 3px solid var(--wk-accent);
+  }
+  .wk-fieldnotes .wk-notes > div:last-child {
+    border: 0;
+  }
+  .wk-definitions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.4rem;
+  }
+  .wk-definitions > div {
+    padding-top: 1rem;
+    border-top: 2px solid var(--wk-accent);
+  }
+  .wk-definitions dt {
+    font-size: 1rem;
+    margin: 0.5rem 0 0.8rem;
+  }
+  .wk-definitions dd {
+    font-size: 0.88rem;
+  }
+  .wk-definitions .wk-footnote {
+    padding-top: 0.7rem;
+  }
+  .wk-modes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 1.5rem;
+  }
+  .wk-modes li {
+    display: flex;
+    gap: 0.9rem;
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--wk-rule);
+  }
+  .wk-mode-mark {
+    writing-mode: vertical-rl;
+    color: var(--wk-accent);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    border-left: 2px solid var(--wk-rule);
+    padding-left: 0.4rem;
+  }
+  .wk-modes p {
+    font-size: 0.88rem;
+  }
+  .wk-path {
+    padding-left: 0.3rem !important;
+  }
+  .wk-path li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 1rem;
+    padding-bottom: 1.6rem;
+  }
+  .wk-path li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 1.15rem;
+    top: 2.4rem;
+    bottom: 0.25rem;
+    border-left: 1px solid var(--wk-rule);
+  }
+  .wk-stop {
+    display: grid;
+    place-items: center;
+    width: 2.3rem;
+    height: 2.3rem;
+    border: 1px solid var(--wk-accent);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    color: var(--wk-accent);
+    background: var(--wk-paper);
+  }
+  .wk-path strong {
+    font-size: 1rem;
+  }
+  .wk-path-detail {
+    font-size: 0.89rem;
+    margin-top: 0.3rem !important;
+  }
+  .wk-password {
+    padding: 1.3rem;
+    background: var(--wk-paper);
+    border-left: 3px solid var(--wk-accent);
+  }
+  .wk-messages {
+    border-block: 1px solid var(--wk-rule);
+  }
+  .wk-message {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1.3rem;
+    padding: 1rem 0.7rem;
+  }
+  .wk-message:not(:last-child) {
+    border-bottom: 1px dashed var(--wk-rule);
+  }
+  .wk-message dt {
+    font-family: ui-monospace, monospace;
+    color: var(--wk-accent);
+    padding-top: 0.2rem;
+  }
+  .wk-message dd {
+    border-left: 2px solid var(--wk-accent);
+    padding-left: 1rem;
+  }
+  .wk-reverse dd {
+    border-color: var(--wk-warm);
+    margin-left: 1.5rem;
+  }
+  .wk-direction {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--wk-muted);
+    letter-spacing: 0.04em;
+  }
+  .wk-message dd strong {
+    font-size: 0.9rem;
+  }
+  .wk-decisions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+  .wk-decisions li {
+    padding: 1rem 0 0 1rem;
+    border-left: 2px solid var(--wk-rule);
+  }
+  .wk-verdict-label {
+    display: block;
+    color: var(--wk-accent);
+    font-size: 0.74rem;
+    font-weight: 650;
+    margin-bottom: 0.65rem;
+  }
+  .wk-decisions strong {
+    font-size: 0.92rem;
+  }
+  .wk-decisions p {
+    font-size: 0.85rem;
+    color: var(--wk-muted);
+    margin-top: 0.5rem;
+  }
+  .wk-branches li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1rem;
+    padding: 1.1rem 0;
+  }
+  .wk-branches li + li {
+    border-top: 1px dashed var(--wk-rule);
+  }
+  .wk-branch-mark {
+    color: var(--wk-warm);
+    font-size: 0.76rem;
+    padding-top: 0.2rem;
+  }
+  .wk-branches p {
+    font-size: 0.88rem;
+    margin-top: 0.4rem;
+  }
+  .wk-inline-label {
+    font-size: 0.7rem;
+    color: var(--wk-accent);
+    margin-right: 0.7rem;
+  }
+  .wk-layer-list {
+    border-left: 1px solid var(--wk-rule);
+    margin-left: 0.9rem !important;
+  }
+  .wk-layer-list li {
+    display: flex;
+    gap: 1rem;
+    padding: 0 0 1.3rem;
+  }
+  .wk-layer {
+    align-self: flex-start;
+    position: relative;
+    left: -0.9rem;
+    padding: 0.15rem 0.4rem;
+    border: 1px solid var(--wk-rule);
+    background: var(--wk-paper);
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .wk-layer-list li > div {
+    padding-right: 0.2rem;
+  }
+  .wk-availability p {
+    font-size: 0.89rem;
+  }
+  @media (max-width: 600px) {
+    .wifi-knowledge {
+      font-size: 0.9rem;
+    }
+    .wk-check-copy {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+    .wk-check summary {
+      gap: 0.6rem;
+      padding: 1rem 0.25rem;
+    }
+    .wk-check summary > .wk-number {
+      width: 1.4rem;
+    }
+    .wk-caution {
+      margin-left: 2.3rem !important;
+    }
+    .wk-hint {
+      padding-left: 2.3rem;
+    }
+    .wk-notes > div {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .wk-notes dt .wk-number {
+      display: inline;
+      margin-right: 0.7rem;
+    }
+    .wk-definitions {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .wk-definitions dt {
+      margin: 0.35rem 0;
+    }
+    .wk-definitions .wk-number {
+      float: right;
+    }
+    .wk-definitions .wk-footnote {
+      padding-top: 0;
+    }
+    .wk-modes,
+    .wk-decisions {
+      grid-template-columns: 1fr;
+    }
+    .wk-path li {
+      gap: 0.65rem;
+    }
+    .wk-message {
+      gap: 0.5rem;
+      padding-inline: 0;
+    }
+    .wk-reverse dd {
+      margin-left: 0.5rem;
+    }
+    .wk-password {
+      padding: 1rem 0.75rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wk-check summary,
+    .wk-toggle {
+      transition: none;
+    }
+  }
+  @media print {
+    .wifi-knowledge {
+      break-inside: avoid;
+    }
+    .wk-check .wk-caution {
+      display: block !important;
+    }
+    .wk-check summary {
+      cursor: default;
+    }
+    .wk-toggle {
+      display: none;
+    }
+  }
+</style>

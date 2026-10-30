@@ -1,0 +1,112 @@
+/** Shared server-rendered copy for the WiFi article's diagrams and notes. */
+const english: Record<string, string> = {
+  无线设备进入虚拟机的两条路径: "Two paths into a virtual machine",
+  "USB 直通交付物理无线设备；NAT 或桥接提供网络连接，不自动交付射频控制能力。":
+    "USB passthrough exposes the physical wireless device. NAT or bridging provides connectivity, not automatic control of its radio.",
+  四次握手中的密钥确认与分发: "Key confirmation in the four-way handshake",
+  "典型 WPA2 初始连接的简化时序，不是本次 CAP 的实测结果。双方预先具备 PMK，PTK 在本地派生，不在空口发送。":
+    "Simplified initial WPA2 connection, not a measured trace from this experiment. Both endpoints already have a PMK; they derive the PTK locally rather than transmitting it.",
+  "802.11 网络发现时序": "802.11 discovery sequence",
+  "时间沿纵轴向下。Beacon 为周期性广播；Probe 交换属于主动发现，尚未进入关联与密钥建立。":
+    "Time runs downward. Beacons are periodic broadcasts; Probe exchanges provide active discovery. Association and key establishment follow later.",
+  抓包文件中的元数据与无线帧: "Capture metadata and wireless frames",
+  "布局为逻辑示意，不按字节数等比例绘制。Radiotap 属于捕获元数据，字段是否存在取决于驱动。":
+    "Logical layout, not to byte scale. Radiotap contains capture metadata; available fields depend on the driver.",
+  无线链路保护与端到端保护: "Link protection and end-to-end protection",
+  "WPA2/WPA3 的无线保护终止于 AP；图中的 TLS 会话以应用终端与远端服务为端点。":
+    "WPA2/WPA3 wireless protection ends at the AP. The illustrated TLS session runs between the application client and remote service.",
+  连接建立与检测响应的证据矩阵: "Evidence for connections and detection",
+  "协议状态和安全平台响应分属两条观察链；图中列出验收条件，不表示本次全部完成。":
+    "Protocol state and platform response are separate evidence chains. The matrix lists acceptance criteria, not stages all completed in this experiment.",
+  图: "Figure",
+  "连接状态与验收证据对照表，可横向滚动":
+    "Connection states and acceptance evidence; horizontally scrollable",
+  观察层: "Observation layer",
+  状态变化: "State transition",
+  验收证据: "Acceptance evidence",
+  结论边界: "Conclusion boundary",
+  无线发现: "Discovery",
+  "扫描 → 可见": "Scan → visible",
+  "网络可见，尚未建立连接": "Visible network; no established connection",
+  链路建立: "Link setup",
+  "认证 → 关联": "Authenticate → associate",
+  "响应状态码 / 关联日志": "Response status / association logs",
+  "关联不等于密钥或 IP 就绪": "Association does not imply keys or IP readiness",
+  业务接入: "Service access",
+  "链路 → IP → 业务": "Link → IP → service",
+  "密钥记录（如适用） / IP / 业务结果":
+    "Key records, if applicable / IP / service results",
+  按实际启用的保护机制验收: "Assess the protection actually enabled",
+  平台检测: "Platform detection",
+  "发现 → 分类 → 告警": "Discover → classify → alert",
+  "BSSID / 事件时间 / 告警日志": "BSSID / event time / alert log",
+  告警不等于已执行阻断: "An alert does not prove blocking",
+  响应恢复: "Response and recovery",
+  "处置 → 复测 → 恢复": "Respond → retest → recover",
+  "执行记录 / 终端复测结果": "Action records / client retest results",
+  单次结果限定于当次条件: "A result applies to its tested conditions",
+  "USB 外接网卡": "External USB adapter",
+  "VMware USB 直通": "VMware USB passthrough",
+  "Kali 无线接口": "Kali wireless interface",
+  "物理设备 → 客户机": "Physical device → guest",
+  按驱动能力控制信道与模式: "Driver-dependent channel and mode control",
+  "对照：NAT / 桥接 → 虚拟以太网": "NAT / bridge → virtual Ethernet",
+  "能上网 ≠ 已获得 802.11 射频接口": "Internet access ≠ 802.11 radio access",
+  认证端: "Authenticator",
+  终端: "Client",
+  提供本轮随机数: "Supplies the current nonce",
+  "AP 派生 PTK 并校验": "AP derives PTK and checks MIC",
+  "分发受保护的 GTK 等": "Distributes protected GTK, etc.",
+  确认本轮交换: "Acknowledges this exchange",
+  "PMK + 双方地址 + 两端 Nonce": "PMK + addresses + both nonces",
+  "→ 本地派生 PTK": "→ locally derived PTK",
+  "PMK + 双方地址 + ANonce + SNonce → 本地派生 PTK":
+    "PMK + addresses + ANonce + SNonce → PTK",
+  接入点: "Access point",
+  无线终端: "Wireless client",
+  "被动扫描 / Passive": "Passive scanning",
+  "主动扫描 / Active": "Active scanning",
+  "发现信息：SSID · BSSID · 信道 · RSN": "SSID · BSSID · channel · RSN",
+  "TLS / HTTPS：终端 ↔ 服务端": "TLS / HTTPS: client ↔ server",
+  "WiFi 链路保护": "WiFi link protection",
+  "无线终端 STA": "Wireless client STA",
+  "接入点 AP": "Access point AP",
+  远端服务端: "Remote server",
+  "应用 / TLS 客户端": "Application / TLS client",
+  转发无线与上联流量: "Wireless/uplink forwarding",
+  "TLS 服务端": "TLS server",
+  空口: "Air",
+  上联: "Uplink",
+  两层保护具有不同的终止位置:
+    "The two protections terminate at different endpoints",
+  "TLS / HTTPS：应用终端 ↔ 远端服务端":
+    "TLS / HTTPS: application client ↔ remote service",
+  链路保护在此终止: "Link protection ends here",
+  "WPA2 / WPA3：STA ↔ AP": "WPA2 / WPA3: STA ↔ AP",
+  "抓到无线帧 → 链路解密条件 → 应用层加密条件 → 可见数据":
+    "Capture → link decryption → application encryption → visible data",
+  "捕获记录 / Capture record": "Capture record",
+  "接收功率 / 频率 / 速率等": "Signal / frequency / rate",
+  "类型 / 地址 / Protected 标志": "Type / address / Protected flag",
+  管理信息或数据载荷: "Management or data payload",
+  捕获元数据: "Capture metadata",
+  "帧类型 / 地址 / 标志": "Type / addresses / flags",
+  "Radiotap 不属于空口发出的 MAC 帧": "Radiotap is not sent over the air",
+  "* FCS 是否保留取决于网卡与驱动":
+    "* FCS retention depends on adapter and driver",
+  "六项独立验收 · 展开查看常见误判":
+    "Six independent checks · expand for common pitfalls",
+  避免误判: "Common pitfall",
+  "核对：": "Check: ",
+  取证: "Evidence",
+  "判别：": "Distinguish: ",
+  "观测：": "Observe: ",
+  尚无泄露证据: "No leakage established",
+  应用未加密: "Application is unencrypted",
+  可见内容构成风险: "Visible content establishes risk",
+  应用保护仍存在: "Application protection remains",
+};
+
+export function wifiCopy(isEnglish: boolean, text: string): string {
+  return isEnglish ? (english[text.trim()] ?? text) : text;
+}

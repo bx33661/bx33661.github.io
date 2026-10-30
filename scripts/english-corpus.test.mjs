@@ -41,13 +41,13 @@ for (const pair of pairs) {
   });
 }
 test('English corpus covers every public Chinese blog and note exactly once', () => {
-  assert.equal(pairs.filter(p => p.source.startsWith('src/content/blog/')).length, 55);
+  assert.equal(pairs.filter(p => p.source.startsWith('src/content/blog/')).length, 56);
   assert.equal(pairs.filter(p => p.source.startsWith('src/data/notes/')).length, 9);
   for (const dir of ['src/content/blog', 'src/data/notes']) {
     const source = fs.readdirSync(new URL(dir, root)).filter(n => /\.mdx?$/.test(n)).map(n => `${dir}/${n}`).filter(n => { const {data} = read(n); return data.lang !== 'en' && !data.draft; });
     assert.deepEqual(source.sort(), pairs.filter(p=>p.source.startsWith(dir+'/')).map(p=>p.source).sort());
   }
-  assert.equal(new Set(pairs.map(p=>p.target)).size, 64);
+  assert.equal(new Set(pairs.map(p=>p.target)).size, 65);
 });
 test('Article components share translated server and client copy', () => {
   for (const name of ['TrustBoundarySimulator', 'MiniappAuditFeature', 'MiniappAuditDiagram', 'Gist']) {

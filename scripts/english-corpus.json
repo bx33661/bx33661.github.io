@@ -446,5 +446,12 @@
     "key": "cybergym-ai-security-agent-benchmark",
     "slug": "cybergym-ai-security-agent-benchmark-en",
     "sourceBodySha256": "fdebdd535cb1ec0bdcc62852ac26c75384b2af6e01d32e9ffad5dc4705fd45b3"
+  },
+  {
+    "source": "src/content/blog/wifi-security-notes.mdx",
+    "target": "src/content/blog/wifi-security-notes-en.mdx",
+    "key": "wifi-security-notes",
+    "slug": "wifi-security-notes-en",
+    "sourceBodySha256": "6886126480bf4cee9bbe589ffccd8285d049d1e35fda179320df8d07d956f9c4"
   }
 ]

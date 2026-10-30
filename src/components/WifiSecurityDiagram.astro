@@ -1,0 +1,870 @@
+---
+import { wifiCopy } from "@/i18n/wifi";
+const isEnglish = /^\/en(?:\/|$)/.test(Astro.url.pathname);
+const t = (text: string) => wifiCopy(isEnglish, text);
+interface Props {
+  variant: "hardware" | "discovery" | "frames" | "layers" | "evidence" | "keys";
+}
+const { variant } = Astro.props;
+const info = {
+  hardware: [
+    "01",
+    t("无线设备进入虚拟机的两条路径"),
+    t(
+      "USB 直通交付物理无线设备；NAT 或桥接提供网络连接，不自动交付射频控制能力。",
+    ),
+  ],
+  keys: [
+    "03",
+    t("四次握手中的密钥确认与分发"),
+    t(
+      "典型 WPA2 初始连接的简化时序，不是本次 CAP 的实测结果。双方预先具备 PMK，PTK 在本地派生，不在空口发送。",
+    ),
+  ],
+  discovery: [
+    "02",
+    t("802.11 网络发现时序"),
+    t(
+      "时间沿纵轴向下。Beacon 为周期性广播；Probe 交换属于主动发现，尚未进入关联与密钥建立。",
+    ),
+  ],
+  frames: [
+    "04",
+    t("抓包文件中的元数据与无线帧"),
+    t(
+      "布局为逻辑示意，不按字节数等比例绘制。Radiotap 属于捕获元数据，字段是否存在取决于驱动。",
+    ),
+  ],
+  layers: [
+    "05",
+    t("无线链路保护与端到端保护"),
+    t(
+      "WPA2/WPA3 的无线保护终止于 AP；图中的 TLS 会话以应用终端与远端服务为端点。",
+    ),
+  ],
+  evidence: [
+    "06",
+    t("连接建立与检测响应的证据矩阵"),
+    t(
+      "协议状态和安全平台响应分属两条观察链；图中列出验收条件，不表示本次全部完成。",
+    ),
+  ],
+};
+const [number, title, note] = info[variant];
+const layouts = [false, true];
+---
+
+<figure
+  data-wifi-locale={isEnglish ? "en" : "zh-CN"}
+  class={`wifi-figure wifi-${variant} not-prose`}
+  aria-label={`${t("图")} ${number}: ${title}`}
+>
+  <div class="wifi-figure-heading">
+    <span class="wifi-figure-index">FIG. {number}</span><strong>{title}</strong
+    ><span class="wifi-figure-kind"
+      >{variant === "evidence" ? "EVIDENCE MATRIX" : "SCHEMATIC"}</span>
+  </div>
+  {
+    variant === "evidence" ? (
+      <div
+        class="wifi-matrix-wrap"
+        tabindex="0"
+        aria-label={t("连接状态与验收证据对照表，可横向滚动")}
+      >
+        <table class="wifi-matrix">
+          <thead>
+            <tr>
+              <>
+                <th>{t("观察层")}</th>
+                <th>{t("状态变化")}</th>
+                <th>{t("验收证据")}</th>
+                <th>{t("结论边界")}</th>
+              </>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <>
+                <th>
+                  <span class="wifi-dot" />
+                  {t("无线发现")}
+                </th>
+                <td>{t("扫描 → 可见")}</td>
+                <td>Beacon / Probe Response</td>
+                <td>{t("网络可见，尚未建立连接")}</td>
+              </>
+            </tr>
+            <tr>
+              <>
+                <th>
+                  <span class="wifi-dot" />
+                  {t("链路建立")}
+                </th>
+                <td>{t("认证 → 关联")}</td>
+                <td>{t("响应状态码 / 关联日志")}</td>
+                <td>{t("关联不等于密钥或 IP 就绪")}</td>
+              </>
+            </tr>
+            <tr>
+              <>
+                <th>
+                  <span class="wifi-dot" />
+                  {t("业务接入")}
+                </th>
+                <td>{t("链路 → IP → 业务")}</td>
+                <td>{t("密钥记录（如适用） / IP / 业务结果")}</td>
+                <td>{t("按实际启用的保护机制验收")}</td>
+              </>
+            </tr>
+            <tr class="wifi-matrix-divider">
+              <>
+                <th>
+                  <span class="wifi-dot wifi-dot-outline" />
+                  {t("平台检测")}
+                </th>
+                <td>{t("发现 → 分类 → 告警")}</td>
+                <td>{t("BSSID / 事件时间 / 告警日志")}</td>
+                <td>{t("告警不等于已执行阻断")}</td>
+              </>
+            </tr>
+            <tr>
+              <>
+                <th>
+                  <span class="wifi-dot wifi-dot-outline" />
+                  {t("响应恢复")}
+                </th>
+                <td>{t("处置 → 复测 → 恢复")}</td>
+                <td>{t("执行记录 / 终端复测结果")}</td>
+                <td>{t("单次结果限定于当次条件")}</td>
+              </>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      layouts.map((mobile) => {
+        const w = mobile ? 320 : 720;
+        const h =
+          variant === "keys"
+            ? mobile
+              ? 564
+              : 528
+            : variant === "hardware"
+              ? mobile
+                ? 488
+                : 294
+              : variant === "discovery"
+                ? 410
+                : variant === "layers"
+                  ? mobile
+                    ? 610
+                    : 366
+                  : mobile
+                    ? 390
+                    : 300;
+        const arrow = `wifi-arrow-${variant}-${mobile ? "m" : "d"}`;
+        return (
+          <svg
+            class:list={[
+              "wifi-plot",
+              mobile ? "wifi-plot-mobile" : "wifi-plot-desktop",
+            ]}
+            viewBox={`0 0 ${w} ${h}`}
+            role="img"
+            aria-label={title}
+          >
+            <defs>
+              <marker
+                id={arrow}
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 1 1 L 9 5 L 1 9" class="wifi-arrowhead" />
+              </marker>
+            </defs>
+            {variant === "hardware" && (
+              <>
+                {(mobile
+                  ? [
+                      [40, 28],
+                      [40, 156],
+                      [40, 284],
+                    ]
+                  : [
+                      [20, 60],
+                      [260, 60],
+                      [500, 60],
+                    ]
+                ).map(([x, y], i) => (
+                  <g>
+                    <rect
+                      x={x}
+                      y={y}
+                      width={mobile ? 240 : 200}
+                      height="86"
+                      class:list={["wifi-node", { "wifi-node-focus": i === 2 }]}
+                    />
+                    <text
+                      x={x + (mobile ? 120 : 100)}
+                      y={y + 32}
+                      class="wifi-label"
+                    >
+                      {
+                        [
+                          t("USB 外接网卡"),
+                          t("VMware USB 直通"),
+                          t("Kali 无线接口"),
+                        ][i]
+                      }
+                    </text>
+                    <text
+                      x={x + (mobile ? 120 : 100)}
+                      y={y + 59}
+                      class="wifi-code"
+                    >
+                      {
+                        ["0bda:b812", t("物理设备 → 客户机"), "phy#1 / wlan0"][
+                          i
+                        ]
+                      }
+                    </text>
+                    {i < 2 && (
+                      <line
+                        x1={mobile ? 160 : x + 200}
+                        y1={mobile ? y + 86 : 103}
+                        x2={mobile ? 160 : x + 232}
+                        y2={mobile ? y + 120 : 103}
+                        class="wifi-link"
+                        marker-end={`url(#${arrow})`}
+                      />
+                    )}
+                  </g>
+                ))}
+                <text x={w / 2} y={mobile ? 405 : 198} class="wifi-emphasis">
+                  {t("按驱动能力控制信道与模式")}
+                </text>
+                <line
+                  x1="20"
+                  x2={w - 20}
+                  y1={mobile ? 430 : 222}
+                  y2={mobile ? 430 : 222}
+                  class="wifi-rule"
+                />
+                <text x={w / 2} y={mobile ? 458 : 251} class="wifi-muted">
+                  {t("对照：NAT / 桥接 → 虚拟以太网")}
+                </text>
+                <text x={w / 2} y={mobile ? 480 : 275} class="wifi-small">
+                  {t("能上网 ≠ 已获得 802.11 射频接口")}
+                </text>
+              </>
+            )}
+            {variant === "keys" && (
+              <>
+                <text x={mobile ? 52 : 120} y="32" class="wifi-label">
+                  AP
+                </text>
+                <text x={mobile ? 268 : 600} y="32" class="wifi-label">
+                  STA
+                </text>
+                <text x={mobile ? 52 : 120} y="57" class="wifi-small">
+                  {t("认证端")}
+                </text>
+                <text x={mobile ? 268 : 600} y="57" class="wifi-small">
+                  {t("终端")}
+                </text>
+                {[mobile ? 52 : 120, mobile ? 268 : 600].map((x) => (
+                  <line x1={x} x2={x} y1="80" y2="468" class="wifi-lifeline" />
+                ))}
+                {[
+                  [128, "M1 · ANonce", t("提供本轮随机数"), true],
+                  [224, "M2 · SNonce + MIC", t("AP 派生 PTK 并校验"), false],
+                  [320, "M3 · MIC + Key Data", t("分发受保护的 GTK 等"), true],
+                  [416, "M4 · MIC", t("确认本轮交换"), false],
+                ].map(([y, label, detail, down]) => (
+                  <g>
+                    <text x={w / 2} y={Number(y) - 16} class="wifi-code">
+                      {label}
+                    </text>
+                    <line
+                      x1={down ? (mobile ? 52 : 120) : mobile ? 268 : 600}
+                      x2={down ? (mobile ? 264 : 596) : mobile ? 56 : 124}
+                      y1={Number(y)}
+                      y2={Number(y)}
+                      class="wifi-link"
+                      marker-end={`url(#${arrow})`}
+                    />
+                    <text x={w / 2} y={Number(y) + 28} class="wifi-small">
+                      {detail}
+                    </text>
+                  </g>
+                ))}
+                <rect
+                  x="20"
+                  y="488"
+                  width={w - 40}
+                  height={mobile ? 58 : 30}
+                  class="wifi-band"
+                />
+                {mobile ? (
+                  <>
+                    <text x={w / 2} y="511" class="wifi-small">
+                      {t("PMK + 双方地址 + 两端 Nonce")}
+                    </text>
+                    <text x={w / 2} y="534" class="wifi-code">
+                      {t("→ 本地派生 PTK")}
+                    </text>
+                  </>
+                ) : (
+                  <text x={w / 2} y="509" class="wifi-small">
+                    {t("PMK + 双方地址 + ANonce + SNonce → 本地派生 PTK")}
+                  </text>
+                )}
+              </>
+            )}
+            {variant === "discovery" && (
+              <>
+                <text x={mobile ? 52 : 120} y="36" class="wifi-label">
+                  AP
+                </text>
+                <text x={mobile ? 268 : 600} y="36" class="wifi-label">
+                  STA
+                </text>
+                <text x={mobile ? 52 : 120} y="59" class="wifi-small">
+                  {t("接入点")}
+                </text>
+                <text x={mobile ? 268 : 600} y="59" class="wifi-small">
+                  {t("无线终端")}
+                </text>
+                {[mobile ? 52 : 120, mobile ? 268 : 600].map((x) => (
+                  <line x1={x} x2={x} y1="80" y2="330" class="wifi-lifeline" />
+                ))}
+                <text x={w / 2} y="108" class="wifi-small">
+                  {t("被动扫描 / Passive")}
+                </text>
+                <line
+                  x1={mobile ? 52 : 120}
+                  x2={mobile ? 264 : 596}
+                  y1="146"
+                  y2="146"
+                  class="wifi-link"
+                  marker-end={`url(#${arrow})`}
+                />
+                <text x={w / 2} y="136" class="wifi-code">
+                  Beacon
+                </text>
+                <line x1="20" x2={w - 20} y1="188" y2="188" class="wifi-rule" />
+                <text x={w / 2} y="215" class="wifi-small">
+                  {t("主动扫描 / Active")}
+                </text>
+                <line
+                  x1={mobile ? 268 : 600}
+                  x2={mobile ? 56 : 124}
+                  y1="253"
+                  y2="253"
+                  class="wifi-link wifi-link-secondary"
+                  marker-end={`url(#${arrow})`}
+                />
+                <text x={w / 2} y="242" class="wifi-code">
+                  Probe Request
+                </text>
+                <line
+                  x1={mobile ? 52 : 120}
+                  x2={mobile ? 264 : 596}
+                  y1="310"
+                  y2="310"
+                  class="wifi-link"
+                  marker-end={`url(#${arrow})`}
+                />
+                <text x={w / 2} y="299" class="wifi-code">
+                  Probe Response
+                </text>
+                <rect
+                  x="20"
+                  y="356"
+                  width={w - 40}
+                  height="38"
+                  class="wifi-band"
+                />
+                <text x={w / 2} y="380" class="wifi-small">
+                  {t("发现信息：SSID · BSSID · 信道 · RSN")}
+                </text>
+              </>
+            )}
+            {variant === "layers" && (
+              <>
+                {mobile ? (
+                  <>
+                    <path d="M 62 94 H 32 V 484 H 62" class="wifi-bracket" />
+                    <text
+                      x="20"
+                      y="294"
+                      transform="rotate(-90 20 294)"
+                      class="wifi-code wifi-tls"
+                    >
+                      {t("TLS / HTTPS：终端 ↔ 服务端")}
+                    </text>
+                    <path
+                      d="M 260 126 H 290 V 302 H 260"
+                      class="wifi-bracket wifi-bracket-radio"
+                    />
+                    <text
+                      x="309"
+                      y="215"
+                      transform="rotate(90 309 215)"
+                      class="wifi-small wifi-radio"
+                    >
+                      {t("WiFi 链路保护")}
+                    </text>
+                    {[80, 270, 460].map((y, i) => (
+                      <g>
+                        <rect
+                          x="72"
+                          y={y}
+                          width="176"
+                          height="76"
+                          class="wifi-node"
+                        />
+                        <text x="160" y={y + 31} class="wifi-label">
+                          {
+                            [
+                              t("无线终端 STA"),
+                              t("接入点 AP"),
+                              t("远端服务端"),
+                            ][i]
+                          }
+                        </text>
+                        <text x="160" y={y + 56} class="wifi-small">
+                          {
+                            [
+                              t("应用 / TLS 客户端"),
+                              t("转发无线与上联流量"),
+                              t("TLS 服务端"),
+                            ][i]
+                          }
+                        </text>
+                        {i < 2 && (
+                          <>
+                            <line
+                              x1="160"
+                              x2="160"
+                              y1={y + 76}
+                              y2={y + 180}
+                              class="wifi-link"
+                              marker-end={`url(#${arrow})`}
+                            />
+                            <text x="210" y={y + 135} class="wifi-small">
+                              {i === 0 ? t("空口") : t("上联")}
+                            </text>
+                          </>
+                        )}
+                      </g>
+                    ))}
+                    <text x="160" y="579" class="wifi-small">
+                      {t("两层保护具有不同的终止位置")}
+                    </text>
+                  </>
+                ) : (
+                  <>
+                    <path d="M 106 117 V 68 H 614 V 117" class="wifi-bracket" />
+                    <text x="360" y="46" class="wifi-code wifi-tls">
+                      {t("TLS / HTTPS：应用终端 ↔ 远端服务端")}
+                    </text>
+                    {[26, 280, 534].map((x, i) => (
+                      <g>
+                        <rect
+                          x={x}
+                          y="143"
+                          width="160"
+                          height="80"
+                          class="wifi-node"
+                        />
+                        <text x={x + 80} y="176" class="wifi-label">
+                          {
+                            [
+                              t("无线终端 STA"),
+                              t("接入点 AP"),
+                              t("远端服务端"),
+                            ][i]
+                          }
+                        </text>
+                        <text x={x + 80} y="201" class="wifi-small">
+                          {
+                            [
+                              t("应用 / TLS 客户端"),
+                              t("链路保护在此终止"),
+                              t("TLS 服务端"),
+                            ][i]
+                          }
+                        </text>
+                        {i < 2 && (
+                          <>
+                            <line
+                              x1={x + 160}
+                              x2={x + 246}
+                              y1="183"
+                              y2="183"
+                              class="wifi-link"
+                              marker-end={`url(#${arrow})`}
+                            />
+                            <text x={x + 205} y="164" class="wifi-small">
+                              {i === 0 ? t("空口") : t("上联")}
+                            </text>
+                          </>
+                        )}
+                      </g>
+                    ))}
+                    <path
+                      d="M 106 246 V 283 H 360 V 246"
+                      class="wifi-bracket wifi-bracket-radio"
+                    />
+                    <text x="233" y="309" class="wifi-code wifi-radio">
+                      WPA2 / WPA3：STA ↔ AP
+                    </text>
+                    <text x="360" y="350" class="wifi-small">
+                      {t(
+                        "抓到无线帧 → 链路解密条件 → 应用层加密条件 → 可见数据",
+                      )}
+                    </text>
+                  </>
+                )}
+              </>
+            )}
+            {variant === "frames" && (
+              <>
+                <text x={w / 2} y="36" class="wifi-small">
+                  {t("捕获记录 / Capture record")}
+                </text>
+                {(mobile
+                  ? [
+                      [20, 65, 280, "Radiotap", t("接收功率 / 频率 / 速率等")],
+                      [
+                        20,
+                        155,
+                        280,
+                        "802.11 MAC header",
+                        t("类型 / 地址 / Protected 标志"),
+                      ],
+                      [
+                        20,
+                        245,
+                        280,
+                        "Frame body + FCS*",
+                        t("管理信息或数据载荷"),
+                      ],
+                    ]
+                  : [
+                      [20, 70, 190, "Radiotap", t("捕获元数据")],
+                      [
+                        210,
+                        70,
+                        260,
+                        "802.11 MAC header",
+                        t("帧类型 / 地址 / 标志"),
+                      ],
+                      [
+                        470,
+                        70,
+                        230,
+                        "Frame body + FCS*",
+                        t("管理信息或数据载荷"),
+                      ],
+                    ]
+                ).map(([x, y, width, label, detail], i) => (
+                  <g>
+                    <rect
+                      x={Number(x)}
+                      y={Number(y)}
+                      width={Number(width)}
+                      height={mobile ? 70 : 100}
+                      class:list={["wifi-frame-block", `wifi-frame-${i}`]}
+                    />
+                    <text
+                      x={Number(x) + Number(width) / 2}
+                      y={Number(y) + (mobile ? 29 : 43)}
+                      class="wifi-code"
+                    >
+                      {label}
+                    </text>
+                    <text
+                      x={Number(x) + Number(width) / 2}
+                      y={Number(y) + (mobile ? 52 : 70)}
+                      class="wifi-small"
+                    >
+                      {detail}
+                    </text>
+                  </g>
+                ))}
+                <text x={w / 2} y={mobile ? 353 : 218} class="wifi-muted">
+                  {t("Radiotap 不属于空口发出的 MAC 帧")}
+                </text>
+                <text x={w / 2} y={mobile ? 378 : 248} class="wifi-small">
+                  {t("* FCS 是否保留取决于网卡与驱动")}
+                </text>
+              </>
+            )}
+          </svg>
+        );
+      })
+    )
+  }
+  <figcaption>
+    <span class="wifi-caption-number">{t("图")}{" "}{number}.</span>{" "}{note}
+  </figcaption>
+</figure>
+<style>
+  .wifi-figure {
+    --wf-paper: #fbfaf7;
+    --wf-ink: #222d3b;
+    --wf-muted: #526170;
+    --wf-rule: #d5d9dc;
+    --wf-blue: #245a83;
+    --wf-red: #9a4b32;
+    --wf-wash: #edf2f5;
+    margin: 2.25rem 0;
+    padding: 1.2rem 0 0.8rem;
+    border-top: 2px solid var(--wf-ink);
+    border-bottom: 1px solid var(--wf-rule);
+    color: var(--wf-ink);
+    background: var(--wf-paper);
+  }
+  .wifi-figure-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+    padding: 0 1.2rem 0.75rem;
+    text-align: left;
+  }
+  .wifi-figure-index {
+    font:
+      600 0.7rem/1.5 ui-monospace,
+      monospace;
+    color: var(--wf-blue);
+    white-space: nowrap;
+    letter-spacing: 0.06em;
+  }
+  .wifi-figure-heading strong {
+    font:
+      600 1rem/1.6 "Songti SC",
+      "Noto Serif SC",
+      serif;
+  }
+  .wifi-figure-kind {
+    margin-left: auto;
+    font:
+      0.58rem/1.5 ui-monospace,
+      monospace;
+    letter-spacing: 0.1em;
+    color: var(--wf-muted);
+    white-space: nowrap;
+  }
+  .wifi-plot {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+  .wifi-plot-mobile {
+    display: none;
+  }
+  .wifi-plot text {
+    fill: var(--wf-ink);
+    font:
+      14px/1.5 system-ui,
+      sans-serif;
+    text-anchor: middle;
+  }
+  .wifi-plot .wifi-label {
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .wifi-plot .wifi-code {
+    font-family: ui-monospace, "SFMono-Regular", monospace;
+    font-size: 14px;
+  }
+  .wifi-plot .wifi-small {
+    font-size: 13px;
+    fill: var(--wf-muted);
+  }
+  .wifi-plot .wifi-muted {
+    fill: var(--wf-muted);
+  }
+  .wifi-plot .wifi-emphasis {
+    fill: var(--wf-blue);
+    font-size: 16px;
+  }
+  .wifi-node {
+    fill: var(--wf-paper);
+    stroke: var(--wf-ink);
+    stroke-width: 1.2;
+  }
+  .wifi-node-focus {
+    fill: var(--wf-wash);
+    stroke: var(--wf-blue);
+  }
+  .wifi-link,
+  .wifi-bracket {
+    stroke: var(--wf-blue);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .wifi-link-secondary {
+    stroke: var(--wf-ink);
+  }
+  .wifi-arrowhead {
+    fill: none;
+    stroke: var(--wf-blue);
+    stroke-width: 1.5;
+  }
+  .wifi-lifeline {
+    stroke: var(--wf-muted);
+    stroke-width: 1;
+    stroke-dasharray: 5 5;
+  }
+  .wifi-rule {
+    stroke: var(--wf-rule);
+    stroke-width: 1;
+  }
+  .wifi-band {
+    fill: var(--wf-wash);
+  }
+  .wifi-bracket-radio {
+    stroke: var(--wf-red);
+  }
+  .wifi-plot .wifi-radio {
+    fill: var(--wf-red);
+  }
+  .wifi-plot .wifi-tls {
+    fill: var(--wf-blue);
+  }
+  .wifi-frame-block {
+    fill: var(--wf-wash);
+    stroke: var(--wf-paper);
+    stroke-width: 2;
+  }
+  .wifi-frame-0 {
+    fill: color-mix(in srgb, var(--wf-blue) 15%, var(--wf-paper));
+  }
+  .wifi-frame-2 {
+    fill: color-mix(in srgb, var(--wf-red) 10%, var(--wf-paper));
+  }
+  .wifi-figure figcaption {
+    text-align: left;
+    margin: 0.6rem 1.2rem 0;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--wf-rule);
+    color: var(--wf-muted);
+    font-size: 0.79rem;
+    line-height: 1.8;
+  }
+  .wifi-caption-number {
+    color: var(--wf-ink);
+    font-family: "Songti SC", serif;
+    font-weight: 600;
+  }
+  .wifi-matrix-wrap {
+    overflow-x: auto;
+    padding: 0.6rem 1.2rem;
+  }
+  .wifi-matrix {
+    width: 100%;
+    min-width: 610px;
+    border-collapse: collapse;
+    border: 0;
+    box-shadow: none;
+    font-size: 0.77rem;
+    line-height: 1.8;
+    text-align: left;
+  }
+  .wifi-matrix th,
+  .wifi-matrix td {
+    padding: 0.8rem 0.5rem;
+    border: 0;
+    border-bottom: 1px solid var(--wf-rule);
+    color: var(--wf-ink);
+  }
+  .wifi-matrix thead th {
+    color: var(--wf-muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--wf-ink);
+  }
+  .wifi-matrix tbody th {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .wifi-matrix .wifi-matrix-divider > * {
+    border-top: 1px dashed var(--wf-muted);
+  }
+  .wifi-matrix tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+  .wifi-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--wf-blue);
+    border: 1px solid var(--wf-blue);
+    border-radius: 50%;
+    margin-right: 0.5rem;
+  }
+  .wifi-dot-outline {
+    background: transparent;
+    border-color: var(--wf-red);
+  }
+  :global([data-theme="dark"]) .wifi-figure {
+    --wf-paper: #18212a;
+    --wf-ink: #e2e8ec;
+    --wf-muted: #b1bfcb;
+    --wf-rule: #45525d;
+    --wf-blue: #92bede;
+    --wf-red: #dfaa91;
+    --wf-wash: #223441;
+  }
+  @media (max-width: 600px) {
+    .wifi-plot-desktop {
+      display: none;
+    }
+    .wifi-plot-mobile {
+      display: block;
+    }
+    .wifi-figure-heading {
+      gap: 0.65rem;
+      padding-inline: 0.8rem;
+    }
+    .wifi-figure-kind {
+      display: none;
+    }
+    .wifi-figure-heading strong {
+      font-size: 0.95rem;
+    }
+    .wifi-figure figcaption {
+      margin-inline: 0.8rem;
+    }
+    .wifi-matrix-wrap {
+      padding-inline: 0.8rem;
+    }
+  }
+  .wifi-figure[data-wifi-locale="en"] .wifi-plot .wifi-label {
+    font-size: 14px;
+  }
+  .wifi-figure[data-wifi-locale="en"] .wifi-plot .wifi-small {
+    font-size: 11px;
+  }
+  .wifi-figure[data-wifi-locale="en"] .wifi-plot .wifi-muted {
+    font-size: 11px;
+  }
+  .wifi-figure[data-wifi-locale="en"] .wifi-plot .wifi-code {
+    font-size: 12px;
+  }
+  .wifi-figure[data-wifi-locale="en"] .wifi-plot .wifi-emphasis {
+    font-size: 13px;
+  }
+  @media print {
+    .wifi-figure {
+      break-inside: avoid;
+    }
+  }
+</style>
