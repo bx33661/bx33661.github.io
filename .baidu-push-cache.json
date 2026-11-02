@@ -74,6 +74,7 @@
     "https://www.bx33661.com/notes/k8x9w55/",
     "https://www.bx33661.com/en/",
     "https://www.bx33661.com/en/blog/",
+    "https://www.bx33661.com/en/archives/",
     "https://www.bx33661.com/en/notes/",
     "https://www.bx33661.com/en/notes/list/",
     "https://www.bx33661.com/en/blog/wifi-security-notes-en/",
@@ -140,8 +141,7 @@
     "https://www.bx33661.com/en/notes/machine-learning-classification-task-en/",
     "https://www.bx33661.com/en/notes/k8burp-en/",
     "https://www.bx33661.com/en/notes/java-algorithm-practice-en/",
-    "https://www.bx33661.com/en/notes/k8x9w55-en/",
-    "https://www.bx33661.com/en/archives/"
+    "https://www.bx33661.com/en/notes/k8x9w55-en/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/": "6b14275aad67ff9735f6ee59527bcd03f0afc4e0beadf2694dd3755dde78a8ac",
@@ -218,6 +218,7 @@
     "https://www.bx33661.com/notes/k8x9w55/": "23ac68f29a597312ec1c5e82a29bc9c72b7251e662b3915f59d3609789315e23",
     "https://www.bx33661.com/en/": "14aca22d47b9f330405af288ef4b1276dbee1fac5662eb828623010dfa4b0139",
     "https://www.bx33661.com/en/blog/": "3c658d67636160a67c47584a73475a4bc74a302fa4e77d4a3bf27366071dc99a",
+    "https://www.bx33661.com/en/archives/": "2a335751fec0ce042a3aac5704784e69664873178e85541fc291cdbe445cfe1f",
     "https://www.bx33661.com/en/notes/": "9d1257b4c6dbe1c3ba577192021184ebde59ba6470d314ebeaea256375e6f96e",
     "https://www.bx33661.com/en/notes/list/": "3ec205991717927b2b8bd99f595d7618afdb2abb41d9465eb12fcf93b6a605a7",
     "https://www.bx33661.com/en/blog/wifi-security-notes-en/": "0027c18289fe53665f9eaed07e53bb868cae10c1308bff8ded24f47bcb746686",
@@ -284,8 +285,7 @@
     "https://www.bx33661.com/en/notes/machine-learning-classification-task-en/": "c4d37c9be9fd24765f5b9cc19620feb576cfbef1d703c707b514f8b96a4ed602",
     "https://www.bx33661.com/en/notes/k8burp-en/": "a295556892d580cb759c669ff5cb2294efd051f9f516dc214be45f4fab389af2",
     "https://www.bx33661.com/en/notes/java-algorithm-practice-en/": "f2183f896c715e5da0e3a84b0a321712742d822e6e5c02849d23a6d352c42613",
-    "https://www.bx33661.com/en/notes/k8x9w55-en/": "766b8f4bb475de9c1ac746f52d6803c462a3d9229712fe6359c00173f64f9eda",
-    "https://www.bx33661.com/en/archives/": "2a335751fec0ce042a3aac5704784e69664873178e85541fc291cdbe445cfe1f"
+    "https://www.bx33661.com/en/notes/k8x9w55-en/": "766b8f4bb475de9c1ac746f52d6803c462a3d9229712fe6359c00173f64f9eda"
   },
   "lastPushAt": "2026-11-01T09:24:10.927Z",
   "ledgerVersion": 1
