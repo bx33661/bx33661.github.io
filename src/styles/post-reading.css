@@ -1,11 +1,7 @@
 /* Blog-only reading system. Direct-child prose rules leave MDX islands intact. */
 .post-page {
   --reading-muted: color-mix(in srgb, var(--foreground) 72%, var(--background));
-  --reading-border: color-mix(
-    in srgb,
-    var(--foreground) 15%,
-    var(--background)
-  );
+  --reading-border: color-mix(in srgb, var(--foreground) 15%, var(--background));
   --reading-surface: color-mix(in srgb, var(--surface) 66%, var(--background));
   max-width: 50rem;
 }
@@ -164,10 +160,7 @@
 .post-page #article > :is(ul, ol) > li {
   margin-block: 0.5em;
 }
-.post-page
-  #article
-  :is(p, li)
-  > a:not(.heading-link):not(:where(.not-prose, .not-prose *)) {
+.post-page #article :is(p, li) > a:not(.heading-link):not(:where(.not-prose, .not-prose *)) {
   color: var(--accent);
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
@@ -180,33 +173,6 @@
 .post-page #article .heading-link {
   font-size: 0.8em;
   color: var(--accent);
-}
-.post-page
-  #article
-  :is(p, li, td)
-  > code:not(:where(.not-prose, .not-prose *)) {
-  padding: 0.15em 0.35em;
-  border: 0;
-  border-radius: 0.3rem;
-  background: color-mix(in srgb, var(--accent) 5%, var(--background));
-  font-size: 0.85em;
-}
-.post-page #article > blockquote {
-  margin: 1.75rem 0;
-  padding: 0.3rem 1.2rem;
-  border-inline-start: 3px solid var(--accent);
-  border-radius: 0 0.5rem 0.5rem 0;
-  background: var(--reading-surface);
-  color: var(--reading-muted);
-  font-style: normal;
-  opacity: 1;
-}
-.post-page #article > blockquote p {
-  margin-block: 0.7em;
-}
-.post-page #article > blockquote p:first-of-type::before,
-.post-page #article > blockquote p:last-of-type::after {
-  content: none;
 }
 
 /* Shiki colours, copy controls and code text remain unchanged. */
@@ -223,29 +189,6 @@
   background: var(--reading-surface);
   color: var(--foreground);
   border-radius: 0.35rem;
-}
-.post-page #article > table {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  border: 0;
-  border-radius: 0;
-  font-size: 0.88rem;
-  line-height: 1.7;
-}
-.post-page #article > table :is(th, td) {
-  padding: 0.7rem 0.9rem;
-  border: 0;
-  border-bottom: 1px solid var(--reading-border);
-}
-.post-page #article > table th {
-  background: transparent;
-  border-bottom-width: 2px;
-  font-weight: 650;
-}
-.post-page #article > table tbody tr:nth-child(even) {
-  background: color-mix(in srgb, var(--foreground) 3%, var(--background));
 }
 .post-page #article > :is(p, figure, picture) img {
   height: auto;
@@ -273,9 +216,6 @@
 .post-page .post-nav-link:hover {
   border-color: var(--accent);
   background: var(--reading-surface);
-}
-.post-page .post-nav-bg {
-  display: none;
 }
 
 @media (min-width: 1200px) {
@@ -607,10 +547,5 @@
   }
   .post-page {
     padding-bottom: 6rem;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  html:has(.post-page) {
-    scroll-behavior: auto;
   }
 }

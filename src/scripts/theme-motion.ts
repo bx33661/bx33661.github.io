@@ -30,12 +30,7 @@ export function finishThemeReveal(commit = true) {
 export function revealTheme(button: HTMLElement, apply: () => void): boolean {
   finishThemeReveal();
   const box = button.getBoundingClientRect();
-  const circle = themeRevealGeometry(
-    box.x + box.width / 2,
-    box.y + box.height / 2,
-    innerWidth,
-    innerHeight,
-  );
+  const circle = themeRevealGeometry(box.x + box.width / 2, box.y + box.height / 2, innerWidth, innerHeight);
   if (prefersReducedMotion() || !document.startViewTransition || !circle) {
     apply();
     return false;
@@ -76,10 +71,7 @@ export function revealTheme(button: HTMLElement, apply: () => void): boolean {
       const origin = `${circle.x}px ${circle.y}px`;
       try {
         reveal.animation = document.documentElement.animate(
-          [
-            { clipPath: `circle(0px at ${origin})` },
-            { clipPath: `circle(${circle.radius}px at ${origin})` },
-          ],
+          [{ clipPath: `circle(0px at ${origin})` }, { clipPath: `circle(${circle.radius}px at ${origin})` }],
           {
             duration: READING_MOTION.themeIn,
             easing: READING_MOTION.ease,
@@ -106,7 +98,5 @@ export function revealTheme(button: HTMLElement, apply: () => void): boolean {
   return true;
 }
 
-document.addEventListener("astro:before-preparation", () =>
-  finishThemeReveal(),
-);
+document.addEventListener("astro:before-preparation", () => finishThemeReveal());
 window.addEventListener("pagehide", () => finishThemeReveal());

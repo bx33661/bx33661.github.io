@@ -1,0 +1,152 @@
+---
+import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
+import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
+import IconX from "@/assets/icons/IconX.svg";
+
+interface Props {
+  id: string;
+  mode: "wrap" | "clamp";
+  label: string;
+}
+
+const { id, mode, label } = Astro.props;
+---
+
+<dialog id={id} data-gallery-viewer={mode} class="gallery-lightbox" aria-label={label} aria-modal="true">
+  <button id={`${id}-close`} data-gallery-action="close" class="gallery-lightbox-close" type="button" aria-label="关闭">
+    <IconX class="size-5" aria-hidden="true" />
+  </button>
+  <button
+    id={`${id}-prev`}
+    data-gallery-action="prev"
+    class="gallery-lightbox-nav gallery-lightbox-prev"
+    type="button"
+    aria-label="上一张"
+  >
+    <IconChevronLeft class="size-5" aria-hidden="true" />
+  </button>
+  <div class="gallery-lightbox-body">
+    <img id={`${id}-image`} data-gallery-image src="" alt="" class="gallery-lightbox-image" />
+    <p id={`${id}-caption`} data-gallery-caption class="gallery-lightbox-caption"></p>
+    <span id={`${id}-counter`} data-gallery-counter class="gallery-lightbox-counter"></span>
+  </div>
+  <button
+    id={`${id}-next`}
+    data-gallery-action="next"
+    class="gallery-lightbox-nav gallery-lightbox-next"
+    type="button"
+    aria-label="下一张"
+  >
+    <IconChevronRight class="size-5" aria-hidden="true" />
+  </button>
+</dialog>
+
+<script src="../scripts/gallery-lightbox.ts"></script>
+
+<style>
+  .gallery-lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    z-index: 200;
+  }
+
+  .gallery-lightbox::backdrop {
+    background: transparent;
+  }
+
+  .gallery-lightbox:not([open]) {
+    display: none;
+  }
+
+  .gallery-lightbox-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 3.5rem 0.75rem;
+  }
+
+  .gallery-lightbox-image {
+    max-width: 100%;
+    max-height: calc(100dvh - 10rem);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 48px rgba(0, 0, 0, 0.6);
+  }
+
+  .gallery-lightbox-caption {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.72);
+    text-align: center;
+    max-width: 55ch;
+  }
+
+  .gallery-lightbox-counter {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .gallery-lightbox-close,
+  .gallery-lightbox-nav {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-radius: 999px;
+    width: 2.7rem;
+    height: 2.7rem;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-inline: 0.25rem;
+    transition: background 0.2s ease;
+  }
+
+  .gallery-lightbox-close:hover,
+  .gallery-lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .gallery-lightbox-close {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    margin: 0;
+    z-index: 10;
+  }
+
+  @media (max-width: 600px) {
+    .gallery-lightbox-nav {
+      position: absolute;
+      bottom: 1rem;
+      margin-inline: 0;
+    }
+
+    .gallery-lightbox-prev {
+      left: 1rem;
+    }
+
+    .gallery-lightbox-next {
+      right: 1rem;
+    }
+  }
+</style>

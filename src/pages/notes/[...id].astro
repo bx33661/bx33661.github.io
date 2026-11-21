@@ -3,9 +3,11 @@ import NoteDetails from "@/layouts/NoteDetails.astro";
 import { getAllNotesWithSlugs } from "@/utils/notes";
 export async function getStaticPaths() {
   return (await getAllNotesWithSlugs("zh-CN")).map(({ note, slug }) => ({
-    params: { id: slug }, props: { note, slug },
+    params: { id: slug },
+    props: { note, slug },
   }));
 }
 const { note, slug } = Astro.props;
 ---
+
 <NoteDetails {note} {slug} />

@@ -1,10 +1,11 @@
 ---
 import type { GetStaticPaths } from "astro";
 import NotesList from "@/components/NotesList.astro";
-import { getAllNotesWithSlugs } from "@/utils/notes";
+import { NOTES_PAGE_SIZE, getAllNotesWithSlugs } from "@/utils/notes";
 export const getStaticPaths = (async ({ paginate }) => {
-  return paginate(await getAllNotesWithSlugs("en"), { pageSize: 10 });
+  return paginate(await getAllNotesWithSlugs("en"), { pageSize: NOTES_PAGE_SIZE });
 }) satisfies GetStaticPaths;
 const { page } = Astro.props;
 ---
+
 <NotesList {page} />

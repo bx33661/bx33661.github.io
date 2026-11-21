@@ -12,8 +12,7 @@ test("sitemap lastmod respects editorial updates without build-time churn", () =
 });
 
 test("sitemap XML escapes URL and text delimiters", () => {
-  assert.equal(escapeXml(`https://example.com/?a=1&b=<"'>`),
-    "https://example.com/?a=1&amp;b=&lt;&quot;&apos;&gt;");
+  assert.equal(escapeXml(`https://example.com/?a=1&b=<"'>`), "https://example.com/?a=1&amp;b=&lt;&quot;&apos;&gt;");
 });
 
 test("sitemap omits noncanonical about alias and invented static dates", () => {

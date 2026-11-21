@@ -1,26 +1,18 @@
 ---
-import { localeFromPath, localizedPath } from "@/i18n";
+import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
+import { localeFromPath, localizedPath, stripLocalePrefix } from "@/i18n";
+import { ui } from "@/i18n/ui";
+
+type Props = { embedded?: boolean; currentTitle?: string };
+const { embedded = false, currentTitle } = Astro.props;
+
 const locale = localeFromPath(Astro.url.pathname);
-// Remove current url path and remove trailing slash if exists
-const currentUrlPath = Astro.url.pathname.replace(/^\/en(?=\/|$)/, "").replace(/\/+$/, "");
+const t = ui(locale);
+const currentUrlPath = stripLocalePrefix(Astro.url.pathname);
+const breadcrumbList = currentUrlPath === "/" ? [] : currentUrlPath.slice(1).split("/").filter(Boolean);
 
-// Get url array from path
-// eg: /blog/tags/tailwindcss => ['blog', 'tags', 'tailwindcss']
-const breadcrumbList = currentUrlPath.split("/").slice(1);
-
-// if breadcrumb is Home > Posts > 1 <etc>
-// replace Posts with Posts (page number)
-if (breadcrumbList[0] === "posts") {
-  breadcrumbList.splice(0, 2, `Posts (page ${breadcrumbList[1] || 1})`);
-}
-
-// if breadcrumb is Home > Blog > Tags > [tag] > [page] <etc>
-// replace [tag] > [page] with [tag] (page number)
-if (
-  breadcrumbList[0] === "blog" &&
-  breadcrumbList[1] === "tags" &&
-  !isNaN(Number(breadcrumbList[3]))
-) {
+// Collapse /blog/tags/[tag]/[page] -> [tag] (page number)
+if (!embedded && breadcrumbList[0] === "blog" && breadcrumbList[1] === "tags" && !isNaN(Number(breadcrumbList[3]))) {
   breadcrumbList.splice(
     2,
     2,
@@ -29,8 +21,8 @@ if (
 }
 
 const getBreadcrumbHref = (index: number) =>
-  breadcrumbList[0] === "blog" && breadcrumbList[1] === "tags" && index === 1
-    ? "/blog/#topics"
+  !embedded && breadcrumbList[0] === "blog" && breadcrumbList[1] === "tags" && index === 1
+    ? `${localizedPath("/blog/", locale)}#topics`
     : localizedPath(`/${breadcrumbList.slice(0, index + 1).join("/")}/`, locale);
 
 const routeLabelMap = new Map([
@@ -44,76 +36,83 @@ const routeLabelMap = new Map([
   ["search", "Search"],
 ]);
 
-const getBreadcrumbLabel = (breadcrumb: string) =>
-  routeLabelMap.get(breadcrumb) ?? decodeURIComponent(breadcrumb);
+const getBreadcrumbLabel = (segment: string, isLast: boolean) => {
+  if (isLast && currentTitle) return currentTitle;
+  if (embedded) return segment === "blog" ? t.posts : decodeURIComponent(segment);
+  return routeLabelMap.get(segment) ?? decodeURIComponent(segment);
+};
+
+const showNav = !embedded || breadcrumbList.length > 0;
 ---
 
-<nav class="app-layout mt-6 mb-2" aria-label="breadcrumb">
-  <div class="breadcrumb-bar flex items-center gap-1 text-sm">
-    {/* Home icon */}
-    <a
-      href={localizedPath("/", locale)}
-      class="breadcrumb-link inline-flex shrink-0 items-center transition-colors duration-200 hover:text-accent"
-      aria-label="Home"
-      title="Home"
+{
+  showNav && (
+    <nav
+      class={embedded ? "breadcrumb-trail flex min-w-0 items-center gap-1 text-sm" : "app-layout mt-6 mb-2"}
+      aria-label="breadcrumb"
     >
-      <svg
-        class="size-3.5"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-      </svg>
-    </a>
-    {
-      breadcrumbList.map((breadcrumb, index) => (
-        <>
-          <span
-            class="breadcrumb-sep shrink-0 text-border/40"
+      <div class={embedded ? "contents" : "breadcrumb-bar flex items-center gap-1 text-sm"}>
+        {embedded && (
+          <span class="breadcrumb-sep text-border/50 shrink-0" aria-hidden="true">
+            <IconChevronRight class="size-3.5" />
+          </span>
+        )}
+        <a
+          href={localizedPath("/", locale)}
+          class="breadcrumb-link hover:text-accent inline-flex shrink-0 items-center transition-colors duration-200"
+          aria-label={embedded ? t.backHome : "Home"}
+          title={embedded ? t.home : "Home"}
+        >
+          <svg
+            class="size-3.5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
             aria-hidden="true"
           >
-            <svg
-              class="size-3.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </span>
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        </a>
+        {breadcrumbList.map((breadcrumb, index) => {
+          const isLast = index + 1 === breadcrumbList.length;
+          return (
+            <>
+              <span class="breadcrumb-sep text-border/40 shrink-0" aria-hidden="true">
+                <IconChevronRight class="size-3.5" />
+              </span>
 
-          {index + 1 === breadcrumbList.length ? (
-            <span
-              class:list={[
-                "breadcrumb-current truncate font-medium text-accent/80 capitalize",
-                { lowercase: index > 0 && !routeLabelMap.has(breadcrumb) },
-              ]}
-              aria-current="page"
-            >
-              {getBreadcrumbLabel(breadcrumb)}
-            </span>
-          ) : (
-            <a
-              href={getBreadcrumbHref(index)}
-              class="breadcrumb-link shrink-0 capitalize transition-colors duration-200 hover:text-accent"
-            >
-              {getBreadcrumbLabel(breadcrumb)}
-            </a>
-          )}
-        </>
-      ))
-    }
-  </div>
-</nav>
+              {isLast ? (
+                <span
+                  class:list={[
+                    "breadcrumb-current text-accent/80 truncate font-medium",
+                    {
+                      capitalize: !embedded,
+                      lowercase: !embedded && index > 0 && !routeLabelMap.has(breadcrumb),
+                    },
+                  ]}
+                  aria-current="page"
+                >
+                  {getBreadcrumbLabel(breadcrumb, true)}
+                </span>
+              ) : (
+                <a
+                  href={getBreadcrumbHref(index)}
+                  class="breadcrumb-link hover:text-accent shrink-0 capitalize transition-colors duration-200"
+                >
+                  {getBreadcrumbLabel(breadcrumb, false)}
+                </a>
+              )}
+            </>
+          );
+        })}
+      </div>
+    </nav>
+  )
+}
 
 <style>
   .breadcrumb-link {
@@ -126,5 +125,15 @@ const getBreadcrumbLabel = (breadcrumb: string) =>
 
   .breadcrumb-current {
     max-width: 28ch;
+  }
+
+  .breadcrumb-trail .breadcrumb-current {
+    max-width: 22ch;
+  }
+
+  @media (max-width: 639px) {
+    .breadcrumb-trail {
+      display: none;
+    }
   }
 </style>

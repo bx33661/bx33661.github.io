@@ -26,7 +26,7 @@
     h3,
     h4,
     th {
-      @apply mb-3 text-foreground;
+      @apply text-foreground mb-3;
     }
 
     h3 {
@@ -44,7 +44,7 @@
     }
 
     a {
-      @apply wrap-break-word text-foreground decoration-dashed underline-offset-4 hover:text-accent focus-visible:no-underline;
+      @apply text-foreground hover:text-accent wrap-break-word decoration-dashed underline-offset-4 focus-visible:no-underline;
     }
 
     ul {
@@ -60,7 +60,7 @@
     }
 
     img {
-      @apply mx-auto border border-border;
+      @apply border-border mx-auto border;
     }
 
     figcaption {
@@ -72,7 +72,7 @@
 
       th,
       td {
-        @apply border border-border p-2;
+        @apply border-border border p-2;
         word-wrap: break-word;
         word-break: break-word;
         hyphens: auto;
@@ -89,7 +89,7 @@
     }
 
     code {
-      @apply rounded bg-muted/75 p-1 wrap-break-word text-foreground before:content-none after:content-none;
+      @apply bg-muted/75 text-foreground rounded p-1 wrap-break-word before:content-none after:content-none;
     }
 
     .astro-code code {
@@ -102,15 +102,19 @@
 
     /* ===== Table of Contents (modern card) ===== */
     details {
-      @apply block w-full cursor-pointer rounded-2xl border border-border/20 bg-muted/5 text-foreground backdrop-blur-sm transition-all duration-300 ease-in-out select-none hover:border-accent/25 hover:shadow-lg hover:shadow-accent/5 [&_p]:hidden [&_ul]:my-0!;
+      @apply border-border/20 bg-muted/5 text-foreground hover:border-accent/25 hover:shadow-accent/5 block w-full rounded-2xl border backdrop-blur-sm transition-all duration-300 ease-in-out hover:shadow-lg [&_ul]:my-0!;
+    }
+
+    details > :not(summary) {
+      @apply px-4 pb-3;
     }
 
     details[open] {
-      @apply border-accent/20 bg-muted/8 shadow-md shadow-accent/5;
+      @apply border-accent/20 bg-muted/8 shadow-accent/5 shadow-md;
     }
 
     summary {
-      @apply flex list-none items-center gap-2 px-4 py-3 font-cartograph text-sm font-medium tracking-wide text-foreground transition-colors duration-200 hover:text-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent focus-visible:outline-dashed;
+      @apply font-cartograph text-foreground hover:text-accent focus-visible:outline-accent flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium tracking-wide transition-colors duration-200 select-none focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-dashed;
     }
 
     summary:hover::before,
@@ -175,7 +179,7 @@
 
     /* TOC inner list container */
     details > ul {
-      @apply relative mx-0 mt-0 mb-0 border-t border-border/15 px-4 pt-2 pb-3;
+      @apply border-border/15 relative mx-0 mt-0 mb-0 border-t px-4 pt-2 pb-3;
     }
 
     details > ul > li {
@@ -187,7 +191,7 @@
     }
 
     details > ul li a {
-      @apply relative inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-cartograph text-[13px] text-foreground/85 no-underline transition-all duration-200 hover:bg-accent/8 hover:text-accent hover:no-underline;
+      @apply font-cartograph text-foreground/85 hover:bg-accent/8 hover:text-accent relative inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[13px] no-underline transition-all duration-200 hover:no-underline;
     }
 
     details > ul li a::before {
@@ -208,11 +212,11 @@
 
     /* Nested list (sub-items) */
     details > ul ul {
-      @apply my-0 ml-3 border-l-2 border-accent/15 pl-2;
+      @apply border-accent/15 my-0 ml-3 border-l-2 pl-2;
     }
 
     details > ul ul li a {
-      @apply text-[12px] text-foreground/70;
+      @apply text-foreground/70 text-[12px];
     }
 
     details > ul ul li a::before {
@@ -226,7 +230,7 @@
     }
 
     pre {
-      @apply focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-dashed;
+      @apply focus-visible:outline-accent focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed;
     }
   }
 
@@ -237,7 +241,7 @@
   }
 
   .astro-code {
-    @apply flex border bg-(--shiki-light-bg) text-(--shiki-light) outline-border [&_span]:text-(--shiki-light);
+    @apply outline-border flex border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);
   }
 
   html[data-theme="dark"] .astro-code {
@@ -257,7 +261,7 @@
       @apply inline-block w-full bg-slate-400/20;
     }
     .highlighted-word {
-      @apply rounded-sm border border-border px-0.5 py-px;
+      @apply border-border rounded-sm border px-0.5 py-px;
     }
   }
 }

@@ -1,26 +1,50 @@
-import { getAllPostSlugs, getAllNoteSlugs } from "@/lib/data-utils";
-import { entryAlternates, localizedPath, sectionAlternates, type Locale } from "./index";
+import { getAllPostSlugs, getAllNoteSlugs, getAllPosts, getAllNotes } from "@/lib/data-utils";
+import { withCache } from "@/lib/cache-utils";
+import { LOCALES, entryAlternates, localizedPath, sectionAlternates, type LanguagePaths } from "./index";
 
-export async function languagePaths(pathname: string) {
-  const sections = sectionAlternates(pathname);
-  if (Object.keys(sections).length) return sections;
-  const section = /^\/(?:en\/)?(blog|notes)\/[^/]+\/$/.exec(`${pathname.replace(/\/+$/, "")}/`)?.[1];
-  if (!section) return {};
-  const entries = (await Promise.all((["zh-CN", "en"] as Locale[]).map(async (locale) => {
-    const items = section === "blog"
-      ? (await getAllPostSlugs(locale)).map(({ post, slug }) => ({ data: post.data, slug }))
-      : (await getAllNoteSlugs(locale)).map(({ note, slug }) => ({ data: note.data, slug }));
-    return items.map(({ data, slug }) => ({
-      ...data,
-      path: localizedPath(`/${section}/${encodeURIComponent(slug)}/`, locale),
-    }));
-  }))).flat();
-  const path = `${pathname.replace(/\/+$/, "")}/`;
-  const current = entries.find((entry) => decodeURI(entry.path) === decodeURI(path));
-  return current ? entryAlternates(current, entries) : {};
+function safeDecodeURI(value: string): string {
+  try {
+    return decodeURI(value);
+  } catch {
+    return value;
+  }
 }
 
-export async function hasEnglishContent() {
-  const [posts, notes] = await Promise.all([getAllPostSlugs("en"), getAllNoteSlugs("en")]);
+export async function languagePaths(pathname: string): Promise<LanguagePaths> {
+  const sections = sectionAlternates(pathname);
+  if (Object.keys(sections).length) return sections;
+
+  const normalizedPath = `${pathname.replace(/\/+$/, "")}/`;
+  const section = /^\/(?:en\/)?(blog|notes)\/[^/]+\/$/.exec(normalizedPath)?.[1];
+  if (!section) return {};
+
+  return withCache(
+    `language-paths:${normalizedPath}`,
+    async () => {
+      const entries = (
+        await Promise.all(
+          LOCALES.map(async (locale) => {
+            const items =
+              section === "blog"
+                ? (await getAllPostSlugs(locale)).map(({ post, slug }) => ({ data: post.data, slug }))
+                : (await getAllNoteSlugs(locale)).map(({ note, slug }) => ({ data: note.data, slug }));
+            return items.map(({ data, slug }) => ({
+              ...data,
+              path: localizedPath(`/${section}/${encodeURIComponent(slug)}/`, locale),
+            }));
+          }),
+        )
+      ).flat();
+
+      const decodedPath = safeDecodeURI(normalizedPath);
+      const current = entries.find((entry) => safeDecodeURI(entry.path) === decodedPath);
+      return current ? entryAlternates(current, entries) : {};
+    },
+    import.meta.env.DEV ? 0 : undefined,
+  );
+}
+
+export async function hasEnglishContent(): Promise<boolean> {
+  const [posts, notes] = await Promise.all([getAllPosts("en"), getAllNotes("en")]);
   return posts.length + notes.length > 0;
 }

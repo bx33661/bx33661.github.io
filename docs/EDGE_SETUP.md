@@ -14,14 +14,13 @@ If you put a CDN / reverse proxy in front of Pages (Cloudflare, Fastly, etc.), c
 
 These are first-class pages. **Do not** 301 them away:
 
-| Path | Module |
-|------|--------|
+| Path                          | Module          |
+| ----------------------------- | --------------- |
 | `/galleries/`, `/galleries/*` | Photo galleries |
-| `/blog/`, `/blog/*` | Blog |
-| `/notes/`, `/notes/*` | Notes |
-| `/friends/` | Friends |
-| `/search/` | Pagefind search |
-
+| `/blog/`, `/blog/*`           | Blog            |
+| `/notes/`, `/notes/*`         | Notes           |
+| `/friends/`                   | Friends         |
+| `/search/`                    | Pagefind search |
 
 ## Recommended edge redirects (301)
 
@@ -30,23 +29,28 @@ Only for **legacy** paths that no longer have a dedicated page tree (or only hav
 ```text
 /bento          → /galleries/          301
 /bento/         → /galleries/          301
-/tags           → /blog/tags/          301
-/tags/          → /blog/tags/          301
+/tags           → /blog/#topics        301
+/tags/          → /blog/#topics        301
 /tags/*         → /blog/tags/:splat    301
 /album          → /galleries/          301
 /album/         → /galleries/          301
 /album/*        → /galleries/:splat    301   # optional if old album slugs match
 /archive        → /archives/           301
 /archive/       → /archives/           301
+/blog/tags/     → /blog/#topics        301   # /blog/#topics is the canonical topics index
 ```
+
+Note: `/about/` intentionally renders the home page with `canonical` pointing to `/` rather than redirecting.
 
 Repo mirrors (platform-dependent):
 
-- `public/_redirects` — Netlify/Cloudflare Pages syntax (`/tags/*`, `/bento`).
+- `public/_redirects` — Netlify/Cloudflare Pages syntax (`/tags`, `/tags/*`, `/bento`).
 - Static HTML refresh fallbacks (work on GitHub Pages without edge):
   - `src/pages/album/**`
   - `src/pages/archive.astro`
-  - `src/pages/tags/**` → `/blog/tags/**` (known tag slugs only; unknown tags still 404 without edge)
+  - `src/pages/blog/tags/index.astro` → `/blog/#topics`
+  - `src/pages/tags/index.astro` → `/blog/#topics`
+  - `src/pages/tags/[tag].astro` → `/blog/tags/<tag>/` (known tag slugs only; unknown tags still 404 without edge)
 
 ## Security headers
 
@@ -58,7 +62,7 @@ X-Frame-Options: DENY
 Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: geolocation=(), microphone=(), camera=()
 Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://gstatic.loli.net; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com https://app.posthog.com https://giscus.app; frame-src https://giscus.app; frame-ancestors 'none'; base-uri 'self'; object-src 'none'
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://analytics.ahrefs.com https://giscus.app; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com https://app.posthog.com https://giscus.app; frame-src https://giscus.app https://player.bilibili.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'
 ```
 
 Same set lives in `public/_headers` and the HTML CSP meta in `Layout.astro` (Giscus pre-allowed so comments can be turned on without a CSP chase).
@@ -85,6 +89,6 @@ Expected when edge is configured:
 
 On bare GitHub Pages (no edge):
 
-- `/tags/`, `/tags/<known-slug>/` → HTML refresh → `/blog/tags/...`
+- `/tags/` → HTML refresh → `/blog/#topics`; `/tags/<known-slug>/` → HTML refresh → `/blog/tags/<known-slug>/`
 - `/album/`, `/archive` → HTML refresh redirects
 - Security headers above are absent from the HTTP response (CSP meta still in HTML)

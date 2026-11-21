@@ -16,7 +16,12 @@ test("brand master is a pure vector and header/footer preserve its proportions",
 });
 
 test("platform icons have their declared sizes and opaque backgrounds", async () => {
-  for (const [name, size] of [["bx-logo-32.png", 32], ["bx-logo-192.png", 192], ["bx-logo-512.png", 512], ["apple-touch-icon.png", 180]]) {
+  for (const [name, size] of [
+    ["bx-logo-32.png", 32],
+    ["bx-logo-192.png", 192],
+    ["bx-logo-512.png", 512],
+    ["apple-touch-icon.png", 180],
+  ]) {
     const meta = await sharp(`public/brand/${name}`).metadata();
     assert.equal(meta.width, size);
     assert.equal(meta.height, size);

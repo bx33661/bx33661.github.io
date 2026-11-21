@@ -1,73 +1,50 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+import { createDeterministicSlug, parseFrontmatter, walkMarkdownFiles } from "./lib/content-utils.mjs";
 
 const PUBLIC_ROOT = path.resolve("public");
 const COLLECTION_PATHS = {
   blog: path.resolve("src/content/blog"),
   notes: path.resolve("src/data/notes"),
+  galleries: path.resolve("src/data/galleries"),
 };
 const COLLECTIONS = Object.keys(COLLECTION_PATHS);
 
 const REQUIRED_FIELDS = {
   blog: ["title", "description", "date"],
   notes: ["title", "description", "date"],
+  galleries: ["title", "description"],
 };
 
-function walkMarkdownFiles(rootDir) {
-  const result = [];
-  const stack = [rootDir];
+const IMAGE_KEYS = ["ogImage", "cover", "image", "coverImage"];
+const existsCache = new Map();
 
-  while (stack.length > 0) {
-    const current = stack.pop();
-    const entries = fs.readdirSync(current, { withFileTypes: true });
-    for (const entry of entries) {
-      const fullPath = path.join(current, entry.name);
-      if (entry.isDirectory()) {
-        stack.push(fullPath);
-      } else if (entry.isFile() && /\.(md|mdx)$/i.test(entry.name)) {
-        result.push(fullPath);
-      }
-    }
+function cachedExists(targetPath) {
+  let exists = existsCache.get(targetPath);
+  if (exists === undefined) {
+    exists = fs.existsSync(targetPath);
+    existsCache.set(targetPath, exists);
   }
-
-  return result;
-}
-
-function extractFrontmatter(raw) {
-  const normalized = raw.replace(/^\uFEFF/, "");
-  const match = normalized.match(/^\s*---\s*\n([\s\S]*?)\n---\s*(?:\n|$)/);
-  return match ? match[1] : null;
-}
-
-function hasKey(frontmatter, key) {
-  const pattern = new RegExp(`^${key}\\s*:`, "m");
-  return pattern.test(frontmatter);
-}
-
-/** Strip a YAML inline comment outside of quotes: `false  # draft` → `false`. */
-function stripInlineComment(value) {
-  let inSingle = false;
-  let inDouble = false;
-  for (let i = 0; i < value.length; i += 1) {
-    const ch = value[i];
-    if (ch === "'" && !inDouble) inSingle = !inSingle;
-    else if (ch === '"' && !inSingle) inDouble = !inDouble;
-    else if (ch === "#" && !inSingle && !inDouble) {
-      return value.slice(0, i).trimEnd();
-    }
-  }
-  return value.trim();
-}
-
-function getScalarValue(frontmatter, key) {
-  const pattern = new RegExp(`^${key}\\s*:\\s*(.+)$`, "m");
-  const match = frontmatter.match(pattern);
-  if (!match) return "";
-  return stripInlineComment(match[1].trim());
+  return exists;
 }
 
 function stripQuotes(value) {
-  return value.replace(/^['"`](.*)['"`]$/, "$1").trim();
+  return String(value ?? "")
+    .trim()
+    .replace(/^['"`](.*)['"`]$/, "$1")
+    .trim();
+}
+
+function parseDateValue(value) {
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+  const text = stripQuotes(value);
+  if (!text) return null;
+  const parsed = new Date(text);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function hasNonEmptyArray(value) {
+  return Array.isArray(value) && value.some((item) => stripQuotes(item).length > 0);
 }
 
 function publicPathToFilePath(value) {
@@ -75,82 +52,41 @@ function publicPathToFilePath(value) {
   return path.resolve(PUBLIC_ROOT, decodedPath.replace(/^\/+/, ""));
 }
 
-function resolveLocalImagePath(imagePath) {
-  if (/^https?:\/\//i.test(imagePath)) {
+function parseMarkdownImageTarget(rawTarget) {
+  const trimmed = rawTarget.trim();
+  const angleMatch = trimmed.match(/^<([^>]+)>/);
+  if (angleMatch) return angleMatch[1].trim();
+  return stripQuotes(trimmed.replace(/\s+(?:"[^"]*"|'[^']*')\s*$/, ""));
+}
+
+function stripNonProseRegions(body) {
+  return body
+    .replace(/(^|\n)[ \t]*(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n[ \t]*\2[ \t]*(?=\n|$)/g, "\n")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/`[^`\n]+`/g, "");
+}
+
+function resolveLocalImagePath(imagePath, filePath) {
+  const cleanPath = stripQuotes(imagePath).split(/[?#]/, 1)[0];
+  if (!cleanPath || /^https?:\/\//i.test(cleanPath) || /^data:/i.test(cleanPath)) {
     return null;
   }
 
-  if (imagePath.startsWith("/")) {
-    const publicPath = publicPathToFilePath(imagePath);
-    if (fs.existsSync(publicPath)) {
-      return publicPath;
-    }
+  if (cleanPath.startsWith("/")) {
+    return publicPathToFilePath(cleanPath);
+  }
 
-    return publicPath;
+  if (filePath && (cleanPath.startsWith("./") || cleanPath.startsWith("../"))) {
+    let decodedRelative = cleanPath;
+    try {
+      decodedRelative = decodeURIComponent(cleanPath);
+    } catch {
+      /* Preserve literal path if percent-encoding is invalid. */
+    }
+    return path.resolve(path.dirname(filePath), decodedRelative);
   }
 
   return null;
-}
-
-function hasNonEmptyArray(frontmatter, key) {
-  const inlinePattern = new RegExp(`^${key}\\s*:\\s*\\[(.*)\\]\\s*$`, "m");
-  const inlineMatch = frontmatter.match(inlinePattern);
-  if (inlineMatch) {
-    return (
-      inlineMatch[1]
-        .split(",")
-        .map((part) => part.trim())
-        .filter(Boolean).length > 0
-    );
-  }
-
-  const blockPattern = new RegExp(
-    `^${key}\\s*:\\s*\\n([\\s\\S]*?)(?=\\n[A-Za-z_][\\w-]*\\s*:|$)`,
-    "m",
-  );
-  const blockMatch = frontmatter.match(blockPattern);
-  if (!blockMatch) return false;
-
-  const listLines = blockMatch[1]
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith("-"));
-
-  return listLines.length > 0;
-}
-
-function parseDateValue(frontmatter, key) {
-  const value = stripQuotes(getScalarValue(frontmatter, key));
-  if (!value) return null;
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed;
-}
-
-function isTruthyFalse(value) {
-  return /^(false|0|no)$/i.test(value.trim());
-}
-
-function stableHash(input) {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash).toString(36);
-}
-
-function createDeterministicSlug(source, prefix) {
-  const normalized = source
-    .replace(/\.(md|mdx)$/i, "")
-    .replace(/[\\/]/g, "-")
-    .normalize("NFKD")
-    .toLowerCase()
-    .replace(/[^\p{Letter}\p{Number}]+/gu, "-")
-    .replace(/^-+|-+$/g, "");
-
-  return normalized || `${prefix}-${stableHash(source)}`;
 }
 
 function resolveCollection(filePath) {
@@ -160,20 +96,25 @@ function resolveCollection(filePath) {
       return collection;
     }
   }
-
   return null;
 }
 
-function resolveSlugForFile(collection, filePath, frontmatter) {
-  const slugRaw = stripQuotes(getScalarValue(frontmatter, "slug"));
+function resolveSlugForFile(collection, filePath, data) {
+  const slugRaw = stripQuotes(data.slug);
   if (slugRaw) return slugRaw;
 
-  const relFromCollection = path.relative(
-    COLLECTION_PATHS[collection],
-    filePath,
-  );
-  const prefix = collection === "notes" ? "note" : "post";
-  return createDeterministicSlug(relFromCollection, prefix);
+  const relFromCollection = path.relative(COLLECTION_PATHS[collection], filePath);
+  return createDeterministicSlug(relFromCollection, collection === "notes" ? "note" : "post");
+}
+
+function checkFrontmatterImages(data, filePath, relPath, warnings) {
+  for (const imageKey of IMAGE_KEYS) {
+    const value = typeof data[imageKey] === "string" ? stripQuotes(data[imageKey]) : "";
+    const resolved = value ? resolveLocalImagePath(value, filePath) : null;
+    if (resolved && !cachedExists(resolved)) {
+      warnings.push(`${relPath}: local ${imageKey} not found -> ${value}`);
+    }
+  }
 }
 
 function checkFile(filePath, errors, warnings, slugRegistry) {
@@ -182,93 +123,86 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
   if (!collection) return;
 
   const relPath = path.relative(process.cwd(), filePath);
-  const frontmatter = extractFrontmatter(raw);
-  if (!frontmatter) {
+  let parsed;
+  try {
+    parsed = parseFrontmatter(raw);
+  } catch (err) {
+    errors.push(`${relPath}: invalid YAML frontmatter (${err instanceof Error ? err.message : String(err)})`);
+    return;
+  }
+
+  if (!parsed) {
     errors.push(`${relPath}: missing frontmatter block`);
     return;
   }
 
-  const requiredFields = REQUIRED_FIELDS[collection];
-  for (const field of requiredFields) {
-    if (!hasKey(frontmatter, field)) {
+  const { data, body } = parsed;
+  for (const field of REQUIRED_FIELDS[collection]) {
+    if (!Object.prototype.hasOwnProperty.call(data, field)) {
       errors.push(`${relPath}: missing required field "${field}"`);
       continue;
     }
 
-    if (field === "tags") {
-      if (!hasNonEmptyArray(frontmatter, "tags")) {
-        errors.push(`${relPath}: "tags" must be a non-empty array`);
-      }
-      continue;
-    }
-
-    const value = stripQuotes(getScalarValue(frontmatter, field));
-    if (!value) {
+    if (stripQuotes(data[field]) === "") {
       errors.push(`${relPath}: "${field}" cannot be empty`);
     }
   }
 
   if (collection === "blog" || collection === "notes") {
-    const date = parseDateValue(frontmatter, "date");
-    if (!date) {
+    if (!parseDateValue(data.date)) {
       errors.push(`${relPath}: invalid "date", expected a parseable date`);
     }
 
-    const title = stripQuotes(getScalarValue(frontmatter, "title"));
-    const description = stripQuotes(getScalarValue(frontmatter, "description"));
+    const title = stripQuotes(data.title);
+    const description = stripQuotes(data.description);
     if (title && title.length > 80) {
-      warnings.push(
-        `${relPath}: title is long (${title.length} chars), consider <= 80`,
-      );
+      warnings.push(`${relPath}: title is long (${title.length} chars), consider <= 80`);
     }
     if (description && (description.length < 40 || description.length > 180)) {
-      warnings.push(
-        `${relPath}: description length is ${description.length}, recommended 40-180`,
-      );
+      warnings.push(`${relPath}: description length is ${description.length}, recommended 40-180`);
     }
-    if (!hasNonEmptyArray(frontmatter, "tags")) {
-      warnings.push(
-        `${relPath}: missing/empty tags, recommended for archive and SEO`,
-      );
+    if (!hasNonEmptyArray(data.tags)) {
+      warnings.push(`${relPath}: missing/empty tags, recommended for archive and SEO`);
     }
-    if (collection === "blog" && !hasNonEmptyArray(frontmatter, "authors")) {
+    if (collection === "blog" && !hasNonEmptyArray(data.authors)) {
       warnings.push(`${relPath}: missing/empty authors`);
     }
 
-    const cover = stripQuotes(getScalarValue(frontmatter, "cover"));
-    const resolvedCover = cover ? resolveLocalImagePath(cover) : null;
-    if (resolvedCover && !fs.existsSync(resolvedCover)) {
-      warnings.push(`${relPath}: local cover not found -> ${cover}`);
-    }
+    checkFrontmatterImages(data, filePath, relPath, warnings);
 
-    const markdownImagePattern = /!\[[^\]]*]\(([^)]+)\)/g;
-    for (const match of raw.matchAll(markdownImagePattern)) {
-      const imagePath = stripQuotes(match[1].trim());
-      if (!imagePath || /^https?:\/\//i.test(imagePath)) {
-        continue;
-      }
-      const resolvedImage = resolveLocalImagePath(imagePath);
-      if (resolvedImage && !fs.existsSync(resolvedImage)) {
+    const proseBody = stripNonProseRegions(body);
+    for (const match of proseBody.matchAll(/!\[[^\]]*]\(([^)\n]+)\)/g)) {
+      const imagePath = parseMarkdownImageTarget(match[1]);
+      const resolvedImage = resolveLocalImagePath(imagePath, filePath);
+      if (resolvedImage && !cachedExists(resolvedImage)) {
         warnings.push(`${relPath}: local image not found -> ${imagePath}`);
       }
     }
+
+    for (const match of proseBody.matchAll(/<img\b[^>]*\bsrc\s*=\s*(['"])([^'"]+)\1/gi)) {
+      const imagePath = stripQuotes(match[2]);
+      const resolvedImage = resolveLocalImagePath(imagePath, filePath);
+      if (resolvedImage && !cachedExists(resolvedImage)) {
+        warnings.push(`${relPath}: local <img> not found -> ${imagePath}`);
+      }
+    }
+  } else if (collection === "galleries") {
+    if (!parseDateValue(data.date) && !parseDateValue(data.pubDatetime)) {
+      errors.push(`${relPath}: invalid or missing "date"/"pubDatetime", expected a parseable date`);
+    }
+    checkFrontmatterImages(data, filePath, relPath, warnings);
   }
 
-  const draftRaw = getScalarValue(frontmatter, "draft");
-  if (draftRaw && !isTruthyFalse(draftRaw)) {
-    warnings.push(
-      `${relPath}: draft is not false, page may be hidden in production`,
-    );
+  if (data.draft !== undefined && data.draft !== false && !/^(false|0|no)$/i.test(String(data.draft).trim())) {
+    warnings.push(`${relPath}: draft is not false, page may be hidden in production`);
   }
 
   if (collection === "blog" || collection === "notes") {
-    const slug = resolveSlugForFile(collection, filePath, frontmatter);
+    const slug = resolveSlugForFile(collection, filePath, data);
     const key = `${collection}:${slug}`;
     const existing = slugRegistry.get(key);
     if (existing && existing !== relPath) {
-      errors.push(
-        `${relPath}: duplicate slug "${slug}" (already used by ${existing})`,
-      );
+      errors.push(`${relPath}: duplicate slug "${slug}" (already used by ${existing})`);
     } else {
       slugRegistry.set(key, relPath);
     }
@@ -283,8 +217,7 @@ function main() {
   for (const collection of COLLECTIONS) {
     const collectionDir = COLLECTION_PATHS[collection];
     if (!fs.existsSync(collectionDir)) continue;
-    const files = walkMarkdownFiles(collectionDir);
-    for (const filePath of files) {
+    for (const filePath of walkMarkdownFiles(collectionDir)) {
       checkFile(filePath, errors, warnings, slugRegistry);
     }
   }
@@ -295,21 +228,15 @@ function main() {
 
   if (errors.length > 0) {
     console.log("");
-    for (const error of errors) {
-      console.error(`[FAIL] ${error}`);
-    }
+    for (const error of errors) console.error(`[FAIL] ${error}`);
   }
 
   if (warnings.length > 0) {
     console.log("");
-    for (const warning of warnings) {
-      console.warn(`[WARN] ${warning}`);
-    }
+    for (const warning of warnings) console.warn(`[WARN] ${warning}`);
   }
 
-  if (errors.length > 0) {
-    process.exit(1);
-  }
+  if (errors.length > 0) process.exit(1);
 }
 
 main();

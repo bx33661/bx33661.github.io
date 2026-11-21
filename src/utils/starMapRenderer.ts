@@ -37,32 +37,54 @@ export async function createStarMapRenderer(
   };
   try {
     const adapter = await navigator.gpu.requestAdapter({ powerPreference: "low-power" });
-    if (signal.aborted) { destroy(); return null; }
-    if (!adapter) { unavailable(); return null; }
+    if (signal.aborted) {
+      destroy();
+      return null;
+    }
+    if (!adapter) {
+      unavailable();
+      return null;
+    }
     device = await adapter.requestDevice();
-    if (signal.aborted) { device.destroy(); return null; }
+    if (signal.aborted) {
+      device.destroy();
+      return null;
+    }
     void device.lost.then(unavailable);
     device.addEventListener("uncapturederror", unavailable);
     context = canvas.getContext("webgpu");
-    if (!context) { unavailable(); return null; }
+    if (!context) {
+      unavailable();
+      return null;
+    }
     const format = navigator.gpu.getPreferredCanvasFormat();
     context.configure({ device, format, alphaMode: "premultiplied" });
     device.pushErrorScope("validation");
     const module = device.createShaderModule({ label: "Upstream four-layer homepage field", code: shaderSource });
     const pipeline = await device.createRenderPipelineAsync({
-      layout: "auto", vertex: { module, entryPoint: "vertex" },
+      layout: "auto",
+      vertex: { module, entryPoint: "vertex" },
       fragment: { module, entryPoint: "fragment", targets: [{ format }] },
       primitive: { topology: "triangle-list" },
     });
     const validation = await device.popErrorScope();
-    if (signal.aborted || disposed) { destroy(); return null; }
-    if (validation) { unavailable(); return null; }
+    if (signal.aborted || disposed) {
+      destroy();
+      return null;
+    }
+    if (validation) {
+      unavailable();
+      return null;
+    }
     buffer = device.createBuffer({ size: 64, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
-    const group = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer } }] });
+    const group = device.createBindGroup({
+      layout: pipeline.getBindGroupLayout(0),
+      entries: [{ binding: 0, resource: { buffer } }],
+    });
     const values = new Float32Array(16);
     const draw = (now: number) => {
       if (!running || disposed) return;
-      if (previous) elapsed += Math.min((now - previous) / 1000, .1);
+      if (previous) elapsed += Math.min((now - previous) / 1000, 0.1);
       previous = now;
       // One bounded pass; submit at most 30 frames per second.
       if (now - submitted >= 1000 / 30 && device && context && buffer) {
@@ -72,24 +94,38 @@ export async function createStarMapRenderer(
           values[0] = elapsed;
           values[1] = 1 / 30;
           values[2] = frameCount++;
-          values[4] = canvas.width; values[5] = canvas.height;
+          values[4] = canvas.width;
+          values[5] = canvas.height;
           values[6] = canvas.clientWidth || canvas.width;
           values[7] = canvas.clientHeight || canvas.height;
           values[8] = canvas.width / canvas.height;
-          values[10] = .5; values[11] = .5;
+          values[10] = 0.5;
+          values[11] = 0.5;
           device.queue.writeBuffer(buffer, 0, values);
           const encoder = device.createCommandEncoder();
-          const pass = encoder.beginRenderPass({ colorAttachments: [{
-            view: context.getCurrentTexture().createView(),
-            clearValue: { r: 0, g: 0, b: 0, a: 0 }, loadOp: "clear", storeOp: "store",
-          }] });
+          const pass = encoder.beginRenderPass({
+            colorAttachments: [
+              {
+                view: context.getCurrentTexture().createView(),
+                clearValue: { r: 0, g: 0, b: 0, a: 0 },
+                loadOp: "clear",
+                storeOp: "store",
+              },
+            ],
+          });
           pass.setPipeline(pipeline);
           pass.setBindGroup(0, group);
           pass.draw(3);
           pass.end();
           device.queue.submit([encoder.finish()]);
-          if (!ready) { ready = true; onReady(); }
-        } catch { unavailable(); return; }
+          if (!ready) {
+            ready = true;
+            onReady();
+          }
+        } catch {
+          unavailable();
+          return;
+        }
       }
       frame = requestAnimationFrame(draw);
     };
@@ -104,8 +140,13 @@ export async function createStarMapRenderer(
     const size = canvas.getBoundingClientRect();
     resize(size.width, size.height);
     return {
-      resize, destroy,
-      pause() { running = false; cancelAnimationFrame(frame); previous = 0; },
+      resize,
+      destroy,
+      pause() {
+        running = false;
+        cancelAnimationFrame(frame);
+        previous = 0;
+      },
       resume() {
         if (running || disposed) return;
         running = true;

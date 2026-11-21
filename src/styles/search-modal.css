@@ -86,16 +86,29 @@
   min-height: 11rem;
   padding: 1rem 1.1rem 1.35rem;
 }
-#modal-pagefind-search {
+.pagefind-surface {
   --pagefind-ui-scale: 0.85;
   --pagefind-ui-primary: var(--accent);
   --pagefind-ui-text: var(--foreground);
   --pagefind-ui-background: var(--background);
   --pagefind-ui-border: var(--border);
   --pagefind-ui-border-radius: 0.65rem;
+  --pf-result-py: 0.8rem;
+  --pf-title-size: 0.96rem;
+  --pf-excerpt-size: 0.83rem;
+  --pf-excerpt-mt: 0.3rem;
+  --pf-excerpt-lh: 1.5;
+  --pf-excerpt-alpha: 62%;
+  --pf-mark-alpha: 22%;
+  --pf-nested-mt: 0.35rem;
+  --pf-nested-pl: 0.8rem;
+  --pf-fallback-mt: 0.5rem;
+  --pf-status-mt: 0.75rem;
+  --pf-status-size: 0.82rem;
+  --pf-status-alpha: 58%;
 }
-#modal-pagefind-search .pagefind-ui__search-input,
-#modal-pagefind-search .search-fallback-input {
+.pagefind-surface .pagefind-ui__search-input,
+.pagefind-surface .search-fallback-input {
   width: 100%;
   min-height: 3rem;
   border: 1px solid var(--border);
@@ -103,59 +116,64 @@
   background: var(--background);
   color: var(--foreground);
   font: inherit;
+}
+.pagefind-surface .pagefind-ui__search-input {
+  padding: 0.7rem calc(70px * var(--pagefind-ui-scale)) 0.7rem calc(54px * var(--pagefind-ui-scale));
+}
+.pagefind-surface .search-fallback-input {
   padding: 0.7rem 0.9rem;
 }
-#modal-pagefind-search .pagefind-ui__search-input:focus-visible,
-#modal-pagefind-search .search-fallback-input:focus-visible {
+.pagefind-surface .pagefind-ui__search-input:focus-visible,
+.pagefind-surface .search-fallback-input:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-#modal-pagefind-search .pagefind-ui__result,
-#modal-pagefind-search .search-fallback-results li {
+.pagefind-surface .pagefind-ui__result,
+.pagefind-surface .search-fallback-results li {
   border-top: 1px solid var(--border);
-  padding: 0.8rem 0;
+  padding: var(--pf-result-py) 0;
 }
-#modal-pagefind-search .pagefind-ui__result-title a,
-#modal-pagefind-search .search-fallback-link strong {
+.pagefind-surface .pagefind-ui__result-title a,
+.pagefind-surface .search-fallback-link strong {
   color: var(--foreground);
-  font-size: 0.96rem;
+  font-size: var(--pf-title-size);
   font-weight: 650;
   text-decoration: none;
 }
-#modal-pagefind-search .pagefind-ui__result-title a:hover,
-#modal-pagefind-search .search-fallback-link:hover strong {
+.pagefind-surface .pagefind-ui__result-title a:hover,
+.pagefind-surface .search-fallback-link:hover strong {
   color: var(--accent);
 }
-#modal-pagefind-search .pagefind-ui__result-excerpt,
-#modal-pagefind-search .search-fallback-link span {
+.pagefind-surface .pagefind-ui__result-excerpt,
+.pagefind-surface .search-fallback-link span {
   display: block;
-  margin-top: 0.3rem;
-  color: color-mix(in srgb, var(--foreground) 62%, transparent);
-  font-size: 0.83rem;
-  line-height: 1.5;
+  margin-top: var(--pf-excerpt-mt);
+  color: color-mix(in srgb, var(--foreground) var(--pf-excerpt-alpha), transparent);
+  font-size: var(--pf-excerpt-size);
+  line-height: var(--pf-excerpt-lh);
 }
-#modal-pagefind-search mark {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
+.pagefind-surface mark {
+  background: color-mix(in srgb, var(--accent) var(--pf-mark-alpha), transparent);
   color: inherit;
 }
-#modal-pagefind-search .pagefind-ui__result-nested {
-  margin-top: 0.35rem;
-  padding-left: 0.8rem;
+.pagefind-surface .pagefind-ui__result-nested {
+  margin-top: var(--pf-nested-mt);
+  padding-left: var(--pf-nested-pl);
   border-left: 1px solid var(--border);
 }
-#modal-pagefind-search .search-fallback-results {
+.pagefind-surface .search-fallback-results {
   list-style: none;
   padding: 0;
-  margin: 0.5rem 0 0;
+  margin: var(--pf-fallback-mt) 0 0;
 }
-#modal-pagefind-search .search-fallback-link {
+.pagefind-surface .search-fallback-link {
   display: block;
   text-decoration: none;
 }
-#modal-pagefind-search .search-fallback-status {
-  margin: 0.75rem 0 0;
-  color: color-mix(in srgb, var(--foreground) 58%, transparent);
-  font-size: 0.82rem;
+.pagefind-surface .search-fallback-status {
+  margin: var(--pf-status-mt) 0 0;
+  color: color-mix(in srgb, var(--foreground) var(--pf-status-alpha), transparent);
+  font-size: var(--pf-status-size);
 }
 .search-suggestions {
   display: flex;

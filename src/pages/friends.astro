@@ -1,45 +1,43 @@
 ---
 import { FRIEND_LINKS, ORGANIZATION_LINKS, HNUSEC_MEMBER_LINKS } from "@/config/friends";
-import Layout from '@/layouts/Layout.astro'
-import Header from '@/components/Header.astro'
-import Footer from '@/components/Footer.astro'
-import FriendCard from '@/components/FriendCard.astro'
-import FriendNetwork from '@/components/FriendNetwork.astro'
-import "@/styles/friends.css"
-
-const currentUrl = Astro.url.toString()
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import FriendCard from "@/components/FriendCard.astro";
+import FriendNetwork from "@/components/FriendNetwork.astro";
+import "@/styles/friends.css";
 
 const info = {
-  name: 'BX的博客',
-  address: 'https://www.bx33661.com',
-  desc: '专注于安全研究和技术分享的个人博客',
+  name: "BX的博客",
+  address: "https://www.bx33661.com",
+  desc: "专注于安全研究和技术分享的个人博客",
   avatar: "/brand/bx-logo-192.png",
-}
+};
 
 const getHost = (url: string) => {
   try {
-    return new URL(url).hostname.replace(/^www\./, '')
+    return new URL(url).hostname.replace(/^www\./, "");
   } catch {
-    return url
+    return url;
   }
-}
+};
 
-const getFallbackText = (name: string) => name.trim().slice(0, 1).toUpperCase() || '?'
+const getFallbackText = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
 
 const toCard = (item: (typeof FRIEND_LINKS)[number]) => ({
   ...item,
   host: getHost(item.url),
   fallback: getFallbackText(item.name),
-})
+});
 
-const friendCards = FRIEND_LINKS.map(toCard)
-const hnusecCards = HNUSEC_MEMBER_LINKS.map(toCard)
-const organizationCards = ORGANIZATION_LINKS.map(toCard)
+const friendCards = FRIEND_LINKS.map(toCard);
+const hnusecCards = HNUSEC_MEMBER_LINKS.map(toCard);
+const organizationCards = ORGANIZATION_LINKS.map(toCard);
 
-const totalLinks = friendCards.length + hnusecCards.length + organizationCards.length
+const totalLinks = friendCards.length + hnusecCards.length + organizationCards.length;
 ---
 
-<Layout title="友情链接" description="技术站点与安全社区链接集合。" canonicalURL={currentUrl}>
+<Layout title="友情链接" description="技术站点与安全社区链接集合。">
   <Header />
 
   <main id="main-content" class="friends-main app-layout">
@@ -52,10 +50,16 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
         <div class="fp-hero-actions">
           <a href="#friend-blogs" class="fp-primary-link">Explore the network <span aria-hidden="true">↘</span></a>
           <a href="mailto:bx33661@gmail.com?subject=友情链接申请" class="fp-apply-btn" aria-label="邮件申请互链">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M1.75 3.5L7 7.875L12.25 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <rect x="1.75" y="2.625" width="10.5" height="8.75" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
-        </svg>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path
+                d="M1.75 3.5L7 7.875L12.25 3.5"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+              <rect x="1.75" y="2.625" width="10.5" height="8.75" rx="1.5" stroke="currentColor" stroke-width="1.2"
+              ></rect>
+            </svg>
             Exchange links
           </a>
         </div>
@@ -64,50 +68,81 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
     </header>
 
     <nav class="fp-index" aria-label="友链分类导航">
-      <span class="fp-index-label">DIRECTORY <span>{String(totalLinks).padStart(2, '0')}</span></span>
-      <a href="#friend-blogs">01 <strong>Blogs</strong><span>{String(friendCards.length).padStart(2, '0')}</span></a>
-      <a href="#friend-hnusec">02 <strong>HNUSec</strong><span>{String(hnusecCards.length).padStart(2, '0')}</span></a>
-      <a href="#friend-organizations">03 <strong>Organizations</strong><span>{String(organizationCards.length).padStart(2, '0')}</span></a>
+      <span class="fp-index-label">DIRECTORY <span>{String(totalLinks).padStart(2, "0")}</span></span>
+      <a href="#friend-blogs">01 <strong>Blogs</strong><span>{String(friendCards.length).padStart(2, "0")}</span></a>
+      <a href="#friend-hnusec">02 <strong>HNUSec</strong><span>{String(hnusecCards.length).padStart(2, "0")}</span></a>
+      <a href="#friend-organizations"
+        >03 <strong>Organizations</strong><span>{String(organizationCards.length).padStart(2, "0")}</span></a
+      >
     </nav>
 
     <!-- Blog cards -->
     <section id="friend-blogs" class="fp-section" aria-label="技术博客">
-      <div class="fp-section-heading"><div><p class="fp-section-index">01 / PERSONAL SITES</p><h2 class="fp-section-label">技术博客 <span class="fp-count">{friendCards.length}</span></h2></div><p>Independent voices, experiments, and notes worth bookmarking.</p></div>
+      <div class="fp-section-heading">
+        <div>
+          <p class="fp-section-index">01 / PERSONAL SITES</p><h2 class="fp-section-label">
+            技术博客 <span class="fp-count">{friendCards.length}</span>
+          </h2>
+        </div><p>Independent voices, experiments, and notes worth bookmarking.</p>
+      </div>
       <div class="fp-grid">
-        {friendCards.map((friend, index) => (
-          <FriendCard {...friend} index={index} kind="PERSONAL BLOG" />
-        ))}
+        {friendCards.map((friend, index) => <FriendCard {...friend} index={index} kind="PERSONAL BLOG" />)}
       </div>
     </section>
 
     <!-- HNUSec member cards -->
     <section id="friend-hnusec" class="fp-section" aria-label="HNUSec 战队成员">
-      <div class="fp-section-heading"><div><p class="fp-section-index">02 / TEAMMATES</p><h2 class="fp-section-label">HNUSec 战队成员 <span class="fp-count">{hnusecCards.length}</span></h2></div><p>People I have learned alongside in the security community.</p></div>
+      <div class="fp-section-heading">
+        <div>
+          <p class="fp-section-index">02 / TEAMMATES</p><h2 class="fp-section-label">
+            HNUSec 战队成员 <span class="fp-count">{hnusecCards.length}</span>
+          </h2>
+        </div><p>People I have learned alongside in the security community.</p>
+      </div>
       <div class="fp-grid">
-        {hnusecCards.map((friend, index) => (
-          <FriendCard {...friend} index={index} kind="HNUSEC MEMBER" />
-        ))}
+        {hnusecCards.map((friend, index) => <FriendCard {...friend} index={index} kind="HNUSEC MEMBER" />)}
       </div>
     </section>
 
     <!-- Organizations -->
     <section id="friend-organizations" class="fp-section" aria-label="安全团队与组织">
-      <div class="fp-section-heading"><div><p class="fp-section-index">03 / COMMUNITIES</p><h2 class="fp-section-label">安全团队与组织 <span class="fp-count">{organizationCards.length}</span></h2></div><p>Teams building places to learn, compete, and collaborate.</p></div>
+      <div class="fp-section-heading">
+        <div>
+          <p class="fp-section-index">03 / COMMUNITIES</p><h2 class="fp-section-label">
+            安全团队与组织 <span class="fp-count">{organizationCards.length}</span>
+          </h2>
+        </div><p>Teams building places to learn, compete, and collaborate.</p>
+      </div>
       <div class="fp-grid">
-        {organizationCards.map((friend, index) => (
-          <FriendCard {...friend} index={index} kind="SECURITY TEAM" isOrg={true} />
-        ))}
+        {
+          organizationCards.map((friend, index) => (
+            <FriendCard {...friend} index={index} kind="SECURITY TEAM" isOrg={true} />
+          ))
+        }
       </div>
     </section>
 
     <aside class="fp-exchange" aria-labelledby="exchange-title">
-      <div><p class="fp-section-index">LET'S CONNECT</p><h2 id="exchange-title">One more good corner?</h2><p>If you write about security, engineering, or anything you care deeply about, I would love to discover your site.</p></div>
-      <div class="fp-exchange-action"><a href="mailto:bx33661@gmail.com?subject=友情链接申请">Send your link <span aria-hidden="true">↗</span></a><p>Include your name, URL, one-line intro, and avatar.</p></div>
+      <div>
+        <p class="fp-section-index">LET'S CONNECT</p><h2 id="exchange-title">One more good corner?</h2><p>
+          If you write about security, engineering, or anything you care deeply about, I would love to discover your
+          site.
+        </p>
+      </div>
+      <div class="fp-exchange-action">
+        <a href="mailto:bx33661@gmail.com?subject=友情链接申请">Send your link <span aria-hidden="true">↗</span></a><p>
+          Include your name, URL, one-line intro, and avatar.
+        </p>
+      </div>
     </aside>
 
     <!-- My link card -->
     <section class="fp-section fp-self-section" aria-label="本站信息">
-      <div class="fp-section-heading"><div><p class="fp-section-index">04 / THIS SITE</p><h2 class="fp-section-label">本站信息</h2></div><p>Details for adding this site to your own directory.</p></div>
+      <div class="fp-section-heading">
+        <div><p class="fp-section-index">04 / THIS SITE</p><h2 class="fp-section-label">本站信息</h2></div><p>
+          Details for adding this site to your own directory.
+        </p>
+      </div>
       <a class="self-banner" href={info.address} target="_blank" rel="noopener noreferrer">
         <div class="self-banner-glow" aria-hidden="true"></div>
         <img class="self-banner-avatar" src={info.avatar} alt={`${info.name} 头像`} loading="eager" decoding="async" />
@@ -116,12 +151,16 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
           <p class="self-banner-desc">{info.desc}</p>
         </div>
         <div class="self-banner-link">
-          <span class="fc-host-pill">
-            <img class="fc-favicon" src={`https://www.google.com/s2/favicons?domain=${getHost(info.address)}&sz=32`} alt="" width="14" height="14" loading="lazy" />
-            {getHost(info.address)}
-          </span>
+          <span class="fc-host-pill">{getHost(info.address)}</span>
           <span class="self-banner-arrow" aria-hidden="true">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 10L10 4M10 4H5.5M10 4V8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+              ><path
+                d="M4 10L10 4M10 4H5.5M10 4V8.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path></svg
+            >
           </span>
         </div>
       </a>

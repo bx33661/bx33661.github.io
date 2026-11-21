@@ -14,6 +14,19 @@ export type PagefindUIInstance = {
   destroy: () => void;
 };
 
+function createInputController(mount: HTMLElement, input: HTMLInputElement, signal?: AbortSignal): PagefindUIInstance {
+  const instance: PagefindUIInstance = {
+    triggerSearch: (term) => {
+      if (signal?.aborted) return;
+      input.value = term;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    },
+    destroy: () => mount.replaceChildren(),
+  };
+  signal?.addEventListener("abort", instance.destroy, { once: true });
+  return instance;
+}
+
 /**
  * Canonical Pagefind loader and initializer.
  * Ensures uniform translation, accessibility, and configuration across modal and search pages.
@@ -23,9 +36,7 @@ export async function createPagefindUI(
   signal?: AbortSignal,
 ): Promise<PagefindUIInstance | null> {
   const mount =
-    typeof options.element === "string"
-      ? document.querySelector<HTMLElement>(options.element)
-      : options.element;
+    typeof options.element === "string" ? document.querySelector<HTMLElement>(options.element) : options.element;
   if (!mount?.isConnected || signal?.aborted) return null;
   const isEnglish = document.documentElement.lang === "en";
   // No English index exists until an English article is published. Never let
@@ -33,19 +44,9 @@ export async function createPagefindUI(
   if (isEnglish && document.documentElement.dataset.searchEmpty === "true") {
     const input = await mountDevSearch(mount, { entries: [], signal, onQueryChange: options.processTerm });
     if (!mount.isConnected || signal?.aborted) return null;
-    const instance: PagefindUIInstance = {
-      triggerSearch: (term) => {
-        if (signal?.aborted) return;
-        input.value = term;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-      },
-      destroy: () => mount.replaceChildren(),
-    };
-    signal?.addEventListener("abort", instance.destroy, { once: true });
-    return instance;
+    return createInputController(mount, input, signal);
   }
   // Dynamic import required: @pagefind/default-ui relies on browser DOM and cannot be bundled during static SSR build time.
-  // @ts-expect-error Pagefind's default UI does not publish TypeScript types.
   const { PagefindUI } = await import("@pagefind/default-ui");
   if (!mount.isConnected || signal?.aborted) return null;
   const search = new PagefindUI({
@@ -54,7 +55,33 @@ export async function createPagefindUI(
     translations: isEnglish ? {} : pagefindTranslations,
     ...options,
     element: mount,
-  }) as PagefindUIInstance;
+  });
   signal?.addEventListener("abort", () => search.destroy(), { once: true });
   return search;
+}
+
+export async function mountSearchUI(
+  options: PagefindUIOptions & {
+    devLimit?: number;
+    devInitialQuery?: string;
+    devOnQueryChange?: (term: string) => void;
+  },
+  signal?: AbortSignal,
+): Promise<PagefindUIInstance | null> {
+  const mount =
+    typeof options.element === "string" ? document.querySelector<HTMLElement>(options.element) : options.element;
+  if (!mount?.isConnected || signal?.aborted) return null;
+
+  if (import.meta.env.DEV) {
+    const input = await mountDevSearch(mount, {
+      initialQuery: options.devInitialQuery,
+      limit: options.devLimit,
+      onQueryChange: options.devOnQueryChange,
+      signal,
+    });
+    if (!mount.isConnected || signal?.aborted) return null;
+    return createInputController(mount, input, signal);
+  }
+
+  return createPagefindUI(options, signal);
 }

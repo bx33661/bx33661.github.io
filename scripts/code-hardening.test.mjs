@@ -1,17 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import fs from "node:fs/promises";
-import {
-  withCache,
-  clearCache,
-  clearAllCache,
-  getCacheStats,
-} from "../src/lib/cache-utils.ts";
-import {
-  readStorage,
-  writeStorage,
-  internalBackPath,
-} from "../src/utils/browser-storage.ts";
+import { withCache, clearCache, clearAllCache, getCacheStats } from "../src/lib/cache-utils.ts";
+import { readStorage, writeStorage, internalBackPath } from "../src/utils/browser-storage.ts";
 import { createThemePreference } from "../src/utils/theme-preference.ts";
 import { rehypeArticleImages } from "../src/utils/rehypeArticleImages.ts";
 import { serializeJsonLd } from "../src/utils/serializeJsonLd.ts";
@@ -51,10 +42,7 @@ test("cache coalesces in-flight loads and reuses fulfilled values", async () => 
   assert.equal(loads, 1);
   work.resolve({ value: 42 });
   assert.equal(await a, await b);
-  assert.deepEqual(
-    await withCache("shared", async () => assert.fail("must reuse")),
-    { value: 42 },
-  );
+  assert.deepEqual(await withCache("shared", async () => assert.fail("must reuse")), { value: 42 });
   assert.deepEqual(getCacheStats(), { size: 1, keys: ["shared"] });
 });
 test("TTL begins after loading completes and expired entries reload", async (t) => {
@@ -192,10 +180,7 @@ test("back links preserve local route/query/hash and reject external or script U
     "http://[",
   ])
     assert.equal(internalBackPath(value, origin), null, value);
-  assert.equal(
-    internalBackPath("/blog/?page=2#title", origin),
-    "/blog/?page=2#title",
-  );
+  assert.equal(internalBackPath("/blog/?page=2#title", origin), "/blog/?page=2#title");
   assert.equal(internalBackPath(origin + "/notes/", origin), "/notes/");
 });
 test("JSON-LD text cannot terminate the HTML script, and parsed data is unchanged", () => {
@@ -220,10 +205,7 @@ test("local article images reserve their actual dimensions without changing the 
   const tree = { type: "root", children: [image] };
   const transform = rehypeArticleImages();
   await transform(tree);
-  assert.equal(
-    image.properties.src,
-    "/blog/codeql-learning/01-codeql-architecture.png",
-  );
+  assert.equal(image.properties.src, "/blog/codeql-learning/01-codeql-architecture.png");
   assert.equal(image.properties.width, 1408);
   assert.equal(image.properties.height, 768);
   assert.equal(image.properties.loading, "lazy");
@@ -231,9 +213,7 @@ test("local article images reserve their actual dimensions without changing the 
   assert.equal(tree.children[0], image);
 });
 test("image metadata respects authored dimensions and component-owned or remote images", async (t) => {
-  t.mock.method(globalThis, "fetch", () =>
-    assert.fail("never fetch remote metadata"),
-  );
+  t.mock.method(globalThis, "fetch", () => assert.fail("never fetch remote metadata"));
   const image = (src, extra = {}) => ({
     type: "element",
     tagName: "img",
@@ -270,11 +250,7 @@ test("image metadata respects authored dimensions and component-owned or remote 
   });
 });
 test("invalid/missing local metadata leaves URLs intact and responsive pictures stay idempotent", async () => {
-  const sources = [
-    "/blog/not-an-existing-image.png",
-    "/blog/%xx.png",
-    "/blog/../../package.json",
-  ];
+  const sources = ["/blog/not-an-existing-image.png", "/blog/%xx.png", "/blog/../../package.json"];
   const images = sources.map((src) => ({
     type: "element",
     tagName: "img",
@@ -300,18 +276,12 @@ test("invalid/missing local metadata leaves URLs intact and responsive pictures 
     false,
   );
   assert.equal(tree.children.at(-1).tagName, "picture");
-  assert.equal(
-    tree.children.at(-1).children.filter((node) => node.tagName === "picture")
-      .length,
-    0,
-  );
+  assert.equal(tree.children.at(-1).children.filter((node) => node.tagName === "picture").length, 0);
   assert.equal(tree.children.at(-1).children[1].properties.width, 3420);
 });
 
 test("production build invalidates cached Markdown so plugin changes reach published HTML", async () => {
-  const config = JSON.parse(
-    await fs.readFile(new URL("../package.json", import.meta.url), "utf8"),
-  );
+  const config = JSON.parse(await fs.readFile(new URL("../package.json", import.meta.url), "utf8"));
   assert.match(config.scripts.build, /astro build --force/);
   assert.match(config.scripts["verify:full"], /npm run build/);
 });

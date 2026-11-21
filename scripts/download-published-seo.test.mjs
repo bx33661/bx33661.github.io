@@ -20,10 +20,7 @@ test("daily mirror validates published canonical content", async (t) => {
         : `<link rel="canonical" href="${origin}/blog/a/"><main>Article</main>`,
   });
   await downloadPublishedSeo(origin, dir, request);
-  assert.match(
-    await fs.readFile(path.join(dir, "blog/a/index.html"), "utf8"),
-    /Article/,
-  );
+  assert.match(await fs.readFile(path.join(dir, "blog/a/index.html"), "utf8"), /Article/);
 });
 test("foreign sitemap URL is rejected before fetching", async (t) => {
   const dir = await fixture(t);
@@ -49,8 +46,7 @@ test("mismatching canonical and noindex stop daily push input", async (t) => {
     await assert.rejects(
       downloadPublishedSeo(origin, dir, async (url) => ({
         ok: true,
-        text: async () =>
-          url.endsWith("sitemap.xml") ? `<loc>${origin}/blog/a/</loc>` : html,
+        text: async () => (url.endsWith("sitemap.xml") ? `<loc>${origin}/blog/a/</loc>` : html),
       })),
       /canonical mismatch|noindex/,
     );

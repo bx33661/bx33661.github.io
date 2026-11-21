@@ -17,55 +17,46 @@ type Props = {
 const { noMarginTop = false, class: className, ...attrs } = Astro.props;
 ---
 
-<footer
-  class:list={["footer-wrapper", { "mt-auto": !noMarginTop }, className]}
-  {...attrs}
->
+<footer class:list={["footer-wrapper", { "mt-auto": !noMarginTop }, className]} {...attrs}>
   <!-- Top gradient border -->
-  <div
-    class="h-px w-full bg-linear-to-r from-transparent via-border/40 to-transparent"
-  >
-  </div>
+  <div class="via-border/40 h-px w-full bg-linear-to-r from-transparent to-transparent"></div>
 
   <div class="app-layout py-8 sm:py-10">
     <!-- Main footer grid -->
-    <div
-      class="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between"
-    >
+    <div class="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
       <!-- Brand column -->
       <div class="flex flex-col items-center gap-3 sm:items-start">
-        <a
-          href={localizedPath("/", locale)}
-          class="group flex items-center gap-2 text-lg font-bold tracking-tight"
-        >
+        <a href={localizedPath("/", locale)} class="group flex items-center gap-2 text-lg font-bold tracking-tight">
           <img
             src="/brand/bx-logo.svg"
             alt={`${SITE.title} logo`}
-            class="footer-brand-logo size-7 rounded-md border border-border/30 bg-[#f4f0e6] object-contain transition-all duration-300 group-hover:scale-105 group-hover:border-accent/40"
+            class="footer-brand-logo border-border/30 group-hover:border-accent/40 size-7 rounded-md border bg-[#f4f0e6] object-contain transition-all duration-300 group-hover:scale-105"
             loading="lazy"
             decoding="async"
           />
           <span class="footer-logo-text">{SITE.title}</span>
         </a>
-        <p
-          class="max-w-xs text-center text-xs leading-relaxed opacity-50 sm:text-start"
-        >
-          {isEnglish ? "Notes on cybersecurity and engineering, grounded in reproducible work." : "记录网络安全与工程实践，持续分享真实可复现的技术经验。"}
+        <p class="max-w-xs text-center text-xs leading-relaxed opacity-50 sm:text-start">
+          {
+            isEnglish
+              ? "Notes on cybersecurity and engineering, grounded in reproducible work."
+              : "记录网络安全与工程实践，持续分享真实可复现的技术经验。"
+          }
         </p>
       </div>
 
       <!-- Social links -->
       <div class="flex flex-col items-center gap-2 sm:items-end">
         <span
-          class="font-cartograph text-[10px] tracking-wider text-foreground/35 uppercase select-none dark:text-foreground/65"
+          class="font-cartograph text-foreground/35 dark:text-foreground/65 text-[10px] tracking-wider uppercase select-none"
           >{isEnglish ? "Connect" : "联系与关注"}</span
         >
         <div class="flex items-center gap-1">
           {
-            SOCIALS.map(social => (
+            SOCIALS.map((social) => (
               <LinkButton
                 href={social.href}
-                class="footer-social-btn inline-flex size-8 items-center justify-center rounded-lg border border-border/20 bg-muted/5 transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-sm hover:shadow-accent/10"
+                class="footer-social-btn border-border/20 bg-muted/5 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-accent/10 inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:shadow-sm"
                 title={social.linkTitle}
               >
                 <social.icon class="size-4 fill-transparent stroke-current stroke-2" />
@@ -79,15 +70,10 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
 
     <!-- Bottom bar -->
     <div class="mt-8 flex items-center gap-3" aria-hidden="true">
-      <div
-        class="h-px flex-1 bg-linear-to-r from-transparent via-border/25 to-transparent"
-      >
-      </div>
+      <div class="via-border/25 h-px flex-1 bg-linear-to-r from-transparent to-transparent"></div>
     </div>
 
-    <div
-      class="mt-4 flex flex-col items-center justify-between gap-2 sm:flex-row"
-    >
+    <div class="mt-4 flex flex-col items-center justify-between gap-2 sm:flex-row">
       <p class="font-cartograph text-[11px] tracking-wide opacity-35 dark:opacity-65">
         &copy; {currentYear}
         {SITE.title}. {isEnglish ? "All rights reserved." : "保留所有权利。"}
@@ -107,12 +93,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
   }
 
   .footer-logo-text {
-    background: linear-gradient(
-      135deg,
-      var(--foreground) 0%,
-      var(--foreground) 60%,
-      var(--accent) 100%
-    );
+    background: linear-gradient(135deg, var(--foreground) 0%, var(--foreground) 60%, var(--accent) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

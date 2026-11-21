@@ -1,137 +1,89 @@
-import { SITE } from "@/config.ts";
 import type { APIContext } from "astro";
-import { escapeXml, getSitemapLastmod } from "@/utils/sitemap";
-import {
-  getAllNotes,
-  getAllNoteSlugs,
-  getAllPostSlugs,
-} from "@/lib/data-utils";
+import type { CollectionEntry } from "astro:content";
+import { getPublishedGalleries } from "@/data/gallery";
+import { localizedPath, type Locale } from "@/i18n";
+import { getAllNoteSlugs, getAllPostSlugs } from "@/lib/data-utils";
+import { getSiteBaseUrl, getSitemapLastmod, renderUrlEntry, xmlResponse, type SitemapUrl } from "@/utils/sitemap";
 
-function buildUrl(baseUrl: string, path: string): string {
-  return `${baseUrl}${path}`;
+function mapPostUrls(
+  baseUrl: string,
+  posts: Array<{ slug: string; post: CollectionEntry<"blog"> }>,
+  locale: Locale,
+): SitemapUrl[] {
+  return posts.map(({ slug, post }) => ({
+    url: `${baseUrl}${localizedPath(`/blog/${encodeURIComponent(slug)}/`, locale)}`,
+    lastmod: getSitemapLastmod(post.data.pubDatetime, post.data.modDatetime),
+    changefreq: "monthly",
+    priority: "0.7",
+  }));
 }
 
-function encodePathSegment(segment: string): string {
-  return encodeURIComponent(segment);
+function mapNoteUrls(
+  baseUrl: string,
+  notes: Array<{ slug: string; note: CollectionEntry<"notes"> }>,
+  locale: Locale,
+): SitemapUrl[] {
+  return notes.map(({ slug, note }) => ({
+    url: `${baseUrl}${localizedPath(`/notes/${encodeURIComponent(slug)}/`, locale)}`,
+    lastmod: note.data.date.toISOString(),
+    changefreq: "monthly",
+    priority: "0.6",
+  }));
 }
 
 export async function GET(context: APIContext) {
-  try {
-    const postSlugs = await getAllPostSlugs();
-    const noteSlugs = await getAllNoteSlugs();
-    const allNotes = await getAllNotes();
-    const englishPosts = await getAllPostSlugs("en");
-    const englishNotes = await getAllNoteSlugs("en");
-    const site = context.site ?? SITE.website;
-    const baseUrl = site.toString().endsWith("/")
-      ? site.toString().slice(0, -1)
-      : site.toString();
+  const [postSlugs, noteSlugs, galleries, englishPosts, englishNotes] = await Promise.all([
+    getAllPostSlugs(),
+    getAllNoteSlugs(),
+    getPublishedGalleries(),
+    getAllPostSlugs("en"),
+    getAllNoteSlugs("en"),
+  ]);
+  const baseUrl = getSiteBaseUrl(context.site);
 
-    const staticPages = [
-      {
-        url: buildUrl(baseUrl, "/"),
-        changefreq: "daily",
-        priority: "1.0",
-      },
-      {
-        url: buildUrl(baseUrl, "/blog/"),
-        changefreq: "daily",
-        priority: "0.9",
-      },
-      {
-        url: buildUrl(baseUrl, "/notes/"),
-        changefreq: "weekly",
-        priority: "0.8",
-      },
-      {
-        url: buildUrl(baseUrl, "/galleries/"),
-        changefreq: "weekly",
-        priority: "0.8",
-      },
-      {
-        url: buildUrl(baseUrl, "/archives/"),
-        changefreq: "weekly",
-        priority: "0.7",
-      },
-      {
-        url: buildUrl(baseUrl, "/friends/"),
-        changefreq: "monthly",
-        priority: "0.6",
-      },
-      // /blog/tags/* intentionally omitted — tags are UI filters (noindex), not SEO landing pages.
-      {
-        url: buildUrl(baseUrl, "/notes/list/"),
-        changefreq: "weekly",
-        priority: "0.6",
-      },
-    ];
+  // /blog/tags/* intentionally omitted — tags are UI filters (noindex), not SEO landing pages.
+  const staticPages: SitemapUrl[] = [
+    { url: `${baseUrl}/`, changefreq: "daily", priority: "1.0" },
+    { url: `${baseUrl}/blog/`, changefreq: "daily", priority: "0.9" },
+    { url: `${baseUrl}/notes/`, changefreq: "weekly", priority: "0.8" },
+    { url: `${baseUrl}/galleries/`, changefreq: "weekly", priority: "0.8" },
+    { url: `${baseUrl}/archives/`, changefreq: "weekly", priority: "0.7" },
+    { url: `${baseUrl}/friends/`, changefreq: "monthly", priority: "0.6" },
+    { url: `${baseUrl}/notes/list/`, changefreq: "weekly", priority: "0.6" },
+  ];
 
-    const blogPosts = postSlugs.map(({ slug, post }) => ({
-      url: buildUrl(baseUrl, `/blog/${encodePathSegment(slug)}/`),
-      lastmod: getSitemapLastmod(post.data.pubDatetime, post.data.modDatetime),
-      changefreq: "monthly",
-      priority: "0.7",
-    }));
+  const galleryPages: SitemapUrl[] = galleries.map(({ slug, gallery }) => ({
+    url: `${baseUrl}/galleries/${encodeURIComponent(slug)}/`,
+    lastmod: getSitemapLastmod(gallery.data.pubDatetime),
+    changefreq: "monthly",
+    priority: "0.7",
+  }));
 
-    const notes = noteSlugs.map(({ slug, note }) => ({
-      url: buildUrl(baseUrl, `/notes/${encodePathSegment(slug)}/`),
-      lastmod: note.data.date.toISOString(),
-      changefreq: "monthly",
-      priority: "0.6",
-    }));
+  // Empty English collection pages are noindex until real content exists.
+  const englishPages: SitemapUrl[] = [
+    "/en/",
+    ...(englishPosts.length ? ["/en/blog/", "/en/archives/"] : []),
+    ...(englishNotes.length ? ["/en/notes/", "/en/notes/list/"] : []),
+  ].map((path) => ({
+    url: `${baseUrl}${path}`,
+    changefreq: "weekly",
+    priority: "0.6",
+  }));
 
-    const notesPageSize = 10;
-    const notesPageCount = Math.ceil(allNotes.length / notesPageSize);
-    const notePages = Array.from(
-      { length: Math.max(notesPageCount - 1, 0) },
-      (_, index) => ({
-        url: buildUrl(baseUrl, `/notes/list/${index + 2}/`),
-        changefreq: "weekly",
-        priority: "0.5",
-      }),
-    );
+  const allUrls: SitemapUrl[] = [
+    ...staticPages,
+    ...galleryPages,
+    ...mapPostUrls(baseUrl, postSlugs, "zh-CN"),
+    ...mapNoteUrls(baseUrl, noteSlugs, "zh-CN"),
+    ...englishPages,
+    ...mapPostUrls(baseUrl, englishPosts, "en"),
+    ...mapNoteUrls(baseUrl, englishNotes, "en"),
+  ];
 
-    // Empty English collection pages are noindex until real content exists.
-    const englishPages = ["/en/",
-      ...(englishPosts.length ? ["/en/blog/", "/en/archives/"] : []),
-      ...(englishNotes.length ? ["/en/notes/", "/en/notes/list/"] : []),
-    ].map((path) => ({ url: buildUrl(baseUrl, path), changefreq: "weekly", priority: "0.6" }));
-    const englishEntries = [
-      ...englishPosts.map(({ slug, post }) => ({
-        url: buildUrl(baseUrl, `/en/blog/${encodePathSegment(slug)}/`),
-        lastmod: getSitemapLastmod(post.data.pubDatetime, post.data.modDatetime),
-        changefreq: "monthly", priority: "0.7",
-      })),
-      ...englishNotes.map(({ slug, note }) => ({
-        url: buildUrl(baseUrl, `/en/notes/${encodePathSegment(slug)}/`),
-        lastmod: note.data.date.toISOString(), changefreq: "monthly", priority: "0.6",
-      })),
-    ];
-    const allUrls = [...staticPages, ...blogPosts, ...notes, ...notePages, ...englishPages, ...englishEntries];
-
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-${allUrls
-  .map(
-    (page) => `  <url>
-    <loc>${escapeXml(page.url)}</loc>
-    ${"lastmod" in page ? `<lastmod>${page.lastmod}</lastmod>` : ""}
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>`,
-  )
-  .join("\n")}
+${allUrls.map(renderUrlEntry).join("\n")}
 </urlset>`;
 
-    return new Response(xml, {
-      headers: {
-        "Content-Type": "application/xml",
-        "Cache-Control": "public, max-age=3600",
-      },
-    });
-  } catch {
-    // 静默处理错误，避免在生产环境中暴露敏感信息
-    // 可选：发送到错误监控服务
-    return new Response("Internal Server Error", { status: 500 });
-  }
+  return xmlResponse(xml);
 }

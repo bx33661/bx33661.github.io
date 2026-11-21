@@ -1,7 +1,13 @@
 import type { APIRoute } from "astro";
+import { SITE } from "@/config.ts";
 
-const getRobotsTxt = (sitemapIndexURL: URL, sitemapURL: URL, imageSitemapURL: URL) => `
-User-agent: Baiduspider
+export const GET: APIRoute = ({ site }) => {
+  const base = site ?? SITE.website;
+  const sitemaps = ["sitemap-index.xml", "sitemap.xml", "image-sitemap.xml"].map(
+    (file) => `Sitemap: ${new URL(file, base).href}`,
+  );
+
+  const body = `User-agent: Baiduspider
 Allow: /
 Disallow: /offline/
 
@@ -9,14 +15,10 @@ User-agent: *
 Allow: /
 Disallow: /offline/
 
-Sitemap: ${sitemapIndexURL.href}
-Sitemap: ${sitemapURL.href}
-Sitemap: ${imageSitemapURL.href}
+${sitemaps.join("\n")}
 `;
 
-export const GET: APIRoute = ({ site }) => {
-  const sitemapIndexURL = new URL("sitemap-index.xml", site);
-  const sitemapURL = new URL("sitemap.xml", site);
-  const imageSitemapURL = new URL("image-sitemap.xml", site);
-  return new Response(getRobotsTxt(sitemapIndexURL, sitemapURL, imageSitemapURL));
+  return new Response(body, {
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
+  });
 };

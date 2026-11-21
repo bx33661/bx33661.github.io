@@ -9,10 +9,7 @@ function stableHash(input: string): string {
   return Math.abs(hash).toString(36);
 }
 
-export function createDeterministicSlug(
-  source: string,
-  prefix: "post" | "note"
-): string {
+export function createDeterministicSlug(source: string, prefix: "post" | "note"): string {
   const normalized = source
     .replace(/\.(md|mdx)$/i, "")
     .replace(/[\\/]/g, "-")

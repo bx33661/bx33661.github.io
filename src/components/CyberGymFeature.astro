@@ -45,11 +45,11 @@ const copy = cyberGymCopy(locale);
           <span class="cg-kicker">DIFFERENTIAL ORACLE</span>
           <h3 id="cg-oracle-title">{copy.title}</h3>
         </div>
-        <span class="cg-oracle-mark" aria-hidden="true">01 / 02</span>
+        <span class="cg-oracle-mark" aria-hidden="true">
+          01 / 02
+        </span>
       </div>
-      <p class="cg-oracle-intro">
-        {copy.intro}
-      </p>
+      <p class="cg-oracle-intro">{copy.intro}</p>
       <div class="cg-cases" role="group" aria-label={copy.choose}>
         <button type="button" data-cg-case="target" aria-pressed="true">
           {copy.target}
@@ -67,7 +67,9 @@ const copy = cyberGymCopy(locale);
           <strong data-cg-pre>{copy.outcomes.target.pre}</strong>
           <span class="cg-result-detail">{copy.before}</span>
         </div>
-        <div class="cg-result-arrow" aria-hidden="true">→</div>
+        <div class="cg-result-arrow" aria-hidden="true">
+          →
+        </div>
         <div class="cg-result" data-version="post">
           <span class="cg-result-label">POST-PATCH</span>
           <strong data-cg-post>{copy.outcomes.target.post}</strong>

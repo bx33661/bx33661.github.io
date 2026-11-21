@@ -1,5 +1,6 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+import { createDeterministicSlug } from "./lib/content-utils.mjs";
 
 const VALID_TYPES = new Set(["blog", "notes"]);
 
@@ -12,63 +13,25 @@ function parseArgs(argv) {
     date: "",
     ext: "md",
   };
+  const flagSet = new Set(["type", "title", "slug", "description", "date", "ext"]);
 
   for (let i = 0; i < argv.length; i += 1) {
     const part = argv[i];
-    if (part === "--type") {
-      args.type = argv[i + 1] || args.type;
-      i += 1;
-    } else if (part.startsWith("--type=")) {
-      args.type = part.slice("--type=".length);
-    } else if (part === "--title") {
-      args.title = argv[i + 1] || "";
-      i += 1;
-    } else if (part.startsWith("--title=")) {
-      args.title = part.slice("--title=".length);
-    } else if (part === "--slug") {
-      args.slug = argv[i + 1] || "";
-      i += 1;
-    } else if (part.startsWith("--slug=")) {
-      args.slug = part.slice("--slug=".length);
-    } else if (part === "--description") {
-      args.description = argv[i + 1] || "";
-      i += 1;
-    } else if (part.startsWith("--description=")) {
-      args.description = part.slice("--description=".length);
-    } else if (part === "--date") {
-      args.date = argv[i + 1] || "";
-      i += 1;
-    } else if (part.startsWith("--date=")) {
-      args.date = part.slice("--date=".length);
-    } else if (part === "--ext") {
-      args.ext = argv[i + 1] || args.ext;
-      i += 1;
-    } else if (part.startsWith("--ext=")) {
-      args.ext = part.slice("--ext=".length);
+    if (!part.startsWith("--")) continue;
+    const eqIndex = part.indexOf("=");
+    if (eqIndex !== -1) {
+      const key = part.slice(2, eqIndex);
+      if (flagSet.has(key)) args[key] = part.slice(eqIndex + 1);
+    } else {
+      const key = part.slice(2);
+      if (flagSet.has(key)) {
+        args[key] = argv[i + 1] ?? args[key];
+        i += 1;
+      }
     }
   }
 
   return args;
-}
-
-function stableHash(input) {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash).toString(36);
-}
-
-function toSlug(input, prefix) {
-  const normalized = input
-    .normalize("NFKD")
-    .toLowerCase()
-    .replace(/[^\p{Letter}\p{Number}]+/gu, "-")
-    .replace(/^-+|-+$/g, "");
-
-  if (normalized) return normalized;
-  return `${prefix}-${new Date().toISOString().slice(0, 10)}-${stableHash(input).slice(0, 6)}`;
 }
 
 function escapeDoubleQuotes(value) {
@@ -76,9 +39,7 @@ function escapeDoubleQuotes(value) {
 }
 
 function resolveDate(inputDate) {
-  if (!inputDate) {
-    return new Date().toISOString().slice(0, 10);
-  }
+  if (!inputDate) return new Date().toISOString().slice(0, 10);
   const parsed = new Date(inputDate);
   if (Number.isNaN(parsed.getTime())) {
     throw new Error(`Invalid date: ${inputDate}. Expected YYYY-MM-DD.`);
@@ -86,12 +47,16 @@ function resolveDate(inputDate) {
   return parsed.toISOString().slice(0, 10);
 }
 
-function buildBlogTemplate({ title, description, date, slug }) {
+function buildTemplate(type, { title, description, date, slug }) {
   const safeTitle = escapeDoubleQuotes(title);
-  const safeDesc = escapeDoubleQuotes(
-    description || "Write a concise summary for search and social preview.",
-  );
-  return `---
+  const defaultDesc =
+    type === "blog"
+      ? "Write a concise summary for search and social preview."
+      : "Write a concise summary for the note.";
+  const safeDesc = escapeDoubleQuotes(description || defaultDesc);
+
+  if (type === "blog") {
+    return `---
 title: "${safeTitle}"
 description: "${safeDesc}"
 date: ${date}
@@ -111,13 +76,8 @@ slug: "${slug}"
 
 ## Notes
 `;
-}
+  }
 
-function buildNotesTemplate({ title, description, date, slug }) {
-  const safeTitle = escapeDoubleQuotes(title);
-  const safeDesc = escapeDoubleQuotes(
-    description || "Write a concise summary for the note.",
-  );
   return `---
 title: "${safeTitle}"
 description: "${safeDesc}"
@@ -139,19 +99,12 @@ slug: "${slug}"
 `;
 }
 
-function buildTemplate(type, payload) {
-  if (type === "blog") return buildBlogTemplate(payload);
-  return buildNotesTemplate(payload);
-}
-
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const type = String(args.type || "blog").toLowerCase();
 
   if (!VALID_TYPES.has(type)) {
-    console.error(
-      `[FAIL] --type must be one of: ${Array.from(VALID_TYPES).join(", ")}`,
-    );
+    console.error(`[FAIL] --type must be one of: ${Array.from(VALID_TYPES).join(", ")}`);
     process.exit(1);
   }
 
@@ -169,18 +122,11 @@ function main() {
 
   const date = resolveDate(args.date);
   const slugPrefix = type === "notes" ? "note" : "post";
-  const slug = toSlug(String(args.slug || title), slugPrefix);
+  const slug = createDeterministicSlug(String(args.slug || title), slugPrefix, { datedFallback: true });
 
-  let targetPath;
-  if (type === "notes") {
-    const targetDir = path.resolve("src/data/notes");
-    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
-    targetPath = path.join(targetDir, `${slug}.${ext}`);
-  } else {
-    const targetDir = path.resolve("src/content", type);
-    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true });
-    targetPath = path.join(targetDir, `${slug}.${ext}`);
-  }
+  const targetDir = type === "notes" ? path.resolve("src/data/notes") : path.resolve("src/content", type);
+  fs.mkdirSync(targetDir, { recursive: true });
+  const targetPath = path.join(targetDir, `${slug}.${ext}`);
 
   if (fs.existsSync(targetPath)) {
     console.error(`[FAIL] File already exists: ${targetPath}`);
@@ -196,14 +142,12 @@ function main() {
 
   fs.writeFileSync(targetPath, template, "utf8");
   console.log(`[OK] Created ${targetPath}`);
-  console.log(`[NEXT] Run: npm run content:check`);
+  console.log("[NEXT] Run: npm run content:check");
 }
 
 try {
   main();
 } catch (error) {
-  console.error(
-    `[FAIL] ${error instanceof Error ? error.message : String(error)}`,
-  );
+  console.error(`[FAIL] ${error instanceof Error ? error.message : String(error)}`);
   process.exit(1);
 }

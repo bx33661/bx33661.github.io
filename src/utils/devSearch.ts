@@ -61,10 +61,12 @@ export async function mountDevSearch(
 
   let entries: SearchEntry[] = [];
   try {
-    entries = providedEntries ?? await getEntries(isEnglish ? "/en/search.json" : "/search.json");
+    entries = providedEntries ?? (await getEntries(isEnglish ? "/en/search.json" : "/search.json"));
   } catch {
     if (!signal?.aborted && mount.isConnected)
-      status.textContent = isEnglish ? "The search index is unavailable. Please try again later." : "搜索索引暂时不可用，请稍后重试。";
+      status.textContent = isEnglish
+        ? "The search index is unavailable. Please try again later."
+        : "搜索索引暂时不可用，请稍后重试。";
     return input;
   }
 
@@ -76,7 +78,11 @@ export async function mountDevSearch(
     onQueryChange?.(input.value.trim());
     list.replaceChildren();
     if (!query) {
-      status.textContent = isEnglish ? (entries.length ? "Enter a keyword to search English articles and notes." : "No English articles or notes have been published yet.") : "输入关键词，查找博客文章与技术记录。";
+      status.textContent = isEnglish
+        ? entries.length
+          ? "Enter a keyword to search English articles and notes."
+          : "No English articles or notes have been published yet."
+        : "输入关键词，查找博客文章与技术记录。";
       return;
     }
     const allMatches = entries.filter((entry) =>
@@ -86,11 +92,15 @@ export async function mountDevSearch(
         .includes(query),
     );
     const matches = allMatches.slice(0, limit);
-    status.textContent = isEnglish ? (matches.length
-      ? `${allMatches.length} results${allMatches.length > limit ? ` (showing ${limit})` : ""}`
-      : entries.length ? "No matching content. Try a shorter keyword." : "No English articles or notes have been published yet.") : matches.length
-      ? `找到 ${allMatches.length} 条相关结果${allMatches.length > limit ? `（显示前 ${limit} 条）` : ""}`
-      : "没有找到相关内容，试试更短的关键词。";
+    status.textContent = isEnglish
+      ? matches.length
+        ? `${allMatches.length} results${allMatches.length > limit ? ` (showing ${limit})` : ""}`
+        : entries.length
+          ? "No matching content. Try a shorter keyword."
+          : "No English articles or notes have been published yet."
+      : matches.length
+        ? `找到 ${allMatches.length} 条相关结果${allMatches.length > limit ? `（显示前 ${limit} 条）` : ""}`
+        : "没有找到相关内容，试试更短的关键词。";
     for (const entry of matches) {
       const item = document.createElement("li");
       const link = document.createElement("a");

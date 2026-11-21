@@ -19,8 +19,7 @@ const english: Record<string, string> = {
   "协议状态和安全平台响应分属两条观察链；图中列出验收条件，不表示本次全部完成。":
     "Protocol state and platform response are separate evidence chains. The matrix lists acceptance criteria, not stages all completed in this experiment.",
   图: "Figure",
-  "连接状态与验收证据对照表，可横向滚动":
-    "Connection states and acceptance evidence; horizontally scrollable",
+  "连接状态与验收证据对照表，可横向滚动": "Connection states and acceptance evidence; horizontally scrollable",
   观察层: "Observation layer",
   状态变化: "State transition",
   验收证据: "Acceptance evidence",
@@ -34,8 +33,7 @@ const english: Record<string, string> = {
   "关联不等于密钥或 IP 就绪": "Association does not imply keys or IP readiness",
   业务接入: "Service access",
   "链路 → IP → 业务": "Link → IP → service",
-  "密钥记录（如适用） / IP / 业务结果":
-    "Key records, if applicable / IP / service results",
+  "密钥记录（如适用） / IP / 业务结果": "Key records, if applicable / IP / service results",
   按实际启用的保护机制验收: "Assess the protection actually enabled",
   平台检测: "Platform detection",
   "发现 → 分类 → 告警": "Discover → classify → alert",
@@ -60,8 +58,7 @@ const english: Record<string, string> = {
   确认本轮交换: "Acknowledges this exchange",
   "PMK + 双方地址 + 两端 Nonce": "PMK + addresses + both nonces",
   "→ 本地派生 PTK": "→ locally derived PTK",
-  "PMK + 双方地址 + ANonce + SNonce → 本地派生 PTK":
-    "PMK + addresses + ANonce + SNonce → PTK",
+  "PMK + 双方地址 + ANonce + SNonce → 本地派生 PTK": "PMK + addresses + ANonce + SNonce → PTK",
   接入点: "Access point",
   无线终端: "Wireless client",
   "被动扫描 / Passive": "Passive scanning",
@@ -77,10 +74,8 @@ const english: Record<string, string> = {
   "TLS 服务端": "TLS server",
   空口: "Air",
   上联: "Uplink",
-  两层保护具有不同的终止位置:
-    "The two protections terminate at different endpoints",
-  "TLS / HTTPS：应用终端 ↔ 远端服务端":
-    "TLS / HTTPS: application client ↔ remote service",
+  两层保护具有不同的终止位置: "The two protections terminate at different endpoints",
+  "TLS / HTTPS：应用终端 ↔ 远端服务端": "TLS / HTTPS: application client ↔ remote service",
   链路保护在此终止: "Link protection ends here",
   "WPA2 / WPA3：STA ↔ AP": "WPA2 / WPA3: STA ↔ AP",
   "抓到无线帧 → 链路解密条件 → 应用层加密条件 → 可见数据":
@@ -92,10 +87,8 @@ const english: Record<string, string> = {
   捕获元数据: "Capture metadata",
   "帧类型 / 地址 / 标志": "Type / addresses / flags",
   "Radiotap 不属于空口发出的 MAC 帧": "Radiotap is not sent over the air",
-  "* FCS 是否保留取决于网卡与驱动":
-    "* FCS retention depends on adapter and driver",
-  "六项独立验收 · 展开查看常见误判":
-    "Six independent checks · expand for common pitfalls",
+  "* FCS 是否保留取决于网卡与驱动": "* FCS retention depends on adapter and driver",
+  "六项独立验收 · 展开查看常见误判": "Six independent checks · expand for common pitfalls",
   避免误判: "Common pitfall",
   "核对：": "Check: ",
   取证: "Evidence",

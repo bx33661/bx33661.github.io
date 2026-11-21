@@ -12,22 +12,16 @@ export function setupArticleFormatting(article: HTMLElement) {
       [".article-table-scroll", labels.table],
       [".article-math-block", labels.math],
       [".article-inline-math", labels.inlineMath],
-    ]) article.querySelectorAll(selector).forEach((region) => region.setAttribute("aria-label", label));
+    ])
+      article.querySelectorAll(selector).forEach((region) => region.setAttribute("aria-label", label));
     const footnoteHeading = article.querySelector(".footnotes h2");
     if (footnoteHeading) footnoteHeading.textContent = "Footnotes";
-    article.querySelectorAll("[data-footnote-backref]").forEach((link) => link.setAttribute("aria-label", "Back to content"));
+    article
+      .querySelectorAll("[data-footnote-backref]")
+      .forEach((link) => link.setAttribute("aria-label", "Back to content"));
   }
-  const wrap = (
-    target: HTMLElement,
-    kind: string,
-    label: string,
-    inline = false,
-  ) => {
-    if (
-      target.closest(".not-prose") ||
-      target.parentElement?.classList.contains(kind)
-    )
-      return;
+  const wrap = (target: HTMLElement, kind: string, label: string, inline = false) => {
+    if (target.closest(".not-prose") || target.parentElement?.classList.contains(kind)) return;
     const region = document.createElement(inline ? "span" : "div");
     region.className = kind;
     region.tabIndex = 0;
@@ -36,18 +30,11 @@ export function setupArticleFormatting(article: HTMLElement) {
     target.replaceWith(region);
     region.appendChild(target);
   };
-  article
-    .querySelectorAll<HTMLElement>("table")
-    .forEach((table) =>
-      wrap(table, "article-table-scroll", labels.table),
-    );
+  article.querySelectorAll<HTMLElement>("table").forEach((table) => wrap(table, "article-table-scroll", labels.table));
   article
     .querySelectorAll<HTMLElement>(".katex-display")
-    .forEach((math) =>
-      wrap(math, "article-math-block", labels.math),
-    );
+    .forEach((math) => wrap(math, "article-math-block", labels.math));
   article.querySelectorAll<HTMLElement>(".katex").forEach((math) => {
-    if (!math.closest(".katex-display"))
-      wrap(math, "article-inline-math", labels.inlineMath, true);
+    if (!math.closest(".katex-display")) wrap(math, "article-inline-math", labels.inlineMath, true);
   });
 }

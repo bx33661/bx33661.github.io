@@ -11,6 +11,7 @@ html[data-theme="light"] {
   color-scheme: light;
   --background: #f2f5ec;
   --foreground: #353538;
+  --muted-foreground: #555a60;
   --accent: #1158d1;
   --muted: #bbc789;
   --border: #7cadff;
@@ -22,6 +23,7 @@ html[data-theme="dark"] {
   color-scheme: dark;
   --background: #131922;
   --foreground: #e9edf4;
+  --muted-foreground: #a7b3c2;
   --accent: #78b8ff;
   --muted: #273443;
   --border: #52677f;
@@ -35,6 +37,7 @@ html[data-theme="dark"] {
   --font-cartograph: var(--font-cartograph-native), ui-monospace, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-muted: var(--muted);
   --color-border: var(--border);
@@ -48,10 +51,6 @@ i {
   font-style: italic;
 }
 
-.spicy {
-  font-family: var(--font-sriracha);
-}
-
 @layer base {
   * {
     @apply border-border outline-accent/75;
@@ -62,11 +61,11 @@ i {
     @apply overflow-y-scroll scroll-smooth;
   }
   body {
-    @apply flex min-h-svh flex-col bg-background font-app text-foreground selection:bg-accent/75 selection:text-background;
+    @apply bg-background font-app text-foreground selection:bg-accent/75 selection:text-background flex min-h-svh flex-col;
   }
   a,
   button {
-    @apply outline-offset-1 outline-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+    @apply outline-accent outline-offset-1 focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
@@ -79,15 +78,17 @@ i {
 }
 
 @utility app-layout {
-  @apply mx-auto w-full max-w-app px-4;
-}
-
-.active-nav {
-  @apply text-accent;
+  @apply max-w-app mx-auto w-full px-4;
 }
 
 /* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */
 /* Anything that has been anchored to should have extra scroll margin */
 :target {
   scroll-margin-block: 5rem;
+}
+
+.entry-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }

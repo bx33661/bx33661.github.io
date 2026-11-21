@@ -11,17 +11,11 @@ import {
 
 test("image origins use viewport centers and independent width/height scales", () => {
   assert.equal(
-    imageOriginTransform(
-      { x: 100, y: 200, width: 300, height: 200 },
-      { x: 200, y: 100, width: 600, height: 400 },
-    ),
+    imageOriginTransform({ x: 100, y: 200, width: 300, height: 200 }, { x: 200, y: 100, width: 600, height: 400 }),
     "translate(-250px, 0px) scale(0.5, 0.5)",
   );
   assert.equal(
-    imageOriginTransform(
-      { x: 20, y: -400, width: 200, height: 1200 },
-      { x: 100, y: 20, width: 100, height: 600 },
-    ),
+    imageOriginTransform({ x: 20, y: -400, width: 200, height: 1200 }, { x: 100, y: 20, width: 100, height: 600 }),
     "translate(-30px, -120px) scale(2, 2)",
   );
 });
@@ -35,11 +29,7 @@ test("invalid or undecoded image geometry produces a non-geometric fallback", ()
 test("transition identity is route-derived, CSS-safe, and ignores query/hash", () => {
   const name = articleTransitionName("/blog/example/");
   assert.match(name, /^reading-title-[a-f0-9]+$/);
-  for (const path of [
-    "/blog/example",
-    "/blog/example/?foo=bar#chapter",
-    "https://example.com/blog/example/",
-  ])
+  for (const path of ["/blog/example", "/blog/example/?foo=bar#chapter", "https://example.com/blog/example/"])
     assert.equal(articleTransitionName(path), name);
   assert.notEqual(name, articleTransitionName("/blog/other/"));
 });
@@ -52,12 +42,8 @@ test("motion tokens retain a short non-bouncy entry and quicker exit", () => {
 });
 
 test("archive entrance delay is bounded and tolerates invalid indices", () => {
-  assert.deepEqual(
-    [0, 1, 2, 3, 4, 20].map(readingEntryDelay),
-    [0, 45, 90, 135, 180, 180],
-  );
-  for (const index of [-1, NaN, Infinity])
-    assert.equal(readingEntryDelay(index), 0);
+  assert.deepEqual([0, 1, 2, 3, 4, 20].map(readingEntryDelay), [0, 45, 90, 135, 180, 180]);
+  for (const index of [-1, NaN, Infinity]) assert.equal(readingEntryDelay(index), 0);
   assert.equal(readingEntryDelay(1.9), 45);
 });
 

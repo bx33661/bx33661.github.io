@@ -3,7 +3,8 @@ import type { Locale } from "./index";
 /** Interface copy only. Both languages render the same components and styles. */
 const zh = {
   posts: "文章",
-  blogDescription: "BX 的技术文章归档，汇集网络安全、Web 安全、CTF 题解与 AI 工程实践，按最近更新时间浏览研究过程、复现记录与结论。",
+  blogDescription:
+    "BX 的技术文章归档，汇集网络安全、Web 安全、CTF 题解与 AI 工程实践，按最近更新时间浏览研究过程、复现记录与结论。",
   blogLead: "技术研究与工程实践记录，按最近更新时间排列。",
   postCount: (n: number) => `共 ${n} 篇`,
   pageCount: (page: number, total: number) => `第 ${page}/${total} 页`,
@@ -11,7 +12,8 @@ const zh = {
   notes: "学习笔记",
   notesDescription: "BX 的学习笔记索引，按分类整理编程语言、开发工具与安全技术的学习记录，提供最近更新和全部笔记入口。",
   notesLead: "持续记录学习过程、技术细节与实践中的问题。",
-  notesCount: (n: number, categories: number, tags: number) => `总笔记 ${n} 篇，分类 ${categories} 个，标签 ${tags} 个。`,
+  notesCount: (n: number, categories: number, tags: number) =>
+    `总笔记 ${n} 篇，分类 ${categories} 个，标签 ${tags} 个。`,
   categories: "分类",
   noCategories: "暂无分类。",
   uncategorized: "未分类",
@@ -79,13 +81,15 @@ const zh = {
 
 const en: typeof zh = {
   posts: "Posts",
-  blogDescription: "BX's technical articles on cybersecurity, web security, CTFs, and AI engineering, ordered by the latest update.",
+  blogDescription:
+    "BX's technical articles on cybersecurity, web security, CTFs, and AI engineering, ordered by the latest update.",
   blogLead: "Technical research and engineering practice, ordered by the latest update.",
   postCount: (n) => `${n} ${n === 1 ? "post" : "posts"}`,
   pageCount: (page, total) => `Page ${page}/${total}`,
   browseTopics: "Browse by topic",
   notes: "Notes",
-  notesDescription: "BX's learning notes on programming, developer tools, and security, organized by category with recent updates and a full index.",
+  notesDescription:
+    "BX's learning notes on programming, developer tools, and security, organized by category with recent updates and a full index.",
   notesLead: "Learning in progress, technical details, and questions from practice.",
   notesCount: (n, categories, tags) => `${n} notes, ${categories} categories, ${tags} tags.`,
   categories: "Categories",

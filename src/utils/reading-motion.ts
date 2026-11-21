@@ -14,36 +14,21 @@ export const READING_MOTION = {
 };
 
 /** A button-centred reveal must cover the furthest viewport corner. */
-export function themeRevealGeometry(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-) {
-  if (
-    ![x, y, width, height].every(Number.isFinite) ||
-    width <= 0 ||
-    height <= 0
-  )
-    return null;
+export function themeRevealGeometry(x: number, y: number, width: number, height: number) {
+  if (![x, y, width, height].every(Number.isFinite) || width <= 0 || height <= 0) return null;
   x = Math.max(0, Math.min(width, x));
   y = Math.max(0, Math.min(height, y));
   return {
     x,
     y,
-    radius:
-      Math.ceil(Math.hypot(Math.max(x, width - x), Math.max(y, height - y))) +
-      1,
+    radius: Math.ceil(Math.hypot(Math.max(x, width - x), Math.max(y, height - y))) + 1,
   };
 }
 
 /** Keep a large archive from turning into a long entrance sequence. */
 export function readingEntryDelay(index: number): number {
   if (!Number.isFinite(index)) return 0;
-  return Math.min(
-    READING_MOTION.listMaxDelay,
-    Math.max(0, Math.floor(index)) * READING_MOTION.listStagger,
-  );
+  return Math.min(READING_MOTION.listMaxDelay, Math.max(0, Math.floor(index)) * READING_MOTION.listStagger);
 }
 
 type Box = { x: number; y: number; width: number; height: number };
@@ -51,16 +36,9 @@ type Box = { x: number; y: number; width: number; height: number };
 /** FLIP uses viewport coordinates, not document offsets, even after scrolling. */
 export function imageOriginTransform(source: Box, target: Box): string | null {
   if (
-    ![
-      source.x,
-      source.y,
-      source.width,
-      source.height,
-      target.x,
-      target.y,
-      target.width,
-      target.height,
-    ].every(Number.isFinite) ||
+    ![source.x, source.y, source.width, source.height, target.x, target.y, target.width, target.height].every(
+      Number.isFinite,
+    ) ||
     source.width <= 0 ||
     source.height <= 0 ||
     target.width <= 0 ||
@@ -74,10 +52,7 @@ export function imageOriginTransform(source: Box, target: Box): string | null {
 
 /** URL-derived names stay distinct even when article titles repeat. */
 export function articleTransitionName(href: string): string {
-  const path = new URL(href, "https://blog.invalid").pathname.replace(
-    /\/+$/,
-    "",
-  );
+  const path = new URL(href, "https://blog.invalid").pathname.replace(/\/+$/, "");
   let hash = 2166136261;
   for (const char of path) {
     hash ^= char.codePointAt(0)!;

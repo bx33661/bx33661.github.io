@@ -9,35 +9,23 @@ const shared = {
   syntaxHighlight: "shiki",
 };
 const renderer = await articleMarkdown.processor.createRenderer(shared);
-const source = await fs.readFile(
-  new URL("./fixtures/markdown-reading.md", import.meta.url),
-  "utf8",
-);
+const source = await fs.readFile(new URL("./fixtures/markdown-reading.md", import.meta.url), "utf8");
 const fixture = await renderer.render(source);
 
 test("production Markdown pipeline renders accessible inline/display TeX, matrices and escaped literals", () => {
   assert.match(fixture.code, /class="article-inline-math"/);
   assert.match(fixture.code, /class="article-math-block"/);
-  assert.match(
-    fixture.code,
-    /<math xmlns="http:\/\/www.w3.org\/1998\/Math\/MathML"/,
-  );
+  assert.match(fixture.code, /<math xmlns="http:\/\/www.w3.org\/1998\/Math\/MathML"/);
   assert.match(fixture.code, /encoding="application\/x-tex"/);
   assert.match(fixture.code, /aria-hidden="true"/);
   assert.match(fixture.code, /\$99/);
   assert.match(fixture.code, /<code>\$x\+y\$<\/code>/);
   assert.doesNotMatch(fixture.code, /katex-error/);
-  assert.equal(
-    (fixture.code.match(/class="article-math-block"/g) ?? []).length,
-    4,
-  );
+  assert.equal((fixture.code.match(/class="article-math-block"/g) ?? []).length, 4);
 });
 
 test("GFM tables retain headers/alignment, tasks and text semantics", () => {
-  assert.match(
-    fixture.code,
-    /class="article-table-scroll" tabindex="0" role="region"/,
-  );
+  assert.match(fixture.code, /class="article-table-scroll" tabindex="0" role="region"/);
   assert.match(fixture.code, /<thead>/);
   assert.match(fixture.code, /align="center"/);
   assert.match(fixture.code, /align="right"/);
@@ -92,14 +80,9 @@ test("callouts render five distinct labels without rewriting ordinary quotes", a
     caution: "警告",
   })) {
     assert.match(fixture.code, new RegExp(`data-callout="${kind}"`));
-    assert.match(
-      fixture.code,
-      new RegExp(`class="article-callout-title">${label}`),
-    );
+    assert.match(fixture.code, new RegExp(`class="article-callout-title">${label}`));
   }
-  const ordinary = await renderer.render(
-    "> 普通引用提到 [!NOTE] 但不是提示框。\n\n> [!UNKNOWN]\n> 原样保留",
-  );
+  const ordinary = await renderer.render("> 普通引用提到 [!NOTE] 但不是提示框。\n\n> [!UNKNOWN]\n> 原样保留");
   assert.doesNotMatch(ordinary.code, /data-callout/);
   assert.match(ordinary.code, /\[!UNKNOWN\]/);
 });
@@ -137,10 +120,7 @@ test("format wrapping is idempotent and skips component-owned regions", () => {
   format(tree);
   assert.equal(JSON.stringify(tree), once);
   assert.equal(island.children[0].tagName, "table");
-  assert.equal(
-    tree.children[1].children[0].children[0].properties.className[0],
-    "katex",
-  );
+  assert.equal(tree.children[1].children[0].children[0].properties.className[0], "katex");
 });
 
 test("invalid/unsupported TeX stays readable rather than becoming blank", async () => {

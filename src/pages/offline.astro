@@ -2,49 +2,36 @@
 import Layout from "@/layouts/Layout.astro";
 ---
 
-<Layout
-  title="离线模式"
-  description="您当前处于离线状态，请检查网络连接。"
-  noindex={true}
->
+<Layout title="离线模式" description="您当前处于离线状态，请检查网络连接。" noindex={true}>
   <main id="main-content" class="page mx-auto max-w-2xl px-4 py-16 text-center">
     <h1 class="mb-4 text-2xl font-semibold">离线模式</h1>
-    <p class="mb-6 text-muted-foreground">
-      当前网络未连接。你仍可以访问已缓存内容。
-    </p>
+    <p class="text-foreground/70 mb-6">当前网络未连接。你仍可以访问已缓存内容。</p>
     <p class="mb-4 flex flex-wrap items-center justify-center gap-3">
-      <a href="/" class="button rounded-md border px-4 py-2 hover:bg-accent/10"
-        >返回首页</a
-      >
-      <a
-        href="/blog/"
-        class="button rounded-md border px-4 py-2 hover:bg-accent/10"
-        >浏览博客</a
-      >
+      <a href="/" class="button hover:bg-accent/10 rounded-md border px-4 py-2">返回首页</a>
+      <a href="/blog/" class="button hover:bg-accent/10 rounded-md border px-4 py-2">浏览博客</a>
     </p>
     <p class="mb-4">
-      <button
-        type="button"
-        class="rounded-md bg-accent px-4 py-2 text-background"
-        onclick="location.reload()">重新连接</button
-      >
+      <button type="button" id="offline-retry" class="bg-accent text-background rounded-md px-4 py-2">重新连接</button>
     </p>
-    <p id="network-status" class="text-sm text-muted-foreground">
-      检测网络状态中...
-    </p>
+    <p id="network-status" class="text-foreground/70 text-sm">检测网络状态中...</p>
   </main>
 
   <script>
-    function updateNetworkStatus() {
-      const statusEl = document.getElementById("network-status");
-      if (!statusEl) return;
-      statusEl.textContent = navigator.onLine
-        ? "网络已连接，可点击“重新连接”刷新页面"
-        : "网络未连接";
-    }
+    import { onAstroPage } from "@/scripts/astro-lifecycle";
 
-    window.addEventListener("online", updateNetworkStatus);
-    window.addEventListener("offline", updateNetworkStatus);
-    updateNetworkStatus();
+    onAstroPage((signal) => {
+      const statusEl = document.getElementById("network-status");
+      const retryBtn = document.getElementById("offline-retry");
+      if (!statusEl) return;
+
+      const updateNetworkStatus = () => {
+        statusEl.textContent = navigator.onLine ? "网络已连接，可点击“重新连接”刷新页面" : "网络未连接";
+      };
+
+      retryBtn?.addEventListener("click", () => location.reload(), { signal });
+      window.addEventListener("online", updateNetworkStatus, { signal });
+      window.addEventListener("offline", updateNetworkStatus, { signal });
+      updateNetworkStatus();
+    });
   </script>
 </Layout>

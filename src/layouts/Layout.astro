@@ -4,6 +4,7 @@ import { Font } from "astro:assets";
 import { SITE } from "@/config.ts";
 import { serializeJsonLd } from "@/utils/serializeJsonLd";
 import SearchModal from "@/components/SearchModal.astro";
+import SiteBackdrop from "@/components/SiteBackdrop.astro";
 import "@/styles/global.css";
 import "@/styles/reading-motion.css";
 import { englishDescription, localeFromPath } from "@/i18n";
@@ -25,6 +26,7 @@ type Props = {
   scrollSmooth?: boolean;
   noindex?: boolean;
   referrerPolicy?: string;
+  schemaType?: "BlogPosting" | "CollectionPage";
 };
 
 const {
@@ -39,6 +41,7 @@ const {
   scrollSmooth = false,
   noindex = false,
   referrerPolicy = "strict-origin-when-cross-origin",
+  schemaType = "BlogPosting",
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.url);
@@ -46,7 +49,7 @@ const socialImageURL = new URL(ogImage, Astro.url);
 const structuredData = pubDatetime
   ? {
       "@context": "https://schema.org",
-      "@type": "BlogPosting",
+      "@type": schemaType,
       headline: `${title}`,
       description,
       inLanguage: locale,
@@ -87,10 +90,14 @@ const structuredData = pubDatetime
     <link rel="icon" type="image/svg+xml" href="/brand/bx-logo.svg" />
     <link rel="shortcut icon" href="/brand/favicon.ico" />
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="canonical" href={canonicalURL} />
-    {Object.keys(alternates).length === 2 && Object.entries(alternates).map(([language, path]) => (
-      <link rel="alternate" hreflang={language} href={new URL(path!, Astro.site ?? Astro.url)} />
-    ))}
+    {
+      Object.keys(alternates).length === 2 &&
+        Object.entries(alternates).map(([language, path]) => (
+          <link rel="alternate" hreflang={language} href={new URL(path!, Astro.site ?? Astro.url)} />
+        ))
+    }
     <meta
       name="robots"
       content={`${noindex ? "noindex" : "index"}, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1`}
@@ -100,7 +107,7 @@ const structuredData = pubDatetime
     <meta name="referrer" content={referrerPolicy} />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://analytics.ahrefs.com https://giscus.app; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com https://app.posthog.com https://giscus.app; frame-src https://giscus.app; base-uri 'self'; object-src 'none'"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://analytics.ahrefs.com https://giscus.app; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.ahrefs.com https://app.posthog.com https://giscus.app; frame-src https://giscus.app https://player.bilibili.com; base-uri 'self'; object-src 'none'"
     />
 
     <!-- General Meta Tags -->
@@ -118,22 +125,8 @@ const structuredData = pubDatetime
     <meta property="og:image" content={socialImageURL} />
 
     <!-- Article Published/Modified time -->
-    {
-      pubDatetime && (
-        <meta
-          property="article:published_time"
-          content={pubDatetime.toISOString()}
-        />
-      )
-    }
-    {
-      modDatetime && (
-        <meta
-          property="article:modified_time"
-          content={modDatetime.toISOString()}
-        />
-      )
-    }
+    {pubDatetime && <meta property="article:published_time" content={pubDatetime.toISOString()} />}
+    {modDatetime && <meta property="article:modified_time" content={modDatetime.toISOString()} />}
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -143,11 +136,7 @@ const structuredData = pubDatetime
     <meta property="twitter:image" content={socialImageURL} />
 
     <!-- Google JSON-LD Structured data -->
-    <script
-      type="application/ld+json"
-      is:inline
-      set:html={serializeJsonLd(structuredData)}
-    />
+    <script type="application/ld+json" is:inline set:html={serializeJsonLd(structuredData)} />
 
     <!-- Enable RSS feed auto-discovery  -->
     <!-- https://docs.astro.build/en/recipes/rss/#enabling-rss-feed-auto-discovery -->
@@ -182,144 +171,13 @@ const structuredData = pubDatetime
     </script>
   </head>
   <body>
-    <div class="site-backdrop pointer-events-none" aria-hidden="true">
-      <div class="site-grid"></div>
-      <div class="site-glow"></div>
-      <div class="site-cursor-glow"></div>
-      <div class="site-grain"></div>
-    </div>
+    <SiteBackdrop />
 
     <slot />
 
     <SearchModal />
     <script src="../scripts/theme.ts"></script>
     <script src="../scripts/reading-navigation.ts"></script>
-
-    <!-- Register SW only in production (not localhost / Lighthouse) -->
-    <script is:inline>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function () {
-          const host = window.location.hostname;
-          const isLocal = host === "localhost" || host === "127.0.0.1";
-          const isLighthouse =
-            navigator.userAgent.includes("Chrome-Lighthouse");
-          if (isLocal || isLighthouse) return;
-
-          navigator.serviceWorker
-            .register("/sw.js")
-            .then(function (registration) {
-              registration.update().catch(function () {});
-            })
-            .catch(function () {});
-        });
-      }
-    </script>
+    <script src="../scripts/register-sw.ts"></script>
   </body>
 </html>
-
-<style>
-  .site-backdrop {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    z-index: 0;
-    mask-image: linear-gradient(
-      to bottom,
-      black 0%,
-      black 40%,
-      rgba(0, 0, 0, 0.3) 70%,
-      transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      black 0%,
-      black 40%,
-      rgba(0, 0, 0, 0.3) 70%,
-      transparent 100%
-    );
-  }
-
-  .site-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--accent) 1px, transparent 1px),
-      linear-gradient(90deg, var(--accent) 1px, transparent 1px);
-    background-size: 50px 50px;
-    opacity: 0.035;
-    mask-image: radial-gradient(
-      ellipse 100% 60% at 50% 0%,
-      black 15%,
-      transparent 100%
-    );
-    -webkit-mask-image: radial-gradient(
-      ellipse 100% 60% at 50% 0%,
-      black 15%,
-      transparent 100%
-    );
-  }
-
-  .site-glow {
-    position: absolute;
-    top: -15%;
-    left: 50%;
-    transform: translateX(-50%) translateZ(0);
-    width: 800px;
-    height: 550px;
-    background: radial-gradient(
-      ellipse at center,
-      color-mix(in oklab, var(--accent) 100%, transparent) 0%,
-      color-mix(in oklab, var(--accent) 80%, transparent) 10%,
-      color-mix(in oklab, var(--accent) 60%, transparent) 20%,
-      color-mix(in oklab, var(--accent) 45%, transparent) 30%,
-      color-mix(in oklab, var(--accent) 30%, transparent) 40%,
-      color-mix(in oklab, var(--accent) 18%, transparent) 50%,
-      color-mix(in oklab, var(--accent) 10%, transparent) 60%,
-      color-mix(in oklab, var(--accent) 4%, transparent) 70%,
-      transparent 85%
-    );
-    opacity: 0.06;
-    filter: blur(80px);
-  }
-
-  .site-cursor-glow {
-    position: absolute;
-    left: -550px;
-    top: -550px;
-    width: 1100px;
-    height: 1100px;
-    transform: translate3d(var(--site-cx, 0px), var(--site-cy, 0px), 0);
-    background: radial-gradient(
-      550px circle at center,
-      color-mix(in oklab, var(--accent) 6%, transparent) 0%,
-      color-mix(in oklab, var(--accent) 4%, transparent) 15%,
-      color-mix(in oklab, var(--accent) 2.5%, transparent) 25%,
-      color-mix(in oklab, var(--accent) 1.5%, transparent) 38%,
-      color-mix(in oklab, var(--accent) 0.8%, transparent) 50%,
-      color-mix(in oklab, var(--accent) 0.2%, transparent) 62%,
-      transparent 75%
-    );
-    filter: blur(40px);
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-
-  .site-cursor-glow.active {
-    opacity: 1;
-  }
-
-  .site-grain {
-    position: absolute;
-    inset: 0;
-    background-image: url("/noise.png");
-    background-repeat: repeat;
-    background-size: 64px 64px;
-    opacity: 0.55;
-    mix-blend-mode: overlay;
-    pointer-events: none;
-  }
-</style>
-
-<script src="../scripts/cursor-glow.ts"></script>

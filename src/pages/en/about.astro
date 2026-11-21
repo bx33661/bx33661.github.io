@@ -1,4 +1,5 @@
 ---
-// The existing home already contains the author's approved English introduction.
-return Astro.redirect("/en/", 301);
+import RedirectPage from "@/components/RedirectPage.astro";
 ---
+
+<RedirectPage target="/en/" title="Redirecting to English Home" lang="en" />

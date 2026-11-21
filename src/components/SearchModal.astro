@@ -2,53 +2,68 @@
 import "@pagefind/default-ui/css/ui.css";
 import "@/styles/search-modal.css";
 import { localeFromPath, localizedPath } from "@/i18n";
+
 const locale = localeFromPath(Astro.url.pathname);
-const isEnglish = locale === "en";
+const copy =
+  locale === "en"
+    ? {
+        close: "Close search",
+        title: "Search English content",
+        trySearching: "Try searching",
+        topic: "Security",
+        select: "Select",
+        open: "Open",
+        closeHint: "Close",
+        fullSearch: "Full search",
+      }
+    : {
+        close: "关闭搜索",
+        title: "站内搜索",
+        trySearching: "试试搜索",
+        topic: "安全审计",
+        select: "选择",
+        open: "打开",
+        closeHint: "关闭",
+        fullSearch: "前往完整搜索",
+      };
 ---
 
-<dialog
-  id="search-modal"
-  class="search-dialog"
-  aria-labelledby="search-dialog-title"
->
-  <button
-    class="search-backdrop"
-    type="button"
-    tabindex="-1"
-    aria-label={isEnglish ? "Close search" : "关闭搜索"}
-    data-search-close></button>
+<dialog id="search-modal" class="search-dialog" aria-labelledby="search-dialog-title">
+  <button class="search-backdrop" type="button" tabindex="-1" aria-label={copy.close} data-search-close></button>
   <div class="search-dialog-card">
     <header class="search-dialog-head">
       <div>
         <p class="search-dialog-kicker">SEARCH / QUICK FIND</p>
-        <h2 id="search-dialog-title">{isEnglish ? "Search English content" : "站内搜索"}</h2>
+        <h2 id="search-dialog-title">{copy.title}</h2>
       </div>
-      <button
-        class="search-dialog-close"
-        type="button"
-        aria-label={isEnglish ? "Close search" : "关闭搜索"}
-        data-search-close
-      >
+      <button class="search-dialog-close" type="button" aria-label={copy.close} data-search-close>
         <span aria-hidden="true">×</span>
       </button>
     </header>
 
     <div class="search-dialog-body">
-      <div id="modal-pagefind-search"></div>
+      <div id="modal-pagefind-search" class="pagefind-surface"></div>
       <div class="search-suggestions" data-search-suggestions>
-        <span>{isEnglish ? "Try searching" : "试试搜索"}</span>
+        <span>{copy.trySearching}</span>
         <button type="button" data-search-suggestion="CTF">CTF</button>
         <button type="button" data-search-suggestion="Web">Web</button>
-        <button type="button" data-search-suggestion={isEnglish ? "Security" : "安全审计"}>{isEnglish ? "Security" : "安全审计"}</button
-        >
+        <button type="button" data-search-suggestion={copy.topic}>{copy.topic}</button>
       </div>
     </div>
 
     <footer class="search-dialog-foot">
-      <span
-        ><kbd>↑</kbd><kbd>↓</kbd> {isEnglish ? "Select" : "选择"} <kbd>↵</kbd> {isEnglish ? "Open" : "打开"} <kbd>Esc</kbd> {isEnglish ? "Close" : "关闭"}</span
-      >
-      <a href={localizedPath("/search/", locale)}>{isEnglish ? "Full search" : "前往完整搜索"} <span aria-hidden="true">↗</span></a>
+      <span>
+        <kbd>↑</kbd><kbd>↓</kbd>
+        {copy.select}
+        <kbd>↵</kbd>
+        {copy.open}
+        <kbd>Esc</kbd>
+        {copy.closeHint}
+      </span>
+      <a href={localizedPath("/search/", locale)}>
+        {copy.fullSearch}
+        <span aria-hidden="true">↗</span>
+      </a>
     </footer>
   </div>
 </dialog>

@@ -8,7 +8,7 @@ import {
   transformerNotationHighlight,
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
-import { transformerFileName } from "./transformers/fileName.js";
+import { transformerFileName } from "./transformers/fileName.ts";
 import { rehypeDemoteHeadings } from "./rehypeDemoteHeadings.ts";
 import { rehypeArticleImages } from "./rehypeArticleImages.ts";
 import { remarkArticleCallouts } from "./remarkArticleCallouts.ts";
@@ -18,12 +18,7 @@ import { rehypeArticleFormatting } from "./rehypeArticleFormatting.ts";
 export const articleMarkdown = {
   processor: unified({
     gfm: true,
-    remarkPlugins: [
-      remarkMath,
-      remarkArticleCallouts,
-      remarkToc,
-      [remarkCollapse, { test: "Table of contents" }],
-    ],
+    remarkPlugins: [remarkMath, remarkArticleCallouts, remarkToc, [remarkCollapse, { test: "Table of contents" }]],
     remarkRehype: {
       footnoteLabel: "注释",
       footnoteBackLabel: "返回正文",

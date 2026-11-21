@@ -7,10 +7,7 @@ const renderer = await articleMarkdown.processor.createRenderer({
   shikiConfig: articleMarkdown.shikiConfig,
   syntaxHighlight: "shiki",
 });
-const source = await fs.readFile(
-  new URL("./fixtures/markdown-reading.md", import.meta.url),
-  "utf8",
-);
+const source = await fs.readFile(new URL("./fixtures/markdown-reading.md", import.meta.url), "utf8");
 const { code, metadata } = await renderer.render(source);
 
 /** Synthetic fixture uses the production parser, stylesheet, layout and reader JS;
@@ -23,16 +20,13 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
   await page.evaluate(
     ({ code, headings }) => {
       document.querySelector("#article").innerHTML = code;
-      document.querySelector(".post-title").textContent =
-        "Markdown 格式适配回归样例";
+      document.querySelector(".post-title").textContent = "Markdown 格式适配回归样例";
       document.querySelector(".post-description").textContent =
         "公式、表格、嵌套列表、提示框、折叠内容和脚注。此页面仅存在于测试浏览器中。";
       for (const nav of document.querySelectorAll("[data-post-toc]")) {
         nav.replaceChildren();
         const list = document.createElement("ol");
-        for (const heading of headings.filter(
-          (h) => h.depth <= 3 && h.slug !== "footnote-label",
-        )) {
+        for (const heading of headings.filter((h) => h.depth <= 3 && h.slug !== "footnote-label")) {
           const item = document.createElement("li");
           if (heading.depth >= 3) item.className = "nested";
           const anchor = document.createElement("a");
@@ -48,35 +42,21 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
     { code, headings: metadata.headings },
   );
   await page.evaluate(() => document.fonts.ready);
-  assert.equal(
-    await page.evaluate(() => document.fonts.check("16px KaTeX_Main")),
-    true,
-    "local math fonts loaded",
-  );
+  assert.equal(await page.evaluate(() => document.fonts.check("16px KaTeX_Main")), true, "local math fonts loaded");
   assert.equal(await page.locator("#article .katex-error").count(), 0);
-  assert(
-    (await page.locator("#article math").count()) >= 6,
-    "accessible MathML retained",
-  );
+  assert((await page.locator("#article math").count()) >= 6, "accessible MathML retained");
   assert.equal(
-    await page
-      .locator(
-        "[data-format-island] .copy-code, [data-format-island] .article-table-scroll",
-      )
-      .count(),
+    await page.locator("[data-format-island] .copy-code, [data-format-island] .article-table-scroll").count(),
     0,
     "component-owned content remains untouched",
   );
   // Quiet typography keeps structure without turning every element into a card.
   const quietStyles = await page.evaluate(() => {
-    const style = (selector) =>
-      getComputedStyle(document.querySelector(selector));
+    const style = (selector) => getComputedStyle(document.querySelector(selector));
     const inline = style("#article p > code");
     const math = style("#article .article-math-block");
     const table = style("#article .article-table-scroll");
-    const cells = [
-      ...document.querySelectorAll(".article-table-scroll :is(th, td)"),
-    ];
+    const cells = [...document.querySelectorAll(".article-table-scroll :is(th, td)")];
     return {
       inlineBorder: inline.borderWidth,
       mathBackground: math.backgroundColor,
@@ -86,37 +66,27 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
         const css = getComputedStyle(cell);
         return [css.borderLeftWidth, css.borderRightWidth];
       }),
-      horizontalBorders: cells.map(
-        (cell) => getComputedStyle(cell).borderBottomWidth,
-      ),
+      horizontalBorders: cells.map((cell) => getComputedStyle(cell).borderBottomWidth),
     };
   });
   assert.equal(quietStyles.inlineBorder, "0px");
   assert.equal(quietStyles.mathBackground, "rgba(0, 0, 0, 0)");
   assert.equal(quietStyles.mathBorder, "0px");
   assert.equal(quietStyles.tableBorder, "0px");
-  assert(
-    quietStyles.verticalBorders.every(
-      ([left, right]) => left === "0px" && right === "0px",
-    ),
-  );
+  assert(quietStyles.verticalBorders.every(([left, right]) => left === "0px" && right === "0px"));
   assert(quietStyles.horizontalBorders.some((border) => border !== "0px"));
 
   const align = await page
     .locator(".article-table-scroll thead th")
-    .evaluateAll((cells) =>
-      cells.map((cell) => getComputedStyle(cell).textAlign),
-    );
+    .evaluateAll((cells) => cells.map((cell) => getComputedStyle(cell).textAlign));
   assert.equal(align[2], "center");
   assert.equal(align[3], "right");
-  const checked = await page
-    .locator(".task-list-item input")
-    .evaluateAll((inputs) =>
-      inputs.map((input) => ({
-        checked: input.checked,
-        disabled: input.disabled,
-      })),
-    );
+  const checked = await page.locator(".task-list-item input").evaluateAll((inputs) =>
+    inputs.map((input) => ({
+      checked: input.checked,
+      disabled: input.disabled,
+    })),
+  );
   assert.deepEqual(checked, [
     { checked: true, disabled: true },
     { checked: false, disabled: true },
@@ -133,8 +103,7 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
       body: document.body.scrollWidth,
     }));
     assert(
-      metrics.width <= metrics.viewport + 2 &&
-        metrics.body <= metrics.viewport + 2,
+      metrics.width <= metrics.viewport + 2 && metrics.body <= metrics.viewport + 2,
       `Markdown page overflow: ${JSON.stringify(metrics)}`,
     );
   };
@@ -146,18 +115,11 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
     scroll: node.scrollWidth,
     tab: node.tabIndex,
   }));
-  assert(
-    geometry.scroll > geometry.width,
-    "long formula has its own scroll region",
-  );
+  assert(geometry.scroll > geometry.width, "long formula has its own scroll region");
   assert.equal(geometry.tab, 0);
   await math.focus();
   await page.keyboard.press("ArrowRight");
-  await page.waitForFunction(
-    () =>
-      [...document.querySelectorAll(".article-math-block")].at(-1).scrollLeft >
-      0,
-  );
+  await page.waitForFunction(() => [...document.querySelectorAll(".article-math-block")].at(-1).scrollLeft > 0);
   await math.evaluate((node) => {
     node.scrollLeft = 0;
   });
@@ -168,24 +130,15 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
     assert(
       (await page
         .locator(".article-inline-math")
-        .evaluateAll(
-          (nodes) =>
-            nodes.filter((node) => node.scrollWidth > node.clientWidth + 2)
-              .length,
-        )) > 0,
+        .evaluateAll((nodes) => nodes.filter((node) => node.scrollWidth > node.clientWidth + 2).length)) > 0,
       "long inline math scrolls locally",
     );
     const table = page.locator(".article-table-scroll").first();
     await table.scrollIntoViewIfNeeded();
-    assert.equal(
-      await table.evaluate((node) => node.scrollWidth > node.clientWidth),
-      true,
-    );
+    assert.equal(await table.evaluate((node) => node.scrollWidth > node.clientWidth), true);
     await table.focus();
     await page.keyboard.press("ArrowRight");
-    await page.waitForFunction(
-      () => document.querySelector(".article-table-scroll").scrollLeft > 0,
-    );
+    await page.waitForFunction(() => document.querySelector(".article-table-scroll").scrollLeft > 0);
     await table.evaluate((node) => {
       node.scrollLeft = 0;
     });
@@ -206,18 +159,12 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
   await summary.focus();
   await page.keyboard.press("Enter");
   assert.equal(await details.evaluate((node) => node.open), true);
-  assert.equal(
-    await details.locator("p").first().isVisible(),
-    true,
-    "ordinary disclosure paragraphs are not hidden",
-  );
+  assert.equal(await details.locator("p").first().isVisible(), true, "ordinary disclosure paragraphs are not hidden");
   assert.equal(
     await details
       .locator("[data-format-raw-table]")
       .evaluate(
-        (table) =>
-          table.parentElement.classList.contains("article-table-scroll") &&
-          table.parentElement.tabIndex === 0,
+        (table) => table.parentElement.classList.contains("article-table-scroll") && table.parentElement.tabIndex === 0,
       ),
     true,
     "raw HTML table has the same keyboard region",
@@ -233,10 +180,7 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
   const expected = await codeBlock.locator("code").innerText();
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
   await codeBlock.locator(".copy-code").click();
-  assert.equal(
-    await page.evaluate(() => navigator.clipboard.readText()),
-    expected,
-  );
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected);
   await codeBlock.scrollIntoViewIfNeeded();
   await page.screenshot({
     path: path.join(output, `markdown-code-${prefix}.png`),
@@ -248,28 +192,21 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
 
   const ref = page.locator("[data-footnote-ref]").first();
   assert(
-    (await ref.evaluate((node) =>
-      parseFloat(getComputedStyle(node).scrollMarginTop),
-    )) >= 90,
+    (await ref.evaluate((node) => parseFloat(getComputedStyle(node).scrollMarginTop))) >= 90,
     "footnote return target clears the fixed header",
   );
   await ref.click();
   await page.waitForFunction(
     () =>
       location.hash === "#user-content-fn-note" &&
-      document.getElementById("user-content-fn-note").getBoundingClientRect()
-        .top < 200,
+      document.getElementById("user-content-fn-note").getBoundingClientRect().top < 200,
   );
   const back = page.locator("[data-footnote-backref]");
   await back.click();
   await page.waitForFunction(
     () =>
       location.hash === "#user-content-fnref-note" &&
-      Math.abs(
-        document
-          .getElementById("user-content-fnref-note")
-          .getBoundingClientRect().top - 96,
-      ) < 3,
+      Math.abs(document.getElementById("user-content-fnref-note").getBoundingClientRect().top - 96) < 3,
   );
   await assertNoOverflow();
   const image = page.locator("#article .article-image-trigger");
@@ -277,10 +214,7 @@ export async function checkMarkdownReading(page, { base, output, prefix }) {
   await page.locator("#article-lightbox").waitFor({ state: "visible" });
   await page.keyboard.press("Escape");
   await page.locator("#article-lightbox").waitFor({ state: "hidden" });
-  assert.equal(
-    await image.evaluate((node) => node === document.activeElement),
-    true,
-  );
+  assert.equal(await image.evaluate((node) => node === document.activeElement), true);
 
   // Check the real article after the synthetic fixture, not just the fixture DOM.
   await page.goto(`${base}/blog/openrasp-sql-detect-bypass/`, {

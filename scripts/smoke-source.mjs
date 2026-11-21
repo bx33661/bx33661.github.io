@@ -63,31 +63,17 @@ assertHasText(
   /giscus\.app/,
   "Layout CSP missing giscus.app allowlist",
 );
-assertHasText(
-  path.join(repoRoot, "public/_headers"),
-  /giscus\.app/,
-  "_headers CSP missing giscus.app allowlist",
-);
+assertHasText(path.join(repoRoot, "public/_headers"), /giscus\.app/, "_headers CSP missing giscus.app allowlist");
 assertHasText(
   path.join(repoRoot, "src/layouts/Layout.astro"),
   /frame-src[^"]*giscus\.app/,
   "Layout CSP missing frame-src for giscus.app",
 );
 
-requireDirectoryHasFiles(
-  path.join(repoRoot, "src/data/galleries/bx-journey"),
-  (name) => /\.(jpe?g|png)$/i.test(name),
-);
-requireDirectoryHasFiles(
-  path.join(repoRoot, "public/gallery/optimized"),
-  (name) => /\.(avif|webp|jpg)$/i.test(name),
-);
+requireDirectoryHasFiles(path.join(repoRoot, "src/data/galleries/bx-journey"), (name) => /\.(jpe?g|png)$/i.test(name));
+requireDirectoryHasFiles(path.join(repoRoot, "public/gallery/optimized"), (name) => /\.(avif|webp|jpg)$/i.test(name));
 
-for (const retiredPath of [
-  "src/pages/projects",
-  "src/utils/projects.ts",
-  "public/fonts/crt",
-]) {
+for (const retiredPath of ["src/pages/projects", "src/utils/projects.ts", "public/fonts/crt"]) {
   if (fs.existsSync(path.join(repoRoot, retiredPath))) {
     failures.push(`retired Projects resource still exists: ${retiredPath}`);
   }
@@ -96,7 +82,8 @@ for (const file of [
   "src/data/academic/projects/pureautocodeql.json",
   "src/data/academic/projects/wireshark-mcp.json",
   "src/data/academic/awards/panshi-2025.json",
-]) requireFile(path.join(repoRoot, file));
+])
+  requireFile(path.join(repoRoot, file));
 assertHasText(
   path.join(repoRoot, "src/content.config.ts"),
   /relatedPosts:\s*z\.array\(reference\("blog"\)\)/,
@@ -118,10 +105,7 @@ assertHasText(
   "Astro prefetch hover strategy not configured",
 );
 
-const summary = [
-  `- Failures: ${failures.length}`,
-  `- Warnings: ${warnings.length}`,
-];
+const summary = [`- Failures: ${failures.length}`, `- Warnings: ${warnings.length}`];
 
 console.log("Source smoke check summary:");
 for (const line of summary) console.log(line);

@@ -1,0 +1,457 @@
+.academic-home {
+  --home-muted: #59616b;
+  --home-rule: color-mix(in srgb, var(--foreground) 16%, transparent);
+  padding-top: clamp(2.5rem, 6vw, 5rem);
+  padding-bottom: clamp(3rem, 6vw, 6rem);
+}
+
+html[data-theme="dark"] .academic-home {
+  --home-muted: #aab5c3;
+}
+
+.academic-home .intro-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: 2rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--home-rule);
+}
+
+.academic-home .hero-copy {
+  padding: 1rem 0;
+}
+
+.academic-home .hero-coordinate {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 2.4rem 0 0;
+  color: var(--home-muted);
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.61rem;
+  letter-spacing: 0.12em;
+}
+
+.academic-home .hero-coordinate span {
+  width: 0.3rem;
+  height: 0.3rem;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.academic-home .eyebrow {
+  margin: 0 0 1.25rem;
+  color: var(--home-muted);
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.8;
+}
+
+.academic-home h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(3rem, 7vw, 5rem);
+  line-height: 1.12;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+}
+
+.academic-home h1 span {
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.06em;
+}
+
+.academic-home .welcome {
+  margin: 0.85rem 0 0;
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+  line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.academic-home .home-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 15rem;
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-top: 2.5rem;
+}
+
+.academic-home .intro-body {
+  min-width: 0;
+}
+
+.academic-home .intro-focus {
+  margin: 0 0 1.75rem;
+  font-size: 1.12rem;
+  line-height: 1.85;
+  letter-spacing: -0.012em;
+}
+
+.academic-home .intro-focus strong {
+  font-weight: 650;
+}
+
+.academic-home .intro-prose {
+  font-family: var(--font-sans);
+  color: var(--home-muted);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.9;
+  letter-spacing: 0.002em;
+}
+
+.academic-home .intro-prose p {
+  margin: 0 0 1.35rem;
+}
+
+.academic-home .closing {
+  margin: 2rem 0 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.academic-home .closing strong {
+  font-weight: 550;
+}
+
+.academic-home .closing-star {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.academic-home .home-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.6rem;
+  margin-top: 2rem;
+}
+
+.academic-home .home-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+
+.academic-home .home-links a:hover {
+  text-decoration: underline;
+}
+
+.academic-home .home-links .read-link {
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.35rem;
+  background: var(--accent);
+  color: var(--background);
+  gap: 1.4rem;
+}
+
+.academic-home .home-links .read-link:hover {
+  text-decoration: none;
+  background: color-mix(in srgb, var(--accent) 88%, var(--foreground));
+}
+
+.academic-home .home-links a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+
+.academic-home .home-sidebar {
+  min-width: 0;
+  border-left: 1px solid var(--home-rule);
+  padding-left: 1.75rem;
+}
+
+.academic-home .star-map {
+  position: relative;
+  isolation: isolate;
+  min-height: 350px;
+  overflow: hidden;
+  border-radius: 2px 2px 56px 2px;
+  background: #172642;
+  color: #e0edfc;
+  border: 1px solid rgb(179 208 242 / 0.28);
+  box-shadow: 0 16px 44px -28px rgb(16 39 73 / 0.5);
+}
+
+.academic-home .star-map-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 76% 12%, #887bbd, transparent 54%),
+    radial-gradient(ellipse at 36% 75%, #3c879a, transparent 68%),
+    linear-gradient(135deg, #101d35, #344c7d 58%, #19263f);
+}
+
+.academic-home .star-map-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(7 15 32 / 0.48), transparent 27%, transparent 70%, rgb(7 15 32 / 0.5));
+}
+
+.academic-home .star-map-atmosphere canvas {
+  display: block;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.academic-home .star-map[data-shader-state="ready"] canvas {
+  opacity: 1;
+}
+
+.academic-home .star-map svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+}
+
+.academic-home .field-label,
+.academic-home .field-caption {
+  position: absolute;
+  inset-inline: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #e0edfc;
+  font:
+    500 0.55rem/1.5 var(--font-cartograph),
+    monospace;
+  letter-spacing: 0.11em;
+}
+
+.academic-home .field-label {
+  top: 1.1rem;
+}
+
+.academic-home .field-mark {
+  font-size: 1rem;
+}
+
+.academic-home .field-caption {
+  bottom: 1.2rem;
+  font-size: 0.51rem;
+  letter-spacing: 0.07em;
+}
+
+.academic-home .outer-orbit {
+  stroke: #d5e6fc;
+  stroke-opacity: 0.24;
+  stroke-dasharray: 1 9;
+}
+
+.academic-home .field-axis {
+  stroke: #d5e6fc;
+  stroke-opacity: 0.45;
+  stroke-width: 0.7;
+}
+
+.academic-home .orbit {
+  stroke: #e2edff;
+  stroke-opacity: 0.63;
+  stroke-width: 0.75;
+}
+
+.academic-home .orbit-secondary {
+  stroke-opacity: 0.25;
+}
+
+.academic-home .constellation {
+  stroke: currentColor;
+  stroke-opacity: 0.5;
+  stroke-width: 0.7;
+}
+
+.academic-home .star-points,
+.academic-home .north-star,
+.academic-home .satellite {
+  fill: currentColor;
+}
+
+.academic-home .satellite {
+  stroke: #d9e8ff;
+  stroke-width: 5;
+  stroke-opacity: 0.18;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academic-home .star-map-atmosphere canvas {
+    transition: none;
+  }
+}
+
+.academic-home .education-section {
+  padding-top: 0.1rem;
+}
+
+.academic-home .education-section h2 {
+  margin: 0 0 1.75rem;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  font-family: var(--font-cartograph), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--home-muted);
+}
+
+.academic-home .education-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.academic-home .education-list li {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.8rem;
+  align-items: start;
+}
+
+.academic-home .education-list li + li {
+  margin-top: 2rem;
+}
+
+.academic-home .education-list img {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+}
+
+.academic-home .school-abbr {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: var(--font-cartograph), monospace;
+  color: var(--accent);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.academic-home .education-list h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.academic-home .education-list p {
+  margin: 0.5rem 0 0;
+  color: var(--home-muted);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 760px) {
+  .academic-home .home-grid {
+    grid-template-columns: 1fr;
+    gap: 2.75rem;
+  }
+
+  .academic-home .home-sidebar {
+    padding: 0;
+    border-left: 0;
+  }
+
+  .academic-home .intro-heading {
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+  }
+
+  .academic-home .hero-copy {
+    padding: 0;
+  }
+
+  .academic-home .hero-coordinate {
+    margin-top: 1.4rem;
+  }
+
+  .academic-home .star-map {
+    min-height: 300px;
+  }
+
+  .academic-home .education-section {
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--home-rule);
+  }
+
+  .academic-home .education-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .academic-home .education-list li + li {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .academic-home {
+    padding-top: 2rem;
+  }
+
+  .academic-home .intro-heading {
+    padding-bottom: 1.75rem;
+    gap: 1.5rem;
+  }
+
+  .academic-home .star-map {
+    min-height: 265px;
+    border-bottom-right-radius: 40px;
+  }
+
+  .academic-home .field-label,
+  .academic-home .field-caption {
+    inset-inline: 1rem;
+  }
+
+  .academic-home .field-caption {
+    font-size: 0.45rem;
+  }
+
+  .academic-home .eyebrow {
+    font-size: 0.58rem;
+    letter-spacing: 0.09em;
+    margin-bottom: 1rem;
+  }
+
+  .academic-home .home-grid {
+    padding-top: 1.75rem;
+  }
+
+  .academic-home .intro-focus {
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .academic-home .intro-prose {
+    font-size: 0.94rem;
+    line-height: 1.85;
+  }
+
+  .academic-home .closing {
+    font-size: 0.95rem;
+  }
+
+  .academic-home .education-list {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+}

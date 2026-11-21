@@ -5,8 +5,6 @@ export const SLIDER_CONSTANTS = {
   WHEEL_RESISTANCE: 0.3,
   WHEEL_SCROLL_THRESHOLD: 120,
   WHEEL_RESET_DELAY: 150,
-  MOMENTUM_EASING: 0.1,
-  ANIMATION_TIMEOUT: 800,
-} as const
+} as const;
 
-export const DEFAULT_COLORS = ["#1a1a2e", "#16213e", "#0f3460"] as const
+export const DEFAULT_COLORS = ["#1a1a2e", "#16213e", "#0f3460"] as const;

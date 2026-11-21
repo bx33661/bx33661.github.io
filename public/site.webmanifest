@@ -32,7 +32,7 @@
   "categories": ["technology", "education", "productivity"],
   "screenshots": [
     {
-      "src": "/ogImage.png",
+      "src": "/og.png",
       "sizes": "1200x630",
       "type": "image/png",
       "form_factor": "wide"

@@ -12,11 +12,13 @@ import Pagination from "@/components/Pagination.astro";
 import { SITE } from "@/config.ts";
 import { type NoteWithSlug } from "@/utils/notes";
 
-interface Props { page: Page<NoteWithSlug>; }
+interface Props {
+  page: Page<NoteWithSlug>;
+}
 const { page } = Astro.props;
 const locale = localeFromPath(Astro.url.pathname);
 const t = ui(locale);
-const noteEntries = page.data as NoteWithSlug[];
+const noteEntries = page.data;
 ---
 
 <Layout
@@ -74,10 +76,5 @@ const noteEntries = page.data as NoteWithSlug[];
     margin: 0.55rem 0 0;
     color: color-mix(in srgb, var(--foreground) 68%, transparent);
     line-height: 1.7;
-  }
-  .entry-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
   }
 </style>

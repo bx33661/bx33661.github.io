@@ -1,10 +1,18 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import fs from "node:fs";
-import { localeFromPath, localizedPath, isEntryLocale, sectionAlternates, switchDestination, entryAlternates } from "../src/i18n/index.ts";
+import {
+  localeFromPath,
+  localizedPath,
+  isEntryLocale,
+  sectionAlternates,
+  switchDestination,
+  entryAlternates,
+} from "../src/i18n/index.ts";
 
 test("locale detection respects a full path segment and keeps Chinese as default", () => {
-  for (const path of ["/", "/blog/example/", "/english/", "/enough/", "/en-US/"]) assert.equal(localeFromPath(path), "zh-CN");
+  for (const path of ["/", "/blog/example/", "/english/", "/enough/", "/en-US/"])
+    assert.equal(localeFromPath(path), "zh-CN");
   for (const path of ["/en", "/en/", "/en/blog/example/"]) assert.equal(localeFromPath(path), "en");
 });
 test("localization adds only the English prefix without changing published URLs", () => {

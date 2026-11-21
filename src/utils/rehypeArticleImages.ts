@@ -13,18 +13,12 @@ const responsive = new Map([
 ]);
 
 export function rehypeArticleImages() {
-  const metadata = new Map<
-    string,
-    Promise<{ width: number; height: number } | null>
-  >();
+  const metadata = new Map<string, Promise<{ width: number; height: number } | null>>();
   const dimensionsFor = (src: string) => {
     const publicRoot = resolve("public");
     let filename: string;
     try {
-      filename = resolve(
-        publicRoot,
-        `.${decodeURIComponent(src.split(/[?#]/)[0])}`,
-      );
+      filename = resolve(publicRoot, `.${decodeURIComponent(src.split(/[?#]/)[0])}`);
     } catch {
       return Promise.resolve(null);
     }
@@ -57,8 +51,7 @@ export function rehypeArticleImages() {
           if (child.type === "element" && child.tagName === "img") {
             const src = child.properties?.src;
             if (typeof src === "string" && src.startsWith("/blog/")) {
-              const isFirstScreen =
-                src === "/blog/l3hctf-best-profile/01-profile-bypass-flow.png";
+              const isFirstScreen = src === "/blog/l3hctf-best-profile/01-profile-bypass-flow.png";
               child.properties.loading = isFirstScreen ? "eager" : "lazy";
               child.properties.decoding = "async";
               // Preserve authored aspect ratios; infer only missing local dimensions.
@@ -70,10 +63,7 @@ export function rehypeArticleImages() {
                 }
               }
               const dimensions = responsive.get(src);
-              if (
-                dimensions &&
-                !(node.type === "element" && node.tagName === "picture")
-              ) {
+              if (dimensions && !(node.type === "element" && node.tagName === "picture")) {
                 const base = src.replace(/\.png$/, "");
                 child.properties.width = dimensions[0];
                 child.properties.height = dimensions[1];
@@ -88,9 +78,7 @@ export function rehypeArticleImages() {
                       tagName: "source",
                       properties: {
                         type: "image/webp",
-                        srcSet: [800, 1600]
-                          .map((width) => `${base}-${width}.webp ${width}w`)
-                          .join(", "),
+                        srcSet: [800, 1600].map((width) => `${base}-${width}.webp ${width}w`).join(", "),
                         sizes: "(max-width: 720px) calc(100vw - 2rem), 990px",
                       },
                       children: [],

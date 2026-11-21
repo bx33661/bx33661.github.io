@@ -27,9 +27,16 @@ const upstream = (name) => {
 const tgpu = upstream("typegpu_default");
 const d = upstream("data_exports");
 const compose = upstream("composeNodeTree");
-const system = d.struct({ time: d.f32, deltaTime: d.f32, frame: d.f32,
-  viewportSize: d.vec2f, logicalViewportSize: d.vec2f, aspect: d.f32,
-  pointer: d.vec2f, pointerActive: d.f32 });
+const system = d.struct({
+  time: d.f32,
+  deltaTime: d.f32,
+  frame: d.f32,
+  viewportSize: d.vec2f,
+  logicalViewportSize: d.vec2f,
+  aspect: d.f32,
+  pointer: d.vec2f,
+  pointerActive: d.f32,
+});
 assert.equal(d.sizeOf(system), 56, "Renderer uniform layout changed");
 const layout = tgpu.bindGroupLayout({ uniforms: { uniform: d.struct({ _sys: system }) } });
 const number = (value) => {
@@ -51,10 +58,42 @@ const literal = (value) => {
 // FilmGrain wraps the whole stack, just as <FilmGrain> does in the library.
 const layers = [
   { definition: rootPassthrough, parent: null },
-  { definition: FilmGrain, parent: "layer0", props: { strength: .045, bias: 2, animated: false } },
-  { definition: FlowingGradient, parent: "layer1", props: { colorA: "#0a1630", colorB: "#276d9f", colorC: "#7462b1", colorD: "#96c8d5", colorSpace: "linear", speed: 2.4, distortion: .7, seed: 4 } },
-  { definition: Aurora, parent: "layer1", blend: "screen", opacity: .65, props: { colorA: "#627ccc", colorB: "#a2dfeb", colorC: "#b49ddd", intensity: 55, speed: .8, curtainCount: 2, height: 140 } },
-  { definition: DotGrid, parent: "layer1", opacity: .13, props: { color: "#cfe3f5", density: 27, dotSize: .10, speed: .03, twinkle: .2 } },
+  { definition: FilmGrain, parent: "layer0", props: { strength: 0.045, bias: 2, animated: false } },
+  {
+    definition: FlowingGradient,
+    parent: "layer1",
+    props: {
+      colorA: "#0a1630",
+      colorB: "#276d9f",
+      colorC: "#7462b1",
+      colorD: "#96c8d5",
+      colorSpace: "linear",
+      speed: 2.4,
+      distortion: 0.7,
+      seed: 4,
+    },
+  },
+  {
+    definition: Aurora,
+    parent: "layer1",
+    blend: "screen",
+    opacity: 0.65,
+    props: {
+      colorA: "#627ccc",
+      colorB: "#a2dfeb",
+      colorC: "#b49ddd",
+      intensity: 55,
+      speed: 0.8,
+      curtainCount: 2,
+      height: 140,
+    },
+  },
+  {
+    definition: DotGrid,
+    parent: "layer1",
+    opacity: 0.13,
+    props: { color: "#cfe3f5", density: 27, dotSize: 0.1, speed: 0.03, twinkle: 0.2 },
+  },
 ];
 const nodes = layers.map((layer, index) => {
   const handles = {};
@@ -66,13 +105,22 @@ const nodes = layers.map((layer, index) => {
   for (const [key, field] of Object.entries(layer.definition.extraFields ?? {})) {
     handles[key] = { accessorPath: key, cpu: false, value: field.initial };
   }
-  return { id: `layer${index}`, componentName: layer.definition.name, parentId: layer.parent,
-    definition: layer.definition, handles,
-    metadata: { blendMode: layer.blend ?? "normal", opacity: layer.opacity ?? 1, renderOrder: index, visible: true } };
+  return {
+    id: `layer${index}`,
+    componentName: layer.definition.name,
+    parentId: layer.parent,
+    definition: layer.definition,
+    handles,
+    metadata: { blendMode: layer.blend ?? "normal", opacity: layer.opacity ?? 1, renderOrder: index, visible: true },
+  };
 });
-const registry = { rootId: "layer0", getNode: (id) => nodes.find((node) => node.id === id),
-  getChildren: (id) => nodes.filter((node) => node.parentId === id), resolveCustomId: () => null,
-  store: { layout, gpuAccessor: (handle) => literal(handle.value) } };
+const registry = {
+  rootId: "layer0",
+  getNode: (id) => nodes.find((node) => node.id === id),
+  getChildren: (id) => nodes.filter((node) => node.parentId === id),
+  resolveCustomId: () => null,
+  store: { layout, gpuAccessor: (handle) => literal(handle.value) },
+};
 const ir = compose(registry, { premultiplyAlpha: true });
 assert.equal(ir.rttPasses.length, 0, "Homepage must remain a single GPU pass");
 assert.equal(ir.textures.length, 0, "Homepage must not download textures");
@@ -107,4 +155,6 @@ if (process.argv.includes("--check")) {
 } else {
   fs.writeFileSync(target, output);
 }
-console.log(`PASS: upstream FlowingGradient + Aurora + FilmGrain + DotGrid; single pass; ${Buffer.byteLength(output)} B WGSL; 64 B uniforms`);
+console.log(
+  `PASS: upstream FlowingGradient + Aurora + FilmGrain + DotGrid; single pass; ${Buffer.byteLength(output)} B WGSL; 64 B uniforms`,
+);

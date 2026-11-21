@@ -1,18 +1,5 @@
 ---
-// Legacy gallery route — redirect to canonical /galleries/
-const target = "/galleries/";
+import RedirectPage from "@/components/RedirectPage.astro";
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="refresh" content={`0;url=${target}`} />
-    <link rel="canonical" href={target} />
-    <title>Redirecting...</title>
-  </head>
-  <body>
-    <p>Redirecting to <a href={target}>{target}</a>...</p>
-  </body>
-</html>
+<RedirectPage target="/galleries/" title="正在前往画廊" />

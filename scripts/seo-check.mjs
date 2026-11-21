@@ -1,277 +1,238 @@
-import fs from 'fs'
-import path from 'path'
+import fs from "node:fs";
+import path from "node:path";
+import { mapConcurrent } from "./lib/concurrency.mjs";
 
-const DEFAULT_TIMEOUT_MS = 12000
-const MAX_CANONICAL_CHECKS = 6
+const DEFAULT_TIMEOUT_MS = 12000;
+const MAX_CANONICAL_CHECKS = 6;
 
 const log = {
   ok: (message) => console.log(`[OK] ${message}`),
   warn: (message) => console.warn(`[WARN] ${message}`),
   fail: (message) => console.error(`[FAIL] ${message}`),
-}
+};
 
 function parseArgs(argv) {
-  const args = { site: undefined }
+  const args = { site: undefined };
   for (let i = 0; i < argv.length; i += 1) {
-    const part = argv[i]
-    if (part === '--site' || part === '--base') {
-      args.site = argv[i + 1]
-      i += 1
-    } else if (part.startsWith('--site=')) {
-      args.site = part.slice('--site='.length)
+    const part = argv[i];
+    if (part === "--site" || part === "--base") {
+      args.site = argv[i + 1];
+      i += 1;
+    } else if (part.startsWith("--site=")) {
+      args.site = part.slice("--site=".length);
     }
   }
-  return args
+  return args;
 }
 
 function readSiteHrefFromConfig() {
-  // SITE lives in src/config.ts; src/config/site.ts only re-exports it.
-  const candidates = [
-    path.resolve('src/config.ts'),
-    path.resolve('src/config/site.ts'),
-  ]
-
-  for (const filePath of candidates) {
-    if (!fs.existsSync(filePath)) continue
-    const raw = fs.readFileSync(filePath, 'utf8')
-    const match =
-      raw.match(/href:\s*['"`]([^'"`]+)['"`]/) ||
-      raw.match(/website:\s*[`'"](https?:\/\/[^`'"]+?)\/?[`'"]/) ||
-      raw.match(/SITE_ORIGIN\s*=\s*['"`](https?:\/\/[^'"`]+)['"`]/)
-    if (match?.[1]) return match[1].replace(/\/$/, '')
-  }
-
-  return undefined
+  const filePath = path.resolve("src/config.ts");
+  if (!fs.existsSync(filePath)) return undefined;
+  const raw = fs.readFileSync(filePath, "utf8");
+  const match =
+    raw.match(/href:\s*['"`]([^'"`]+)['"`]/) ||
+    raw.match(/website:\s*[`'"](https?:\/\/[^`'"]+?)\/?[`'"]/) ||
+    raw.match(/SITE_ORIGIN\s*=\s*['"`](https?:\/\/[^'"`]+)['"`]/);
+  return match?.[1] ? match[1].replace(/\/$/, "") : undefined;
 }
 
 function normalizeBaseUrl(rawValue) {
-  if (!rawValue) return undefined
-
-  const withProtocol = /^https?:\/\//i.test(rawValue) ? rawValue : `https://${rawValue}`
-  const url = new URL(withProtocol)
-  return `${url.protocol}//${url.host}`
+  if (!rawValue) return undefined;
+  const withProtocol = /^https?:\/\//i.test(rawValue) ? rawValue : `https://${rawValue}`;
+  const url = new URL(withProtocol);
+  return `${url.protocol}//${url.host}`;
 }
 
 function normalizeForCompare(rawValue) {
-  const url = new URL(rawValue)
-  url.hash = ''
-  if (url.pathname !== '/' && url.pathname.endsWith('/')) {
-    url.pathname = url.pathname.slice(0, -1)
+  const url = new URL(rawValue);
+  url.hash = "";
+  if (url.pathname !== "/" && url.pathname.endsWith("/")) {
+    url.pathname = url.pathname.slice(0, -1);
   }
-  return `${url.protocol}//${url.host}${url.pathname}${url.search}`
+  return `${url.protocol}//${url.host}${url.pathname}${url.search}`;
 }
 
 async function fetchText(url) {
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS)
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
   try {
     const response = await fetch(url, {
-      method: 'GET',
-      redirect: 'follow',
+      method: "GET",
+      redirect: "follow",
       signal: controller.signal,
       headers: {
-        'User-Agent': 'bx-seo-check/1.0',
-        Accept: 'text/html,application/xml,text/plain;q=0.9,*/*;q=0.5',
+        "User-Agent": "bx-seo-check/1.0",
+        Accept: "text/html,application/xml,text/plain;q=0.9,*/*;q=0.5",
       },
-    })
-
-    const body = await response.text()
-    return {
-      ok: response.ok,
-      status: response.status,
-      url: response.url,
-      body,
-    }
+    });
+    return { ok: response.ok, status: response.status, url: response.url, body: await response.text() };
   } catch (error) {
-    return {
-      ok: false,
-      status: 0,
-      url,
-      body: '',
-      error: error instanceof Error ? error.message : String(error),
-    }
+    return { ok: false, status: 0, url, body: "", error: error instanceof Error ? error.message : String(error) };
   } finally {
-    clearTimeout(timer)
+    clearTimeout(timer);
   }
 }
 
-function parseSitemapLocs(xml) {
-  return [...xml.matchAll(/<loc>\s*([^<]+)\s*<\/loc>/gi)].map((item) => item[1].trim())
-}
-
-function parseRobotsSitemaps(robotsText) {
-  return robotsText
-    .split('\n')
+const parseSitemapLocs = (xml) => [...xml.matchAll(/<loc>\s*([^<]+)\s*<\/loc>/gi)].map((item) => item[1].trim());
+const parseRobotsSitemaps = (robotsText) =>
+  robotsText
+    .split("\n")
     .map((line) => line.trim())
-    .filter((line) => line.toLowerCase().startsWith('sitemap:'))
-    .map((line) => line.slice('sitemap:'.length).trim())
-    .filter(Boolean)
-}
+    .filter((line) => line.toLowerCase().startsWith("sitemap:"))
+    .map((line) => line.slice("sitemap:".length).trim())
+    .filter(Boolean);
 
 function extractCanonicalHref(html) {
-  const linkTags = html.match(/<link\b[^>]*>/gi) ?? []
-  for (const tag of linkTags) {
-    const relMatch = tag.match(/\brel\s*=\s*["']([^"']+)["']/i)
-    if (!relMatch) continue
-    const relValue = relMatch[1].toLowerCase()
-    if (!relValue.split(/\s+/).includes('canonical')) continue
-
-    const hrefMatch = tag.match(/\bhref\s*=\s*["']([^"']+)["']/i)
-    if (!hrefMatch) continue
-    return hrefMatch[1].trim()
+  for (const tag of html.match(/<link\b[^>]*>/gi) ?? []) {
+    const relMatch = tag.match(/\brel\s*=\s*["']([^"']+)["']/i);
+    if (!relMatch || !relMatch[1].toLowerCase().split(/\s+/).includes("canonical")) continue;
+    const hrefMatch = tag.match(/\bhref\s*=\s*["']([^"']+)["']/i);
+    if (hrefMatch) return hrefMatch[1].trim();
   }
-  return undefined
+  return undefined;
 }
 
-function dedupe(items) {
-  return [...new Set(items)]
-}
-
-function resolveUrl(rawValue, baseUrl) {
+const dedupe = (items) => [...new Set(items)];
+const resolveUrl = (rawValue, baseUrl) => {
   try {
-    return new URL(rawValue, `${baseUrl}/`).toString()
+    return new URL(rawValue, `${baseUrl}/`).toString();
   } catch {
-    return undefined
+    return undefined;
   }
-}
+};
 
 async function ensureReachable(url, label, failures) {
-  const result = await fetchText(url)
+  const result = await fetchText(url);
   if (!result.ok) {
-    failures.push(`${label} not reachable (${result.status}) -> ${url}`)
-    log.fail(`${label} not reachable (${result.status})`)
-    if (result.error) {
-      log.warn(`${label} error detail: ${result.error}`)
-    }
-    return undefined
+    failures.push(`${label} not reachable (${result.status}) -> ${url}`);
+    log.fail(`${label} not reachable (${result.status})`);
+    if (result.error) log.warn(`${label} error detail: ${result.error}`);
+    return undefined;
+  }
+  log.ok(`${label} reachable (${result.status})`);
+  return result.body;
+}
+
+async function checkPageCanonical(pageUrl, failures, warnings) {
+  const page = await fetchText(pageUrl);
+  if (!page.ok) {
+    failures.push(`Page not reachable for canonical check (${page.status}): ${pageUrl}`);
+    log.fail(`Page not reachable for canonical check (${page.status}): ${pageUrl}`);
+    return;
   }
 
-  log.ok(`${label} reachable (${result.status})`)
-  return result.body
+  const canonicalHref = extractCanonicalHref(page.body);
+  if (!canonicalHref) {
+    failures.push(`Canonical tag missing: ${pageUrl}`);
+    log.fail(`Canonical tag missing: ${pageUrl}`);
+    return;
+  }
+
+  let canonicalAbs;
+  try {
+    canonicalAbs = new URL(canonicalHref, page.url).toString();
+  } catch {
+    failures.push(`Canonical URL invalid: ${pageUrl} -> ${canonicalHref}`);
+    log.fail(`Canonical URL invalid: ${pageUrl} -> ${canonicalHref}`);
+    return;
+  }
+
+  if (normalizeForCompare(page.url) !== normalizeForCompare(canonicalAbs)) {
+    warnings.push(`Canonical differs: ${pageUrl} -> ${canonicalAbs}`);
+    log.warn(`Canonical differs from final URL: ${pageUrl} -> ${canonicalAbs}`);
+  } else {
+    log.ok(`Canonical valid: ${pageUrl}`);
+  }
 }
 
 async function main() {
-  const args = parseArgs(process.argv.slice(2))
+  const args = parseArgs(process.argv.slice(2));
   const baseUrl =
     normalizeBaseUrl(args.site) ||
     normalizeBaseUrl(process.env.SEO_CHECK_BASE_URL) ||
-    normalizeBaseUrl(readSiteHrefFromConfig())
+    normalizeBaseUrl(readSiteHrefFromConfig());
 
   if (!baseUrl) {
-    log.fail('Cannot determine site URL. Use --site or SEO_CHECK_BASE_URL.')
-    process.exit(1)
+    log.fail("Cannot determine site URL. Use --site or SEO_CHECK_BASE_URL.");
+    process.exit(1);
   }
 
-  console.log(`SEO self-check target: ${baseUrl}`)
+  console.log(`SEO self-check target: ${baseUrl}`);
+  const failures = [];
+  const warnings = [];
 
-  const failures = []
-  const warnings = []
+  const robotsUrl = `${baseUrl}/robots.txt`;
+  const sitemapIndexUrl = `${baseUrl}/sitemap-index.xml`;
+  const sitemapUrl = `${baseUrl}/sitemap.xml`;
+  const imageSitemapUrl = `${baseUrl}/image-sitemap.xml`;
 
-  const robotsUrl = `${baseUrl}/robots.txt`
-  const sitemapIndexUrl = `${baseUrl}/sitemap-index.xml`
-  const sitemapUrl = `${baseUrl}/sitemap.xml`
-  const imageSitemapUrl = `${baseUrl}/image-sitemap.xml`
+  const [robotsText, sitemapIndexXml, sitemapXml] = await Promise.all([
+    ensureReachable(robotsUrl, "robots.txt", failures),
+    ensureReachable(sitemapIndexUrl, "sitemap-index.xml", failures),
+    ensureReachable(sitemapUrl, "sitemap.xml", failures),
+    ensureReachable(imageSitemapUrl, "image-sitemap.xml", failures),
+  ]);
 
-  const robotsText = await ensureReachable(robotsUrl, 'robots.txt', failures)
-  const sitemapIndexXml = await ensureReachable(sitemapIndexUrl, 'sitemap-index.xml', failures)
-  const sitemapXml = await ensureReachable(sitemapUrl, 'sitemap.xml', failures)
-  await ensureReachable(imageSitemapUrl, 'image-sitemap.xml', failures)
-
-  const robotsSitemaps = robotsText ? parseRobotsSitemaps(robotsText) : []
+  const robotsSitemaps = robotsText ? parseRobotsSitemaps(robotsText) : [];
   if (robotsText && robotsSitemaps.length === 0) {
-    warnings.push('robots.txt does not contain any Sitemap entries.')
-    log.warn('robots.txt has no Sitemap entries.')
+    warnings.push("robots.txt does not contain any Sitemap entries.");
+    log.warn("robots.txt has no Sitemap entries.");
   } else if (robotsSitemaps.length > 0) {
-    for (const sitemapEntry of dedupe(robotsSitemaps)) {
-      const resolved = resolveUrl(sitemapEntry, baseUrl)
+    await mapConcurrent(dedupe(robotsSitemaps), 4, async (sitemapEntry) => {
+      const resolved = resolveUrl(sitemapEntry, baseUrl);
       if (!resolved) {
-        failures.push(`robots.txt has invalid sitemap URL: ${sitemapEntry}`)
-        log.fail(`robots.txt has invalid sitemap URL: ${sitemapEntry}`)
-        continue
+        failures.push(`robots.txt has invalid sitemap URL: ${sitemapEntry}`);
+        log.fail(`robots.txt has invalid sitemap URL: ${sitemapEntry}`);
+        return;
       }
-      await ensureReachable(resolved, `robots sitemap ${resolved}`, failures)
-    }
+      await ensureReachable(resolved, `robots sitemap ${resolved}`, failures);
+    });
   }
 
   if (robotsText && /crawl-delay\s*:/i.test(robotsText)) {
-    warnings.push('robots.txt still contains Crawl-delay.')
-    log.warn('robots.txt contains Crawl-delay; consider removing for Google/Bing best practice.')
+    warnings.push("robots.txt still contains Crawl-delay.");
+    log.warn("robots.txt contains Crawl-delay; consider removing for Google/Bing best practice.");
   }
 
   if (robotsText) {
-    const expectedSitemaps = [sitemapIndexUrl, sitemapUrl, imageSitemapUrl]
-    for (const expected of expectedSitemaps) {
+    for (const expected of [sitemapIndexUrl, sitemapUrl, imageSitemapUrl]) {
       if (!robotsSitemaps.includes(expected)) {
-        warnings.push(`robots.txt missing sitemap declaration: ${expected}`)
-        log.warn(`robots.txt missing sitemap declaration: ${expected}`)
+        warnings.push(`robots.txt missing sitemap declaration: ${expected}`);
+        log.warn(`robots.txt missing sitemap declaration: ${expected}`);
       }
     }
   }
 
   if (sitemapIndexXml) {
-    const indexLocs = parseSitemapLocs(sitemapIndexXml)
+    const indexLocs = parseSitemapLocs(sitemapIndexXml);
     if (indexLocs.length === 0) {
-      failures.push('sitemap-index.xml has no <loc> entries.')
-      log.fail('sitemap-index.xml has no <loc> entries.')
+      failures.push("sitemap-index.xml has no <loc> entries.");
+      log.fail("sitemap-index.xml has no <loc> entries.");
     } else {
-      log.ok(`sitemap-index.xml entries: ${indexLocs.length}`)
+      log.ok(`sitemap-index.xml entries: ${indexLocs.length}`);
     }
   }
 
-  const sitemapLocs = sitemapXml ? parseSitemapLocs(sitemapXml) : []
+  const sitemapLocs = sitemapXml ? parseSitemapLocs(sitemapXml) : [];
   if (sitemapXml && sitemapLocs.length === 0) {
-    failures.push('sitemap.xml has no URL entries.')
-    log.fail('sitemap.xml has no URL entries.')
+    failures.push("sitemap.xml has no URL entries.");
+    log.fail("sitemap.xml has no URL entries.");
   } else if (sitemapLocs.length > 0) {
-    log.ok(`sitemap.xml URL entries: ${sitemapLocs.length}`)
+    log.ok(`sitemap.xml URL entries: ${sitemapLocs.length}`);
   }
 
-  const canonicalTargets = dedupe([`${baseUrl}/`, ...sitemapLocs]).slice(0, MAX_CANONICAL_CHECKS)
-  for (const pageUrl of canonicalTargets) {
-    const page = await fetchText(pageUrl)
-    if (!page.ok) {
-      failures.push(`Page not reachable for canonical check (${page.status}): ${pageUrl}`)
-      log.fail(`Page not reachable for canonical check (${page.status}): ${pageUrl}`)
-      continue
-    }
+  const canonicalTargets = dedupe([`${baseUrl}/`, ...sitemapLocs]).slice(0, MAX_CANONICAL_CHECKS);
+  await mapConcurrent(canonicalTargets, 6, (pageUrl) => checkPageCanonical(pageUrl, failures, warnings));
 
-    const canonicalHref = extractCanonicalHref(page.body)
-    if (!canonicalHref) {
-      failures.push(`Canonical tag missing: ${pageUrl}`)
-      log.fail(`Canonical tag missing: ${pageUrl}`)
-      continue
-    }
+  console.log("");
+  console.log("SEO self-check summary:");
+  console.log(`- Failures: ${failures.length}`);
+  console.log(`- Warnings: ${warnings.length}`);
 
-    let canonicalAbs
-    try {
-      canonicalAbs = new URL(canonicalHref, page.url).toString()
-    } catch {
-      failures.push(`Canonical URL invalid: ${pageUrl} -> ${canonicalHref}`)
-      log.fail(`Canonical URL invalid: ${pageUrl} -> ${canonicalHref}`)
-      continue
-    }
-
-    const expected = normalizeForCompare(page.url)
-    const actual = normalizeForCompare(canonicalAbs)
-    if (expected !== actual) {
-      warnings.push(`Canonical differs: ${pageUrl} -> ${canonicalAbs}`)
-      log.warn(`Canonical differs from final URL: ${pageUrl} -> ${canonicalAbs}`)
-    } else {
-      log.ok(`Canonical valid: ${pageUrl}`)
-    }
-  }
-
-  console.log('')
-  console.log('SEO self-check summary:')
-  console.log(`- Failures: ${failures.length}`)
-  console.log(`- Warnings: ${warnings.length}`)
-
-  if (failures.length > 0) {
-    process.exit(1)
-  }
+  if (failures.length > 0) process.exit(1);
 }
 
 main().catch((error) => {
-  log.fail(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`)
-  process.exit(1)
-})
+  log.fail(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
+  process.exit(1);
+});

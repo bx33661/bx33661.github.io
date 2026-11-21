@@ -3,7 +3,7 @@ import { localeFromPath } from "@/i18n";
 import { ui } from "@/i18n/ui";
 const locale = localeFromPath(Astro.url.pathname);
 const t = ui(locale);
-import { SITE } from "@/config.ts";
+import { formatSiteDate } from "@/utils/date";
 import { getArticleDates } from "@/utils/article-discovery";
 import { articleTransitionName } from "@/utils/reading-motion";
 
@@ -30,32 +30,19 @@ const {
   category,
   heading: Heading = "h2",
 } = Astro.props;
-const dateLabel = new Intl.DateTimeFormat(locale, {
-  timeZone: SITE.timezone,
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
 const dates = getArticleDates(date, updatedDate);
-const formatDate = (value: Date) => dateLabel.format(value);
+const formatDate = (value: Date) => formatSiteDate(value, locale);
 ---
 
 <li class:list={["entry-row", { "entry-row--blog": variant === "blog" }]}>
   {
     variant === "blog" ? (
       <div class="entry-dates">
-        <span class="entry-date-label">
-          {dates.updated ? t.updated : t.published}
-        </span>
-        <time datetime={dates.latest.toISOString()}>
-          {formatDate(dates.latest)}
-        </time>
+        <span class="entry-date-label">{dates.updated ? t.updated : t.published}</span>
+        <time datetime={dates.latest.toISOString()}>{formatDate(dates.latest)}</time>
         {dates.updated && (
           <span class="entry-original-date">
-            {t.published}{" "}
-            <time datetime={dates.published.toISOString()}>
-              {formatDate(dates.published)}
-            </time>
+            {t.published} <time datetime={dates.published.toISOString()}>{formatDate(dates.published)}</time>
           </span>
         )}
       </div>
@@ -69,11 +56,8 @@ const formatDate = (value: Date) => dateLabel.format(value);
         ><a
           href={href}
           data-article-title={variant === "blog" ? "" : undefined}
-          transition:name={variant === "blog"
-            ? articleTransitionName(href)
-            : undefined}
-          transition:animate={variant === "blog" ? "initial" : undefined}
-          >{title}</a
+          transition:name={variant === "blog" ? articleTransitionName(href) : undefined}
+          transition:animate={variant === "blog" ? "initial" : undefined}>{title}</a
         ></Heading
       >
       {category && <span class="entry-category">{category}</span>}
@@ -96,15 +80,29 @@ const formatDate = (value: Date) => dateLabel.format(value);
 
 <style>
   .entry-row {
+    --entry-col-w: 6.7rem;
+    --entry-gap: 0.8rem;
+    --entry-py: 1.15rem;
+    --entry-px: 0.15rem;
+    --entry-border: color-mix(in srgb, var(--border) 28%, transparent);
+    --entry-heading-size: 1rem;
+    --entry-heading-lh: 1.55;
+    --entry-heading-ls: normal;
+    --entry-desc-color: color-mix(in srgb, var(--foreground) 62%, transparent);
+    --entry-desc-size: 0.84rem;
+    --entry-desc-lh: 1.65;
+    --entry-gap-sm: 0.35rem 0.55rem;
+    --entry-py-sm: 1rem;
+    --entry-heading-size-sm: 1rem;
     display: grid;
-    grid-template-columns: 6.7rem minmax(0, 1fr) auto;
+    grid-template-columns: var(--entry-col-w) minmax(0, 1fr) auto;
     align-items: start;
-    gap: 0.8rem;
-    padding: 1.15rem 0.15rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--border) 28%, transparent);
+    gap: var(--entry-gap);
+    padding: var(--entry-py) var(--entry-px);
+    border-bottom: 1px solid var(--entry-border);
   }
   .entry-row:first-child {
-    border-top: 1px solid color-mix(in srgb, var(--border) 28%, transparent);
+    border-top: 1px solid var(--entry-border);
   }
   time {
     padding-top: 0.23rem;
@@ -124,9 +122,10 @@ const formatDate = (value: Date) => dateLabel.format(value);
   }
   :is(h2, h3) {
     margin: 0;
-    font-size: 1rem;
+    font-size: var(--entry-heading-size);
     font-weight: 600;
-    line-height: 1.55;
+    line-height: var(--entry-heading-lh);
+    letter-spacing: var(--entry-heading-ls);
   }
   a {
     color: var(--foreground);
@@ -138,9 +137,9 @@ const formatDate = (value: Date) => dateLabel.format(value);
   }
   p {
     margin: 0.35rem 0 0;
-    color: color-mix(in srgb, var(--foreground) 62%, transparent);
-    font-size: 0.84rem;
-    line-height: 1.65;
+    color: var(--entry-desc-color);
+    font-size: var(--entry-desc-size);
+    line-height: var(--entry-desc-lh);
   }
   .entry-category {
     flex: none;
@@ -153,47 +152,26 @@ const formatDate = (value: Date) => dateLabel.format(value);
     color: var(--accent);
     font-size: 0.85rem;
   }
-  @media (max-width: 640px) {
-    .entry-row {
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 0.35rem 0.55rem;
-      padding: 1rem 0;
-    }
-    time {
-      grid-column: 1 / -1;
-      padding: 0;
-    }
-    .entry-heading {
-      display: block;
-    }
-    .entry-category {
-      display: inline-block;
-      margin-top: 0.3rem;
-    }
-  }
   :global(html[data-theme="dark"]) time,
   :global(html[data-theme="dark"]) .entry-category {
     color: color-mix(in srgb, var(--foreground) 68%, transparent);
   }
 
   .entry-row--blog {
-    grid-template-columns: 7rem minmax(0, 1fr) auto;
-    gap: 1.2rem;
-    padding: 1.6rem 0;
-    border-color: color-mix(in srgb, var(--foreground) 15%, var(--background));
-  }
-  .entry-row--blog:first-child {
-    border-color: color-mix(in srgb, var(--foreground) 15%, var(--background));
-  }
-  .entry-row--blog :is(h2, h3) {
-    font-size: 1.13rem;
-    line-height: 1.65;
-    letter-spacing: -0.02em;
-  }
-  .entry-row--blog p {
-    color: color-mix(in srgb, var(--foreground) 72%, var(--background));
-    font-size: 0.9rem;
-    line-height: 1.85;
+    --entry-col-w: 7rem;
+    --entry-gap: 1.2rem;
+    --entry-py: 1.6rem;
+    --entry-px: 0;
+    --entry-border: color-mix(in srgb, var(--foreground) 15%, var(--background));
+    --entry-heading-size: 1.13rem;
+    --entry-heading-lh: 1.65;
+    --entry-heading-ls: -0.02em;
+    --entry-desc-color: color-mix(in srgb, var(--foreground) 72%, var(--background));
+    --entry-desc-size: 0.9rem;
+    --entry-desc-lh: 1.85;
+    --entry-gap-sm: 0.65rem;
+    --entry-py-sm: 1.35rem;
+    --entry-heading-size-sm: 1.05rem;
   }
   .entry-dates {
     display: flex;
@@ -227,10 +205,9 @@ const formatDate = (value: Date) => dateLabel.format(value);
   .entry-tags a {
     display: block;
     padding: 0.18rem 0.5rem;
-    border: 1px solid
-      color-mix(in srgb, var(--foreground) 15%, var(--background));
+    border: 1px solid var(--entry-border);
     border-radius: 0.3rem;
-    color: color-mix(in srgb, var(--foreground) 72%, var(--background));
+    color: var(--entry-desc-color);
     font-size: 0.7rem;
   }
   .entry-tags a:hover,
@@ -239,20 +216,31 @@ const formatDate = (value: Date) => dateLabel.format(value);
     color: var(--accent);
   }
   @media (max-width: 640px) {
-    .entry-row--blog {
+    .entry-row {
       grid-template-columns: minmax(0, 1fr) auto;
-      gap: 0.65rem;
-      padding-block: 1.35rem;
+      gap: var(--entry-gap-sm);
+      padding: var(--entry-py-sm) 0;
     }
+    time,
     .entry-dates {
       grid-column: 1 / -1;
+      padding: 0;
+    }
+    .entry-heading {
+      display: block;
+    }
+    .entry-category {
+      display: inline-block;
+      margin-top: 0.3rem;
+    }
+    .entry-dates {
       flex-direction: row;
       flex-wrap: wrap;
       align-items: baseline;
       gap: 0.4rem 0.6rem;
     }
-    .entry-row--blog :is(h2, h3) {
-      font-size: 1.05rem;
+    :is(h2, h3) {
+      font-size: var(--entry-heading-size-sm);
     }
   }
 </style>

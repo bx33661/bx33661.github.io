@@ -1,14 +1,11 @@
-﻿import fs from 'fs';
-import fsp from 'fs/promises';
-import path from 'path';
-import sharp from 'sharp';
+﻿import fs from "fs";
+import fsp from "fs/promises";
+import path from "path";
+import sharp from "sharp";
 
-const exts = new Set(['.png', '.jpg', '.jpeg']);
+const exts = new Set([".png", ".jpg", ".jpeg"]);
 const minBytes = 300 * 1024; // only process files >300KB
-const targets = [
-  path.resolve('public'),
-  path.resolve('dist')
-];
+const targets = [path.resolve("public"), path.resolve("dist")];
 
 async function* walk(dir) {
   const entries = await fsp.readdir(dir, { withFileTypes: true });
@@ -28,10 +25,10 @@ async function optimize(file) {
   const stat = await fsp.stat(file);
   if (stat.size < minBytes) return { skipped: true };
 
-  const tmp = file + '.tmp';
+  const tmp = file + ".tmp";
   try {
     const img = sharp(file);
-    if (ext === '.png') {
+    if (ext === ".png") {
       await img.png({ quality: 80, compressionLevel: 9, effort: 10 }).toFile(tmp);
     } else {
       await img.jpeg({ quality: 72, mozjpeg: true }).toFile(tmp);
@@ -45,23 +42,28 @@ async function optimize(file) {
       return { optimized: false, before: stat.size, after: outStat.size };
     }
   } catch (e) {
-    try { await fsp.unlink(tmp); } catch {}
+    try {
+      await fsp.unlink(tmp);
+    } catch {}
     return { error: e };
   }
 }
 
 (async () => {
-  let saved = 0, count = 0;
+  let saved = 0,
+    count = 0;
   for (const root of targets) {
     if (!fs.existsSync(root)) continue;
     for await (const file of walk(root)) {
       const res = await optimize(file);
       if (res.optimized) {
         count++;
-        saved += (res.before - res.after);
-        console.log(`[optimized] ${file} ${(res.before/1024/1024).toFixed(2)}MB -> ${(res.after/1024/1024).toFixed(2)}MB`);
+        saved += res.before - res.after;
+        console.log(
+          `[optimized] ${file} ${(res.before / 1024 / 1024).toFixed(2)}MB -> ${(res.after / 1024 / 1024).toFixed(2)}MB`,
+        );
       }
     }
   }
-  console.log(`Done. Files optimized: ${count}, total saved: ${(saved/1024/1024).toFixed(2)}MB`);
+  console.log(`Done. Files optimized: ${count}, total saved: ${(saved / 1024 / 1024).toFixed(2)}MB`);
 })();

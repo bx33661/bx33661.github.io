@@ -10,21 +10,21 @@ on:
   # 允许手动运行工作流
   workflow_dispatch:
 
-# 设置 GITHUB_TOKEN 权限以允许部署到 GitHub Pages
+# 仅在顶层保留只读权限；部署和百度推送各自声明所需的最小写权限
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# 只允许一个并发部署，跳过正在运行中的部署队列中的运行
+# 同一分支部署按序排队；PR 预览检查彼此独立且新推送自动取消旧运行
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('pages-pr-{0}', github.ref) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     env:
       SITE: ${{ vars.SITE }}
       BASE_URL: ${{ vars.BASE_URL }}
@@ -62,6 +62,10 @@ jobs:
       - name: Full verification (includes build and dist checks)
         run: npm run verify:full
 
+      - name: Rebuild production bundle when live comments or analytics are enabled
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && (vars.PUBLIC_ENABLE_COMMENTS == 'true' || vars.PUBLIC_ENABLE_ANALYTICS == 'true')
+        run: npm run build && npm run smoke:dist
+
       - name: Upload visual diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@v4
@@ -89,6 +93,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     name: Deploy
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     # 只在推送到 main 分支时部署，PR 时跳过
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:

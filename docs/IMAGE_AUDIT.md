@@ -4,12 +4,12 @@
 
 Cold Chrome sessions against a fresh `npm run build` and `astro preview`, with analytics/comments disabled. Playwright viewport sizes: 390×844 and 1440×900, DPR 1. `response.body().length` sums successful image response bytes from navigation through network-idle. This is **image transfer**, not total page transfer or compressed HTTP transfer. The same script and routes were used before/after. Baseline and modified JSONL plus screenshots are in `.tmp/image-audit/`.
 
-| Route | View | Before | After | Change |
-|---|---:|---:|---:|---:|
-| `/` | mobile and desktop | 154,171 B | 44,985 B | −70.8% |
-| `/blog/k8x9w2m7/` | mobile | 1,389,740 B | 122,497 B | −91.2% |
-| `/blog/k8x9w2m7/` | desktop | 1,389,740 B | 303,237 B | −78.2% |
-| `/blog/wechat-miniapp-security-audit/` | mobile and desktop | 13,258,008 B | 8,389 B | −99.9% |
+| Route                                  |               View |       Before |     After | Change |
+| -------------------------------------- | -----------------: | -----------: | --------: | -----: |
+| `/`                                    | mobile and desktop |    154,171 B |  44,985 B | −70.8% |
+| `/blog/k8x9w2m7/`                      |             mobile |  1,389,740 B | 122,497 B | −91.2% |
+| `/blog/k8x9w2m7/`                      |            desktop |  1,389,740 B | 303,237 B | −78.2% |
+| `/blog/wechat-miniapp-security-audit/` | mobile and desktop | 13,258,008 B |   8,389 B | −99.9% |
 
 The homepage had no large hero image. Its unused `/touxiang-512.png` preload alone cost 109,186 B, so it was removed. The L3HCTF screenshot is in the first viewport: 3,420px PNG (1,350,556 B) is now a responsive, lossless 800/1600px WebP (114,108/294,848 B). The miniapp article previously fetched all screenshots immediately, including 5,209,981 B and 2,431,755 B PNGs far below the fold. Its images now load lazily; the two largest have responsive WebP alternatives. Scrolling to the Xcode screenshot transfers 1,431,853 B on mobile or 2,321,892 B on desktop, including neighboring images within Chrome's lazy-load threshold.
 

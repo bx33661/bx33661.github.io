@@ -21,14 +21,10 @@ const nextUrl = withTrailingSlash(page.url.next);
 
 {
   page.lastPage > 1 && (
-    <nav
-      class="mt-auto mb-8 flex justify-center"
-      role="navigation"
-      aria-label="Pagination Navigation"
-    >
+    <nav class="mt-auto mb-8 flex justify-center" role="navigation" aria-label="Pagination Navigation">
       <LinkButton
         disabled={!prevUrl}
-        href={prevUrl as string}
+        href={prevUrl}
         class:list={["me-4 select-none", { "opacity-50": !prevUrl }]}
         aria-label="Goto Previous Page"
       >
@@ -38,7 +34,7 @@ const nextUrl = withTrailingSlash(page.url.next);
       {page.currentPage} / {page.lastPage}
       <LinkButton
         disabled={!nextUrl}
-        href={nextUrl as string}
+        href={nextUrl}
         class:list={["ms-4 select-none", { "opacity-50": !nextUrl }]}
         aria-label="Goto Next Page"
       >

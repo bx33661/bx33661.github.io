@@ -5,6 +5,7 @@ import Header from "@/components/Header.astro";
 import { SITE } from "@/config.ts";
 import Layout from "@/layouts/Layout.astro";
 import { getAllPosts } from "@/lib/data-utils";
+import { getSiteDateParts } from "@/utils/date";
 import { resolveLegacyPostSlug } from "@/utils/legacySlug";
 import "@/styles/archive.css";
 
@@ -13,14 +14,14 @@ import { ui } from "@/i18n/ui";
 import ContentEmpty from "@/components/ContentEmpty.astro";
 const locale = localeFromPath(Astro.url.pathname);
 const t = ui(locale);
-const posts = (await getAllPosts(locale))
-  .slice()
-  .sort((a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf());
+const posts = (await getAllPosts(locale)).slice().sort((a, b) => {
+  const diff = b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf();
+  return diff !== 0 ? diff : resolveLegacyPostSlug(a).localeCompare(resolveLegacyPostSlug(b));
+});
 
 const byYear = new Map<number, Map<number, typeof posts>>();
 for (const post of posts) {
-  const year = post.data.pubDatetime.getFullYear();
-  const month = post.data.pubDatetime.getMonth();
+  const { year, month } = getSiteDateParts(post.data.pubDatetime);
   const months = byYear.get(year) ?? new Map<number, typeof posts>();
   const entries = months.get(month) ?? [];
   entries.push(post);
@@ -35,10 +36,7 @@ const years = Array.from(byYear.entries())
     months: Array.from(months.entries())
       .sort(([a], [b]) => b - a)
       .map(([month, entries]) => ({ month, entries })),
-    count: Array.from(months.values()).reduce(
-      (sum, entries) => sum + entries.length,
-      0,
-    ),
+    count: Array.from(months.values()).reduce((sum, entries) => sum + entries.length, 0),
   }));
 const monthCount = years.reduce((sum, year) => sum + year.months.length, 0);
 ---
@@ -94,25 +92,17 @@ const monthCount = years.reduce((sum, year) => sum + year.months.length, 0);
       <div class="archive-years">
         {
           years.map((item) => (
-            <section
-              id={`year-${item.year}`}
-              class="year-section"
-              aria-labelledby={`heading-${item.year}`}
-            >
+            <section id={`year-${item.year}`} class="year-section" aria-labelledby={`heading-${item.year}`}>
               <div class="year-heading">
                 <h2 id={`heading-${item.year}`}>{item.year}</h2>
                 <span>{t.recordCount(item.count)}</span>
               </div>
               <div class="year-months">
                 {item.months.map((group) => (
-                  <section
-                    class="month-group"
-                    aria-label={t.yearMonth(item.year, group.month + 1)}
-                  >
+                  <section class="month-group" aria-label={t.yearMonth(item.year, group.month + 1)}>
                     <div class="month-heading">
                       <h3>
-                        {String(group.month + 1).padStart(2, "0")}{" "}
-                        <span>{t.monthUnit}</span>
+                        {String(group.month + 1).padStart(2, "0")} <span>{t.monthUnit}</span>
                       </h3>
                       <span class="month-count">{t.postCount(group.entries.length)}</span>
                     </div>
@@ -120,18 +110,11 @@ const monthCount = years.reduce((sum, year) => sum + year.months.length, 0);
                       {group.entries.map((post) => (
                         <li>
                           <a href={localizedPath(`/blog/${resolveLegacyPostSlug(post)}/`, locale)}>
-                            <time
-                              datetime={post.data.pubDatetime.toISOString()}
-                            >
-                              {String(post.data.pubDatetime.getDate()).padStart(
-                                2,
-                                "0",
-                              )}
+                            <time datetime={post.data.pubDatetime.toISOString()}>
+                              {String(getSiteDateParts(post.data.pubDatetime).day).padStart(2, "0")}
                             </time>
                             <span class="entry-title">{post.data.title}</span>
-                            {post.data.tags?.[0] && (
-                              <span class="entry-tag">{post.data.tags[0]}</span>
-                            )}
+                            {post.data.tags?.[0] && <span class="entry-tag">{post.data.tags[0]}</span>}
                             <span class="entry-arrow" aria-hidden="true">
                               ↗
                             </span>
@@ -153,35 +136,31 @@ const monthCount = years.reduce((sum, year) => sum + year.months.length, 0);
 </Layout>
 
 <script>
-  let yearNavController: AbortController | null = null;
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
 
-  document.addEventListener("astro:page-load", () => {
-    yearNavController?.abort();
-    yearNavController = new AbortController();
-    const links = Array.from(
-      document.querySelectorAll<HTMLAnchorElement>(".year-index a"),
-    );
-    const sections = Array.from(
-      document.querySelectorAll<HTMLElement>(".year-section"),
-    );
+  onAstroPage((signal) => {
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".year-index a"));
+    const sections = Array.from(document.querySelectorAll<HTMLElement>(".year-section"));
     if (!links.length || !sections.length) return;
 
+    let rafId = 0;
     const updateCurrentYear = () => {
+      rafId = 0;
       const current =
-        [...sections]
-          .reverse()
-          .find((section) => section.getBoundingClientRect().top <= 180) ??
-        sections[0];
+        [...sections].reverse().find((section) => section.getBoundingClientRect().top <= 180) ?? sections[0];
       for (const link of links) {
-        if (link.hash === `#${current.id}`)
-          link.setAttribute("aria-current", "location");
+        if (link.hash === `#${current.id}`) link.setAttribute("aria-current", "location");
         else link.removeAttribute("aria-current");
       }
     };
 
-    window.addEventListener("scroll", updateCurrentYear, {
-      passive: true,
-      signal: yearNavController.signal,
+    const scheduleUpdate = () => {
+      if (!rafId) rafId = window.requestAnimationFrame(updateCurrentYear);
+    };
+
+    window.addEventListener("scroll", scheduleUpdate, { passive: true, signal });
+    signal.addEventListener("abort", () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
     });
     updateCurrentYear();
   });

@@ -2,29 +2,21 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  readNotificationState,
-  notificationDelta,
-} from "./seo-notification-state.mjs";
+import { readNotificationState, notificationDelta } from "./seo-notification-state.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CACHE = path.join(ROOT, ".indexnow-cache.json");
 export async function submitIndexNow({ site, key, urls, fetcher = fetch }) {
-  if (!/^[a-zA-Z0-9-]{8,128}$/.test(key))
-    throw new Error("Invalid IndexNow verification key");
+  if (!/^[a-zA-Z0-9-]{8,128}$/.test(key)) throw new Error("Invalid IndexNow verification key");
   const origin = new URL(site).origin;
-  if (
-    new URL(origin).protocol !== "https:" ||
-    urls.some((url) => new URL(url).origin !== origin)
-  )
+  if (new URL(origin).protocol !== "https:" || urls.some((url) => new URL(url).origin !== origin))
     throw new Error("Invalid IndexNow URL origin");
   const keyLocation = `${origin}/indexnow-key.txt`;
   const proof = await fetcher(keyLocation, {
     signal: AbortSignal.timeout(30000),
     redirect: "error",
   });
-  if (!proof.ok || (await proof.text()).trim() !== key)
-    throw new Error("Published IndexNow key file did not match");
+  if (!proof.ok || (await proof.text()).trim() !== key) throw new Error("Published IndexNow key file did not match");
   let confirmed = true;
   for (let i = 0; i < urls.length; i += 10000) {
     const response = await fetcher("https://api.indexnow.org/indexnow", {
@@ -40,8 +32,7 @@ export async function submitIndexNow({ site, key, urls, fetcher = fetch }) {
       redirect: "error",
     });
     // 202 is pending validation: do not mark the snapshot delivered yet.
-    if (![200, 202].includes(response.status))
-      throw new Error(`IndexNow not confirmed: HTTP ${response.status}`);
+    if (![200, 202].includes(response.status)) throw new Error(`IndexNow not confirmed: HTTP ${response.status}`);
     if (response.status === 202) confirmed = false;
   }
   return { confirmed };
@@ -49,9 +40,7 @@ export async function submitIndexNow({ site, key, urls, fetcher = fetch }) {
 
 async function main() {
   const site = process.env.INDEXNOW_SITE || "https://www.bx33661.com";
-  const key = (
-    await fs.readFile(path.join(ROOT, "public/indexnow-key.txt"), "utf8")
-  ).trim();
+  const key = (await fs.readFile(path.join(ROOT, "public/indexnow-key.txt"), "utf8")).trim();
   const current = await readNotificationState(path.join(ROOT, "dist"), site);
   let previous = {};
   try {
@@ -61,9 +50,7 @@ async function main() {
   }
   const delta = notificationDelta(current, previous);
   const urls = [...delta.changed, ...delta.deleted];
-  console.log(
-    `[indexnow] changed=${delta.changed.length}, deleted=${delta.deleted.length}`,
-  );
+  console.log(`[indexnow] changed=${delta.changed.length}, deleted=${delta.deleted.length}`);
   if (process.argv.includes("--dry-run")) {
     console.log("[indexnow] DRY RUN: no network requests or cache writes");
     return;
@@ -71,22 +58,15 @@ async function main() {
   if (!urls.length) return;
   const result = await submitIndexNow({ site, key, urls });
   if (!result.confirmed) {
-    console.log(
-      "[indexnow] HTTP 202: accepted, key validation pending; snapshot retained for retry",
-    );
+    console.log("[indexnow] HTTP 202: accepted, key validation pending; snapshot retained for retry");
     return;
   }
   await fs.writeFile(`${CACHE}.tmp`, JSON.stringify(current, null, 2) + "\n");
   await fs.rename(`${CACHE}.tmp`, CACHE);
-  console.log(
-    `[indexnow] received=${urls.length}; indexing remains a search-engine decision`,
-  );
+  console.log(`[indexnow] received=${urls.length}; indexing remains a search-engine decision`);
 }
 
-if (
-  process.argv[1] &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((err) => {
     console.error("[indexnow]", err.message);
     process.exitCode = 1;

@@ -12,11 +12,11 @@ export function rehypeDemoteHeadings() {
         node.tagName = "h2";
       }
       if ("children" in node && Array.isArray(node.children)) {
-        node.children.forEach(child => {
+        for (const child of node.children) {
           if (child.type === "element") {
-            visit(child as Element);
+            visit(child);
           }
-        });
+        }
       }
     };
     visit(tree);

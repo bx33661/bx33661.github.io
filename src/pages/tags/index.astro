@@ -1,18 +1,5 @@
 ---
-const target = "/blog/#topics";
+import RedirectPage from "@/components/RedirectPage.astro";
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, follow" />
-    <meta http-equiv="refresh" content={`0;url=${target}`} />
-    <link rel="canonical" href="/blog/" />
-    <title>正在前往文章主题</title>
-  </head>
-  <body>
-    <p>正在前往<a href={target}>文章主题</a>…</p>
-  </body>
-</html>
+<RedirectPage target="/blog/#topics" title="正在前往文章主题" label="文章主题" />

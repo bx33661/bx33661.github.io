@@ -7,12 +7,7 @@ interface NavigationDotsProps {
   accent?: string;
 }
 
-function NavigationDotsComponent({
-  total,
-  current,
-  onSelect,
-  accent = "#ffffff",
-}: NavigationDotsProps) {
+function NavigationDotsComponent({ total, current, onSelect, accent = "#ffffff" }: NavigationDotsProps) {
   return (
     <div className="gallery-navigation-dots">
       {Array.from({ length: total }).map((_, index) => {
@@ -22,16 +17,11 @@ function NavigationDotsComponent({
             key={index}
             type="button"
             onClick={() => onSelect(index)}
-            className={`gallery-nav-dot-button${active ? " is-active" : ""}`}
+            className={["gallery-nav-dot-button", active && "is-active"].filter(Boolean).join(" ")}
             aria-label={`跳转到第 ${index + 1} 张照片`}
             aria-current={active ? "true" : undefined}
           >
-            <span
-              className="gallery-nav-dot"
-              style={
-                active ? { backgroundColor: accent, width: 24 } : undefined
-              }
-            />
+            <span className="gallery-nav-dot" style={active ? { backgroundColor: accent, width: 24 } : undefined} />
           </button>
         );
       })}

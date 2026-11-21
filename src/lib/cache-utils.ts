@@ -2,11 +2,7 @@ type CacheEntry = { promise: Promise<unknown>; expiresAt: number };
 const cache = new Map<string, CacheEntry>();
 
 /** Share in-flight work; TTL starts on completion, not when loading begins. */
-export async function withCache<T>(
-  key: string,
-  load: () => Promise<T>,
-  ttl = 5 * 60 * 1000,
-): Promise<T> {
+export async function withCache<T>(key: string, load: () => Promise<T>, ttl = 5 * 60 * 1000): Promise<T> {
   const cached = cache.get(key);
   if (cached && Date.now() < cached.expiresAt) {
     // Callers of one cache key must use one value type.

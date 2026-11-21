@@ -8,10 +8,7 @@ type DialogMotion = {
 };
 
 // A lease belongs to the original body, including overlapping native dialogs.
-const scrollLocks = new WeakMap<
-  HTMLElement,
-  { count: number; overflow: string }
->();
+const scrollLocks = new WeakMap<HTMLElement, { count: number; overflow: string }>();
 function lockScroll() {
   const body = document.body;
   const lock = scrollLocks.get(body) ?? {
@@ -30,11 +27,7 @@ function lockScroll() {
 }
 
 /** Native semantics stay in place until the exit animation really finishes. */
-export function bindArticleDialog(
-  dialog: HTMLDialogElement,
-  signal: AbortSignal,
-  motion?: DialogMotion,
-) {
+export function bindArticleDialog(dialog: HTMLDialogElement, signal: AbortSignal, motion?: DialogMotion) {
   let opener: HTMLElement | null = null;
   let releaseScroll: (() => void) | null = null;
   let animation: Animation | null = null;
@@ -100,14 +93,9 @@ export function bindArticleDialog(
       // Native modality makes the background inert; wrap Tab as well so the
       // browser's chrome does not interrupt the dialog's keyboard cycle.
       const focusable = [
-        ...dialog.querySelectorAll<HTMLElement>(
-          "a[href], button, input, select, textarea, [tabindex]",
-        ),
+        ...dialog.querySelectorAll<HTMLElement>("a[href], button, input, select, textarea, [tabindex]"),
       ].filter(
-        (element) =>
-          element.tabIndex >= 0 &&
-          !element.matches(":disabled") &&
-          element.getClientRects().length > 0,
+        (element) => element.tabIndex >= 0 && !element.matches(":disabled") && element.getClientRects().length > 0,
       );
       const first = focusable[0];
       const last = focusable.at(-1);

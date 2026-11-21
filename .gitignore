@@ -47,8 +47,10 @@ public/pagefind
 # local build and tooling caches
 .lighthouseci/
 .visual-artifacts/
+.task-artifacts/
 .tmp/
 .vercel
+.indexnow-cache.json
 
 # third-party bundles
 public/vendor/cyberchef/
@@ -67,3 +69,4 @@ retro-crt-portfolio.zip
 # Raw note-platform exports stay local; publish curated posts from src/content/blog/.
 /*_ExportBlock-*/
 /Threat Model *.md
+/wifi 安全文章/

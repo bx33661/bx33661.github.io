@@ -1,6 +1,8 @@
-import { getCollection, type CollectionEntry } from "astro:content";
-import { resolveLegacyNoteSlug } from "@/utils/legacySlug";
+import type { CollectionEntry } from "astro:content";
 import { isEntryLocale, type Locale } from "@/i18n";
+import { getAllNoteSlugs } from "@/lib/data-utils";
+
+export const NOTES_PAGE_SIZE = 10;
 
 export type NoteWithSlug = {
   note: CollectionEntry<"notes">;
@@ -8,11 +10,8 @@ export type NoteWithSlug = {
 };
 
 export async function getAllNotesWithSlugs(locale: Locale = "zh-CN"): Promise<NoteWithSlug[]> {
-  const notes = await getCollection("notes", ({ data }) => !data.draft && isEntryLocale(data, locale));
-  return notes
-    .slice()
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-    .map((note) => ({ note, slug: resolveLegacyNoteSlug(note) }));
+  const notes = await getAllNoteSlugs(locale);
+  return notes.filter(({ note: { data } }) => isEntryLocale(data, locale));
 }
 
 export async function getAdjacentNotes(

@@ -1,146 +1,25 @@
-# Google Analytics 配置指南
+# Analytics 配置说明
 
-## 概述
+## 当前状态
 
-本项目支持多种分析工具的集成，包括：
-- Google Analytics 4 (GA4)
-- Google Tag Manager (GTM)
-- PostHog
+仓库已清理早期未接入的 `GoogleAnalytics` / `GoogleTagManager` / `Analytics` 占位组件及对应未使用的环境变量（`PUBLIC_GOOGLE_ANALYTICS_ID`、`PUBLIC_GTM_ID`、`PUBLIC_POSTHOG_KEY`、`PUBLIC_POSTHOG_HOST`），默认构建**不会**自动注入任何第三方统计脚本。
 
-## 配置步骤
+当前仅在 [`src/config/env.ts`](../src/config/env.ts) 中保留了统一的开关导出：
 
-### 1. 获取 Google Analytics 追踪 ID
+- `ENABLE_ANALYTICS = import.meta.env.PUBLIC_ENABLE_ANALYTICS === "true"`
 
-1. 访问 [Google Analytics](https://analytics.google.com/)
-2. 创建新的 GA4 属性
-3. 获取测量 ID（格式：G-XXXXXXXXXX）
+## 验证与生产构建开关机制
 
-### 2. 配置环境变量
+为避免本地校验与 CI 浏览器测试请求外网统计接口：
 
-在项目根目录创建 `.env` 文件：
+1. `npm run verify:quick` 与 `npm run verify:full` 会强制设置 `PUBLIC_ENABLE_ANALYTICS=false` 与 `PUBLIC_ENABLE_COMMENTS=false`。
+2. 在 GitHub Actions（[`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)）的 `main` 分支部署流程中，若仓库变量 `vars.PUBLIC_ENABLE_ANALYTICS == 'true'` 或 `vars.PUBLIC_ENABLE_COMMENTS == 'true'`，将在 `verify:full` 通过后执行一次正式环境重编（`npm run build && npm run smoke:dist`），确保线上产物应用生产环境变量。
 
-```env
-# Google Analytics 配置
-PUBLIC_GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
-PUBLIC_ENABLE_ANALYTICS=true
+## 若需接入第三方统计脚本
 
-# Google Tag Manager 配置（可选）
-PUBLIC_GTM_ID=GTM-XXXXXXX
-
-# PostHog 配置（可选）
-PUBLIC_POSTHOG_KEY=phc_xxxxxxxxxxxxxx
-PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
-```
-
-### 3. 生产环境配置
-
-对于生产环境，请在部署平台设置相应的环境变量：
-
-#### Vercel
-```bash
-vercel env add PUBLIC_GOOGLE_ANALYTICS_ID
-vercel env add PUBLIC_ENABLE_ANALYTICS
-```
-
-#### Netlify
-在 Netlify 控制台的 Environment Variables 中添加相应变量。
-
-#### GitHub Pages
-在 GitHub 仓库的 Settings > Secrets and variables > Actions 中添加：
-- `PUBLIC_GOOGLE_ANALYTICS_ID`
-- `PUBLIC_ENABLE_ANALYTICS`
-
-## 功能特性
-
-### 隐私保护
-- 自动 IP 匿名化
-- GDPR 合规配置
-- 禁用广告个性化
-
-### 性能优化
-- 异步加载脚本
-- 开发环境禁用
-- 错误处理
-
-### 开发体验
-- 开发环境模拟函数
-- 控制台调试信息
-- 环境变量验证
-
-## 使用方法
-
-### 基本事件追踪
-
-```javascript
-// 页面浏览
-gtag('config', 'GA_MEASUREMENT_ID', {
-  page_title: 'Custom Title',
-  page_location: 'https://example.com/page'
-});
-
-// 自定义事件
-gtag('event', 'click', {
-  event_category: 'engagement',
-  event_label: 'button'
-});
-```
-
-### 电子商务追踪
-
-```javascript
-// 购买事件
-gtag('event', 'purchase', {
-  transaction_id: '12345',
-  value: 25.42,
-  currency: 'USD',
-  items: [{
-    item_id: 'SKU123',
-    item_name: 'Product Name',
-    category: 'Category',
-    quantity: 1,
-    price: 25.42
-  }]
-});
-```
-
-## 故障排除
-
-### 常见问题
-
-1. **分析数据不显示**
-   - 检查环境变量是否正确设置
-   - 确认在生产环境中运行
-   - 验证 GA 追踪 ID 格式
-
-2. **开发环境中的警告**
-   - 这是正常的，开发环境会禁用分析工具
-   - 查看控制台的模拟函数调用
-
-3. **GDPR 合规性**
-   - 项目已配置基本的隐私保护
-   - 根据需要添加 Cookie 同意横幅
-
-### 调试工具
-
-使用 Google Analytics Debugger 浏览器扩展来调试追踪问题。
-
-## 最佳实践
-
-1. **数据质量**
-   - 设置适当的过滤器排除内部流量
-   - 定期检查数据准确性
-
-2. **性能影响**
-   - 使用异步加载
-   - 避免阻塞渲染
-
-3. **隐私合规**
-   - 实施适当的数据保护措施
-   - 提供用户选择退出的选项
-
-## 相关文件
-
-- `src/components/GoogleAnalytics.astro` - GA4 组件
-- `src/components/GoogleTagManager.astro` - GTM 组件
-- `src/components/Analytics.astro` - 统一分析组件
-- `src/config/env.ts` - 环境变量配置
+1. 如使用常见平台，`src/layouts/Layout.astro`、`public/_headers` 与 [`docs/EDGE_SETUP.md`](./EDGE_SETUP.md) 中的 CSP 已预放行：
+   - `script-src`: `https://www.googletagmanager.com`、`https://analytics.ahrefs.com`
+   - `connect-src`: `https://www.google-analytics.com`、`https://analytics.ahrefs.com`、`https://app.posthog.com`
+     若更换其他统计域，请同步更新上述三处的 CSP 配置。
+2. 仅在 `ENABLE_ANALYTICS` 为 `true`（且处于生产环境）时，在 `src/layouts/Layout.astro` 中挂载对应脚本并读取自定义公开环境变量。
+3. 在 GitHub 仓库的 `Settings → Secrets and variables → Actions → Variables` 中设置 `PUBLIC_ENABLE_ANALYTICS=true` 及所需公开 ID。

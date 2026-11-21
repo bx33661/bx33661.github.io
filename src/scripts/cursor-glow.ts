@@ -1,15 +1,13 @@
+import { onAstroPage } from "./astro-lifecycle";
 import { READING_MOTION } from "../utils/reading-motion";
 
-let controller: AbortController | null = null;
 let hideCurrent: (() => void) | null = null;
 
-function setupCursorGlow() {
-  controller?.abort();
-  controller = new AbortController();
-  const { signal } = controller;
+onAstroPage((signal) => {
   const backdrop = document.querySelector<HTMLElement>(".site-backdrop");
   const glow = backdrop?.querySelector<HTMLElement>(".site-cursor-glow");
   if (!backdrop || !glow) return;
+
   const fine = matchMedia("(hover: hover) and (pointer: fine)");
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   let frame = 0;
@@ -19,6 +17,7 @@ function setupCursorGlow() {
     y = 0,
     targetX = 0,
     targetY = 0;
+
   const hide = () => {
     cancelAnimationFrame(frame);
     frame = 0;
@@ -27,6 +26,7 @@ function setupCursorGlow() {
     glow.style.willChange = "";
   };
   hideCurrent = hide;
+
   const tick = (time: number) => {
     frame = 0;
     if (signal.aborted || !tracking) return;
@@ -42,11 +42,11 @@ function setupCursorGlow() {
     backdrop.style.setProperty("--site-cx", `${x}px`);
     backdrop.style.setProperty("--site-cy", `${y}px`);
   };
+
   document.addEventListener(
     "pointermove",
     (event) => {
-      if (!fine.matches || reduced.matches || event.pointerType !== "mouse")
-        return;
+      if (!fine.matches || reduced.matches || event.pointerType !== "mouse") return;
       targetX = event.clientX;
       targetY = event.clientY;
       if (!tracking) {
@@ -70,11 +70,13 @@ function setupCursorGlow() {
     },
     { signal },
   );
+
   const preference = () => {
     if (!fine.matches || reduced.matches) hide();
   };
   fine.addEventListener("change", preference, { signal });
   reduced.addEventListener("change", preference, { signal });
+
   signal.addEventListener(
     "abort",
     () => {
@@ -85,8 +87,6 @@ function setupCursorGlow() {
     },
     { once: true },
   );
-}
+});
 
-document.addEventListener("astro:page-load", setupCursorGlow);
 document.addEventListener("astro:before-preparation", () => hideCurrent?.());
-document.addEventListener("astro:before-swap", () => controller?.abort());

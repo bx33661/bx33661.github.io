@@ -4,7 +4,11 @@ import test from "node:test";
 
 const home = fs.readFileSync(new URL("../src/components/AcademicHome.astro", import.meta.url), "utf8");
 const index = fs.readFileSync(new URL("../src/pages/index.astro", import.meta.url), "utf8");
-const text = home.split("<style>")[0].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+const text = home
+  .split("<style>")[0]
+  .replace(/<[^>]*>/g, " ")
+  .replace(/\s+/g, " ")
+  .trim();
 
 // Approved copy is a contract: a redesign must not summarize or invent biography.
 const paragraphs = [
@@ -31,7 +35,14 @@ test("homepage preserves the entire approved introduction in order", () => {
 });
 
 test("homepage keeps only the requested education details, without dates or resume sections", () => {
-  for (const marker of ["Hainan University", "HNU", "Bachelor's studies in Information Security", "University of Chinese Academy of Sciences", "UCAS", "Master's studies"]) {
+  for (const marker of [
+    "Hainan University",
+    "HNU",
+    "Bachelor's studies in Information Security",
+    "University of Chinese Academy of Sciences",
+    "UCAS",
+    "Master's studies",
+  ]) {
     assert.ok(text.includes(marker), `Missing education detail: ${marker}`);
   }
   assert.doesNotMatch(text, /2023|2027|Zhang Boxiang|张博翔|Honors|Research interests|Selected work/);

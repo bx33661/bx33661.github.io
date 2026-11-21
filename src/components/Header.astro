@@ -6,9 +6,14 @@ import IconArchive from "@/assets/icons/IconArchive.svg";
 import IconGallery from "@/assets/icons/IconGallery.svg";
 import { SITE } from "@/config.ts";
 import "@/styles/header.css";
-import { localeFromPath, localizedPath, switchDestination } from "@/i18n";
+import { localeFromPath, localizedPath, stripLocalePrefix, switchDestination } from "@/i18n";
 import { languagePaths } from "@/i18n/content";
 
+interface Props {
+  surface?: "default" | "dark";
+}
+
+const { surface = "default" } = Astro.props;
 const { pathname } = Astro.url;
 const locale = localeFromPath(pathname);
 const isEnglish = locale === "en";
@@ -16,11 +21,7 @@ const languageRoutes = await languagePaths(pathname);
 const languageHref = switchDestination(pathname, languageRoutes);
 const exactLanguageSwitch = Object.keys(languageRoutes).length === 2;
 
-// Remove trailing slash from current pathname if exists
-const currentPath =
-  pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
-
-const sectionPath = currentPath.replace(/^\/en(?=\/|$)/, "") || "/";
+const sectionPath = stripLocalePrefix(pathname);
 const isActive = (path: string) => sectionPath === path || sectionPath.startsWith(`${path}/`);
 
 const navItems = [
@@ -37,12 +38,7 @@ const quickItems = [
         {
           label: "Archives",
           href: localizedPath("/archives/", locale),
-          active:
-            currentPath === "/archives" ||
-            currentPath.startsWith("/archives/") ||
-            currentPath === "/en/archives" ||
-            currentPath === "/archive" ||
-            currentPath.startsWith("/archive/"),
+          active: isActive("/archives") || isActive("/archive"),
           icon: IconArchive,
         },
       ]
@@ -52,11 +48,7 @@ const quickItems = [
         {
           label: "Galleries",
           href: "/galleries/",
-          active:
-            currentPath === "/galleries" ||
-            currentPath.startsWith("/galleries/") ||
-            currentPath === "/album" ||
-            currentPath.startsWith("/album/"),
+          active: isActive("/galleries") || isActive("/album"),
           icon: IconGallery,
         },
       ]
@@ -71,17 +63,14 @@ const brandText = SITE.title.trim();
 <a
   id="skip-to-content"
   href="#main-content"
-  class="absolute start-16 -top-full z-50 rounded-b-lg bg-accent px-4 py-2 font-medium text-background transition-all focus:top-0"
+  class="bg-accent text-background absolute start-16 -top-full z-50 rounded-b-lg px-4 py-2 font-medium transition-all focus:top-0"
 >
   Skip to content
 </a>
 
-<header class="header-glass sticky top-0 z-40 w-full">
+<header class="header-glass sticky top-0 z-40 w-full" data-header-surface={surface === "dark" ? "dark" : undefined}>
   <div class="app-layout">
-    <div
-      id="top-nav-wrap"
-      class="relative flex w-full items-center justify-between py-3 sm:py-4"
-    >
+    <div id="top-nav-wrap" class="relative flex w-full items-center justify-between py-3 sm:py-4">
       <!-- Logo -->
       <a
         href={localizedPath("/", locale)}
@@ -90,7 +79,7 @@ const brandText = SITE.title.trim();
         <img
           src={siteLogo}
           alt={`${SITE.title} logo`}
-          class="site-brand-logo size-8 rounded-md border border-border/35 bg-[#f4f0e6] object-contain"
+          class="site-brand-logo border-border/35 size-8 rounded-md border bg-[#f4f0e6] object-contain"
           loading="eager"
           decoding="async"
         />
@@ -104,10 +93,7 @@ const brandText = SITE.title.trim();
           {
             navItems.map((item) => (
               <li>
-                <a
-                  href={item.href}
-                  class:list={["nav-link", { "nav-active": item.active }]}
-                >
+                <a href={item.href} class:list={["nav-link", { "nav-active": item.active }]}>
                   {item.label}
                 </a>
               </li>
@@ -117,11 +103,7 @@ const brandText = SITE.title.trim();
           {
             quickItems.length > 0 && (
               <li class="flex items-center">
-                <div
-                  class="nav-quick-switch"
-                  role="group"
-                  aria-label="Archive and gallery shortcuts"
-                >
+                <div class="nav-quick-switch" role="group" aria-label="Archive and gallery shortcuts">
                   {quickItems.map((item) => {
                     const Icon = item.icon;
                     return (
@@ -141,16 +123,11 @@ const brandText = SITE.title.trim();
           }
 
           <li class="flex items-center px-1" aria-hidden="true">
-            <div class="h-4 w-px bg-border/30"></div>
+            <div class="bg-border/30 h-4 w-px"></div>
           </li>
 
           <li class="flex items-center">
-            <button
-              data-search-trigger
-              class="nav-search-btn"
-              title="Search (⌘K)"
-              aria-label="Open search"
-            >
+            <button data-search-trigger class="nav-search-btn" title="Search (⌘K)" aria-label="Open search">
               <IconSearch class="size-4.5" />
               <kbd class="nav-kbd">⌘K</kbd>
             </button>
@@ -178,8 +155,14 @@ const brandText = SITE.title.trim();
           class="language-switch"
           data-language-switch
           lang={isEnglish ? "zh-CN" : "en"}
-          aria-label={isEnglish ? (exactLanguageSwitch ? "切换到中文" : "查看中文内容") : (exactLanguageSwitch ? "Switch to English" : "Browse the English edition; this page has no English version")}
-          title={isEnglish ? "中文" : (exactLanguageSwitch ? "English" : "English edition (no translation of this page)")}
+          aria-label={isEnglish
+            ? exactLanguageSwitch
+              ? "切换到中文"
+              : "查看中文内容"
+            : exactLanguageSwitch
+              ? "Switch to English"
+              : "Browse the English edition; this page has no English version"}
+          title={isEnglish ? "中文" : exactLanguageSwitch ? "English" : "English edition (no translation of this page)"}
         >
           <span class="language-switch__label" data-current={!isEnglish} aria-hidden="true">中</span>
           <span class="language-switch__divider" aria-hidden="true">/</span>
@@ -199,7 +182,6 @@ const brandText = SITE.title.trim();
             <span class="hamburger-line hamburger-line--3"></span>
           </div>
         </button>
-
       </nav>
     </div>
   </div>
@@ -210,12 +192,8 @@ const brandText = SITE.title.trim();
       <nav class="mobile-nav-links">
         {
           allMobileItems.map((item, index) => (
-            <a
-              href={item.href}
-              class:list={["mobile-nav-link", { active: item.active }]}
-              style={`--i:${index}`}
-            >
-              <span class="mobile-nav-indicator"></span>
+            <a href={item.href} class:list={["mobile-nav-link", { active: item.active }]} style={`--i:${index}`}>
+              <span class="mobile-nav-indicator" />
               <span>{item.label}</span>
             </a>
           ))
@@ -225,12 +203,7 @@ const brandText = SITE.title.trim();
       <div class="mobile-menu-divider"></div>
 
       <div class="mobile-menu-actions">
-        <button
-          data-search-trigger
-          class="mobile-action-btn"
-          title="Search (⌘K)"
-          aria-label="Open search"
-        >
+        <button data-search-trigger class="mobile-action-btn" title="Search (⌘K)" aria-label="Open search">
           <IconSearch class="size-4" />
           <span>Search</span>
         </button>
@@ -254,97 +227,41 @@ const brandText = SITE.title.trim();
     </div>
   </div>
 
-  <div
-    class="header-border-line h-px w-full bg-linear-to-r from-transparent via-border/40 to-transparent"
-  >
-  </div>
+  <div class="header-border-line via-border/40 h-px w-full bg-linear-to-r from-transparent to-transparent"></div>
 </header>
 
-<style>
-  .language-switch {
-    display: inline-flex;
-    flex: none;
-    align-items: center;
-    justify-content: center;
-    gap: 0.375rem;
-    min-width: 3.5rem;
-    min-height: 2.75rem;
-    margin-inline-start: 0.375rem;
-    padding-inline: 0.375rem;
-    border: 0;
-    border-radius: 0.5rem;
-    color: color-mix(in srgb, var(--foreground) 68%, transparent);
-    font-size: 0.75rem;
-    font-weight: 500;
-    line-height: 1;
-    text-decoration: none;
-    transition: color 150ms ease, background-color 150ms ease;
-  }
-
-  .language-switch__label[data-current="true"] {
-    color: var(--foreground);
-    font-weight: 700;
-  }
-
-  .language-switch__divider {
-    color: color-mix(in srgb, var(--foreground) 30%, transparent);
-    font-weight: 400;
-  }
-
-  .language-switch:hover {
-    color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 6%, transparent);
-  }
-
-  .language-switch:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .language-switch { transition: none; }
-  }
-</style>
-
 <script>
-  let headerCleanup: AbortController | null = null;
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
 
-  function setupMobileNav() {
-    if (headerCleanup) headerCleanup.abort();
-    headerCleanup = new AbortController();
-    const { signal } = headerCleanup;
-
-    const menuBtn = document.querySelector("#menu-btn");
-    const mobileMenu = document.querySelector("#mobile-menu");
-
+  onAstroPage((signal) => {
+    const menuBtn = document.querySelector<HTMLElement>("#menu-btn");
+    const mobileMenu = document.querySelector<HTMLElement>("#mobile-menu");
     if (!menuBtn || !mobileMenu) return;
 
-    menuBtn.addEventListener(
-      "click",
-      () => {
-        const isOpen = menuBtn.getAttribute("aria-expanded") === "true";
-        menuBtn.setAttribute("aria-expanded", isOpen ? "false" : "true");
-        menuBtn.setAttribute("aria-label", isOpen ? "Open menu" : "Close menu");
-        mobileMenu.classList.toggle("is-open");
-        mobileMenu.setAttribute("aria-hidden", isOpen ? "true" : "false");
+    const setMenuOpen = (open: boolean) => {
+      menuBtn.setAttribute("aria-expanded", String(open));
+      menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      mobileMenu.classList.toggle("is-open", open);
+      mobileMenu.setAttribute("aria-hidden", String(!open));
+    };
+
+    setMenuOpen(false);
+
+    menuBtn.addEventListener("click", () => setMenuOpen(menuBtn.getAttribute("aria-expanded") !== "true"), { signal });
+
+    mobileMenu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => setMenuOpen(false), { signal });
+    });
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Escape" && mobileMenu.classList.contains("is-open")) {
+          setMenuOpen(false);
+          menuBtn.focus();
+        }
       },
       { signal },
     );
-
-    mobileMenu.querySelectorAll("a").forEach((link) => {
-      link.addEventListener(
-        "click",
-        () => {
-          menuBtn.setAttribute("aria-expanded", "false");
-          menuBtn.setAttribute("aria-label", "Open menu");
-          mobileMenu.classList.remove("is-open");
-          mobileMenu.setAttribute("aria-hidden", "true");
-        },
-        { signal },
-      );
-    });
-  }
-
-  setupMobileNav();
-  document.addEventListener("astro:after-swap", setupMobileNav);
+  });
 </script>

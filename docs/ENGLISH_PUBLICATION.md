@@ -2,10 +2,10 @@
 
 2026-10-18 为最近发布的三篇中文文章增加英文译文，复用原站多语言组件，没有新增英文主题或布局。英文文章保留原文发表日期；译文上线不修改中文文章正文或既有 URL。
 
-| 中文源文件 | 英文 slug | translationKey |
-| --- | --- | --- |
-| `websocket-handshake-message-replay.md` | `websocket-handshake-message-replay-en` | `websocket-handshake-message-replay` |
-| `rasp.md` | `openrasp-sql-detect-bypass-en` | `openrasp-sql-detect-bypass` |
+| 中文源文件                                 | 英文 slug                                 | translationKey                         |
+| ------------------------------------------ | ----------------------------------------- | -------------------------------------- |
+| `websocket-handshake-message-replay.md`    | `websocket-handshake-message-replay-en`   | `websocket-handshake-message-replay`   |
+| `rasp.md`                                  | `openrasp-sql-detect-bypass-en`           | `openrasp-sql-detect-bypass`           |
 | `cybergym-ai-security-agent-benchmark.mdx` | `cybergym-ai-security-agent-benchmark-en` | `cybergym-ai-security-agent-benchmark` |
 
 用户选择最近三篇，并明确要求较轻量模型子 Agent；本批使用 `gpt-6-luna` 翻译，主 Agent 复核，另一轮子 Agent 对照原文审阅。RASP 长文拆成四段，代码先保护、译后逐字恢复；没有缩写成摘要。

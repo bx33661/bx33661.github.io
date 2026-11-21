@@ -23,13 +23,15 @@
 
 ## 站点一览
 
-| 模块 | 路径 | 说明 |
-|------|------|------|
-| 博客 | [`/blog/`](https://www.bx33661.com/blog/) | 安全研究、CTF、工程笔记 |
-| Notes | [`/notes/`](https://www.bx33661.com/notes/) | 短记录与学习备忘 |
-| 相册 | [`/galleries/`](https://www.bx33661.com/galleries/) | 图片画廊 |
-| 搜索 | [`/search/`](https://www.bx33661.com/search/) | Pagefind 全文检索 |
-| 友链 | [`/friends/`](https://www.bx33661.com/friends/) | 朋友与组织 |
+| 模块  | 路径                                                | 说明                    |
+| ----- | --------------------------------------------------- | ----------------------- |
+| 博客  | [`/blog/`](https://www.bx33661.com/blog/)           | 安全研究、CTF、工程笔记 |
+| Notes | [`/notes/`](https://www.bx33661.com/notes/)         | 短记录与学习备忘        |
+| 相册  | [`/galleries/`](https://www.bx33661.com/galleries/) | 图片画廊                |
+| 搜索  | [`/search/`](https://www.bx33661.com/search/)       | Pagefind 全文检索       |
+| 友链  | [`/friends/`](https://www.bx33661.com/friends/)     | 朋友与组织              |
+
+同时提供 [`/en/`](https://www.bx33661.com/en/) 英文版本首页、文章、笔记与检索路由。
 
 技术栈：Astro 7 · MDX · React islands · Tailwind CSS 4 · Pagefind · GitHub Actions。静态页面部署在 GitHub Pages；搜索索引随构建生成，不需要独立搜索服务。
 
@@ -68,29 +70,32 @@ npm run verify:full
 
 ## 常用脚本
 
-| 命令 | 说明 |
-|------|------|
-| `npm run dev` | 开发服务器 |
-| `npm run build` | 生产构建 + 搜索索引 |
-| `npm run check` | ESLint + 源码冒烟检查 |
-| `npm run verify:quick` | ESLint、Astro 类型、源码和内容检查 |
-| `npm run verify:full` | 快速检查 + 构建、产物检查、桌面/移动端浏览器截图 |
-| `npm run smoke:dist` | 构建产物检查 |
-| `npm run content:new` | 新建文章脚手架 |
-| `npm run gallery:optimize` | 相册多尺寸优化 |
-| `npm run baidu:push` | 百度收录推送（需 token） |
+| 命令                       | 说明                                             |
+| -------------------------- | ------------------------------------------------ |
+| `npm run dev`              | 开发服务器                                       |
+| `npm run build`            | 生产构建 + Pagefind 搜索索引                     |
+| `npm run check`            | ESLint + 单元测试 + 源码冒烟检查                 |
+| `npm run harness:doctor`   | 运行环境、依赖、Git 状态与预览端口自检           |
+| `npm run verify:quick`     | ESLint、Astro 类型、单元测试、源码和内容检查     |
+| `npm run verify:full`      | 快速检查 + 构建、产物检查、桌面/移动端浏览器截图 |
+| `npm run format`           | Prettier 代码与文档格式化                        |
+| `npm run format:check`     | Prettier 格式校验                                |
+| `npm run smoke:dist`       | 构建产物检查                                     |
+| `npm run content:new`      | 新建文章脚手架                                   |
+| `npm run gallery:optimize` | 相册多尺寸优化                                   |
+| `npm run baidu:push`       | 百度收录推送（需 token）                         |
 
 ## 环境变量
 
 详见 [`.env.example`](./.env.example)。
 
-| 变量 | 说明 |
-|------|------|
-| `SITE` / `BASE_URL` | 站点 origin 与 base path |
-| `PUBLIC_ENABLE_ANALYTICS` | 分析开关 |
-| `PUBLIC_ENABLE_COMMENTS` | Giscus 评论开关 |
-| `PUBLIC_GISCUS_*` | Giscus 配置 |
-| `BAIDU_PUSH_TOKEN` | 百度推送 token（勿提交） |
+| 变量                      | 说明                     |
+| ------------------------- | ------------------------ |
+| `SITE` / `BASE_URL`       | 站点 origin 与 base path |
+| `PUBLIC_ENABLE_ANALYTICS` | 分析开关                 |
+| `PUBLIC_ENABLE_COMMENTS`  | Giscus 评论开关          |
+| `PUBLIC_GISCUS_*`         | Giscus 配置              |
+| `BAIDU_PUSH_TOKEN`        | 百度推送 token（勿提交） |
 
 CI 从 GitHub Variables / Secrets 注入；百度 token 使用 `secrets.BAIDU_PUSH_TOKEN`。
 
@@ -99,7 +104,7 @@ CI 从 GitHub Variables / Secrets 注入；百度 token 使用 `secrets.BAIDU_PU
 ```text
 src/
   config.ts        # 站点元信息和 Astro site 地址
-  config/          # friends / env / theme
+  config/          # friends / env
   content/         # blog 文章
   data/            # notes、galleries、academic 数据
   pages/           # 路由
@@ -115,11 +120,12 @@ docs/              # 部署说明与仓库视觉素材
 
 Fork 中配置好 GitHub Pages 后，推送到 `main` 会触发 Actions：
 
-1. `npm ci` → `verify:full`（包含构建、搜索索引和浏览器检查）
-2. 部署 `dist/` 到 GitHub Pages
-3. 若配置了 token，再执行百度 URL 推送
+1. `npm ci` → `verify:full`（禁用线上评论/统计开关，执行检查、构建、搜索索引与浏览器回归）
+2. 若仓库变量启用了 `PUBLIC_ENABLE_COMMENTS == 'true'` 或 `PUBLIC_ENABLE_ANALYTICS == 'true'`，使用生产环境变量重编 `dist/` 并执行 `smoke:dist`
+3. 部署 `dist/` 到 GitHub Pages
+4. 触发 `.github/workflows/baidu-notify.yml`，按需推送百度与 IndexNow 收录通知
 
-其他分支的推送不会触发本站的 Pages 部署；针对 `main` 的 Pull Request 只运行构建检查。
+其他分支的推送不会触发本站的 Pages 部署；针对 `main` 的 Pull Request 只运行构建检查（跳过条件线上重编）。
 
 - 自定义域名：`public/CNAME` → `www.bx33661.com`
 - 边缘 301 / 安全头：见 [`docs/EDGE_SETUP.md`](./docs/EDGE_SETUP.md)
@@ -137,7 +143,7 @@ Fork 中配置好 GitHub Pages 后，推送到 `main` 会触发 Actions：
 - 笔记：`src/data/notes/`
 - 相册元数据：`src/data/galleries/`
 - 已发布文章的图片 URL 应保持稳定；新图可放 `public/`，需要 Astro 图片优化时放 `src/assets/`
-- 外链图（如语雀 CDN）若遇防盗链，文内可保留 `<meta name="referrer" content="no-referrer">`
+- 全站布局 `src/layouts/Layout.astro` 已统一注入 `<meta name="referrer" content="no-referrer" />` 以减少外链图防盗链拦截，无需在文章正文中重复添加 `<meta>` 标签；外链图片应优先本地化到 `public/`
 
 ## 联系
 

@@ -13,13 +13,7 @@ export function setupArticleLightbox(signal: AbortSignal) {
   const origin = () => {
     if (!sourceImage?.isConnected) return null;
     const box = sourceImage.getBoundingClientRect();
-    if (
-      box.bottom <= 0 ||
-      box.top >= innerHeight ||
-      box.right <= 0 ||
-      box.left >= innerWidth
-    )
-      return null;
+    if (box.bottom <= 0 || box.top >= innerHeight || box.right <= 0 || box.left >= innerWidth) return null;
     return imageOriginTransform(box, full.getBoundingClientRect());
   };
   const modal = bindArticleDialog(dialog, signal, {
@@ -35,12 +29,7 @@ export function setupArticleLightbox(signal: AbortSignal) {
         .decode()
         .catch(() => {})
         .then(() => {
-          if (
-            token !== generation ||
-            signal.aborted ||
-            dialog.dataset.dialogPhase !== "open"
-          )
-            return;
+          if (token !== generation || signal.aborted || dialog.dataset.dialogPhase !== "open") return;
           // Keep the thumbnail visible under the scrim while an original loads.
           if (sourceImage) sourceImage.style.visibility = "hidden";
           full.style.visibility = "";
@@ -85,9 +74,7 @@ export function setupArticleLightbox(signal: AbortSignal) {
       sourceImage = null;
     },
   });
-  dialog
-    .querySelector("[data-image-close]")
-    ?.addEventListener("click", modal.close, { signal });
+  dialog.querySelector("[data-image-close]")?.addEventListener("click", modal.close, { signal });
   full.addEventListener("click", modal.close, { signal });
   dialog.addEventListener(
     "close",
@@ -97,23 +84,15 @@ export function setupArticleLightbox(signal: AbortSignal) {
     { signal },
   );
 
-  for (const image of document.querySelectorAll<HTMLImageElement>(
-    "#article img",
-  )) {
+  for (const image of document.querySelectorAll<HTMLImageElement>("#article img")) {
     // Preserve linked images and MDX islands with their own controls/lightboxes.
     if (image.closest(".not-prose, a, [data-no-zoom]")) continue;
     let trigger = image.closest<HTMLButtonElement>(".article-image-trigger");
     if (!trigger && image.closest("button")) continue;
-    const existingCaption = image
-      .closest("figure")
-      ?.querySelector("figcaption")
-      ?.textContent?.trim();
+    const existingCaption = image.closest("figure")?.querySelector("figcaption")?.textContent?.trim();
     const label = existingCaption || image.alt.trim();
     if (!trigger) {
-      const target =
-        image.parentElement?.tagName === "PICTURE"
-          ? image.parentElement
-          : image;
+      const target = image.parentElement?.tagName === "PICTURE" ? image.parentElement : image;
       const frame = document.createElement("span");
       frame.className = "article-image";
       trigger = document.createElement("button");
@@ -122,18 +101,18 @@ export function setupArticleLightbox(signal: AbortSignal) {
       trigger.setAttribute(
         "aria-label",
         document.documentElement.lang === "en"
-          ? (label ? `Enlarge image: ${label}` : "Enlarge article image")
-          : (label ? `放大图片：${label}` : "放大正文图片"),
+          ? label
+            ? `Enlarge image: ${label}`
+            : "Enlarge article image"
+          : label
+            ? `放大图片：${label}`
+            : "放大正文图片",
       );
       trigger.setAttribute("aria-haspopup", "dialog");
       target.replaceWith(frame);
       frame.appendChild(trigger);
       trigger.appendChild(target);
-      if (
-        !existingCaption &&
-        label &&
-        !/^(image|图片|图像)(\s*\d*)?$|\.(png|jpe?g|webp|gif)$/i.test(label)
-      ) {
+      if (!existingCaption && label && !/^(image|图片|图像)(\s*\d*)?$|\.(png|jpe?g|webp|gif)$/i.test(label)) {
         const note = document.createElement("span");
         note.className = "article-image-caption";
         note.textContent = label;

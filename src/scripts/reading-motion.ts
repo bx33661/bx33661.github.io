@@ -1,7 +1,19 @@
 import { READING_MOTION } from "../utils/reading-motion";
 
-export const prefersReducedMotion = () =>
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reducedListeners = new Set<() => void>();
+let reducedMql: MediaQueryList | null = null;
+
+function getReducedMotionQuery(): MediaQueryList {
+  if (!reducedMql) {
+    reducedMql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reducedMql.addEventListener("change", () => {
+      for (const listener of [...reducedListeners]) listener();
+    });
+  }
+  return reducedMql;
+}
+
+export const prefersReducedMotion = () => getReducedMotionQuery().matches;
 
 export function animateReading(
   element: Element,
@@ -9,15 +21,14 @@ export function animateReading(
   duration: number,
   easing = READING_MOTION.ease,
 ): Animation | null {
-  if (prefersReducedMotion() || typeof element.animate !== "function")
-    return null;
+  if (prefersReducedMotion() || typeof element.animate !== "function") return null;
   const animation = element.animate(keyframes, { duration, easing });
-  const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const mql = getReducedMotionQuery();
   const stop = () => {
-    if (preference.matches) animation.finish();
+    if (mql.matches) animation.finish();
   };
-  preference.addEventListener("change", stop);
-  const cleanup = () => preference.removeEventListener("change", stop);
+  reducedListeners.add(stop);
+  const cleanup = () => reducedListeners.delete(stop);
   void animation.finished.then(cleanup, cleanup);
   return animation;
 }

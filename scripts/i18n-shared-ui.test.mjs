@@ -21,12 +21,23 @@ test("both languages use the original page components, not a second visual frame
       assert.doesNotMatch(source, /<style|english-|EnglishShell|EnglishEntry/);
     }
   }
-  for (const file of ["layouts/EnglishShell.astro", "layouts/EnglishEntry.astro", "components/EnglishList.astro", "components/EnglishSidebar.astro", "styles/english-shell.css"])
+  for (const file of [
+    "layouts/EnglishShell.astro",
+    "layouts/EnglishEntry.astro",
+    "components/EnglishList.astro",
+    "components/EnglishSidebar.astro",
+    "styles/english-shell.css",
+  ])
     assert.equal(existsSync(new URL(`../src/${file}`, import.meta.url)), false, file);
 });
 
 test("shared components keep the original design and locale-independent styles", () => {
-  for (const [file, signature] of [["BlogIndex", "blog-index"], ["NotesIndex", "page-head"], ["ArchiveIndex", "archive-main"], ["SearchPage", "search-main"]]) {
+  for (const [file, signature] of [
+    ["BlogIndex", "blog-index"],
+    ["NotesIndex", "page-head"],
+    ["ArchiveIndex", "archive-main"],
+    ["SearchPage", "search-main"],
+  ]) {
     const source = read(`src/components/${file}.astro`);
     assert.match(source, new RegExp(signature));
     assert.match(source, /localeFromPath\(Astro.url.pathname\)/);
@@ -41,9 +52,11 @@ test("shared components keep the original design and locale-independent styles",
 });
 
 test("interface dictionaries cover the same keys and truthful empty states", () => {
-  const zh = ui("zh-CN"); const en = ui("en");
+  const zh = ui("zh-CN");
+  const en = ui("en");
   assert.deepEqual(Object.keys(zh).sort(), Object.keys(en).sort());
-  assert.equal(zh.posts, "文章"); assert.equal(en.posts, "Posts");
+  assert.equal(zh.posts, "文章");
+  assert.equal(en.posts, "Posts");
   assert.equal(en.emptyPosts, "No English posts yet.");
   assert.equal(en.emptyNotes, "No English notes yet.");
   assert.equal(en.pageCount(2, 3), "Page 2/3");

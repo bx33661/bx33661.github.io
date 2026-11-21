@@ -13,8 +13,13 @@ for (const original of originals) {
   const metadata = await sharp(original).metadata();
   for (const width of widths) {
     const output = original.replace(/\.png$/, `-${width}.webp`);
-    await sharp(original).resize({ width, withoutEnlargement: true }).webp({ lossless: true, effort: 6 }).toFile(output);
+    await sharp(original)
+      .resize({ width, withoutEnlargement: true })
+      .webp({ lossless: true, effort: 6 })
+      .toFile(output);
     const size = (await fs.stat(output)).size;
-    console.log(`${path.relative(process.cwd(), output)} ${metadata.width}x${metadata.height} -> ${width}w ${size} bytes`);
+    console.log(
+      `${path.relative(process.cwd(), output)} ${metadata.width}x${metadata.height} -> ${width}w ${size} bytes`,
+    );
   }
 }

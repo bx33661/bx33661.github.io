@@ -10,7 +10,11 @@ function report(ok, label, detail) {
 }
 
 report(process.version.slice(1) === expected, "Node", `${process.version} (expected ${expected})`);
-report(fs.existsSync("node_modules/.package-lock.json"), "dependencies", "node_modules lock present; use npm ci if missing");
+report(
+  fs.existsSync("node_modules/.package-lock.json"),
+  "dependencies",
+  "node_modules lock present; use npm ci if missing",
+);
 report(fs.existsSync("package-lock.json"), "lockfile", "package-lock.json");
 
 const toggles = ["PUBLIC_ENABLE_ANALYTICS", "PUBLIC_ENABLE_COMMENTS", "PUBLIC_ENABLE_SEARCH"];
@@ -35,5 +39,7 @@ server.once("error", (error) => {
 });
 server.listen(port, "127.0.0.1", () => {
   report(true, "preview port", `${port} available`);
-  server.close(() => { process.exitCode = failures ? 1 : 0; });
+  server.close(() => {
+    process.exitCode = failures ? 1 : 0;
+  });
 });

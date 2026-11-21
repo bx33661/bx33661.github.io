@@ -169,6 +169,6 @@ You can write things in Notes.
 #### BP Cursor Looks Wrong
 Change the default font to a suitable one.
 
-![](https://gitee.com/bx33661/image/raw/master/path/image-20250108120432707.png)
+![Burp font setting](/notes/k8burp/image-20250108120432707.png)
 
 For the connection between mini-program traffic capture and code analysis, see [Automated Security Auditing of WeChat Mini Programs in Practice](/blog/wechat-miniapp-security-audit/), which records how package decoding, API organization, identity matrices, and case reports relate to each other.

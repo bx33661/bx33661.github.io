@@ -1,5 +1,4 @@
 ---
-import "@pagefind/default-ui/css/ui.css";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
@@ -27,7 +26,7 @@ const t = ui(locale);
         <span>{t.siteSearch}</span>
         <span class="search-keyboard"><kbd>⌘</kbd><kbd>K</kbd> {t.quickOpen}</span>
       </div>
-      <div id="pagefind-search" class="search-results"></div>
+      <div id="pagefind-search" class="search-results pagefind-surface"></div>
       <div class="search-surface-foot">
         <span>{t.searchHint}</span>
         <a href={localizedPath("/blog/", locale)}>{t.browsePosts} <span aria-hidden="true">↗</span></a>
@@ -119,74 +118,19 @@ const t = ui(locale);
   }
   #pagefind-search {
     --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: var(--accent);
-    --pagefind-ui-text: var(--foreground);
-    --pagefind-ui-background: var(--background);
-    --pagefind-ui-border: var(--border);
-    --pagefind-ui-border-radius: 0.65rem;
-  }
-  #pagefind-search :global(.pagefind-ui__search-input),
-  #pagefind-search :global(.search-fallback-input) {
-    width: 100%;
-    min-height: 3rem;
-    border: 1px solid var(--border);
-    border-radius: 0.65rem;
-    background: var(--background);
-    color: var(--foreground);
-    font: inherit;
-    padding: 0.7rem 0.9rem;
-  }
-  #pagefind-search :global(.pagefind-ui__search-input:focus-visible),
-  #pagefind-search :global(.search-fallback-input:focus-visible) {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  #pagefind-search :global(.pagefind-ui__result),
-  #pagefind-search :global(.search-fallback-results li) {
-    padding: 1rem 0;
-    border-top: 1px solid var(--border);
-  }
-  #pagefind-search :global(.pagefind-ui__result-title a),
-  #pagefind-search :global(.search-fallback-link strong) {
-    color: var(--foreground);
-    font-size: 1rem;
-    font-weight: 650;
-    text-decoration: none;
-  }
-  #pagefind-search :global(.pagefind-ui__result-title a:hover),
-  #pagefind-search :global(.search-fallback-link:hover strong) {
-    color: var(--accent);
-  }
-  #pagefind-search :global(.pagefind-ui__result-excerpt),
-  #pagefind-search :global(.search-fallback-link span) {
-    display: block;
-    margin-top: 0.4rem;
-    color: color-mix(in srgb, var(--foreground) 65%, transparent);
-    font-size: 0.88rem;
-    line-height: 1.6;
-  }
-  #pagefind-search :global(.search-fallback-status) {
-    margin: 1rem 0 0;
-    color: color-mix(in srgb, var(--foreground) 60%, transparent);
-    font-size: 0.85rem;
-  }
-  #pagefind-search :global(.search-fallback-results) {
-    list-style: none;
-    margin: 0.6rem 0 0;
-    padding: 0;
-  }
-  #pagefind-search :global(.search-fallback-link) {
-    display: block;
-    text-decoration: none;
-  }
-  #pagefind-search :global(mark) {
-    background: color-mix(in srgb, var(--accent) 18%, transparent);
-    color: inherit;
-  }
-  #pagefind-search :global(.pagefind-ui__result-nested) {
-    margin-top: 0.45rem;
-    padding-left: 0.9rem;
-    border-left: 1px solid var(--border);
+    --pf-result-py: 1rem;
+    --pf-title-size: 1rem;
+    --pf-excerpt-size: 0.88rem;
+    --pf-excerpt-mt: 0.4rem;
+    --pf-excerpt-lh: 1.6;
+    --pf-excerpt-alpha: 65%;
+    --pf-mark-alpha: 18%;
+    --pf-nested-mt: 0.45rem;
+    --pf-nested-pl: 0.9rem;
+    --pf-fallback-mt: 0.6rem;
+    --pf-status-mt: 1rem;
+    --pf-status-size: 0.85rem;
+    --pf-status-alpha: 60%;
   }
   @media (max-width: 640px) {
     .search-surface-head,

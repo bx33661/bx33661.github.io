@@ -44,6 +44,7 @@ if (!fs.existsSync(fullPath)) {
 
 let raw = fs.readFileSync(fullPath, "utf-8");
 let issues = [];
+let warnings = [];
 let modified = false;
 
 // 1. 检查文件开头是否为 ---
@@ -82,8 +83,10 @@ for (const req of required) {
 
 // 3. 检查并修正 slug 格式
 if (fm.slug) {
-  if (typeof fm.slug !== "string" || !/^[a-z0-9-]+$/.test(fm.slug)) {
-    issues.push(`slug 命名不规范 [${fm.slug}]，必须为英文小写短横线格式 (kebab-case)`);
+  if (typeof fm.slug !== "string" || !/^[A-Za-z0-9-]+$/.test(fm.slug)) {
+    issues.push(`slug 命名不规范 [${fm.slug}]，必须为英文数字短横线格式 (kebab-case)`);
+  } else if (!/^[a-z0-9-]+$/.test(fm.slug)) {
+    warnings.push(`历史兼容混合大小写 slug [${fm.slug}]，新文章请使用全小写 kebab-case`);
   }
 }
 
@@ -106,12 +109,16 @@ if (Array.isArray(fm.tags)) {
   }
 }
 
-// 5. 检查本地图片路径与命名规范
-const imgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+// 5. 检查本地图片路径与命名规范（跳过围栏代码块与行内代码）
+const proseWithoutFences = body
+  .replace(/(^|\n)[ \t]*(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n[ \t]*\2[ \t]*(?=\n|$)/g, "\n")
+  .replace(/`[^`\n]+`/g, "");
+const imgRegex = /!\[([^\]]*)\]\(([^)\n]+)\)/g;
 let match;
-while ((match = imgRegex.exec(body)) !== null) {
-  const alt = match[1];
-  const url = match[2].trim();
+while ((match = imgRegex.exec(proseWithoutFences)) !== null) {
+  const rawTarget = match[2].trim();
+  const angleMatch = rawTarget.match(/^<([^>]+)>/);
+  const url = angleMatch ? angleMatch[1].trim() : rawTarget.replace(/\s+(?:"[^"]*"|'[^']*')\s*$/, "").trim();
 
   // 空图片链接
   if (!url) {
@@ -187,6 +194,11 @@ if (cleanedBody !== body) {
 console.log(`\n================= 文章合规规范检查报告 =================`);
 console.log(`目标文件: ${targetFile}`);
 console.log(`检测问题数: ${issues.length}`);
+console.log(`兼容提示数: ${warnings.length}`);
+
+if (warnings.length > 0) {
+  warnings.forEach((warn, i) => console.log(`  [提示 ${i + 1}] ${warn}`));
+}
 
 if (issues.length === 0) {
   console.log("✅ 完美！文章完全符合规范要求。");
@@ -195,7 +207,8 @@ if (issues.length === 0) {
   if (shouldFix && modified) {
     // 重新写回
     const newFmText = yaml.dump(fm, { indent: 2, lineWidth: -1 }).trim();
-    const finalContent = `---\n${newFmText}\n---\n${body}`;
+    const normalizedBody = body.startsWith("\n") ? body : `\n${body}`;
+    const finalContent = `---\n${newFmText}\n---${normalizedBody}`;
     fs.writeFileSync(fullPath, finalContent, "utf-8");
     console.log(`\n✨ 已自动应用并修复了可自动解决的规范问题！`);
   } else if (!shouldFix) {

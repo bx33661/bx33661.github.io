@@ -2,7 +2,6 @@ import { defineToolbarApp } from "astro/toolbar";
 
 type ScanResult = {
   isArticle: boolean;
-  title: string;
   slug: string;
   slugValid: boolean;
   wordCount: number;
@@ -14,6 +13,15 @@ type ScanResult = {
   robots: string;
   pagefindBody: boolean;
 };
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
 
 export default defineToolbarApp({
   init(canvas, app) {
@@ -136,13 +144,18 @@ export default defineToolbarApp({
     function scan(): ScanResult {
       const article = document.querySelector("#article, main article, .app-prose");
       const isArticle = Boolean(article);
-      const titleEl = document.querySelector("h1");
-      const title = titleEl?.textContent?.trim() || document.title;
 
       const path = window.location.pathname.replace(/^\/|\/$/g, "");
       const segments = path.split("/");
       const slug = segments[segments.length - 1] || "home";
-      const slugValid = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug === "home";
+      let decodedSlug = slug;
+      try {
+        decodedSlug = decodeURIComponent(slug);
+      } catch {
+        /* Preserve raw slug when malformed percent-encoding appears. */
+      }
+      const slugValid =
+        decodedSlug === "home" || /^[\p{Letter}\p{Number}]+(?:-[\p{Letter}\p{Number}]+)*$/u.test(decodedSlug);
 
       let wordCount = 0;
       let readingTimeMin = 0;
@@ -158,7 +171,10 @@ export default defineToolbarApp({
         readingTimeMin = Math.max(1, Math.ceil(wordCount / 350));
 
         // Scan for potential IP leaks
-        const ipMatches = text.match(/\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|43\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/g) || [];
+        const ipMatches =
+          text.match(
+            /\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|43\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/g,
+          ) || [];
         ipLeaks.push(...Array.from(new Set(ipMatches)));
 
         // Scan for API tokens
@@ -183,8 +199,7 @@ export default defineToolbarApp({
 
       return {
         isArticle,
-        title,
-        slug,
+        slug: decodedSlug,
         slugValid,
         wordCount,
         readingTimeMin,
@@ -217,7 +232,7 @@ export default defineToolbarApp({
         : `<span class="status-pill status-ok">安全无泄露</span>`;
 
       const slugStatusPill = res.slugValid
-        ? `<span class="status-pill status-ok">kebab-case 合规</span>`
+        ? `<span class="status-pill status-ok">Slug 合规</span>`
         : `<span class="status-pill status-err">非标准 Slug</span>`;
 
       body.innerHTML = `
@@ -227,8 +242,8 @@ export default defineToolbarApp({
           ${
             hasSecLeak
               ? `
-                ${res.ipLeaks.length ? `<p style="margin:0.2rem 0;color:#f87171;font-size:0.78rem;">发现内部/测试 IP 暴露:</p><ul class="issue-list">${res.ipLeaks.map((ip) => `<li>${ip}</li>`).join("")}</ul>` : ""}
-                ${res.tokenLeaks.length ? `<p style="margin:0.2rem 0;color:#f87171;font-size:0.78rem;">发现疑似 API Key/Token:</p><ul class="issue-list">${res.tokenLeaks.map((t) => `<li>${t.slice(0, 8)}...</li>`).join("")}</ul>` : ""}
+                ${res.ipLeaks.length ? `<p style="margin:0.2rem 0;color:#f87171;font-size:0.78rem;">发现内部/测试 IP 暴露:</p><ul class="issue-list">${res.ipLeaks.map((ip) => `<li>${escapeHtml(ip)}</li>`).join("")}</ul>` : ""}
+                ${res.tokenLeaks.length ? `<p style="margin:0.2rem 0;color:#f87171;font-size:0.78rem;">发现疑似 API Key/Token:</p><ul class="issue-list">${res.tokenLeaks.map((t) => `<li>${escapeHtml(t.slice(0, 8))}...</li>`).join("")}</ul>` : ""}
               `
               : `<div class="data-row"><span class="data-label">私有 IP / Token</span><span class="data-val" style="color:#34d399;">未检测到硬编码风险</span></div>`
           }
@@ -237,7 +252,7 @@ export default defineToolbarApp({
         <!-- Section: Article Metadata -->
         <div class="section-card">
           <h4><span>📝 文章与元数据规范</span>${res.isArticle ? `<span class="status-pill status-ok">文章页面</span>` : `<span class="status-pill status-warn">非文章路由</span>`}</h4>
-          <div class="data-row"><span class="data-label">URL Slug</span><span class="data-val">${res.slug}</span></div>
+          <div class="data-row"><span class="data-label">URL Slug</span><span class="data-val">${escapeHtml(res.slug)}</span></div>
           <div class="data-row"><span class="data-label">Slug 规范</span><span class="data-val">${slugStatusPill}</span></div>
           ${
             res.isArticle
@@ -249,7 +264,7 @@ export default defineToolbarApp({
           }
           ${
             res.imageIssues.length
-              ? `<p style="margin:0.4rem 0 0.2rem;color:#fbbf24;font-size:0.78rem;">图片资产规范问题:</p><ul class="issue-list">${res.imageIssues.map((issue) => `<li style="color:#fbbf24;">${issue}</li>`).join("")}</ul>`
+              ? `<p style="margin:0.4rem 0 0.2rem;color:#fbbf24;font-size:0.78rem;">图片资产规范问题:</p><ul class="issue-list">${res.imageIssues.map((issue) => `<li style="color:#fbbf24;">${escapeHtml(issue)}</li>`).join("")}</ul>`
               : `<div class="data-row"><span class="data-label">图片资产规范</span><span class="data-val" style="color:#34d399;">符合规范</span></div>`
           }
         </div>
@@ -257,24 +272,34 @@ export default defineToolbarApp({
         <!-- Section: SEO & Pagefind -->
         <div class="section-card">
           <h4><span>🔍 SEO 与搜索引擎索引</span><span class="status-pill ${res.pagefindBody ? "status-ok" : "status-warn"}">${res.pagefindBody ? "已开启正文索引" : "无 Pagefind 标记"}</span></h4>
-          <div class="data-row"><span class="data-label">Canonical URL</span><span class="data-val">${res.canonical}</span></div>
-          <div class="data-row"><span class="data-label">Robots 状态</span><span class="data-val">${res.robots}</span></div>
+          <div class="data-row"><span class="data-label">Canonical URL</span><span class="data-val">${escapeHtml(res.canonical)}</span></div>
+          <div class="data-row"><span class="data-label">Robots 状态</span><span class="data-val">${escapeHtml(res.robots)}</span></div>
           <div class="data-row"><span class="data-label">Pagefind Index</span><span class="data-val">${res.pagefindBody ? "data-pagefind-body 启用" : "未挂载 body 标签"}</span></div>
         </div>
       `;
     }
 
-    function runScan() {
+    let isOpen = false;
+    function runScan(forceRender = false) {
       const result = scan();
-      render(result);
+      if (isOpen || forceRender) {
+        render(result);
+        return;
+      }
+      const hasSecLeak = result.ipLeaks.length > 0 || result.tokenLeaks.length > 0;
+      const hasQualityIssue = !result.slugValid || result.imageIssues.length > 0;
+      if (hasSecLeak) app.toggleNotification({ state: true, level: "error" });
+      else if (hasQualityIssue) app.toggleNotification({ state: true, level: "warning" });
+      else app.toggleNotification({ state: false });
     }
 
-    container.querySelector("#btn-rescan")?.addEventListener("click", runScan);
+    container.querySelector("#btn-rescan")?.addEventListener("click", () => runScan(true));
+    app.onToggled(({ state }) => {
+      isOpen = state;
+      if (state) runScan(true);
+    });
 
-    // Initial scan
-    runScan();
-
-    // Re-scan when client navigates with ClientRouter
-    document.addEventListener("astro:page-load", runScan);
+    runScan(false);
+    document.addEventListener("astro:page-load", () => runScan(false));
   },
 });

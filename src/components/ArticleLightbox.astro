@@ -4,12 +4,8 @@ import { ui } from "@/i18n/ui";
 const locale = localeFromPath(Astro.url.pathname);
 const t = ui(locale);
 ---
-<dialog
-  id="article-lightbox"
-  class="article-lightbox"
-  aria-label={t.imageViewer}
-  data-pagefind-ignore
->
+
+<dialog id="article-lightbox" class="article-lightbox" aria-label={t.imageViewer} data-pagefind-ignore>
   <button type="button" data-image-close aria-label={t.closeImage}>
     <span aria-hidden="true">×</span>
   </button>

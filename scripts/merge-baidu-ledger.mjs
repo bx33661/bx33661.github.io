@@ -35,19 +35,13 @@ export async function migrateLedger(baseFile, ledgerFile, dist) {
   await fs.rename(temporary, ledgerFile);
   return {
     acknowledged: Object.keys(merged.fingerprints).length,
-    queued:
-      Object.keys(current).length - Object.keys(merged.fingerprints).length,
+    queued: Object.keys(current).length - Object.keys(merged.fingerprints).length,
   };
 }
 
-if (
-  process.argv[1] &&
-  import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href
-) {
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   const [base, ledger, dist] = process.argv.slice(2);
   if (!base || !ledger || !dist) throw new Error("Expected base, ledger, dist");
   const result = await migrateLedger(base, ledger, dist);
-  console.log(
-    `[baidu-ledger] acknowledged=${result.acknowledged}, queued=${result.queued}`,
-  );
+  console.log(`[baidu-ledger] acknowledged=${result.acknowledged}, queued=${result.queued}`);
 }

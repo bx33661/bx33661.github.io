@@ -1,7 +1,10 @@
 ---
 import { SITE } from "@/config.ts";
 import { localizedPath, type Locale } from "@/i18n";
-interface Props { locale?: Locale; }
+import "@/styles/academic-home.css";
+interface Props {
+  locale?: Locale;
+}
 const { locale = "zh-CN" } = Astro.props;
 ---
 
@@ -20,18 +23,37 @@ const { locale = "zh-CN" } = Astro.props;
       <div class="field-label"><span>BX / EXPLORATIONS</span><span class="field-mark">✦</span></div>
       <svg viewBox="0 0 480 340" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <radialGradient id="orb-glass" cx=".32" cy=".24" r=".85"><stop stop-color="#e3f1ff" stop-opacity=".2"/><stop offset=".65" stop-color="#b4d4ed" stop-opacity=".03"/><stop offset="1" stop-color="#091226" stop-opacity=".28"/></radialGradient>
-          <linearGradient id="orb-rim" x1="130" y1="80" x2="330" y2="260" gradientUnits="userSpaceOnUse"><stop stop-color="#d6edff" stop-opacity=".7"/><stop offset=".5" stop-color="#d6edff" stop-opacity=".08"/><stop offset="1" stop-color="#d6edff" stop-opacity=".4"/></linearGradient>
+          <radialGradient id="orb-glass" cx=".32" cy=".24" r=".85"
+            ><stop stop-color="#e3f1ff" stop-opacity=".2"></stop><stop
+              offset=".65"
+              stop-color="#b4d4ed"
+              stop-opacity=".03"></stop><stop offset="1" stop-color="#091226" stop-opacity=".28"></stop></radialGradient
+          >
+          <linearGradient id="orb-rim" x1="130" y1="80" x2="330" y2="260" gradientUnits="userSpaceOnUse"
+            ><stop stop-color="#d6edff" stop-opacity=".7"></stop><stop
+              offset=".5"
+              stop-color="#d6edff"
+              stop-opacity=".08"></stop><stop offset="1" stop-color="#d6edff" stop-opacity=".4"></stop></linearGradient
+          >
         </defs>
-        <circle class="outer-orbit" cx="240" cy="170" r="139"/>
-        <path class="field-axis" d="M240 16V48M240 292V324M86 170H118M362 170H394"/>
-        <circle cx="240" cy="170" r="91" fill="url(#orb-glass)" stroke="url(#orb-rim)"/>
-        <ellipse class="orbit" cx="240" cy="170" rx="154" ry="48" transform="rotate(-29 240 170)"/>
-        <ellipse class="orbit orbit-secondary" cx="240" cy="170" rx="154" ry="48" transform="rotate(49 240 170)"/>
-        <path class="constellation" d="M133 222L195 140L252 190L313 89L359 145"/>
-        <g class="star-points"><circle cx="133" cy="222" r="2.5"/><circle cx="195" cy="140" r="3"/><circle cx="252" cy="190" r="2.5"/><circle cx="359" cy="145" r="2.5"/><circle cx="79" cy="92" r="1.5"/><circle cx="376" cy="249" r="1.5"/><circle cx="163" cy="278" r="1.5"/><circle cx="324" cy="279" r="1"/></g>
-        <path class="north-star" d="M313 77L316 86L325 89L316 92L313 101L310 92L301 89L310 86Z"/>
-        <circle class="satellite" cx="373" cy="96" r="4"/>
+        <circle class="outer-orbit" cx="240" cy="170" r="139"></circle>
+        <path class="field-axis" d="M240 16V48M240 292V324M86 170H118M362 170H394"></path>
+        <circle cx="240" cy="170" r="91" fill="url(#orb-glass)" stroke="url(#orb-rim)"></circle>
+        <ellipse class="orbit" cx="240" cy="170" rx="154" ry="48" transform="rotate(-29 240 170)"></ellipse>
+        <ellipse class="orbit orbit-secondary" cx="240" cy="170" rx="154" ry="48" transform="rotate(49 240 170)"
+        ></ellipse>
+        <path class="constellation" d="M133 222L195 140L252 190L313 89L359 145"></path>
+        <g class="star-points"
+          ><circle cx="133" cy="222" r="2.5"></circle><circle cx="195" cy="140" r="3"></circle><circle
+            cx="252"
+            cy="190"
+            r="2.5"></circle><circle cx="359" cy="145" r="2.5"></circle><circle cx="79" cy="92" r="1.5"></circle><circle
+            cx="376"
+            cy="249"
+            r="1.5"></circle><circle cx="163" cy="278" r="1.5"></circle><circle cx="324" cy="279" r="1"></circle></g
+        >
+        <path class="north-star" d="M313 77L316 86L325 89L316 92L313 101L310 92L301 89L310 86Z"></path>
+        <circle class="satellite" cx="373" cy="96" r="4"></circle>
       </svg>
       <div class="field-caption"><span>CYBERSECURITY / LLMS</span><span>01 — OPEN FIELD</span></div>
     </div>
@@ -40,21 +62,37 @@ const { locale = "zh-CN" } = Astro.props;
   <div class="home-grid">
     <div class="intro-body">
       <p class="intro-focus">
-        I'm currently focused on <strong>Cybersecurity and Large Language Models (LLMs)</strong>, while staying curious about interesting technologies and the unknown.
+        I'm currently focused on <strong>Cybersecurity and Large Language Models (LLMs)</strong>, while staying curious
+        about interesting technologies and the unknown.
       </p>
       <div class="intro-prose">
-        <p>This is my little corner of the internet where I document what I learn, explore, and think about. Most of the content revolves around technology, including study notes, hands-on experiences, and scattered thoughts. Occasionally, I'll also share things beyond the world of tech.</p>
-        <p>I don't expect every post to have all the answers. More often than not, what I write simply reflects my understanding at a particular point in time. As I continue to explore and learn, my perspectives may shift, my understanding will evolve, and I'll revisit, refine, and update what I've written along the way.</p>
-        <p>I hope this blog becomes a space where ideas and experiences gradually accumulate, leaving traces of my explorations and capturing my growth along the journey.</p>
-        <p>Feel free to look around! If something here helps you, sparks a thought, or gives you a different perspective, I'd love to hear from you.</p>
+        <p>
+          This is my little corner of the internet where I document what I learn, explore, and think about. Most of the
+          content revolves around technology, including study notes, hands-on experiences, and scattered thoughts.
+          Occasionally, I'll also share things beyond the world of tech.
+        </p>
+        <p>
+          I don't expect every post to have all the answers. More often than not, what I write simply reflects my
+          understanding at a particular point in time. As I continue to explore and learn, my perspectives may shift, my
+          understanding will evolve, and I'll revisit, refine, and update what I've written along the way.
+        </p>
+        <p>
+          I hope this blog becomes a space where ideas and experiences gradually accumulate, leaving traces of my
+          explorations and capturing my growth along the journey.
+        </p>
+        <p>
+          Feel free to look around! If something here helps you, sparks a thought, or gives you a different perspective,
+          I'd love to hear from you.
+        </p>
       </div>
-      <p class="closing"><strong>Let's explore the stars and beyond together. <span class="closing-star">🌟</span></strong></p>
+      <p class="closing">
+        <strong>Let's explore the stars and beyond together. <span class="closing-star">🌟</span></strong>
+      </p>
       <nav class="home-links" aria-label="Explore the blog">
         <a class="read-link" href={localizedPath("/blog/", locale)}>Read the blog <span aria-hidden="true">↗</span></a>
-      <a href={localizedPath("/notes/", locale)}>Notes <span aria-hidden="true">↗</span></a>
+        <a href={localizedPath("/notes/", locale)}>Notes <span aria-hidden="true">↗</span></a>
         <a href={SITE.profile} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
       </nav>
-
     </div>
 
     <aside class="home-sidebar">
@@ -63,11 +101,19 @@ const { locale = "zh-CN" } = Astro.props;
         <ul class="education-list">
           <li>
             <img src="/schools/hainan-university-emblem.webp" width="40" height="40" alt="" loading="lazy" />
-            <div><span class="school-abbr">HNU</span><h3>Hainan University</h3><p>Bachelor's studies in Information Security</p></div>
+            <div>
+              <span class="school-abbr">HNU</span><h3>Hainan University</h3><p>
+                Bachelor's studies in Information Security
+              </p>
+            </div>
           </li>
           <li>
             <img src="/schools/ucas-emblem.webp" width="40" height="40" alt="" loading="lazy" />
-            <div><span class="school-abbr">UCAS</span><h3>University of Chinese Academy of Sciences</h3><p>Master's studies</p></div>
+            <div>
+              <span class="school-abbr">UCAS</span><h3>University of Chinese Academy of Sciences</h3><p>
+                Master's studies
+              </p>
+            </div>
           </li>
         </ul>
       </section>
@@ -89,85 +135,3 @@ const { locale = "zh-CN" } = Astro.props;
     cleanup = undefined;
   });
 </script>
-
-<style>
-  .academic-home { --home-muted: #59616b; --home-rule: color-mix(in srgb, var(--foreground) 16%, transparent); padding-top: clamp(2.5rem, 6vw, 5rem); padding-bottom: clamp(3rem, 6vw, 6rem); }
-  :global(html[data-theme="dark"]) .academic-home { --home-muted: #aab5c3; }
-  .intro-heading { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 2rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--home-rule); }
-  .hero-copy { padding: 1rem 0; }
-  .hero-coordinate { display: flex; align-items: center; gap: .65rem; margin: 2.4rem 0 0; color: var(--home-muted); font-family: var(--font-cartograph), monospace; font-size: .61rem; letter-spacing: .12em; }
-  .hero-coordinate span { width: .3rem; height: .3rem; background: var(--accent); border-radius: 50%; }
-  .eyebrow { margin: 0 0 1.25rem; color: var(--home-muted); font-family: var(--font-cartograph), monospace; font-size: .68rem; font-weight: 500; letter-spacing: .1em; line-height: 1.8; }
-  h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(3rem, 7vw, 5rem); line-height: 1.12; font-weight: 400; letter-spacing: -.05em; }
-  h1 span { color: var(--accent); font-family: var(--font-sans); font-weight: 600; letter-spacing: -.06em; }
-  .welcome { margin: .85rem 0 0; font-size: clamp(1.15rem, 2vw, 1.35rem); line-height: 1.6; font-weight: 400; letter-spacing: -.015em; }
-  .home-grid { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; gap: clamp(2rem, 5vw, 4rem); padding-top: 2.5rem; }
-  .intro-body { min-width: 0; }
-  .intro-focus { margin: 0 0 1.75rem; font-size: 1.12rem; line-height: 1.85; letter-spacing: -.012em; }
-  .intro-focus strong { font-weight: 650; }
-  .intro-prose { font-family: var(--font-sans); color: var(--home-muted); font-size: 1rem; font-weight: 400; line-height: 1.9; letter-spacing: .002em; }
-  .intro-prose p { margin: 0 0 1.35rem; }
-  .closing { margin: 2rem 0 0; padding-left: 1rem; border-left: 2px solid var(--accent); font-size: 1rem; line-height: 1.75; }
-  .closing strong { font-weight: 550; }
-  .closing-star { display: inline-block; white-space: nowrap; }
-  .home-links { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.6rem; margin-top: 2rem; }
-  .home-links a { display: inline-flex; align-items: center; gap: .6rem; color: var(--accent); font-size: .85rem; font-weight: 600; text-decoration: none; text-underline-offset: 4px; }
-  .home-links a:hover { text-decoration: underline; }
-  .home-links .read-link { padding: .7rem 1rem; border: 1px solid var(--accent); border-radius: .35rem; background: var(--accent); color: var(--background); gap: 1.4rem; }
-  .home-links .read-link:hover { text-decoration: none; background: color-mix(in srgb, var(--accent) 88%, var(--foreground)); }
-  .home-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
-  .home-sidebar { min-width: 0; border-left: 1px solid var(--home-rule); padding-left: 1.75rem; }
-  .star-map { position: relative; isolation: isolate; min-height: 350px; overflow: hidden; border-radius: 2px 2px 56px 2px; background: #172642; color: #e0edfc; border: 1px solid rgb(179 208 242 / .28); box-shadow: 0 16px 44px -28px rgb(16 39 73 / .5); }
-  .star-map-atmosphere { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse at 76% 12%, #887bbd, transparent 54%), radial-gradient(ellipse at 36% 75%, #3c879a, transparent 68%), linear-gradient(135deg, #101d35, #344c7d 58%, #19263f); }
-  .star-map-atmosphere::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(7 15 32 / .48), transparent 27%, transparent 70%, rgb(7 15 32 / .50)); }
-  .star-map-atmosphere canvas { display: block; opacity: 0; transition: opacity .8s ease; }
-  .star-map[data-shader-state="ready"] canvas { opacity: 1; }
-  .star-map svg { position: absolute; width: 100%; height: 100%; inset: 0; }
-  .field-label, .field-caption { position: absolute; inset-inline: 1.4rem; display: flex; align-items: center; justify-content: space-between; color: #e0edfc; font: 500 .55rem/1.5 var(--font-cartograph), monospace; letter-spacing: .11em; }
-  .field-label { top: 1.1rem; }
-  .field-mark { font-size: 1rem; }
-  .field-caption { bottom: 1.2rem; font-size: .51rem; letter-spacing: .07em; }
-  .outer-orbit { stroke: #d5e6fc; stroke-opacity: .24; stroke-dasharray: 1 9; }
-  .field-axis { stroke: #d5e6fc; stroke-opacity: .45; stroke-width: .7; }
-  .orbit { stroke: #e2edff; stroke-opacity: .63; stroke-width: .75; }
-  .orbit-secondary { stroke-opacity: .25; }
-  .constellation { stroke: currentColor; stroke-opacity: .5; stroke-width: .7; }
-  .star-points, .north-star, .satellite { fill: currentColor; }
-  .satellite { stroke: #d9e8ff; stroke-width: 5; stroke-opacity: .18; }
-  @media (prefers-reduced-motion: reduce) {
-    .star-map-atmosphere canvas { transition: none; }
-  }
-  .education-section { padding-top: .1rem; }
-  .education-section h2 { margin: 0 0 1.75rem; font-size: .7rem; line-height: 1.5; font-family: var(--font-cartograph), monospace; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; color: var(--home-muted); }
-  .education-list { margin: 0; padding: 0; list-style: none; }
-  .education-list li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: .8rem; align-items: start; }
-  .education-list li + li { margin-top: 2rem; }
-  .education-list img { width: 2.5rem; height: 2.5rem; object-fit: contain; }
-  .school-abbr { display: block; margin-bottom: .3rem; font-family: var(--font-cartograph), monospace; color: var(--accent); font-size: .66rem; font-weight: 600; letter-spacing: .08em; }
-  .education-list h3 { margin: 0; font-size: .9rem; line-height: 1.55; font-weight: 600; letter-spacing: -.01em; }
-  .education-list p { margin: .5rem 0 0; color: var(--home-muted); font-size: .8rem; line-height: 1.7; }
-  @media (max-width: 760px) {
-    .home-grid { grid-template-columns: 1fr; gap: 2.75rem; }
-    .home-sidebar { padding: 0; border-left: 0; }
-    .intro-heading { grid-template-columns: 1fr; gap: 1.8rem; }
-    .hero-copy { padding: 0; }
-    .hero-coordinate { margin-top: 1.4rem; }
-    .star-map { min-height: 300px; }
-    .education-section { padding-top: 1.75rem; border-top: 1px solid var(--home-rule); }
-    .education-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .education-list li + li { margin-top: 0; }
-  }
-  @media (max-width: 480px) {
-    .academic-home { padding-top: 2rem; }
-    .intro-heading { padding-bottom: 1.75rem; gap: 1.5rem; }
-    .star-map { min-height: 265px; border-bottom-right-radius: 40px; }
-    .field-label, .field-caption { inset-inline: 1rem; }
-    .field-caption { font-size: .45rem; }
-    .eyebrow { font-size: .58rem; letter-spacing: .09em; margin-bottom: 1rem; }
-    .home-grid { padding-top: 1.75rem; }
-    .intro-focus { font-size: 1.05rem; line-height: 1.8; }
-    .intro-prose { font-size: .94rem; line-height: 1.85; }
-    .closing { font-size: .95rem; }
-    .education-list { grid-template-columns: 1fr; gap: 1.75rem; }
-  }
-</style>

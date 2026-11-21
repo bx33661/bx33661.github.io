@@ -1,4 +1,4 @@
-import { defineConfig, envField, fontProviders } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import mermaid from "astro-mermaid";
@@ -29,7 +29,7 @@ export default defineConfig({
       // ClientRouter inserts a data: module barrier for inline modules. Keep
       // generated JS same-origin/external so navigation respects our CSP;
       // images and CSS retain Vite's normal inline-size behavior.
-      assetsInlineLimit: (filePath) => /\.m?js$/.test(filePath) ? false : undefined,
+      assetsInlineLimit: (filePath) => (/\.m?js$/.test(filePath) ? false : undefined),
     },
     optimizeDeps: {
       exclude: ["@resvg/resvg-js"],
@@ -57,13 +57,4 @@ export default defineConfig({
       },
     },
   ],
-  env: {
-    schema: {
-      PUBLIC_GOOGLE_SITE_VERIFICATION: envField.string({
-        access: "public",
-        context: "client",
-        optional: true,
-      }),
-    },
-  },
 });

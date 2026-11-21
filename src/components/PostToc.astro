@@ -1,82 +1,57 @@
 ---
 import { localeFromPath } from "@/i18n";
 import { ui } from "@/i18n/ui";
+
 const locale = localeFromPath(Astro.url.pathname);
 const t = ui(locale);
-type Heading = { depth: number; slug: string; text: string };
-type Props = { headings: Heading[]; variant: "inline" | "sidebar" | "mobile" };
 
-const { headings, variant } = Astro.props;
+type Heading = { depth: number; slug: string; text: string };
+type Props = { headings: Heading[]; variant: "inline" | "sidebar" | "mobile"; _listOnly?: boolean };
+
+const { headings, variant, _listOnly = false } = Astro.props;
 ---
 
 {
   headings.length > 0 &&
-    (variant === "inline" ? (
+    (_listOnly ? (
+      <ol>
+        {headings.map((heading) => (
+          <li class:list={[{ nested: heading.depth >= 3 }]}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+    ) : variant === "inline" ? (
       <details class="post-toc-inline">
         <summary>
           {t.toc} <span>{t.tocCount(headings.length)}</span>
         </summary>
         <nav aria-label={t.tocInline} data-post-toc>
-          <ol>
-            {headings.map((heading) => (
-              <li class:list={[{ nested: heading.depth >= 3 }]}>
-                <a href={`#${heading.slug}`}>{heading.text}</a>
-              </li>
-            ))}
-          </ol>
+          <Astro.self headings={headings} variant={variant} _listOnly />
         </nav>
       </details>
     ) : variant === "sidebar" ? (
       <aside class="post-toc-sidebar" aria-label={t.tocQuick}>
         <p>{t.toc}</p>
         <nav aria-label={t.tocSidebar} data-post-toc>
-          <ol>
-            {headings.map((heading) => (
-              <li class:list={[{ nested: heading.depth >= 3 }]}>
-                <a href={`#${heading.slug}`}>{heading.text}</a>
-              </li>
-            ))}
-          </ol>
+          <Astro.self headings={headings} variant={variant} _listOnly />
         </nav>
       </aside>
     ) : (
       <div class="post-toc-mobile">
-        <button
-          type="button"
-          data-post-toc-open
-          aria-haspopup="dialog"
-          aria-controls="post-toc-dialog"
-        >
-          <>
-            <span class="post-toc-mobile-label">{t.tocShort}</span>
-            <span data-toc-current>{t.toc}</span>
-          </>
+        <button type="button" data-post-toc-open aria-haspopup="dialog" aria-controls="post-toc-dialog">
+          <span class="post-toc-mobile-label">{t.tocShort}</span>
+          <span data-toc-current>{t.toc}</span>
         </button>
-        <dialog
-          id="post-toc-dialog"
-          aria-labelledby="post-toc-dialog-title"
-          data-pagefind-ignore
-        >
+        <dialog id="post-toc-dialog" aria-labelledby="post-toc-dialog-title" data-pagefind-ignore>
           <header>
-            <>
-              <h2 id="post-toc-dialog-title">{t.toc}</h2>
-              <button
-                type="button"
-                data-post-toc-close
-                aria-label={t.closeToc}
-              >
-                {t.close} ×
-              </button>
-            </>
+            <h2 id="post-toc-dialog-title">{t.toc}</h2>
+            <button type="button" data-post-toc-close aria-label={t.closeToc}>
+              {t.close} ×
+            </button>
           </header>
           <nav aria-label={t.tocMobile} data-post-toc>
-            <ol>
-              {headings.map((heading) => (
-                <li class:list={[{ nested: heading.depth >= 3 }]}>
-                  <a href={`#${heading.slug}`}>{heading.text}</a>
-                </li>
-              ))}
-            </ol>
+            <Astro.self headings={headings} variant={variant} _listOnly />
           </nav>
         </dialog>
       </div>
@@ -84,10 +59,6 @@ const { headings, variant } = Astro.props;
 }
 
 <style>
-  .post-toc-inline {
-    margin: 0 0 1.9rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
-  }
   summary {
     display: flex;
     align-items: center;
@@ -100,7 +71,6 @@ const { headings, variant } = Astro.props;
   }
   summary span,
   .post-toc-sidebar p {
-    color: color-mix(in srgb, var(--foreground) 48%, transparent);
     font-size: 0.72rem;
     font-weight: 400;
   }
@@ -140,22 +110,5 @@ const { headings, variant } = Astro.props;
   }
   .post-toc-sidebar ol {
     padding: 0;
-  }
-  @media (min-width: 1500px) {
-    .post-toc-inline {
-      display: none;
-    }
-    .post-toc-sidebar {
-      position: sticky;
-      top: 6rem;
-      display: block;
-      align-self: start;
-      padding-left: 1rem;
-      border-left: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
-    }
-  }
-  :global(html[data-theme="dark"]) summary span,
-  :global(html[data-theme="dark"]) .post-toc-sidebar p {
-    color: color-mix(in srgb, var(--foreground) 68%, transparent);
   }
 </style>

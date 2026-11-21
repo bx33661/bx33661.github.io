@@ -135,13 +135,11 @@
 }
 #post-toc-dialog[open]::backdrop,
 .article-lightbox[open]::backdrop {
-  animation: reading-backdrop-in var(--dialog-enter-time) var(--reading-ease)
-    both;
+  animation: reading-backdrop-in var(--dialog-enter-time) var(--reading-ease) both;
 }
 #post-toc-dialog[data-dialog-phase="closing"]::backdrop,
 .article-lightbox[data-dialog-phase="closing"]::backdrop {
-  animation: reading-backdrop-out var(--dialog-exit-time)
-    var(--reading-exit-ease) both;
+  animation: reading-backdrop-out var(--dialog-exit-time) var(--reading-exit-ease) both;
 }
 .article-lightbox [data-image-full] {
   transform-origin: center;
@@ -209,14 +207,7 @@
   }
 }
 html[data-theme-changing]:not([data-theme-reveal])
-  :is(
-    body,
-    body > header,
-    .post-title,
-    .post-description,
-    .entry-row--blog,
-    #article
-  ) {
+  :is(body, body > header, .post-title, .post-description, .entry-row--blog, #article) {
   transition:
     background-color 240ms ease,
     color 240ms ease,

@@ -59,10 +59,7 @@
   padding-inline-start: 1.65rem;
   list-style: none;
 }
-.post-page
-  #article
-  .task-list-item
-  input[type="checkbox"]:not(:where(.not-prose, .not-prose *)) {
+.post-page #article .task-list-item input[type="checkbox"]:not(:where(.not-prose, .not-prose *)) {
   width: 1em;
   height: 1em;
   margin-inline: -1.65rem 0.65rem;
@@ -74,10 +71,14 @@
   margin-block: 1.5rem;
   padding: 0.3rem 1rem;
   border-inline-start: 3px solid var(--accent);
+  border-radius: 0 0.5rem 0.5rem 0;
   background: var(--reading-surface);
   color: var(--reading-muted);
   font-style: normal;
   opacity: 1;
+}
+.post-page #article blockquote p:not(:where(.not-prose, .not-prose *)) {
+  margin-block: 0.7em;
 }
 .post-page #article blockquote p:not(:where(.not-prose, .not-prose *))::before,
 .post-page #article blockquote p:not(:where(.not-prose, .not-prose *))::after {
@@ -91,9 +92,7 @@
 .post-page #article .article-callout[data-callout="tip"] {
   --callout-color: color-mix(in srgb, #24824a 80%, var(--foreground));
 }
-.post-page
-  #article
-  .article-callout:is([data-callout="warning"], [data-callout="caution"]) {
+.post-page #article .article-callout:is([data-callout="warning"], [data-callout="caution"]) {
   --callout-color: color-mix(in srgb, #a76508 80%, var(--foreground));
 }
 .post-page #article .article-callout-title {
@@ -114,13 +113,7 @@
   border-radius: 0;
   scrollbar-width: thin;
 }
-.post-page
-  #article
-  :is(
-    .article-table-scroll,
-    .article-math-block,
-    .article-inline-math
-  ):focus-visible {
+.post-page #article :is(.article-table-scroll, .article-math-block, .article-inline-math):focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
@@ -157,23 +150,13 @@
 .post-page #article table [align="left"]:not(:where(.not-prose, .not-prose *)) {
   text-align: left;
 }
-.post-page
-  #article
-  table
-  [align="center"]:not(:where(.not-prose, .not-prose *)) {
+.post-page #article table [align="center"]:not(:where(.not-prose, .not-prose *)) {
   text-align: center;
 }
-.post-page
-  #article
-  table
-  [align="right"]:not(:where(.not-prose, .not-prose *)) {
+.post-page #article table [align="right"]:not(:where(.not-prose, .not-prose *)) {
   text-align: right;
 }
-.post-page
-  #article
-  table
-  tbody
-  tr:nth-child(even):not(:where(.not-prose, .not-prose *)) {
+.post-page #article table tbody tr:nth-child(even):not(:where(.not-prose, .not-prose *)) {
   background: color-mix(in srgb, var(--foreground) 3%, var(--background));
 }
 .post-page #article table code:not(:where(.not-prose, .not-prose *)) {
@@ -199,10 +182,7 @@
   overflow-wrap: normal;
   word-break: normal;
 }
-.post-page
-  #article
-  :is(p, li, dd, summary)
-  > code:not(:where(.not-prose, .not-prose *)) {
+.post-page #article :is(p, li, td, dd, summary) > code:not(:where(.not-prose, .not-prose *)) {
   padding: 0.15em 0.35em;
   border: 0;
   border-radius: 0.3rem;
@@ -273,16 +253,10 @@
 .post-page #article details p:not(:where(.not-prose, .not-prose *)) {
   display: block;
 }
-.post-page
-  #article
-  details
-  > :not(summary):not(:where(.not-prose, .not-prose *)) {
+.post-page #article details > :not(summary):not(:where(.not-prose, .not-prose *)) {
   margin-inline: 1rem;
 }
-.post-page
-  #article
-  details
-  > :last-child:not(summary):not(:where(.not-prose, .not-prose *)) {
+.post-page #article details > :last-child:not(summary):not(:where(.not-prose, .not-prose *)) {
   margin-bottom: 1rem;
 }
 .post-page #article details :is(ul, ol):not(:where(.not-prose, .not-prose *)) {
@@ -320,10 +294,7 @@
   font-size: 0.85rem;
   color: var(--reading-muted);
 }
-.post-page
-  #article
-  [data-footnotes]
-  > .sr-only:not(:where(.not-prose, .not-prose *)) {
+.post-page #article [data-footnotes] > .sr-only:not(:where(.not-prose, .not-prose *)) {
   position: static;
   width: auto;
   height: auto;
@@ -347,9 +318,7 @@
 .post-page #article [data-footnote-ref][id] {
   scroll-margin-top: 6rem;
 }
-.post-page
-  #article
-  [data-footnote-backref]:not(:where(.not-prose, .not-prose *)) {
+.post-page #article [data-footnote-backref]:not(:where(.not-prose, .not-prose *)) {
   color: var(--accent);
 }
 @media (max-width: 639px) {

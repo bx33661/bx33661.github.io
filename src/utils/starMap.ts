@@ -40,28 +40,51 @@ function mountStarMap(host: HTMLElement) {
       renderer?.pause();
       return;
     }
-    if (renderer) { renderer.resume(); return; }
+    if (renderer) {
+      renderer.resume();
+      return;
+    }
     if (attempt) return;
     // No adapter probe or engine download for reduced motion or unsupported browsers.
-    if (!("gpu" in navigator)) { unavailable(); return; }
+    if (!("gpu" in navigator)) {
+      unavailable();
+      return;
+    }
     const current = new AbortController();
     attempt = current;
     host.dataset.shaderState = "loading";
     try {
       const { createStarMapRenderer } = await import("./starMapRenderer");
       if (current.signal.aborted || !allowed()) {
-        if (attempt === current) { attempt = null; host.dataset.shaderState = "static"; }
+        if (attempt === current) {
+          attempt = null;
+          host.dataset.shaderState = "static";
+        }
         return;
       }
-      const next = await createStarMapRenderer(canvas, current.signal, () => {
-        if (!current.signal.aborted && !disposed) host.dataset.shaderState = "ready";
-      }, () => { if (!current.signal.aborted && !disposed) unavailable(); });
-      if (current.signal.aborted || disposed) { next?.destroy(); return; }
+      const next = await createStarMapRenderer(
+        canvas,
+        current.signal,
+        () => {
+          if (!current.signal.aborted && !disposed) host.dataset.shaderState = "ready";
+        },
+        () => {
+          if (!current.signal.aborted && !disposed) unavailable();
+        },
+      );
+      if (current.signal.aborted || disposed) {
+        next?.destroy();
+        return;
+      }
       renderer = next;
-      if (!next) { unavailable(); return; }
+      if (!next) {
+        unavailable();
+        return;
+      }
       const size = canvas.getBoundingClientRect();
       next.resize(size.width, size.height);
-      if (allowed()) next.resume(); else next.pause();
+      if (allowed()) next.resume();
+      else next.pause();
     } catch {
       if (!current.signal.aborted && !disposed) unavailable();
     } finally {

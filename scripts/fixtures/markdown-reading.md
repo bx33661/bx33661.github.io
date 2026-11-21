@@ -36,10 +36,10 @@ $$
 
 ## 表格、对齐与长内容
 
-| 名称 | 左对齐字段 | 中间状态 | 右对齐数值 | 请求标识 | 备注 |
-| :--- | :--- | :---: | ---: | :--- | :--- |
-| 示例 A | `request.contentLength` | 就绪 | 123456 | `UNBROKEN_REQUEST_IDENTIFIER_0123456789_ABCDEFGHIJKLMN` | 中文长说明仍保留完整内容，不挤坏页面 |
-| 示例 B | `response.statusCode` | 待检查 | 987654 | `ANOTHER_UNBROKEN_IDENTIFIER_ABCDEFGHIJKLMN_0123456789` | 支持表格中的 **加粗**、链接与 $x^2$ |
+| 名称   | 左对齐字段              | 中间状态 | 右对齐数值 | 请求标识                                                | 备注                                 |
+| :----- | :---------------------- | :------: | ---------: | :------------------------------------------------------ | :----------------------------------- |
+| 示例 A | `request.contentLength` |   就绪   |     123456 | `UNBROKEN_REQUEST_IDENTIFIER_0123456789_ABCDEFGHIJKLMN` | 中文长说明仍保留完整内容，不挤坏页面 |
+| 示例 B | `response.statusCode`   |  待检查  |     987654 | `ANOTHER_UNBROKEN_IDENTIFIER_ABCDEFGHIJKLMN_0123456789` | 支持表格中的 **加粗**、链接与 $x^2$  |
 
 ## 标题、正文与链接
 
@@ -51,7 +51,7 @@ $$
 
 ###### 六级标题
 
-**加粗文本**、*强调文本*、~~删除文本~~、<mark>标记文本</mark>、H<sub>2</sub>O 与 x<sup>2</sup>，以及 <kbd>Ctrl</kbd> + <kbd>K</kbd>。
+**加粗文本**、_强调文本_、~~删除文本~~、<mark>标记文本</mark>、H<sub>2</sub>O 与 x<sup>2</sup>，以及 <kbd>Ctrl</kbd> + <kbd>K</kbd>。
 
 [站内文章](/blog/codeql-learning/) 与自动链接 <https://example.com/a/very/long/path/without/short/segments/for/mobile/layout/check/0123456789abcdefghijklmnopqrstuvwxyz>。
 
@@ -94,7 +94,8 @@ $$
 ## 代码与折叠内容
 
 ```typescript file="example.ts"
-export const sample = "THIS_IS_AN_UNBROKEN_CODE_LINE_0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+export const sample =
+  "THIS_IS_AN_UNBROKEN_CODE_LINE_0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz_0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 console.log(sample); // [!code highlight]
 ```
 

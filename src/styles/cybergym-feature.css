@@ -145,7 +145,11 @@
   background: transparent;
   color: color-mix(in srgb, var(--foreground) 70%, transparent);
   font-size: 0.76rem;
-  transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
 }
 
 .cg-cases button:hover {
@@ -217,23 +221,48 @@ html[data-theme="dark"] .cg-oracle[data-state="none"] .cg-result strong {
 }
 
 @keyframes cg-pulse {
-  55%, 100% { box-shadow: 0 0 0 0.45rem transparent; }
+  55%,
+  100% {
+    box-shadow: 0 0 0 0.45rem transparent;
+  }
 }
 
 @media (max-width: 520px) {
   .cg-stats,
-  .cg-oracle { padding: 1.1rem; }
-  .cg-stat-grid { gap: 0.3rem; }
-  .cg-stat + .cg-stat { padding-left: 0.55rem; }
-  .cg-stat span { font-size: 0.66rem; }
-  .cg-result-grid { gap: 0.4rem; }
-  .cg-result { padding: 0.65rem 0.55rem; }
-  .cg-result strong { font-size: 0.82rem; }
-  .cg-result-detail { font-size: 0.65rem; }
+  .cg-oracle {
+    padding: 1.1rem;
+  }
+  .cg-stat-grid {
+    gap: 0.3rem;
+  }
+  .cg-stat + .cg-stat {
+    padding-left: 0.55rem;
+  }
+  .cg-stat span {
+    font-size: 0.66rem;
+  }
+  .cg-result-grid {
+    gap: 0.4rem;
+  }
+  .cg-result {
+    padding: 0.65rem 0.55rem;
+  }
+  .cg-result strong {
+    font-size: 0.82rem;
+  }
+  .cg-result-detail {
+    font-size: 0.65rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cg-pulse { animation: none; }
-  .cg-cases button { transition: none; }
-  .cg-cases button:hover { transform: none; }
+  .cg-pulse {
+    animation: none;
+  }
+  .cg-cases button {
+    transition: none;
+  }
+  .cg-cases button:hover {
+    transform: none;
+  }
 }

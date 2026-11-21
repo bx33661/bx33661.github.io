@@ -5,11 +5,7 @@ import path from "node:path";
 async function assertLightboxCentered(page, viewer) {
   await viewer.locator("[data-image-full]").evaluate(async (image) => {
     await image.decode();
-    await Promise.all(
-      image
-        .getAnimations()
-        .map((animation) => animation.finished.catch(() => {})),
-    );
+    await Promise.all(image.getAnimations().map((animation) => animation.finished.catch(() => {})));
   });
   const viewport = page.viewportSize();
   const rect = await viewer.locator("[data-image-full]").boundingBox();
@@ -19,12 +15,7 @@ async function assertLightboxCentered(page, viewer) {
   }));
   assert.equal(styles.background, "rgba(0, 0, 0, 0)");
   assert.equal(styles.border, "0px");
-  assert.equal(
-    await viewer
-      .locator("header, [data-image-size], [data-image-caption]")
-      .count(),
-    0,
-  );
+  assert.equal(await viewer.locator("header, [data-image-size], [data-image-caption]").count(), 0);
   assert(rect && viewport, "lightbox has a viewport-relative box");
   assert(
     Math.abs(rect.x + rect.width / 2 - viewport.width / 2) <= 1 &&
@@ -44,14 +35,10 @@ async function assertLightboxCentered(page, viewer) {
 export async function checkArticleExperience(page, { base, output, prefix }) {
   await page.goto(`${base}/blog/`, { waitUntil: "domcontentloaded" });
   await page.locator(".entry-row--blog").first().waitFor();
-  assert(
-    (await page.locator('.entry-tags a[href^="/blog/tags/"]').count()) > 0,
-  );
+  assert((await page.locator('.entry-tags a[href^="/blog/tags/"]').count()) > 0);
   const timestamps = await page
     .locator(".entry-dates > time")
-    .evaluateAll((nodes) =>
-      nodes.map((node) => Date.parse(node.getAttribute("datetime"))),
-    );
+    .evaluateAll((nodes) => nodes.map((node) => Date.parse(node.getAttribute("datetime"))));
   assert(
     timestamps.every((date, i) => i === 0 || timestamps[i - 1] >= date),
     "listing dates match latest-first ordering",
@@ -61,17 +48,11 @@ export async function checkArticleExperience(page, { base, output, prefix }) {
   // deterministic unit fixture in article-discovery.test.mjs.
   for (const row of await page.locator(".entry-row--blog").all()) {
     const updated = (await row.locator(".entry-original-date").count()) > 0;
-    assert.equal(
-      (await row.locator(".entry-date-label").innerText()).trim(),
-      updated ? "更新于" : "发表于",
-    );
-    const dates = await row
-      .locator("time")
-      .evaluateAll((nodes) => nodes.map((node) => Date.parse(node.dateTime)));
+    assert.equal((await row.locator(".entry-date-label").innerText()).trim(), updated ? "更新于" : "发表于");
+    const dates = await row.locator("time").evaluateAll((nodes) => nodes.map((node) => Date.parse(node.dateTime)));
     assert.equal(dates.length, updated ? 2 : 1);
     assert(dates.every(Number.isFinite), "listing dates are valid");
-    if (updated)
-      assert(dates[0] > dates[1], "update date is later than publication");
+    if (updated) assert(dates[0] > dates[1], "update date is later than publication");
   }
   await page.screenshot({ path: path.join(output, `blog-list-${prefix}.png`) });
 
@@ -87,14 +68,8 @@ export async function checkArticleExperience(page, { base, output, prefix }) {
   await viewer.waitFor({ state: "visible" });
   await viewer.locator("[data-image-full]").evaluate((img) => img.decode());
   await assertLightboxCentered(page, viewer);
-  assert.equal(
-    await viewer.locator("[data-image-full]").evaluate((img) => img.src),
-    originalSrc,
-  );
-  assert.equal(
-    await page.locator("body").evaluate((body) => body.style.overflow),
-    "hidden",
-  );
+  assert.equal(await viewer.locator("[data-image-full]").evaluate((img) => img.src), originalSrc);
+  assert.equal(await page.locator("body").evaluate((body) => body.style.overflow), "hidden");
   await page.screenshot({
     path: path.join(output, `article-image-${prefix}.png`),
   });
@@ -105,23 +80,15 @@ export async function checkArticleExperience(page, { base, output, prefix }) {
     true,
     "lightbox returns focus",
   );
-  assert.notEqual(
-    await page.locator("body").evaluate((body) => body.style.overflow),
-    "hidden",
-  );
+  assert.notEqual(await page.locator("body").evaluate((body) => body.style.overflow), "hidden");
 
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
   const firstCode = page.locator("#article pre.astro-code").first();
   const expected = await firstCode.locator("code").innerText();
   await firstCode.locator(".copy-code").click();
-  assert.equal(
-    await page.evaluate(() => navigator.clipboard.readText()),
-    expected,
-  );
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected);
 
-  const ids = await page
-    .locator("#article > :is(h2,h3)[id]")
-    .evaluateAll((nodes) => nodes.map((node) => node.id));
+  const ids = await page.locator("#article > :is(h2,h3)[id]").evaluateAll((nodes) => nodes.map((node) => node.id));
   const id = ids.at(-1);
   await page.evaluate((id) => {
     const heading = document.getElementById(id);
@@ -131,15 +98,8 @@ export async function checkArticleExperience(page, { base, output, prefix }) {
     });
   }, id);
   await page.waitForFunction((id) => {
-    const current = [
-      ...document.querySelectorAll(
-        '[data-post-toc] a[aria-current="location"]',
-      ),
-    ];
-    return (
-      current.length > 0 &&
-      current.every((link) => decodeURIComponent(link.hash.slice(1)) === id)
-    );
+    const current = [...document.querySelectorAll('[data-post-toc] a[aria-current="location"]')];
+    return current.length > 0 && current.every((link) => decodeURIComponent(link.hash.slice(1)) === id);
   }, id);
   if ((page.viewportSize()?.width ?? 0) < 1200) {
     const open = page.locator("[data-post-toc-open]");
@@ -160,21 +120,14 @@ export async function checkArticleExperience(page, { base, output, prefix }) {
     });
     await page.keyboard.press("Escape");
     await toc.waitFor({ state: "hidden" });
-    assert.equal(
-      await open.evaluate((button) => button === document.activeElement),
-      true,
-      "TOC restores focus",
-    );
+    assert.equal(await open.evaluate((button) => button === document.activeElement), true, "TOC restores focus");
     await open.click();
     const anchor = toc.locator("a").first();
     const href = await anchor.getAttribute("href");
     await anchor.click();
     await toc.waitFor({ state: "hidden" });
     assert.equal(decodeURIComponent(new URL(page.url()).hash), href);
-    assert.notEqual(
-      await page.locator("body").evaluate((body) => body.style.overflow),
-      "hidden",
-    );
+    assert.notEqual(await page.locator("body").evaluate((body) => body.style.overflow), "hidden");
   }
   await page.screenshot({
     path: path.join(output, `article-reading-${prefix}.png`),
@@ -213,14 +166,11 @@ export async function checkArticleExperience(page, { base, output, prefix }) {
   await page.goto(`${base}/blog/claude-code/`, {
     waitUntil: "domcontentloaded",
   });
-  await page.waitForFunction(() =>
-    document.querySelector("[data-post-toc] a[aria-current]"),
-  );
+  await page.waitForFunction(() => document.querySelector("[data-post-toc] a[aria-current]"));
   const enclosingChapter = await page.evaluate(() => {
     const subheading = document.querySelector("#article > h4[id]");
     let previous = subheading.previousElementSibling;
-    while (previous && !previous.matches(":is(h1,h2,h3)[id]"))
-      previous = previous.previousElementSibling;
+    while (previous && !previous.matches(":is(h1,h2,h3)[id]")) previous = previous.previousElementSibling;
     window.scrollTo({
       top: subheading.getBoundingClientRect().top + scrollY - 90,
       behavior: "instant",
@@ -228,15 +178,8 @@ export async function checkArticleExperience(page, { base, output, prefix }) {
     return previous.id;
   });
   await page.waitForFunction((id) => {
-    const current = [
-      ...document.querySelectorAll(
-        '[data-post-toc] a[aria-current="location"]',
-      ),
-    ];
-    return (
-      current.length > 0 &&
-      current.every((link) => decodeURIComponent(link.hash.slice(1)) === id)
-    );
+    const current = [...document.querySelectorAll('[data-post-toc] a[aria-current="location"]')];
+    return current.length > 0 && current.every((link) => decodeURIComponent(link.hash.slice(1)) === id);
   }, enclosingChapter);
 
   await page.goto(`${base}/blog/redis-core-guide/`, {
@@ -244,39 +187,17 @@ export async function checkArticleExperience(page, { base, output, prefix }) {
   });
   const series = page.locator(".post-series");
   assert.match(await series.innerText(), /Redis 学习与实践/);
-  assert.match(
-    await series.locator('[aria-current="page"]').innerText(),
-    /Redis 与缓存基础/,
-  );
-  assert.equal(
-    await series.locator(".post-series-nav a").count(),
-    1,
-    "first chapter has no previous chapter",
-  );
+  assert.match(await series.locator('[aria-current="page"]').innerText(), /Redis 与缓存基础/);
+  assert.equal(await series.locator(".post-series-nav a").count(), 1, "first chapter has no previous chapter");
   const related = page.locator(".post-related a");
   assert((await related.count()) > 0, "same-topic recommendation is present");
-  const relatedHrefs = await related.evaluateAll((nodes) =>
-    nodes.map((node) => node.getAttribute("href")),
-  );
-  assert(
-    !relatedHrefs.includes("/blog/redis-core-guide/"),
-    "no self recommendation",
-  );
+  const relatedHrefs = await related.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")));
+  assert(!relatedHrefs.includes("/blog/redis-core-guide/"), "no self recommendation");
   await series.locator(".post-series-nav a").click();
   await page.waitForURL(`${base}/blog/redis-lua-script-part2/`);
-  assert.match(
-    await page.locator('.post-series [aria-current="page"]').innerText(),
-    /Part 2/,
-  );
-  assert.equal(
-    await page
-      .locator('.post-series-nav a[href="/blog/redis-core-guide/"]')
-      .count(),
-    1,
-  );
-  await page
-    .locator(".post-series")
-    .screenshot({ path: path.join(output, `article-series-${prefix}.png`) });
+  assert.match(await page.locator('.post-series [aria-current="page"]').innerText(), /Part 2/);
+  assert.equal(await page.locator('.post-series-nav a[href="/blog/redis-core-guide/"]').count(), 1);
+  await page.locator(".post-series").screenshot({ path: path.join(output, `article-series-${prefix}.png`) });
   assert.equal(
     await page.locator(".progress-container").count(),
     1,
@@ -288,8 +209,5 @@ export async function checkArticleExperience(page, { base, output, prefix }) {
   await page.waitForURL(`${base}/`);
   await page.locator(".academic-home").waitFor();
   assert.equal(await page.locator(".progress-container").count(), 0);
-  assert.notEqual(
-    await page.locator("body").evaluate((body) => body.style.overflow),
-    "hidden",
-  );
+  assert.notEqual(await page.locator("body").evaluate((body) => body.style.overflow), "hidden");
 }

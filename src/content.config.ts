@@ -2,6 +2,7 @@ import { defineCollection, reference } from "astro:content";
 import { z } from "astro/zod";
 import { file, glob } from "astro/loaders";
 import { SITE } from "@/config.ts";
+import { resolveAuthor } from "@/utils/author";
 
 export const BLOG_PATH = "src/content/blog";
 export const NOTES_PATH = "src/data/notes";
@@ -12,7 +13,7 @@ const blog = defineCollection({
   schema: ({ image }) =>
     z
       .object({
-        author: z.string().default(SITE.author),
+        author: z.string().optional(),
         pubDatetime: z.coerce.date().optional(),
         modDatetime: z.coerce.date().optional().nullable(),
         date: z.coerce.date().optional(),
@@ -23,6 +24,7 @@ const blog = defineCollection({
         draft: z.boolean().optional(),
         tags: z.array(z.string()).default(["others"]),
         ogImage: image().optional(),
+        cover: z.string().optional(),
         description: z.string(),
         canonicalURL: z.string().optional(),
         hideEditPost: z.boolean().optional(),
@@ -32,6 +34,7 @@ const blog = defineCollection({
       })
       .transform((data) => ({
         ...data,
+        author: data.author ?? resolveAuthor(data.authors, SITE.author),
         // Normalise: writers use `date`, theme code uses `pubDatetime`
         pubDatetime: data.pubDatetime ?? data.date ?? new Date(0),
       })),
@@ -79,11 +82,13 @@ const projects = defineCollection({
     description: z.string(),
     href: z.url(),
     linkLabel: z.string(),
-    feature: z.object({
-      question: z.string(),
-      method: z.string(),
-      evidence: z.string(),
-    }).optional(),
+    feature: z
+      .object({
+        question: z.string(),
+        method: z.string(),
+        evidence: z.string(),
+      })
+      .optional(),
     relatedPosts: z.array(reference("blog")).default([]),
   }),
 });

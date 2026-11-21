@@ -59,11 +59,9 @@ async function readCache() {
 }
 
 async function writeCache(cache) {
-  await fs.writeFile(
-    CACHE_PATH,
-    JSON.stringify(cache, null, 2) + "\n",
-    "utf-8",
-  );
+  const tmpPath = `${CACHE_PATH}.${process.pid}.tmp`;
+  await fs.writeFile(tmpPath, JSON.stringify(cache, null, 2) + "\n", "utf-8");
+  await fs.rename(tmpPath, CACHE_PATH);
 }
 
 async function pushBatch(urls, site, token) {
@@ -107,9 +105,7 @@ async function main() {
   if (!site || !token) {
     // Secrets are optional in forks/local CI — skip instead of failing the deploy run.
     warn("Missing BAIDU_PUSH_SITE or BAIDU_PUSH_TOKEN environment variables.");
-    warn(
-      "Skipping Baidu push. Get a token at: https://ziyuan.baidu.com/linksubmit/index",
-    );
+    warn("Skipping Baidu push. Get a token at: https://ziyuan.baidu.com/linksubmit/index");
     process.exit(args.includes("--require-config") ? 1 : 0);
   }
 
@@ -121,10 +117,7 @@ async function main() {
     current = await readNotificationState(DIST_PATH, site);
     urls = Object.keys(current);
   } catch (err) {
-    error(
-      "Failed to read sitemap:",
-      String(err.message).split(token).join("[redacted]"),
-    );
+    error("Failed to read sitemap:", String(err.message).split(token).join("[redacted]"));
     process.exit(1);
   }
 
@@ -160,14 +153,8 @@ async function main() {
   }
 
   const limitArg = args.find((arg) => arg.startsWith("--limit="));
-  const limit = baiduPushBudget(
-    limitArg?.split("=")[1] || process.env.BAIDU_PUSH_LIMIT || 10,
-  );
-  urlsToPush.sort(
-    (a, b) =>
-      Number(/\/(blog|notes)\/[^/]+\/$/.test(b)) -
-      Number(/\/(blog|notes)\/[^/]+\/$/.test(a)),
-  );
+  const limit = baiduPushBudget(limitArg?.split("=")[1] || process.env.BAIDU_PUSH_LIMIT || 10);
+  urlsToPush.sort((a, b) => Number(/\/(blog|notes)\/[^/]+\/$/.test(b)) - Number(/\/(blog|notes)\/[^/]+\/$/.test(a)));
   const attempted = urlsToPush.slice(0, limit);
   // Push in bounded batches; unsubmitted URLs remain eligible next time.
   let totalSuccess = 0;
@@ -187,15 +174,10 @@ async function main() {
         break;
       }
       requireBaiduSuccess(result, batch.length);
-      log(
-        `  success: ${result.success ?? "?"}, remain: ${result.remain ?? "?"}`,
-      );
+      log(`  success: ${result.success ?? "?"}, remain: ${result.remain ?? "?"}`);
 
       if (result.not_same_site?.length) {
-        warn(
-          `  not_same_site: ${result.not_same_site.length}`,
-          result.not_same_site,
-        );
+        warn(`  not_same_site: ${result.not_same_site.length}`, result.not_same_site);
       }
       if (result.not_valid?.length) {
         warn(`  not_valid: ${result.not_valid.length}`, result.not_valid);
@@ -213,10 +195,7 @@ async function main() {
         totalFailed += batch.length - (result.success ?? 0);
       }
     } catch (err) {
-      error(
-        `  batch ${batchNum} failed:`,
-        String(err.message).split(token).join("[redacted]"),
-      );
+      error(`  batch ${batchNum} failed:`, String(err.message).split(token).join("[redacted]"));
       totalFailed += batch.length;
     }
   }
@@ -224,15 +203,11 @@ async function main() {
   await writeCache({
     ...cache,
     pushed: Array.from(pushedSet).filter((url) => url in current),
-    fingerprints: Object.fromEntries(
-      Object.entries(fingerprints).filter(([url]) => url in current),
-    ),
+    fingerprints: Object.fromEntries(Object.entries(fingerprints).filter(([url]) => url in current)),
     lastPushAt: new Date().toISOString(),
   });
 
-  log(
-    `Push complete. success=${totalSuccess}, failed=${totalFailed}, queued=${urlsToPush.length - totalSuccess}`,
-  );
+  log(`Push complete. success=${totalSuccess}, failed=${totalFailed}, queued=${urlsToPush.length - totalSuccess}`);
 
   if (totalFailed > 0) {
     process.exit(2);

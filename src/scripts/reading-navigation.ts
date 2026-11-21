@@ -1,9 +1,5 @@
 import type { TransitionBeforePreparationEvent } from "astro:transitions/client";
-import {
-  articleTransitionName,
-  readingEntryDelay,
-  READING_MOTION,
-} from "../utils/reading-motion";
+import { articleTransitionName, readingEntryDelay, READING_MOTION } from "../utils/reading-motion";
 import { animateReading, prefersReducedMotion } from "./reading-motion";
 
 let firstLoad = true;
@@ -12,8 +8,7 @@ let releaseTitle: (() => void) | null = null;
 
 function finishEntrances() {
   for (const animation of entrances) {
-    if (animation.playState !== "finished" && animation.playState !== "idle")
-      animation.finish();
+    if (animation.playState !== "finished" && animation.playState !== "idle") animation.finish();
   }
   entrances = [];
 }
@@ -23,9 +18,7 @@ document.addEventListener("astro:page-load", () => {
   if (!firstLoad) return;
   firstLoad = false;
   let index = 0;
-  for (const row of document.querySelectorAll<HTMLElement>(
-    ".entry-row--blog",
-  )) {
+  for (const row of document.querySelectorAll<HTMLElement>(".entry-row--blog")) {
     const box = row.getBoundingClientRect();
     if (box.top >= innerHeight || box.bottom <= 0) continue;
     const animation = animateReading(
@@ -50,18 +43,9 @@ document.addEventListener("astro:before-preparation", (event) => {
   const navigation = event as TransitionBeforePreparationEvent;
   finishEntrances();
   releaseTitle?.();
-  const link = navigation.sourceElement?.closest<HTMLAnchorElement>(
-    "a[data-reading-link]",
-  );
-  const title = link?.matches("[data-reading-title]")
-    ? link
-    : link?.querySelector<HTMLElement>("[data-reading-title]");
-  if (
-    !title ||
-    prefersReducedMotion() ||
-    navigation.from.origin !== navigation.to.origin
-  )
-    return;
+  const link = navigation.sourceElement?.closest<HTMLAnchorElement>("a[data-reading-link]");
+  const title = link?.matches("[data-reading-title]") ? link : link?.querySelector<HTMLElement>("[data-reading-title]");
+  if (!title || prefersReducedMotion() || navigation.from.origin !== navigation.to.origin) return;
 
   // Only the activated title gets an identity. Related/series/previous links can
   // point to the same article; naming them all would invalidate the transition.

@@ -1,156 +1,261 @@
+import type { ImageMetadata } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
 export interface GalleryImageItem {
-  file: string
-  alt: string
-  title: string
-  date: string
-  width: number
-  height: number
-  shape?: 'about-shot--wide' | 'about-shot--tall' | ''
+  file: string;
+  alt: string;
+  title: string;
+  date: string;
+  width: number;
+  height: number;
+  shape?: "about-shot--wide" | "about-shot--tall" | "";
 }
 
 export interface GalleryImageWithSources extends GalleryImageItem {
-  originalSrc: string
-  optimizedSrc: string
-  avifSrcSet: string
-  webpSrcSet: string
-  jpgSrcSet: string
-  renditionWidths: number[]
-  largestWidth: number
+  originalSrc: string;
+  optimizedSrc: string;
+  avifSrcSet: string;
+  webpSrcSet: string;
+  jpgSrcSet: string;
+  renditionWidths: number[];
+  largestWidth: number;
 }
 
-const GALLERY_RENDITION_WIDTHS = [640, 960, 1280, 1600] as const
+export interface GallerySliderItem {
+  src: string;
+  srcSet: string;
+  sizes: string;
+  thumb: string;
+  full: string;
+  alt: string;
+  title: string;
+  date: string;
+  width: number;
+  height: number;
+}
 
-const stripExtension = (fileName: string) => fileName.replace(/\.[^.]+$/, '')
+export interface PublishedGallery {
+  slug: string;
+  gallery: CollectionEntry<"galleries">;
+}
+
+export interface GalleryFolderImage {
+  src: ImageMetadata;
+  alt: string;
+}
+
+const GALLERY_RENDITION_WIDTHS = [640, 960, 1280, 1600] as const;
+const CARD_MAX_WIDTH = 960;
+const CARD_TARGET_WIDTH = 640;
+
+const ALL_GALLERY_ASSET_IMAGES = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/data/galleries/**/*.{jpg,jpeg,png,webp,avif,gif,JPG,JPEG,PNG,WEBP}",
+  { eager: true },
+);
+
+const stripExtension = (fileName: string) => fileName.replace(/\.[^.]+$/, "");
 
 const getRenditionWidths = (sourceWidth: number) => {
-  const maxWidth = GALLERY_RENDITION_WIDTHS[GALLERY_RENDITION_WIDTHS.length - 1]
-  const widths: number[] = GALLERY_RENDITION_WIDTHS.filter((step) => step <= sourceWidth)
+  const maxWidth = GALLERY_RENDITION_WIDTHS[GALLERY_RENDITION_WIDTHS.length - 1];
+  const widths: number[] = GALLERY_RENDITION_WIDTHS.filter((step) => step <= sourceWidth);
   if (sourceWidth <= maxWidth && !widths.includes(sourceWidth)) {
-    widths.push(sourceWidth)
+    widths.push(sourceWidth);
   }
-  if (widths.length === 0) widths.push(sourceWidth)
-  return widths.sort((a, b) => a - b)
+  if (widths.length === 0) widths.push(sourceWidth);
+  return widths.sort((a, b) => a - b);
+};
+
+const buildSrcSet = (baseName: string, widths: number[], format: "avif" | "webp" | "jpg") =>
+  widths.map((width) => `/gallery/optimized/${baseName}-w${width}.${format} ${width}w`).join(", ");
+
+export const toGallerySlug = (id: string): string =>
+  id
+    .replace(/\\/g, "/")
+    .replace(/\/index\.(md|mdx)$/, "")
+    .replace(/\.(md|mdx)$/, "");
+
+export async function getPublishedGalleries(): Promise<PublishedGallery[]> {
+  const galleries = await getCollection("galleries", ({ data }) => !data.draft);
+  return galleries
+    .map((gallery) => ({ slug: toGallerySlug(gallery.id), gallery }))
+    .filter(({ slug }) => slug.length > 0);
 }
 
-const buildSrcSet = (baseName: string, widths: number[], format: 'avif' | 'webp' | 'jpg') =>
-  widths.map((width) => `/gallery/optimized/${baseName}-w${width}.${format} ${width}w`).join(', ')
+export function getGalleryFolderImages(slug: string, fallbackTitle: string): GalleryFolderImage[] {
+  const prefix = `/src/data/galleries/${slug}/`;
+  return Object.entries(ALL_GALLERY_ASSET_IMAGES)
+    .filter(([imagePath]) => {
+      if (!imagePath.startsWith(prefix)) return false;
+      const filename = imagePath.split("/").pop() ?? "";
+      return !filename.startsWith("index.");
+    })
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([imagePath, mod]) => {
+      const filename = imagePath.split("/").pop() ?? "";
+      return {
+        src: mod.default,
+        alt: resolveGalleryImageAlt(filename, fallbackTitle),
+      };
+    });
+}
 
 export const buildGalleryImageSources = (item: GalleryImageItem): GalleryImageWithSources => {
-  const baseName = stripExtension(item.file)
-  const renditionWidths = getRenditionWidths(item.width)
-  const largestWidth = renditionWidths[renditionWidths.length - 1]
-  const largeJpg = `/gallery/optimized/${baseName}-w${largestWidth}.jpg`
+  const baseName = stripExtension(item.file);
+  const renditionWidths = getRenditionWidths(item.width);
+  const largestWidth = renditionWidths[renditionWidths.length - 1];
+  const largeJpg = `/gallery/optimized/${baseName}-w${largestWidth}.jpg`;
 
   return {
     ...item,
     originalSrc: largeJpg,
     optimizedSrc: largeJpg,
-    avifSrcSet: buildSrcSet(baseName, renditionWidths, 'avif'),
-    webpSrcSet: buildSrcSet(baseName, renditionWidths, 'webp'),
-    jpgSrcSet: buildSrcSet(baseName, renditionWidths, 'jpg'),
+    avifSrcSet: buildSrcSet(baseName, renditionWidths, "avif"),
+    webpSrcSet: buildSrcSet(baseName, renditionWidths, "webp"),
+    jpgSrcSet: buildSrcSet(baseName, renditionWidths, "jpg"),
     renditionWidths,
     largestWidth,
-  }
+  };
+};
+
+export function buildGallerySliderImages(): GallerySliderItem[] {
+  return GALLERY_IMAGES.map((item) => {
+    const baseName = stripExtension(item.file);
+    const widths = getRenditionWidths(item.width);
+    const cardWidths = widths.filter((w) => w <= CARD_MAX_WIDTH);
+    const displayWidth = widths.find((w) => w >= CARD_TARGET_WIDTH) ?? widths[widths.length - 1];
+    const largestWidth = widths[widths.length - 1];
+    const cardSrc = `/gallery/optimized/${baseName}-w${displayWidth}.jpg`;
+
+    return {
+      src: cardSrc,
+      srcSet: buildSrcSet(baseName, cardWidths, "webp") || buildSrcSet(baseName, cardWidths, "jpg"),
+      sizes: "(max-width: 480px) 300px, (max-width: 768px) 350px, 500px",
+      thumb: cardSrc,
+      full: `/gallery/optimized/${baseName}-w${largestWidth}.jpg`,
+      alt: item.alt,
+      title: item.title,
+      date: item.date,
+      width: item.width,
+      height: item.height,
+    };
+  });
 }
 
 export const GALLERY_IMAGES: GalleryImageItem[] = [
   {
-    file: '6C67AEDA-15B9-44A4-9493-B801382DB7EC.jpeg',
-    alt: '雪山峡谷间的双桥',
-    title: '峡谷双桥',
-    date: '2026-02-15',
+    file: "6C67AEDA-15B9-44A4-9493-B801382DB7EC.jpeg",
+    alt: "雪山峡谷间的双桥",
+    title: "峡谷双桥",
+    date: "2026-02-15",
     width: 4096,
     height: 3072,
-    shape: 'about-shot--wide',
+    shape: "about-shot--wide",
   },
   {
-    file: '0228CA38-3A9D-4624-A6B8-0EDD2B1B5296.jpeg',
-    alt: '雪山晚霞',
-    title: '雪山晚霞',
-    date: '2026-02-15',
+    file: "0228CA38-3A9D-4624-A6B8-0EDD2B1B5296.jpeg",
+    alt: "雪山晚霞",
+    title: "雪山晚霞",
+    date: "2026-02-15",
     width: 8192,
     height: 6144,
-    shape: '',
+    shape: "",
   },
   {
-    file: 'C0A851E2-DFC3-4E0B-B37E-3451E1DC3F24.jpeg',
-    alt: '经幡环绕的穹顶',
-    title: '经幡穹顶',
-    date: '2026-02-15',
+    file: "C0A851E2-DFC3-4E0B-B37E-3451E1DC3F24.jpeg",
+    alt: "经幡环绕的穹顶",
+    title: "经幡穹顶",
+    date: "2026-02-15",
     width: 4096,
     height: 1844,
-    shape: '',
+    shape: "",
   },
   {
-    file: '79d35189354e2824167cfebb10876af4.jpg',
-    alt: 'Labubu',
-    title: 'Labubu',
-    date: '2025-07-05',
+    file: "79d35189354e2824167cfebb10876af4.jpg",
+    alt: "Labubu",
+    title: "Labubu",
+    date: "2025-07-05",
     width: 1279,
     height: 1706,
-    shape: 'about-shot--tall',
+    shape: "about-shot--tall",
   },
   {
-    file: '738eadca2488bd4f583bb071d15fc038.jpg',
-    alt: '宝泉风景',
-    title: '宝泉',
-    date: '2025-07-05',
+    file: "738eadca2488bd4f583bb071d15fc038.jpg",
+    alt: "宝泉风景",
+    title: "宝泉",
+    date: "2025-07-05",
     width: 1820,
     height: 1024,
-    shape: 'about-shot--wide',
+    shape: "about-shot--wide",
   },
   {
-    file: 'c9531bcaeefed42bb36b974696149c7a.jpg',
-    alt: '山间风景',
-    title: '山间',
-    date: '2025-07-05',
+    file: "c9531bcaeefed42bb36b974696149c7a.jpg",
+    alt: "山间风景",
+    title: "山间",
+    date: "2025-07-05",
     width: 1820,
     height: 1024,
-    shape: '',
+    shape: "",
   },
   {
-    file: '3a05e267fc3eb4a6c146489836f5d50e.jpg',
-    alt: '校园',
-    title: '校园',
-    date: '2025-05-05',
+    file: "3a05e267fc3eb4a6c146489836f5d50e.jpg",
+    alt: "校园",
+    title: "校园",
+    date: "2025-05-05",
     width: 3024,
     height: 4032,
-    shape: '',
+    shape: "",
   },
   {
-    file: 'cd3ca9f14be50495c1be8ed017c7b348.jpg',
-    alt: '海南落日',
-    title: '落日',
-    date: '2024-07-05',
+    file: "cd3ca9f14be50495c1be8ed017c7b348.jpg",
+    alt: "海南落日",
+    title: "落日",
+    date: "2024-07-05",
     width: 1896,
     height: 1280,
-    shape: 'about-shot--wide',
+    shape: "about-shot--wide",
   },
   {
-    file: 'fb450aaf347e5d8e64d0341cf3b23b61.jpg',
-    alt: '古都风景',
-    title: '古都',
-    date: '2024-09-05',
+    file: "fb450aaf347e5d8e64d0341cf3b23b61.jpg",
+    alt: "古都风景",
+    title: "古都",
+    date: "2024-09-05",
     width: 3264,
     height: 2448,
-    shape: '',
+    shape: "",
   },
   {
-    file: 'b4fb8f48829b62de174d7b1e24a3b7ca.jpg',
-    alt: '云层光影',
-    title: '云层',
-    date: '2024-10-05',
+    file: "b4fb8f48829b62de174d7b1e24a3b7ca.jpg",
+    alt: "云层光影",
+    title: "云层",
+    date: "2024-10-05",
     width: 2448,
     height: 3264,
-    shape: '',
+    shape: "",
   },
   {
-    file: '2713625f33c9006f62b6e40783e27527.jpg',
-    alt: '天际云影',
-    title: '云影',
-    date: '2024-11-05',
+    file: "2713625f33c9006f62b6e40783e27527.jpg",
+    alt: "天际云影",
+    title: "云影",
+    date: "2024-11-05",
     width: 3072,
     height: 4096,
-    shape: '',
+    shape: "",
   },
-]
+];
+
+const GALLERY_IMAGE_BY_FILE = new Map(GALLERY_IMAGES.map((item) => [item.file, item]));
+
+/** Resolve curated Chinese caption by original filename; fall back to normalized filename. */
+export function resolveGalleryImageAlt(filename: string, fallback: string): string {
+  const curated = GALLERY_IMAGE_BY_FILE.get(filename);
+  if (curated) {
+    return curated.alt || curated.title;
+  }
+  return (
+    stripExtension(filename)
+      .replace(/^\d+[-_]?/, "")
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+      .trim() || fallback
+  );
+}

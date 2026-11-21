@@ -7,16 +7,7 @@ export interface FriendLink {
   tags?: string[];
 }
 
-// 组织链接数据类型定义
-export interface OrganizationLink {
-  name: string;
-  url: string;
-  description: string;
-  avatar?: string;
-  tags?: string[];
-}
-
-export const ORGANIZATION_LINKS: OrganizationLink[] = [
+export const ORGANIZATION_LINKS: FriendLink[] = [
   {
     name: "HnuSec",
     url: "https://www.hnusec.com/",
@@ -50,15 +41,13 @@ export const FRIEND_LINKS: FriendLink[] = [
     name: "Ewoji",
     url: "https://ewoji.cn/",
     description: "下雨天留客天留我不留",
-    avatar:
-      "https://q.qlogo.cn/headimg_dl?dst_uin=1060089371&spec=640&img_type=jpg",
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=1060089371&spec=640&img_type=jpg",
   },
   {
     name: "Unjoke",
     url: "https://unjoke.cn/",
     description: "等雨也等你",
-    avatar:
-      "https://q.qlogo.cn/headimg_dl?dst_uin=2801238549&spec=640&img_type=jpg",
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=2801238549&spec=640&img_type=jpg",
   },
   {
     name: "Berial",
@@ -76,8 +65,7 @@ export const FRIEND_LINKS: FriendLink[] = [
     name: "m1n9",
     url: "https://mi1n9.github.io/",
     description: "苍山负雪，明烛天南",
-    avatar:
-      "https://q.qlogo.cn/headimg_dl?dst_uin=2605742754&spec=640&img_type=jpg",
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=2605742754&spec=640&img_type=jpg",
   },
   {
     name: "Jatopos",
@@ -89,16 +77,14 @@ export const FRIEND_LINKS: FriendLink[] = [
     name: "Boogipop",
     url: "https://boogipop.com/",
     description: "Are you still in pain?",
-    avatar:
-      "https://q.qlogo.cn/headimg_dl?dst_uin=3576846231&spec=640&img_type=jpg",
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=3576846231&spec=640&img_type=jpg",
     tags: ["Web"],
   },
   {
     name: "weixiao",
     url: "https://www.weixiao3.cn/",
     description: "微笑微笑微笑",
-    avatar:
-      "https://q.qlogo.cn/headimg_dl?dst_uin=3515902077&spec=640&img_type=jpg",
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=3515902077&spec=640&img_type=jpg",
     tags: ["安卓"],
   },
 ];
@@ -114,8 +100,7 @@ export const HNUSEC_MEMBER_LINKS: FriendLink[] = [
     name: "chrizsty",
     url: "https://blog.chrizsty.cn/",
     description: "Hello",
-    avatar:
-      "https://blog.chrizsty.cn/wp-content/uploads/2025/06/b_7d13bfcfe9ef52a8c15380752054edf5.jpg",
+    avatar: "https://blog.chrizsty.cn/wp-content/uploads/2025/06/b_7d13bfcfe9ef52a8c15380752054edf5.jpg",
     tags: ["2024", "Web"],
   },
   {
@@ -129,8 +114,7 @@ export const HNUSEC_MEMBER_LINKS: FriendLink[] = [
     name: "FloatingRaft",
     url: "https://floatingraft.github.io/",
     description: "似舟漂不定，如梗泛何从",
-    avatar:
-      "https://q.qlogo.cn/headimg_dl?dst_uin=2184582457&spec=640&img_type=jpg",
+    avatar: "https://q.qlogo.cn/headimg_dl?dst_uin=2184582457&spec=640&img_type=jpg",
     tags: ["2024", "Misc"],
   },
   {
@@ -151,8 +135,7 @@ export const HNUSEC_MEMBER_LINKS: FriendLink[] = [
     name: "CFIT",
     url: "https://cfitsec.cn/",
     description: "Vivala CFIT!",
-    avatar:
-      "https://cfit.oss-cn-beijing.aliyuncs.com/uploads/2024/09/02/X1w92Vrz_cfitpinkicon.png",
+    avatar: "https://cfit.oss-cn-beijing.aliyuncs.com/uploads/2024/09/02/X1w92Vrz_cfitpinkicon.png",
     tags: ["2023", "Crypto"],
   },
   {

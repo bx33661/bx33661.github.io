@@ -5,11 +5,7 @@ const locale = localeFromPath(Astro.url.pathname);
 const t = ui(locale);
 import type { CollectionEntry } from "astro:content";
 import { articleSeries } from "@/data/article-series";
-import {
-  getArticleSeries,
-  getRelatedArticles,
-  type ArticleSummary,
-} from "@/utils/article-discovery";
+import { getArticleSeries, getRelatedArticles, type ArticleSummary } from "@/utils/article-discovery";
 import { resolveLegacyPostSlug } from "@/utils/legacySlug";
 import { getPath } from "@/utils/getPath";
 
@@ -36,16 +32,10 @@ const series = getArticleSeries(current, summaries, articleSeries);
 
 {
   series && (
-    <section
-      class="post-series"
-      aria-labelledby="post-series-title"
-      data-pagefind-ignore
-    >
+    <section class="post-series" aria-labelledby="post-series-title" data-pagefind-ignore>
       <div class="post-discovery-heading">
         <h2 id="post-series-title">{series.title}</h2>
-        <span>
-          {t.seriesPosition(series.position, series.chapters.length)}
-        </span>
+        <span>{t.seriesPosition(series.position, series.chapters.length)}</span>
       </div>
       <ol class="post-series-chapters">
         {series.chapters.map((chapter, index) => (
@@ -84,11 +74,7 @@ const series = getArticleSeries(current, summaries, articleSeries);
 
 {
   related.length > 0 && (
-    <section
-      class="post-related"
-      aria-labelledby="post-related-title"
-      data-pagefind-ignore
-    >
+    <section class="post-related" aria-labelledby="post-related-title" data-pagefind-ignore>
       <div class="post-discovery-heading">
         <>
           <h2 id="post-related-title">{t.continueReading}</h2>

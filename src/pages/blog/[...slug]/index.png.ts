@@ -1,36 +1,28 @@
 import type { APIRoute } from "astro";
-import { getCollection, type CollectionEntry } from "astro:content";
-import { resolveLegacyPostSlug } from "@/utils/legacySlug";
-import { generateOgImageForPost } from "@/utils/generateOgImages";
+import type { CollectionEntry } from "astro:content";
 import { SITE } from "@/config.ts";
-import postFilter from "@/utils/postFilter";
-import { isEntryLocale } from "@/i18n";
+import { getAllPostSlugs } from "@/lib/data-utils";
+import { generateOgImageForPost, pngResponse } from "@/utils/generateOgImages";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
 
 export async function getStaticPaths() {
   if (!SITE.dynamicOgImage) {
     return [];
   }
 
-  const posts = await getCollection("blog").then(p =>
-    p.filter(post => postFilter(post) && isEntryLocale(post.data, "zh-CN") && !post.data.ogImage)
-  );
-
-  return posts.map(post => ({
-    params: { slug: resolveLegacyPostSlug(post) },
-    props: post,
-  }));
+  const posts = await getAllPostSlugs("zh-CN");
+  return posts
+    .filter(({ post }) => !post.data.ogImage && !post.data.cover)
+    .map(({ slug, post }) => ({
+      params: { slug },
+      props: { post },
+    }));
 }
 
 export const GET: APIRoute = async ({ props }) => {
-  if (!SITE.dynamicOgImage) {
-    return new Response(null, {
-      status: 404,
-      statusText: "Not found",
-    });
-  }
-
-  const buffer = await generateOgImageForPost(props as CollectionEntry<"blog">);
-  return new Response(new Uint8Array(buffer), {
-    headers: { "Content-Type": "image/png" },
-  });
+  const { post } = props as Props;
+  return pngResponse(await generateOgImageForPost(post));
 };
