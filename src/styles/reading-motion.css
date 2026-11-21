@@ -80,8 +80,8 @@
   background: var(--accent);
   transform: translateY(var(--toc-marker-y, 0px));
   transition:
-    transform 280ms var(--reading-ease),
-    height 280ms var(--reading-ease);
+    transform 220ms var(--reading-ease),
+    height 220ms var(--reading-ease);
   pointer-events: none;
 }
 .post-page [data-post-toc] a,

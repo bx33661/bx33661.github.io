@@ -77,6 +77,19 @@ const zh = {
   backToTop: "返回顶部",
   imageViewer: "放大图片，点击图片或空白处关闭",
   closeImage: "关闭图片查看器",
+  readingTime: (minutes: number) => `约 ${minutes} 分钟阅读`,
+  interactive: "交互图解",
+  rssFeed: "RSS 订阅",
+  latestWriting: "最新文章",
+  viewAllPosts: "查看全部",
+  friends: "友链",
+  noteWriting: "NOTES / 笔记",
+  allCategories: "全部",
+  copyLink: "复制文章链接",
+  linkCopied: "已复制链接",
+  expandCode: (lines: number) => `展开完整代码（共 ${lines} 行）`,
+  collapseCode: "收起代码",
+  allTopics: "全部主题",
 };
 
 const en: typeof zh = {
@@ -155,6 +168,19 @@ const en: typeof zh = {
   backToTop: "Back to top",
   imageViewer: "Image viewer; click the image or background to close",
   closeImage: "Close image viewer",
+  readingTime: (minutes) => `${minutes} min read`,
+  interactive: "Interactive",
+  rssFeed: "RSS feed",
+  latestWriting: "Latest writing",
+  viewAllPosts: "View all",
+  friends: "Friends",
+  noteWriting: "NOTES / STUDY",
+  allCategories: "All",
+  copyLink: "Copy article link",
+  linkCopied: "Link copied",
+  expandCode: (lines) => `Expand code (${lines} lines)`,
+  collapseCode: "Collapse code",
+  allTopics: "All topics",
 };
 
 export function ui(locale: Locale) {

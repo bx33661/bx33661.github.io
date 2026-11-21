@@ -10,12 +10,14 @@ html[data-theme="light"] {
   --font-sriracha: Georgia, serif;
   color-scheme: light;
   --background: #f2f5ec;
-  --foreground: #353538;
-  --muted-foreground: #555a60;
+  --foreground: #2e3136;
+  --muted-foreground: #555c63;
   --accent: #1158d1;
-  --muted: #bbc789;
-  --border: #7cadff;
+  --muted: #e3e8dc;
+  --border: #b5bfb1;
+  --border-subtle: color-mix(in srgb, var(--foreground) 12%, var(--background));
   --surface: #ffffff;
+  --surface-subtle: #f7faf3;
   --surface-raised: #ffffff;
 }
 
@@ -25,10 +27,12 @@ html[data-theme="dark"] {
   --foreground: #e9edf4;
   --muted-foreground: #a7b3c2;
   --accent: #78b8ff;
-  --muted: #273443;
-  --border: #52677f;
-  --surface: #1b2430;
-  --surface-raised: #222e3c;
+  --muted: #222e3d;
+  --border: #435469;
+  --border-subtle: color-mix(in srgb, var(--foreground) 12%, var(--background));
+  --surface: #1a232f;
+  --surface-subtle: #161f2a;
+  --surface-raised: #222e3e;
 }
 
 @theme inline {
@@ -41,6 +45,9 @@ html[data-theme="dark"] {
   --color-accent: var(--accent);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
 }
 
 .italic,
@@ -59,13 +66,14 @@ i {
   }
   html {
     @apply overflow-y-scroll scroll-smooth;
+    text-autospace: normal;
   }
   body {
     @apply bg-background font-app text-foreground selection:bg-accent/75 selection:text-background flex min-h-svh flex-col;
   }
   a,
   button {
-    @apply outline-accent outline-offset-1 focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+    @apply outline-accent outline-offset-2 focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-solid;
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {

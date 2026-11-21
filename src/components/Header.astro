@@ -231,9 +231,16 @@ const brandText = SITE.title.trim();
 </header>
 
 <script>
-  import { onAstroPage } from "@/scripts/astro-lifecycle";
+  import { onAstroPage, onViewportScroll } from "@/scripts/astro-lifecycle";
 
   onAstroPage((signal) => {
+    const header = document.querySelector<HTMLElement>(".header-glass");
+    if (header) {
+      const syncScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 12);
+      const schedule = onViewportScroll(signal, syncScroll);
+      schedule();
+    }
+
     const menuBtn = document.querySelector<HTMLElement>("#menu-btn");
     const mobileMenu = document.querySelector<HTMLElement>("#mobile-menu");
     if (!menuBtn || !mobileMenu) return;

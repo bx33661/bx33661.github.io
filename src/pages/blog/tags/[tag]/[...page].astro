@@ -1,16 +1,19 @@
 ---
 import type { GetStaticPaths } from "astro";
 import { readingTransition } from "@/utils/reading-motion";
-import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
 import EntryRow from "@/components/EntryRow.astro";
 import Pagination from "@/components/Pagination.astro";
+import "@/styles/blog-index.css";
 import { groupPostsByTag } from "@/utils/getUniqueTags";
 import { getPath } from "@/utils/getPath";
 import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { isInteractivePost } from "@/utils/readingTime";
 import { getTagPath, getVisiblePostTags } from "@/utils/tagPath";
+import { ui } from "@/i18n/ui";
 import { SITE } from "@/config.ts";
 import { getAllPosts } from "@/lib/data-utils";
 
@@ -27,12 +30,43 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { tag } = Astro.params;
 const { page, tagName } = Astro.props;
+const t = ui("zh-CN");
+const backUrl = SITE.showBackButton ? Astro.url.pathname : "/";
 ---
 
 <Layout title={`主题：${tagName} | ${SITE.title}`} noindex>
   <Header />
-  <Main pageTitle={["主题：", tagName]} titleTransition={tag} pageDesc={`与「${tagName}」相关的文章。`}>
-    <ul class="entry-list" transition:name="reading-surface" transition:animate={readingTransition}>
+  <Breadcrumb />
+
+  <main
+    id="main-content"
+    data-backUrl={backUrl}
+    class="blog-index app-layout pb-4"
+    transition:name="reading-surface"
+    transition:animate={readingTransition}
+  >
+    <header class="blog-head">
+      <p class="blog-kicker">TOPIC / TAG</p>
+      <h1 class="blog-title">主题：<span transition:name={tag}>{tagName}</span></h1>
+      <p class="blog-desc">与「{tagName}」相关的文章。</p>
+      <p class="blog-meta">
+        <span>{t.postCount(page.total)}</span>
+        {
+          page.lastPage > 1 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{t.pageCount(page.currentPage, page.lastPage)}</span>
+            </>
+          )
+        }
+        <span aria-hidden="true">·</span>
+        <a href="/blog/#topics" class="text-accent font-medium no-underline hover:underline">
+          ← {t.allTopics}
+        </a>
+      </p>
+    </header>
+
+    <ul class="entry-list">
       {
         page.data.map((post) => (
           <EntryRow
@@ -42,14 +76,28 @@ const { page, tagName } = Astro.props;
             date={post.data.pubDatetime}
             updatedDate={post.data.modDatetime}
             variant="blog"
+            interactive={isInteractivePost(post.body)}
             tags={getVisiblePostTags(post.data.tags).map((item) => ({ label: item, href: getTagPath(item) }))}
           />
         ))
       }
     </ul>
-  </Main>
+  </main>
 
   <Pagination {page} />
 
   <Footer noMarginTop={page.lastPage > 1} />
 </Layout>
+
+<script>
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
+  import { writeStorage } from "@/utils/browser-storage";
+
+  onAstroPage(() => {
+    const mainContent = document.querySelector<HTMLElement>("#main-content");
+    const backUrl = mainContent?.dataset?.backurl;
+    if (backUrl) {
+      writeStorage(() => sessionStorage, "backUrl", backUrl);
+    }
+  });
+</script>

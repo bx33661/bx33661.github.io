@@ -1,11 +1,30 @@
 ---
 import { SITE } from "@/config.ts";
 import { localizedPath, type Locale } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import { getAllNotes, getAllPosts } from "@/lib/data-utils";
+import { getArticleDates } from "@/utils/article-discovery";
+import { formatSiteDate } from "@/utils/date";
+import { getPath } from "@/utils/getPath";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { isInteractivePost } from "@/utils/readingTime";
+import { getLocalizedTagPath } from "@/utils/tagPath";
 import "@/styles/academic-home.css";
 interface Props {
   locale?: Locale;
 }
 const { locale = "zh-CN" } = Astro.props;
+const t = ui(locale);
+const posts = await getAllPosts(locale);
+const notes = await getAllNotes(locale);
+const latestPosts = posts.slice(0, 4).map((post) => ({
+  title: post.data.title,
+  description: post.data.description,
+  href: localizedPath(getPath(post.id, post.filePath, true, resolveLegacyPostSlug(post)), locale),
+  date: getArticleDates(post.data.pubDatetime, post.data.modDatetime).latest,
+  interactive: isInteractivePost(post.body),
+}));
+const focusTopics = ["AI", "Web", "CTF", "Security"];
 ---
 
 <main id="main-content" class="app-layout academic-home" lang="en">
@@ -117,8 +136,69 @@ const { locale = "zh-CN" } = Astro.props;
           </li>
         </ul>
       </section>
+
+      <section class="focus-section" aria-labelledby="focus-title">
+        <h2 id="focus-title">Focus</h2>
+        <div class="focus-chips">
+          {
+            focusTopics.map((topic) => (
+              <a href={getLocalizedTagPath(topic, locale)} class="focus-chip">
+                {topic}
+              </a>
+            ))
+          }
+        </div>
+        <div class="focus-stats">
+          <a href={localizedPath("/blog/", locale)} class="focus-stat">
+            <strong>{posts.length}</strong>
+            <span>{posts.length === 1 ? "Post" : "Posts"}</span>
+          </a>
+          <a href={localizedPath("/notes/", locale)} class="focus-stat">
+            <strong>{notes.length}</strong>
+            <span>{notes.length === 1 ? "Note" : "Notes"}</span>
+          </a>
+        </div>
+      </section>
     </aside>
   </div>
+
+  {
+    latestPosts.length > 0 && (
+      <section class="home-latest" aria-labelledby="latest-writing-title">
+        <header class="home-latest-head">
+          <div>
+            <p class="home-latest-kicker">LATEST / WRITING</p>
+            <h2 id="latest-writing-title">Latest writing</h2>
+          </div>
+          <a href={localizedPath("/blog/", locale)} class="home-latest-more">
+            All posts <span aria-hidden="true">↗</span>
+          </a>
+        </header>
+        <ul class="home-latest-list" lang={locale}>
+          {latestPosts.map((item) => (
+            <li class="home-latest-item">
+              <a href={item.href} class="home-latest-link">
+                <span class="home-latest-meta">
+                  <time datetime={item.date.toISOString()}>{formatSiteDate(item.date, locale)}</time>
+                  {item.interactive && (
+                    <span class="home-latest-badge">
+                      <span class="home-latest-dot" aria-hidden="true" />
+                      {t.interactive}
+                    </span>
+                  )}
+                </span>
+                <span class="home-latest-title">{item.title}</span>
+                <span class="home-latest-desc">{item.description}</span>
+                <span class="home-latest-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 </main>
 
 <script>

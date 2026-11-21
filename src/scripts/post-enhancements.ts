@@ -3,12 +3,13 @@ import { setupArticleToc } from "./article-toc";
 import { setupArticleLightbox } from "./article-lightbox";
 import { setupArticleFormatting } from "./article-formatting";
 import { setupReadingControls } from "./reading-controls";
+import { prefersReducedMotion } from "./reading-motion";
 
 function setupProgressBar(article: HTMLElement, signal: AbortSignal) {
   const container = document.createElement("div");
-  container.className = "progress-container fixed top-0 z-50 h-1 w-full bg-background";
+  container.className = "progress-container pointer-events-none fixed top-0 z-50 h-[3px] w-full bg-transparent";
   const bar = document.createElement("div");
-  bar.className = "progress-bar h-1 w-full bg-accent";
+  bar.className = "progress-bar h-full w-full bg-accent";
   bar.id = "myBar";
   bar.setAttribute("role", "progressbar");
   bar.setAttribute("aria-label", document.documentElement.lang === "en" ? "Article reading progress" : "正文阅读进度");
@@ -49,33 +50,139 @@ function attachHeadingLinks(article: HTMLElement) {
   }
 }
 
+const CODE_LANGUAGE_LABELS = new Map<string, string>([
+  ["ts", "TypeScript"],
+  ["typescript", "TypeScript"],
+  ["tsx", "TSX"],
+  ["js", "JavaScript"],
+  ["javascript", "JavaScript"],
+  ["jsx", "JSX"],
+  ["py", "Python"],
+  ["python", "Python"],
+  ["sh", "Bash"],
+  ["bash", "Bash"],
+  ["zsh", "Zsh"],
+  ["shell", "Shell"],
+  ["yml", "YAML"],
+  ["yaml", "YAML"],
+  ["json", "JSON"],
+  ["ql", "CodeQL"],
+  ["codeql", "CodeQL"],
+  ["go", "Go"],
+  ["java", "Java"],
+  ["php", "PHP"],
+  ["c", "C"],
+  ["cpp", "C++"],
+  ["c++", "C++"],
+  ["rs", "Rust"],
+  ["rust", "Rust"],
+  ["sql", "SQL"],
+  ["html", "HTML"],
+  ["css", "CSS"],
+  ["http", "HTTP"],
+  ["diff", "Diff"],
+  ["dockerfile", "Dockerfile"],
+  ["xml", "XML"],
+  ["md", "Markdown"],
+  ["markdown", "Markdown"],
+  ["plaintext", "Code"],
+  ["text", "Code"],
+  ["txt", "Code"],
+]);
+
+function resolveCodeBlockLabel(block: HTMLElement): { text: string; isFile: boolean } {
+  const fileBadge = block.querySelector<HTMLElement>("[data-code-filename]");
+  if (fileBadge) {
+    return {
+      text: fileBadge.dataset.codeFilename || fileBadge.textContent?.trim() || "Code",
+      isFile: true,
+    };
+  }
+  const rawLang = (block.getAttribute("data-language") || "").trim().toLowerCase();
+  if (!rawLang) return { text: "Code", isFile: false };
+  return {
+    text: CODE_LANGUAGE_LABELS.get(rawLang) || rawLang.toUpperCase(),
+    isFile: false,
+  };
+}
+
 function attachCopyButtons(article: HTMLElement, signal: AbortSignal) {
   const blocks = [...article.querySelectorAll<HTMLElement>("pre")].filter(
     (block) => !block.closest(".not-prose") && block.querySelector("code"),
   );
-  // Read computed offsets before mutating DOM to prevent per-block reflow thrashing.
-  const hasOffsetByBlock = new Map(
-    blocks.map((block) => [block, getComputedStyle(block).getPropertyValue("--file-name-offset").trim() !== ""]),
-  );
 
-  const ariaLabel = document.documentElement.lang === "en" ? "Copy code" : "复制代码";
-  const failedLabel = document.documentElement.lang === "en" ? "Copy failed" : "复制失败";
+  const isEnglish = document.documentElement.lang === "en";
+  const ariaLabel = isEnglish ? "Copy code" : "复制代码";
+  const failedLabel = isEnglish ? "Copy failed" : "复制失败";
+  const collapseLabel = isEnglish ? "Collapse code" : "收起代码";
+  const expandLabelFor = (lines: number) =>
+    isEnglish ? `Expand code (${lines} lines)` : `展开完整代码（共 ${lines} 行）`;
 
   for (const block of blocks) {
+    let shell = block.parentElement?.classList.contains("code-block-shell") ? block.parentElement : null;
+    if (!shell) {
+      shell = document.createElement("div");
+      shell.className = "code-block-shell";
+      const header = document.createElement("div");
+      header.className = "code-block-header";
+      header.setAttribute("aria-hidden", "true");
+      const label = document.createElement("span");
+      const meta = resolveCodeBlockLabel(block);
+      label.className = meta.isFile ? "code-block-label is-file" : "code-block-label";
+      label.textContent = meta.text;
+      header.appendChild(label);
+      block.parentNode?.insertBefore(shell, block);
+      shell.appendChild(header);
+      shell.appendChild(block);
+    }
+
+    if (block.dataset.codeCollapsible === "true") {
+      const lineCount = Number(block.dataset.codeLines) || block.querySelectorAll("code .line").length;
+      const expandLabel = expandLabelFor(lineCount);
+      const isExpanded = block.dataset.codeExpanded === "true";
+      shell.classList.add("is-collapsible");
+      shell.classList.toggle("is-collapsed", !isExpanded);
+
+      let toggle = shell.querySelector<HTMLButtonElement>(".code-block-toggle");
+      if (!toggle) {
+        const footer = document.createElement("div");
+        footer.className = "code-block-footer";
+        toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "code-block-toggle";
+        footer.appendChild(toggle);
+        shell.appendChild(footer);
+      }
+      const toggleButton = toggle;
+      toggleButton.setAttribute("aria-expanded", String(isExpanded));
+      toggleButton.textContent = isExpanded ? collapseLabel : expandLabel;
+      const container = shell;
+      toggleButton.addEventListener(
+        "click",
+        () => {
+          const nextCollapsed = container.classList.toggle("is-collapsed");
+          const nextExpanded = !nextCollapsed;
+          if (nextExpanded) block.dataset.codeExpanded = "true";
+          else delete block.dataset.codeExpanded;
+          toggleButton.setAttribute("aria-expanded", String(nextExpanded));
+          toggleButton.textContent = nextExpanded ? collapseLabel : expandLabel;
+          if (nextCollapsed && container.getBoundingClientRect().top < 88) {
+            container.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth", block: "nearest" });
+          }
+        },
+        { signal },
+      );
+    }
+
     let button = block.querySelector<HTMLButtonElement>(".copy-code");
     if (!button) {
-      const wrapper = document.createElement("div");
-      wrapper.style.position = "relative";
-      const hasOffset = hasOffsetByBlock.get(block) ?? false;
       button = document.createElement("button");
       button.type = "button";
-      button.className = `copy-code absolute end-3 ${hasOffset ? "top-(--file-name-offset)" : "-top-3"} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
+      button.className = "copy-code";
       button.setAttribute("aria-label", ariaLabel);
       button.setAttribute("aria-live", "polite");
       block.setAttribute("tabindex", "0");
       block.appendChild(button);
-      block.parentNode?.insertBefore(wrapper, block);
-      wrapper.appendChild(block);
     }
     const copy = button;
     copy.textContent = "Copy";

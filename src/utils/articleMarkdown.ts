@@ -9,6 +9,7 @@ import {
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
 import { transformerFileName } from "./transformers/fileName.ts";
+import { transformerLongCode } from "./transformers/longCode.ts";
 import { rehypeDemoteHeadings } from "./rehypeDemoteHeadings.ts";
 import { rehypeArticleImages } from "./rehypeArticleImages.ts";
 import { remarkArticleCallouts } from "./remarkArticleCallouts.ts";
@@ -36,6 +37,7 @@ export const articleMarkdown = {
     wrap: false,
     transformers: [
       transformerFileName({ style: "v2", hideDot: false }),
+      transformerLongCode(36),
       transformerNotationHighlight(),
       transformerNotationWordHighlight(),
       transformerNotationDiff({ matchAlgorithm: "v3" }),

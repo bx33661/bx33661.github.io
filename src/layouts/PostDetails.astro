@@ -16,6 +16,7 @@ import PostDiscovery from "@/components/PostDiscovery.astro";
 import ArticleLightbox from "@/components/ArticleLightbox.astro";
 import { getArticleDates } from "@/utils/article-discovery";
 import { formatSiteDate } from "@/utils/date";
+import { estimateReadingMinutes } from "@/utils/readingTime";
 import { resolvePostOgImagePath } from "@/utils/generateOgImages";
 import ShareLinks from "@/components/ShareLinks.astro";
 import BackButton from "@/components/BackButton.astro";
@@ -45,6 +46,7 @@ const { Content, headings } = await render(post);
 const tocHeadings = headings.filter((heading) => heading.depth <= 3 && heading.slug !== "footnote-label");
 const dates = getArticleDates(pubDatetime, modDatetime);
 const dateLabel = (date: Date) => formatSiteDate(date, locale);
+const readingMinutes = estimateReadingMinutes(post.body);
 
 const ogImagePath = resolvePostOgImagePath(post, postSlug, locale);
 const ogImage = ogImagePath ? new URL(ogImagePath, Astro.url.origin).href : undefined;
@@ -114,6 +116,8 @@ const nextPost =
             </span>
           )
         }
+        <span aria-hidden="true">·</span>
+        <span class="post-reading-time">{t.readingTime(readingMinutes)}</span>
       </div>
       <div class="post-header-tags">
         {
@@ -158,9 +162,9 @@ const nextPost =
           tags.map((tag: string) => (
             <a
               href={getLocalizedTagPath(tag, locale)}
-              class="border-border/25 bg-muted/10 font-cartograph hover:border-accent/40 hover:bg-accent/5 hover:text-accent inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs transition-all duration-200"
+              class="border-border-subtle bg-surface/75 font-cartograph hover:border-accent/40 hover:bg-accent/5 hover:text-accent inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs transition-all duration-200"
             >
-              <span class="opacity-40">#</span>
+              <span class="opacity-45">#</span>
               {tag}
             </a>
           ))
@@ -194,11 +198,13 @@ const nextPost =
                 class="text-accent/50 size-3.5 transition-transform duration-300 group-hover:-translate-x-1 rtl:rotate-180"
                 aria-hidden="true"
               />
-              <span class="font-cartograph text-foreground/35 text-[10px] tracking-wider uppercase">{t.previous}</span>
+              <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase">
+                {t.previous}
+              </span>
             </div>
             <span
               data-reading-title
-              class="text-foreground/70 group-hover:text-accent line-clamp-2 text-sm leading-snug font-medium transition-colors duration-200"
+              class="text-foreground/80 group-hover:text-accent line-clamp-2 text-sm leading-snug font-medium transition-colors duration-200"
             >
               {prevPost.title}
             </span>
@@ -215,7 +221,7 @@ const nextPost =
             class="post-nav-link group border-border/20 hover:border-accent/30 hover:shadow-accent/5 relative col-start-2 flex flex-col items-end gap-1 rounded-2xl border px-5 py-4 text-end transition-all duration-300 hover:shadow-lg"
           >
             <div class="flex items-center gap-1.5">
-              <span class="font-cartograph text-foreground/35 text-[10px] tracking-wider uppercase">{t.next}</span>
+              <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase">{t.next}</span>
               <IconArrowRight
                 class="text-accent/50 size-3.5 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180"
                 aria-hidden="true"
@@ -223,7 +229,7 @@ const nextPost =
             </div>
             <span
               data-reading-title
-              class="text-foreground/70 group-hover:text-accent line-clamp-2 text-sm leading-snug font-medium transition-colors duration-200"
+              class="text-foreground/80 group-hover:text-accent line-clamp-2 text-sm leading-snug font-medium transition-colors duration-200"
             >
               {nextPost.title}
             </span>

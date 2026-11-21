@@ -1,12 +1,22 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import { SOCIALS } from "@/constants";
+import IconRss from "@/assets/icons/IconRss.svg";
 import LinkButton from "./LinkButton.astro";
 import { SITE } from "@/config.ts";
 import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
 
 const locale = localeFromPath(Astro.url.pathname);
 const isEnglish = locale === "en";
+const t = ui(locale);
+
+const footerLinks = [
+  { label: t.posts, href: localizedPath("/blog/", locale) },
+  { label: t.notes, href: localizedPath("/notes/", locale) },
+  { label: t.archives, href: localizedPath("/archives/", locale) },
+  { label: t.friends, href: "/friends/" },
+];
 
 const currentYear = new Date().getFullYear();
 
@@ -19,7 +29,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
 
 <footer class:list={["footer-wrapper", { "mt-auto": !noMarginTop }, className]} {...attrs}>
   <!-- Top gradient border -->
-  <div class="via-border/40 h-px w-full bg-linear-to-r from-transparent to-transparent"></div>
+  <div class="via-border/50 h-px w-full bg-linear-to-r from-transparent to-transparent"></div>
 
   <div class="app-layout py-8 sm:py-10">
     <!-- Main footer grid -->
@@ -30,33 +40,47 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
           <img
             src="/brand/bx-logo.svg"
             alt={`${SITE.title} logo`}
-            class="footer-brand-logo border-border/30 group-hover:border-accent/40 size-7 rounded-md border bg-[#f4f0e6] object-contain transition-all duration-300 group-hover:scale-105"
+            class="footer-brand-logo border-border-subtle group-hover:border-accent/40 size-7 rounded-md border bg-[#f4f0e6] object-contain transition-all duration-300 group-hover:scale-105"
             loading="lazy"
             decoding="async"
           />
           <span class="footer-logo-text">{SITE.title}</span>
         </a>
-        <p class="max-w-xs text-center text-xs leading-relaxed opacity-50 sm:text-start">
+        <p class="text-muted-foreground max-w-xs text-center text-xs leading-relaxed sm:text-start">
           {
             isEnglish
               ? "Notes on cybersecurity and engineering, grounded in reproducible work."
               : "记录网络安全与工程实践，持续分享真实可复现的技术经验。"
           }
         </p>
+        <nav
+          class="mt-0.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 sm:justify-start"
+          aria-label="Footer navigation"
+        >
+          {
+            footerLinks.map((item) => (
+              <a
+                href={item.href}
+                class="text-muted-foreground hover:text-accent text-xs font-medium transition-colors duration-150"
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
       </div>
 
       <!-- Social links -->
       <div class="flex flex-col items-center gap-2 sm:items-end">
-        <span
-          class="font-cartograph text-foreground/35 dark:text-foreground/65 text-[10px] tracking-wider uppercase select-none"
+        <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase select-none"
           >{isEnglish ? "Connect" : "联系与关注"}</span
         >
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1.5">
           {
             SOCIALS.map((social) => (
               <LinkButton
                 href={social.href}
-                class="footer-social-btn border-border/20 bg-muted/5 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-accent/10 inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:shadow-sm"
+                class="footer-social-btn border-border-subtle bg-surface/75 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-accent/10 inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:shadow-sm"
                 title={social.linkTitle}
               >
                 <social.icon class="size-4 fill-transparent stroke-current stroke-2" />
@@ -64,21 +88,29 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
               </LinkButton>
             ))
           }
+          <LinkButton
+            href={isEnglish ? "/en/rss.xml" : "/rss.xml"}
+            class="footer-social-btn border-border-subtle bg-surface/75 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-accent/10 inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:shadow-sm"
+            title={t.rssFeed}
+            aria-label={t.rssFeed}
+          >
+            <IconRss class="size-4 fill-transparent stroke-current stroke-2" />
+            <span class="sr-only">{t.rssFeed}</span>
+          </LinkButton>
         </div>
       </div>
     </div>
 
     <!-- Bottom bar -->
     <div class="mt-8 flex items-center gap-3" aria-hidden="true">
-      <div class="via-border/25 h-px flex-1 bg-linear-to-r from-transparent to-transparent"></div>
+      <div class="via-border/40 h-px flex-1 bg-linear-to-r from-transparent to-transparent"></div>
     </div>
 
-    <div class="mt-4 flex flex-col items-center justify-between gap-2 sm:flex-row">
-      <p class="font-cartograph text-[11px] tracking-wide opacity-35 dark:opacity-65">
-        &copy; {currentYear}
-        {SITE.title}. {isEnglish ? "All rights reserved." : "保留所有权利。"}
+    <div class="text-muted-foreground mt-4 flex flex-col items-center justify-between gap-2 sm:flex-row">
+      <p class="font-cartograph text-[11px] tracking-wide">
+        &copy; {`${currentYear} ${SITE.title}. ${isEnglish ? "All rights reserved." : "保留所有权利。"}`}
       </p>
-      <p class="font-cartograph text-[11px] tracking-wide opacity-30 dark:opacity-65">
+      <p class="font-cartograph text-[11px] tracking-wide">
         {isEnglish ? "Built with curiosity. Maintained over time." : "由热爱驱动，长期维护更新"}
       </p>
     </div>
@@ -87,7 +119,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
 
 <style>
   .footer-wrapper {
-    background: color-mix(in srgb, var(--background) 60%, transparent);
+    background: color-mix(in srgb, var(--background) 78%, transparent);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
@@ -100,7 +132,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
   }
 
   .footer-brand-logo {
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--border) 40%, transparent);
+    box-shadow: 0 0 0 1px var(--border-subtle);
   }
 
   .footer-social-btn {

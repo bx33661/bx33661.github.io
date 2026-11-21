@@ -52,13 +52,10 @@ const copy =
     </div>
 
     <footer class="search-dialog-foot">
-      <span>
-        <kbd>↑</kbd><kbd>↓</kbd>
-        {copy.select}
-        <kbd>↵</kbd>
-        {copy.open}
-        <kbd>Esc</kbd>
-        {copy.closeHint}
+      <span class="search-kbd-list">
+        <span class="search-kbd-item"><kbd>↑</kbd><kbd>↓</kbd><span>{copy.select}</span></span>
+        <span class="search-kbd-item"><kbd>↵</kbd><span>{copy.open}</span></span>
+        <span class="search-kbd-item"><kbd>Esc</kbd><span>{copy.closeHint}</span></span>
       </span>
       <a href={localizedPath("/search/", locale)}>
         {copy.fullSearch}

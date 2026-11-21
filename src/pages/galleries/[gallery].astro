@@ -36,13 +36,16 @@ const images = getGalleryFolderImages(slug, gallery.data.title);
   <Header />
   <Breadcrumb />
 
-  <main id="main-content" class="app-layout pb-10">
-    <section class="border-border/25 bg-muted/10 rounded-2xl border p-6">
-      <h1 class="text-3xl font-bold tracking-tight">{gallery.data.title}</h1>
-      <p class="text-foreground/70 mt-3">{gallery.data.description}</p>
-      <div class="text-foreground/60 mt-4 flex flex-wrap items-center gap-3 text-sm">
+  <main id="main-content" class="app-layout pb-12">
+    <section class="border-border-subtle bg-surface/75 rounded-2xl border p-6 shadow-xs sm:p-7">
+      <p class="font-cartograph text-accent mb-2 text-xs font-semibold tracking-widest uppercase">
+        GALLERY / COLLECTION
+      </p>
+      <h1 class="text-foreground text-3xl font-bold tracking-tight">{gallery.data.title}</h1>
+      <p class="text-muted-foreground mt-3 leading-relaxed">{gallery.data.description}</p>
+      <div class="text-muted-foreground mt-4 flex flex-wrap items-center gap-3 text-xs sm:text-sm">
         <Datetime pubDatetime={gallery.data.pubDatetime} />
-        <span class="border-border/40 rounded-full border px-3 py-1">
+        <span class="border-border-subtle bg-surface-subtle font-cartograph rounded-full border px-3 py-0.5 text-xs">
           {images.length} 张图片
         </span>
       </div>
@@ -54,7 +57,7 @@ const images = getGalleryFolderImages(slug, gallery.data.title);
           {images.map((image, index) => (
             <li>
               <button
-                class="gallery-item"
+                class="gallery-item group"
                 type="button"
                 data-lightbox-trigger
                 data-gallery-target="gallery-lightbox"
@@ -70,12 +73,15 @@ const images = getGalleryFolderImages(slug, gallery.data.title);
                   widths={[400, 800, 1200]}
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 />
+                <span class="gallery-caption" aria-hidden="true">
+                  {image.alt}
+                </span>
               </button>
             </li>
           ))}
         </ul>
       ) : (
-        <p class="border-border/25 bg-muted/5 text-foreground/65 mt-8 rounded-xl border p-5">
+        <p class="border-border-subtle bg-surface/75 text-muted-foreground mt-8 rounded-xl border p-5">
           这个图集暂时还没有图片。
         </p>
       )
@@ -90,7 +96,7 @@ const images = getGalleryFolderImages(slug, gallery.data.title);
   .gallery-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    gap: 12px;
     list-style: none;
     padding: 0;
     margin-bottom: 0;
@@ -109,25 +115,58 @@ const images = getGalleryFolderImages(slug, gallery.data.title);
   }
 
   .gallery-item {
+    position: relative;
     display: block;
     width: 100%;
     padding: 0;
-    border: 0;
+    border: 1px solid var(--border-subtle);
     border-radius: 0.9rem;
     overflow: hidden;
     cursor: zoom-in;
     background: color-mix(in srgb, var(--foreground) 5%, transparent);
+    transition:
+      border-color 0.22s ease,
+      box-shadow 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  .gallery-item:hover {
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow: 0 12px 26px -14px color-mix(in srgb, var(--foreground) 26%, transparent);
+    transform: translateY(-2px);
   }
 
   .gallery-image {
     display: block;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.35s ease;
   }
 
   .gallery-item:hover .gallery-image {
     transform: scale(1.04);
+  }
+
+  .gallery-caption {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    padding: 1.5rem 0.7rem 0.55rem;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.78), transparent);
+    color: #f8fafc;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    text-align: start;
+    opacity: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+
+  .gallery-item:hover .gallery-caption,
+  .gallery-item:focus-visible .gallery-caption {
+    opacity: 1;
   }
 </style>

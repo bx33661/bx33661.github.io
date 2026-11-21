@@ -1,11 +1,9 @@
-import { onAstroPage } from "./astro-lifecycle";
 import { mountSearchUI } from "../utils/pagefind";
 import { bindArticleDialog } from "./article-dialog";
 
-onAstroPage((signal) => {
-  const dialog = document.querySelector<HTMLDialogElement>("#search-modal");
-  const mount = dialog?.querySelector<HTMLElement>("#modal-pagefind-search");
-  if (!dialog || !mount) return;
+function bindSearchModal(dialog: HTMLDialogElement, signal: AbortSignal): void {
+  const mount = dialog.querySelector<HTMLElement>("#modal-pagefind-search");
+  if (!mount) return;
 
   const modal = bindArticleDialog(dialog, signal);
   const suggestions = dialog.querySelector("[data-search-suggestions]");
@@ -115,4 +113,29 @@ onAstroPage((signal) => {
     },
     { signal },
   );
-});
+}
+
+let controller: AbortController | null = null;
+let mountedDialog: HTMLDialogElement | null = null;
+
+function mountModal(): void {
+  const dialog = document.querySelector<HTMLDialogElement>("#search-modal");
+  if (!dialog || mountedDialog === dialog) return;
+  controller?.abort();
+  controller = new AbortController();
+  mountedDialog = dialog;
+  bindSearchModal(dialog, controller.signal);
+}
+
+function teardownModal(): void {
+  controller?.abort();
+  controller = null;
+  mountedDialog = null;
+}
+
+document.addEventListener("astro:before-swap", teardownModal);
+document.addEventListener("astro:after-swap", mountModal);
+document.addEventListener("astro:page-load", mountModal);
+if (document.readyState !== "loading") {
+  mountModal();
+}

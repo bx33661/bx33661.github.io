@@ -9,13 +9,70 @@ import { SITE } from "@/config.ts";
 <Layout title={`404 页面不存在 | ${SITE.title}`} noindex={true}>
   <Header />
 
-  <main id="main-content" class="app-layout flex flex-1 items-center justify-center">
-    <div class="mb-14 flex flex-col items-center justify-center">
-      <h1 class="text-accent text-9xl font-bold">404</h1>
-      <span aria-hidden="true">¯\_(ツ)_/¯</span>
-      <p class="mt-4 text-2xl sm:text-3xl">页面不存在</p>
-      <LinkButton href="/" class="my-6 text-lg underline decoration-dashed underline-offset-8"> 返回首页 </LinkButton>
-    </div>
+  <main id="main-content" class="app-layout flex flex-1 items-center justify-center py-14">
+    <section
+      class="border-border-subtle bg-surface/85 w-full max-w-lg rounded-2xl border p-8 text-center shadow-sm sm:p-10"
+      aria-labelledby="not-found-title"
+    >
+      <div class="mx-auto mb-5 flex justify-center" aria-hidden="true">
+        <svg class="text-accent size-24" viewBox="0 0 120 120" fill="none">
+          <circle
+            cx="60"
+            cy="60"
+            r="48"
+            stroke="currentColor"
+            stroke-opacity="0.22"
+            stroke-width="1.2"
+            stroke-dasharray="3 7"></circle>
+          <ellipse
+            cx="60"
+            cy="60"
+            rx="50"
+            ry="18"
+            transform="rotate(-26 60 60)"
+            stroke="currentColor"
+            stroke-opacity="0.45"
+            stroke-width="1.3"></ellipse>
+          <path d="M60 10V24M60 96V110M10 60H24M96 60H110" stroke="currentColor" stroke-opacity="0.28"></path>
+          <circle cx="60" cy="60" r="14" stroke="currentColor" stroke-opacity="0.35" stroke-dasharray="18 8"></circle>
+          <path d="M88 30L90 35L95 37L90 39L88 44L86 39L81 37L86 35Z" fill="currentColor"></path>
+        </svg>
+      </div>
+      <p class="font-cartograph text-accent mb-2 text-xs font-semibold tracking-widest uppercase">
+        SIGNAL LOST / HTTP 404
+      </p>
+      <h1 id="not-found-title" class="text-foreground font-serif text-6xl font-bold tracking-tight sm:text-7xl">404</h1>
+      <p class="text-foreground mt-3 text-lg font-semibold sm:text-xl">页面偏离了轨道</p>
+      <p class="text-muted-foreground mt-2 text-sm leading-relaxed">
+        你访问的地址可能已被移动、归档，或者暂时不在此处。
+      </p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+        <LinkButton
+          href="/"
+          class="bg-accent text-background hover:bg-accent/90 hover:!text-background rounded-lg px-4 py-2 text-sm font-semibold shadow-xs transition-all duration-150 hover:-translate-y-0.5"
+        >
+          返回首页
+        </LinkButton>
+        <LinkButton
+          href="/blog/"
+          class="border-border-subtle bg-surface-subtle hover:border-accent/40 hover:text-accent rounded-lg border px-4 py-2 text-sm font-medium transition-colors duration-150"
+        >
+          浏览文章
+        </LinkButton>
+        <button
+          type="button"
+          data-search-trigger
+          class="border-border-subtle bg-surface-subtle hover:border-accent/40 hover:text-accent inline-flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors duration-150"
+        >
+          <span>站内搜索</span>
+          <kbd
+            class="font-cartograph border-border-subtle bg-surface text-muted-foreground rounded border px-1.5 py-0.5 text-[11px] leading-none"
+          >
+            ⌘K
+          </kbd>
+        </button>
+      </div>
+    </section>
   </main>
 
   <Footer />

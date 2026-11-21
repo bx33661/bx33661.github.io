@@ -77,20 +77,23 @@ main.blog-index .blog-topic {
   display: inline-flex;
   align-items: baseline;
   gap: 0.3rem;
-  padding: 0.35rem 0.6rem;
-  border: 1px solid var(--index-border);
-  border-radius: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
   color: var(--foreground);
   font-size: 0.76rem;
   text-decoration: none;
   transition:
     border-color 0.15s ease,
-    color 0.15s ease;
+    color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 main.blog-index .blog-topic:hover,
 main.blog-index .blog-topic:focus-visible {
-  border-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
   color: var(--accent);
 }
 

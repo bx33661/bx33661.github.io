@@ -77,6 +77,7 @@ const { headings, variant, _listOnly = false } = Astro.props;
   nav {
     max-height: 65vh;
     overflow-y: auto;
+    scrollbar-width: thin;
   }
   ol {
     margin: 0;
@@ -84,17 +85,24 @@ const { headings, variant, _listOnly = false } = Astro.props;
     list-style: none;
   }
   li {
-    margin: 0.3rem 0;
+    margin: 0.28rem 0;
   }
   li.nested {
     padding-left: 0.85rem;
   }
   a {
     display: block;
-    color: color-mix(in srgb, var(--foreground) 65%, transparent);
+    color: var(--muted-foreground);
     font-size: 0.78rem;
     line-height: 1.45;
     text-decoration: none;
+  }
+  li:not(.nested) a {
+    font-weight: 500;
+  }
+  li.nested a {
+    font-size: 0.74rem;
+    opacity: 0.92;
   }
   a:hover,
   a:focus-visible {

@@ -1,6 +1,6 @@
 .academic-home {
-  --home-muted: #59616b;
-  --home-rule: color-mix(in srgb, var(--foreground) 16%, transparent);
+  --home-muted: #555c63;
+  --home-rule: color-mix(in srgb, var(--foreground) 14%, transparent);
   padding-top: clamp(2.5rem, 6vw, 5rem);
   padding-bottom: clamp(3rem, 6vw, 6rem);
 }
@@ -150,17 +150,32 @@ html[data-theme="dark"] .academic-home {
 }
 
 .academic-home .home-links .read-link {
-  padding: 0.7rem 1rem;
+  padding: 0.72rem 1.05rem;
   border: 1px solid var(--accent);
-  border-radius: 0.35rem;
+  border-radius: 0.45rem;
   background: var(--accent);
   color: var(--background);
   gap: 1.4rem;
+  box-shadow: 0 8px 22px -12px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.academic-home .home-links .read-link span {
+  transition: transform 0.2s ease;
 }
 
 .academic-home .home-links .read-link:hover {
   text-decoration: none;
   background: color-mix(in srgb, var(--accent) 88%, var(--foreground));
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px -12px color-mix(in srgb, var(--accent) 65%, transparent);
+}
+
+.academic-home .home-links .read-link:hover span {
+  transform: translate(2px, -2px);
 }
 
 .academic-home .home-links a:focus-visible {
@@ -330,7 +345,16 @@ html[data-theme="dark"] .academic-home {
 .academic-home .education-list img {
   width: 2.5rem;
   height: 2.5rem;
+  padding: 0.2rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
   object-fit: contain;
+}
+
+html[data-theme="dark"] .academic-home .education-list img {
+  background: #f4f0e6;
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .academic-home .school-abbr {
@@ -356,6 +380,255 @@ html[data-theme="dark"] .academic-home {
   color: var(--home-muted);
   font-size: 0.8rem;
   line-height: 1.7;
+}
+
+.academic-home .focus-section {
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--home-rule);
+}
+
+.academic-home .focus-section h2 {
+  margin: 0 0 1rem;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  font-family: var(--font-cartograph), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--home-muted);
+}
+
+.academic-home .focus-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.academic-home .focus-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.65rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--foreground);
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.academic-home .focus-chip:hover,
+.academic-home .focus-chip:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  color: var(--accent);
+}
+
+.academic-home .focus-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.academic-home .focus-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--surface) 60%, var(--background));
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.academic-home .focus-stat strong {
+  font-family: var(--font-cartograph), monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+.academic-home .focus-stat span {
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--home-muted);
+}
+
+.academic-home .focus-stat:hover,
+.academic-home .focus-stat:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--surface);
+}
+
+.academic-home .focus-stat:hover strong {
+  color: var(--accent);
+}
+
+.academic-home .home-latest {
+  margin-top: 3rem;
+  padding-top: 2.25rem;
+  border-top: 1px solid var(--home-rule);
+}
+
+.academic-home .home-latest-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.academic-home .home-latest-kicker {
+  margin: 0 0 0.35rem;
+  color: var(--accent);
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.academic-home .home-latest-head h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+}
+
+.academic-home .home-latest-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.academic-home .home-latest-more:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.academic-home .home-latest-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.academic-home .home-latest-item {
+  min-width: 0;
+}
+
+.academic-home .home-latest-link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  height: 100%;
+  padding: 1.05rem 2.25rem 1.05rem 1.15rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--surface) 64%, var(--background));
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.academic-home .home-latest-link:hover,
+.academic-home .home-latest-link:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  background: var(--surface);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px -18px color-mix(in srgb, var(--foreground) 22%, transparent);
+}
+
+.academic-home .home-latest-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.68rem;
+  color: var(--home-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.academic-home .home-latest-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--accent);
+  font-size: 0.63rem;
+  font-weight: 600;
+}
+
+.academic-home .home-latest-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.academic-home .home-latest-title {
+  color: var(--foreground);
+  font-size: 0.96rem;
+  font-weight: 620;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.academic-home .home-latest-link:hover .home-latest-title {
+  color: var(--accent);
+}
+
+.academic-home .home-latest-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  color: var(--home-muted);
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.academic-home .home-latest-arrow {
+  position: absolute;
+  top: 1.05rem;
+  inset-inline-end: 1rem;
+  color: var(--accent);
+  font-size: 0.84rem;
+  transition: transform 0.2s ease;
+}
+
+.academic-home .home-latest-link:hover .home-latest-arrow {
+  transform: translate(2px, -2px);
 }
 
 @media (max-width: 760px) {
@@ -399,6 +672,10 @@ html[data-theme="dark"] .academic-home {
 
   .academic-home .education-list li + li {
     margin-top: 0;
+  }
+
+  .academic-home .home-latest-list {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -453,5 +730,10 @@ html[data-theme="dark"] .academic-home {
   .academic-home .education-list {
     grid-template-columns: 1fr;
     gap: 1.75rem;
+  }
+
+  .academic-home .home-latest {
+    margin-top: 2.25rem;
+    padding-top: 1.75rem;
   }
 }

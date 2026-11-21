@@ -17,6 +17,7 @@ type Props = {
   variant?: "default" | "blog";
   category?: string;
   heading?: "h2" | "h3";
+  interactive?: boolean;
 };
 
 const {
@@ -29,12 +30,13 @@ const {
   variant = "default",
   category,
   heading: Heading = "h2",
+  interactive = false,
 } = Astro.props;
 const dates = getArticleDates(date, updatedDate);
 const formatDate = (value: Date) => formatSiteDate(value, locale);
 ---
 
-<li class:list={["entry-row", { "entry-row--blog": variant === "blog" }]}>
+<li class:list={["entry-row", { "entry-row--blog": variant === "blog" }]} data-category={category}>
   {
     variant === "blog" ? (
       <div class="entry-dates">
@@ -64,14 +66,24 @@ const formatDate = (value: Date) => formatSiteDate(value, locale);
     </div>
     <p>{description}</p>
     {
-      tags.length > 0 && (
-        <ul class="entry-tags" aria-label={t.topics}>
-          {tags.map((tag) => (
-            <li>
-              <a href={tag.href}>{tag.label}</a>
-            </li>
-          ))}
-        </ul>
+      (interactive || tags.length > 0) && (
+        <div class="entry-footer-meta">
+          {interactive && (
+            <span class="entry-interactive-pill">
+              <span class="entry-interactive-dot" aria-hidden="true" />
+              {t.interactive}
+            </span>
+          )}
+          {tags.length > 0 && (
+            <ul class="entry-tags" aria-label={t.topics}>
+              {tags.map((tag) => (
+                <li>
+                  <a href={tag.href}>{tag.label}</a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       )
     }
   </div>
@@ -103,6 +115,9 @@ const formatDate = (value: Date) => formatSiteDate(value, locale);
   }
   .entry-row:first-child {
     border-top: 1px solid var(--entry-border);
+  }
+  .entry-row[hidden] {
+    display: none;
   }
   time {
     padding-top: 0.23rem;
@@ -194,26 +209,70 @@ const formatDate = (value: Date) => formatSiteDate(value, locale);
   .entry-original-date time {
     font-size: inherit;
   }
+  .entry-footer-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.55rem;
+    margin-top: 0.75rem;
+  }
+  .entry-interactive-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.18rem 0.52rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    color: var(--accent);
+    font-family: var(--font-cartograph), monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .entry-interactive-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
   .entry-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
-    margin: 0.75rem 0 0;
+    margin: 0;
     padding: 0;
     list-style: none;
   }
   .entry-tags a {
     display: block;
     padding: 0.18rem 0.5rem;
-    border: 1px solid var(--entry-border);
-    border-radius: 0.3rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.35rem;
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
     color: var(--entry-desc-color);
     font-size: 0.7rem;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease,
+      background-color 0.15s ease;
   }
   .entry-tags a:hover,
   .entry-tags a:focus-visible {
-    border-color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--surface));
     color: var(--accent);
+  }
+  @media (min-width: 768px) {
+    .entry-row--blog {
+      transition: background-color 0.18s ease;
+    }
+    .entry-row--blog:hover {
+      margin-inline: -0.75rem;
+      padding-inline: 0.75rem;
+      border-radius: 0.65rem;
+      background: color-mix(in srgb, var(--surface) 60%, transparent);
+    }
   }
   @media (max-width: 640px) {
     .entry-row {

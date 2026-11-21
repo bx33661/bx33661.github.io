@@ -72,16 +72,22 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.25rem 0.6rem;
-  border: 1px solid var(--reading-border);
-  border-radius: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 65%, transparent);
   color: var(--reading-muted);
   font-size: 0.72rem;
   text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background-color 0.15s ease;
 }
 .post-page .post-tag-badge:hover,
 .post-page .post-tag-badge:focus-visible {
-  border-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
   color: var(--accent);
 }
 .post-page .post-tag-more {
@@ -175,20 +181,153 @@
   color: var(--accent);
 }
 
-/* Shiki colours, copy controls and code text remain unchanged. */
+/* Shiki colours and code text remain unchanged; chrome wraps cleanly above pre. */
 .post-page #article pre.astro-code {
-  margin-block: 1.6rem;
-  padding: 1.25rem;
+  margin-block: 1.65rem;
+  padding: 1.2rem;
   border: 1px solid var(--reading-border);
-  border-radius: 0.65rem;
+  border-radius: 0.75rem;
   font-size: 0.84rem;
   line-height: 1.75;
 }
-.post-page #article .copy-code {
-  border-color: var(--reading-border);
-  background: var(--reading-surface);
+.post-page #article .code-block-shell {
+  position: relative;
+  margin-block: 1.65rem;
+  border: 1px solid var(--reading-border);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow: 0 6px 20px -16px color-mix(in srgb, var(--foreground) 18%, transparent);
+}
+html[data-theme="dark"] .post-page #article .code-block-shell {
+  background: #0d1117;
+  box-shadow: 0 10px 26px -18px rgba(0, 0, 0, 0.55);
+}
+.post-page #article .code-block-header {
+  display: flex;
+  align-items: center;
+  min-height: 2.35rem;
+  padding: 0 5.5rem 0 0.95rem;
+  background: var(--surface-subtle);
+  border-bottom: 1px solid var(--reading-border);
+}
+html[data-theme="dark"] .post-page #article .code-block-header {
+  background: #161b22;
+}
+.post-page #article .code-block-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--reading-muted);
+}
+.post-page #article .code-block-label.is-file::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: #22c55e;
+}
+.post-page #article .code-block-shell [data-code-filename] {
+  display: none;
+}
+.post-page #article .code-block-shell > pre.astro-code {
+  position: static;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 1.05rem 1.25rem;
+}
+.post-page #article pre.astro-code[data-code-collapsible="true"]:not([data-code-expanded="true"]) {
+  max-height: 24rem;
+  overflow-y: auto;
+}
+.post-page #article .code-block-shell.is-collapsed > pre.astro-code {
+  max-height: 24rem;
+  overflow-y: hidden;
+}
+.post-page #article .code-block-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.post-page #article .code-block-shell.is-collapsed .code-block-footer {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 2.6rem 0.75rem 0.65rem;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--surface) 92%, transparent) 50%,
+    var(--surface) 88%
+  );
+}
+html[data-theme="dark"] .post-page #article .code-block-shell.is-collapsed .code-block-footer {
+  background: linear-gradient(to bottom, transparent, rgba(13, 17, 23, 0.92) 50%, #0d1117 88%);
+}
+.post-page #article .code-block-shell.is-collapsible:not(.is-collapsed) .code-block-footer {
+  position: relative;
+  padding: 0.55rem 0.75rem;
+  background: var(--surface-subtle);
+  border-top: 1px solid var(--reading-border);
+}
+html[data-theme="dark"] .post-page #article .code-block-shell.is-collapsible:not(.is-collapsed) .code-block-footer {
+  background: #161b22;
+}
+.post-page #article .code-block-toggle {
+  padding: 0.3rem 0.85rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: var(--surface);
   color: var(--foreground);
-  border-radius: 0.35rem;
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.35;
+  box-shadow: 0 4px 14px -6px rgba(15, 23, 42, 0.22);
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease,
+    background-color 0.16s ease;
+}
+.post-page #article .code-block-toggle:hover,
+.post-page #article .code-block-toggle:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  color: var(--accent);
+}
+.post-page #article .copy-code {
+  border: 1px solid var(--reading-border);
+  background: var(--surface);
+  color: var(--reading-muted);
+  border-radius: 0.4rem;
+  padding: 0.24rem 0.6rem;
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.post-page #article .code-block-shell .copy-code {
+  position: absolute;
+  top: 0.36rem;
+  inset-inline-end: 0.6rem;
+  z-index: 2;
+}
+.post-page #article .copy-code:hover,
+.post-page #article .copy-code:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent);
 }
 .post-page #article > :is(p, figure, picture) img {
   height: auto;
@@ -208,14 +347,21 @@
 
 .post-page .post-nav-link {
   min-width: 0;
-  border-color: var(--reading-border);
-  border-radius: 0.65rem;
-  background: var(--reading-surface);
+  border-color: var(--border-subtle);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--surface) 78%, var(--background));
   box-shadow: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .post-page .post-nav-link:hover {
-  border-color: var(--accent);
-  background: var(--reading-surface);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  background: var(--surface);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -18px color-mix(in srgb, var(--foreground) 22%, transparent);
 }
 
 @media (min-width: 1200px) {
@@ -264,8 +410,9 @@
   .post-page #article > h3 {
     font-size: 1.15rem;
   }
-  .post-page #article pre.astro-code {
-    padding: 1rem;
+  .post-page #article pre.astro-code,
+  .post-page #article .code-block-shell > pre.astro-code {
+    padding: 0.95rem 1rem;
     font-size: 0.78rem;
   }
   .post-page .post-nav-link {
@@ -300,16 +447,18 @@
 .post-toc-mobile [data-post-toc-open] {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.55rem;
   min-height: 44px;
-  max-width: min(20rem, calc(100vw - 6rem));
-  padding: 0.55rem 0.85rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  background: var(--surface);
+  max-width: min(20rem, calc(100vw - 5.5rem));
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--foreground);
   font-size: 0.78rem;
-  box-shadow: 0 4px 18px #0002;
+  box-shadow: 0 8px 24px -10px rgba(15, 23, 42, 0.22);
 }
 .post-toc-mobile-label {
   color: var(--accent);
@@ -324,11 +473,12 @@
 #post-toc-dialog {
   width: min(34rem, calc(100vw - 2rem));
   max-height: 75dvh;
-  padding: 1.2rem;
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
   background: var(--surface);
   color: var(--foreground);
+  box-shadow: 0 24px 60px -18px rgba(15, 23, 42, 0.3);
 }
 #post-toc-dialog header {
   display: flex;
@@ -444,11 +594,17 @@
   outline-offset: 2px;
 }
 
-.post-page .post-series,
 .post-page .post-related {
   margin-block: 2rem;
   padding-block: 1.2rem;
   border-top: 1px solid var(--reading-border);
+}
+.post-page .post-series {
+  margin-block: 2rem;
+  padding: 1.35rem 1.45rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--surface) 64%, var(--background));
 }
 .post-discovery-heading {
   display: flex;
@@ -490,9 +646,15 @@
 }
 .post-series-chapters small {
   display: inline-block;
-  margin-left: 0.7rem;
+  margin-left: 0.65rem;
+  padding: 0.1rem 0.52rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--accent);
   font-size: 0.65rem;
-  font-weight: 400;
+  font-weight: 600;
+  line-height: 1.45;
 }
 .post-series-chapters a,
 .post-series-nav a,
@@ -515,10 +677,20 @@
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  padding: 0.8rem;
-  border: 1px solid var(--reading-border);
-  border-radius: 0.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--surface) 80%, var(--background));
   font-size: 0.83rem;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+.post-series-nav a:hover {
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  background: var(--surface);
+  transform: translateY(-1px);
 }
 .post-series-nav a > span {
   color: var(--reading-muted);

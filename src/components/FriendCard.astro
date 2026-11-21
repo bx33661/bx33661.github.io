@@ -24,6 +24,8 @@ const {
   kind = "PERSONAL BLOG",
   tags = [],
 } = Astro.props;
+
+const toneIndex = [...name].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % 6;
 ---
 
 <a
@@ -36,7 +38,7 @@ const {
 >
   <div class="fc-back" aria-hidden="true">
     <div class="fc-avatar-area">
-      <span class="fc-avatar-fb">{fallback}</span>
+      <span class="fc-avatar-fb" data-avatar-tone={toneIndex}>{fallback}</span>
       {
         avatar && (
           <img class="fc-avatar" src={avatar} alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />

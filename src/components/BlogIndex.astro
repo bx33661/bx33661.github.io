@@ -17,6 +17,7 @@ import { SITE } from "@/config.ts";
 import { getAllPosts } from "@/lib/data-utils";
 import { getPath } from "@/utils/getPath";
 import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { isInteractivePost } from "@/utils/readingTime";
 import { readingTransition } from "@/utils/reading-motion";
 
 interface Props {
@@ -96,6 +97,7 @@ const topics = groupPostsByTag(topicPosts)
             date={post.data.pubDatetime}
             updatedDate={post.data.modDatetime}
             variant="blog"
+            interactive={isInteractivePost(post.body)}
             tags={getVisiblePostTags(post.data.tags).map((tag) => ({
               label: tag,
               href: getLocalizedTagPath(tag, locale),

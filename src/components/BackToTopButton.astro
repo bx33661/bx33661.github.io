@@ -18,20 +18,21 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
     aria-label={t.backToTop}
     class:list={[
       "group relative flex flex-col items-center justify-center gap-0.5",
-      "size-14 rounded-full",
-      "md:size-16",
-      "shadow-[0_4px_20px_rgba(0,0,0,0.20)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.60)]",
-      "hover:shadow-[0_6px_28px_rgba(0,0,0,0.30)] dark:hover:shadow-[0_6px_28px_rgba(0,0,0,0.75)]",
+      "size-11 rounded-full",
+      "md:size-12",
+      "shadow-[0_6px_20px_-6px_rgba(15,23,42,0.22)] dark:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.65)]",
+      "hover:shadow-[0_10px_28px_-6px_rgba(15,23,42,0.3)] dark:hover:shadow-[0_10px_30px_-4px_rgba(0,0,0,0.8)]",
     ]}
   >
-    <!-- 1: Anillo de progreso (conic-gradient) -->
+    <!-- 1: Progress ring (conic-gradient) -->
     <span id="progress-indicator" class="absolute inset-0 z-0 block rounded-full bg-transparent"></span>
-    <!-- 2: Fondo del botón, deja 3px de anillo visible -->
-    <span class="bg-background absolute inset-[3px] z-10 rounded-full backdrop-blur-md"></span>
-    <!-- 3: Contenido (icono + etiqueta) -->
+    <!-- 2: Button surface leaving a crisp 2.5px ring visible -->
+    <span class="bg-surface/95 border-border-subtle/50 absolute inset-[2.5px] z-10 rounded-full border backdrop-blur-md"
+    ></span>
+    <!-- 3: Content (icon + label) -->
     <IconArrowNarrowUp
-      class="text-accent relative z-20 size-5 transition-transform duration-200 group-hover:-translate-y-0.5 md:size-6"
+      class="text-accent relative z-20 size-4 transition-transform duration-200 group-hover:-translate-y-0.5 md:size-4.5"
     />
-    <span class="text-accent/70 relative z-20 text-[9px] font-bold tracking-widest uppercase"> top </span>
+    <span class="text-accent/75 relative z-20 text-[8px] leading-none font-bold tracking-widest uppercase">top</span>
   </button>
 </div>
