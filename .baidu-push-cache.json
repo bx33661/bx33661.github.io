@@ -2,7 +2,6 @@
   "pushed": [
     "https://www.bx33661.com/galleries/",
     "https://www.bx33661.com/notes/list/",
-    "https://www.bx33661.com/en/notes/list/",
     "https://www.bx33661.com/blog/wifi-security-notes/",
     "https://www.bx33661.com/blog/websocket-handshake-message-replay/",
     "https://www.bx33661.com/blog/openrasp-sql-detect-bypass/",
@@ -12,12 +11,12 @@
     "https://www.bx33661.com/blog/cnvd-2026-20654-lg-nas-rce/",
     "https://www.bx33661.com/blog/oh-my-vul-1-0/",
     "https://www.bx33661.com/blog/agent-teams/",
-    "https://www.bx33661.com/blog/go-net-http-source-analysis/"
+    "https://www.bx33661.com/blog/go-net-http-source-analysis/",
+    "https://www.bx33661.com/en/notes/list/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/galleries/": "23e672b3aaa0be4a02a08745a56e8b31899ec73a1e5841367c8df60adeda55e8",
     "https://www.bx33661.com/notes/list/": "fab4df2a7e8d6abf111e12e3aff3ee407a25cf291751cef9d55c24ebf356dee5",
-    "https://www.bx33661.com/en/notes/list/": "3ec205991717927b2b8bd99f595d7618afdb2abb41d9465eb12fcf93b6a605a7",
     "https://www.bx33661.com/blog/wifi-security-notes/": "eb5fb2abef26986bf6f6dde3262169c706cb95da2b4b3ad31040b287a8dbaafd",
     "https://www.bx33661.com/blog/websocket-handshake-message-replay/": "3ed9833fb3627af86bafb9ecd05c698d3b43e60edd485274f5c3d76e04bc46e3",
     "https://www.bx33661.com/blog/openrasp-sql-detect-bypass/": "39c5afb79da5df7a76667f1fa35660421c3afa3cd1a09b81eb0933555aa41629",
@@ -27,8 +26,9 @@
     "https://www.bx33661.com/blog/cnvd-2026-20654-lg-nas-rce/": "7b2953f2834ec445924c8ec3e574ec7f72cf44685b08822e12f7033011e237cd",
     "https://www.bx33661.com/blog/oh-my-vul-1-0/": "3c4fd1f911617a4b7288aa15fbf23b8af5c3b03329c4b98d4ae840e757b78026",
     "https://www.bx33661.com/blog/agent-teams/": "63a9610a1b8ceb8dc4d2ad83e33c6966470d5b39e2b1ee91febfdc4e8571d10d",
-    "https://www.bx33661.com/blog/go-net-http-source-analysis/": "cd6c4243661bb8619ccaa081a96ea51735d06e2496560b9b4d44f5c1f577149c"
+    "https://www.bx33661.com/blog/go-net-http-source-analysis/": "cd6c4243661bb8619ccaa081a96ea51735d06e2496560b9b4d44f5c1f577149c",
+    "https://www.bx33661.com/en/notes/list/": "3ec205991717927b2b8bd99f595d7618afdb2abb41d9465eb12fcf93b6a605a7"
   },
-  "lastPushAt": "2026-11-23T05:37:22.272Z",
+  "lastPushAt": "2026-11-23T10:54:44.938Z",
   "ledgerVersion": 1
 }
