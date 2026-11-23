@@ -1,13 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
+import { performance } from "node:perf_hooks";
+import { banner, c, formatDuration, section, statusLine, table } from "./lib/cli-ui.mjs";
 
+const startedAt = performance.now();
 const repoRoot = process.cwd();
 const distDir = path.join(repoRoot, "dist");
 const failures = [];
 const htmlCache = new Map();
 
 if (!fs.existsSync(distDir)) {
-  console.error("[FAIL] dist directory not found. Run build first.");
+  console.error(statusLine("error", "Missing build directory", "dist/ not found. Run npm run build first."));
   process.exit(1);
 }
 
@@ -66,7 +69,7 @@ if (home !== null) {
     [
       "Hey, I'm",
       "Welcome to my blog!",
-      "Cybersecurity and Large Language Models (LLMs)",
+      "the field of Computer Science",
       "This is my little corner of the internet",
       "I don't expect every post",
       "I hope this blog becomes a space",
@@ -150,6 +153,12 @@ for (const [file, requiredMarkers, prefix, forbidden] of [
     [],
   ],
   [
+    "projects/index.html",
+    ["pj-intro", "project-list", "Wireshark-MCP", "pinwhy", "WxLocated", "bx33661.github.io"],
+    "projects page missing",
+    [],
+  ],
+  [
     "search/index.html",
     ["SEARCH / INDEX", "search-surface", "pagefind-search", "search-dialog", "modal-pagefind-search"],
     "search page missing",
@@ -174,7 +183,7 @@ for (const [file, requiredMarkers, prefix, forbidden] of [
     "about/index.html",
     [
       "Hey, I'm",
-      "Cybersecurity and Large Language Models (LLMs)",
+      "the field of Computer Science",
       "Education",
       "University of Chinese Academy of Sciences",
     ],
@@ -252,10 +261,16 @@ if (blogTagsIndex !== null && (!blogTagsIndex.includes("/blog/#topics") || blogT
   failures.push("old tag overview does not redirect to blog topics");
 
 if (fs.existsSync(path.join(distDir, "fonts/crt"))) failures.push("removed CRT fonts are still present in dist");
-if (fs.existsSync(path.join(distDir, "projects"))) failures.push("removed /projects/ route is still present in dist");
+// /projects/ is a single showcase page; the retired per-project docs library (/projects/<slug>/) must stay gone.
+const projectsDist = path.join(distDir, "projects");
+if (fs.existsSync(projectsDist)) {
+  const extra = fs.readdirSync(projectsDist).filter((name) => name !== "index.html");
+  if (extra.length) failures.push(`retired /projects/<slug>/ docs routes still present in dist: ${extra.join(", ")}`);
+}
 
 const sitemap = readDistHtml("sitemap.xml");
-if (sitemap !== null && sitemap.includes("/projects/")) failures.push("sitemap still lists removed projects pages");
+if (sitemap !== null && /\/projects\/[^<\s]+/.test(sitemap))
+  failures.push("sitemap still lists retired /projects/<slug>/ docs pages");
 
 const albumIndex = readDistHtml("album/index.html");
 if (albumIndex !== null && !/\/galleries\/?/.test(albumIndex))
@@ -307,10 +322,20 @@ if (fs.existsSync(galleriesDir)) {
   failures.push("dist/galleries directory missing");
 }
 
-console.log("Dist smoke check summary:");
-console.log(`- Failures: ${failures.length}`);
+const elapsed = formatDuration(performance.now() - startedAt);
+console.log(banner("Dist Smoke Check", "Verifying built HTML, sitemaps, feeds, search & headers"));
+console.log(section("Summary"));
+console.log(
+  table([
+    [c.cyan("HTML cached"), String(htmlCache.size)],
+    [c.cyan("Failures"), failures.length === 0 ? c.green("0") : c.red(String(failures.length))],
+    [c.cyan("Elapsed"), elapsed],
+  ]),
+);
 if (failures.length > 0) {
-  for (const failure of failures) console.error(`[FAIL] ${failure}`);
+  console.log(section("Failures"));
+  for (const failure of failures) console.error(statusLine("error", "Fail", failure));
+  console.log("");
   process.exit(1);
 }
-console.log("[OK] dist smoke checks passed");
+console.log(statusLine("ok", "Dist smoke checks passed", elapsed));

@@ -284,3 +284,122 @@ html[data-theme="dark"] .month-entries time,
 html[data-theme="dark"] .entry-tag {
   color: color-mix(in srgb, var(--foreground) 68%, transparent);
 }
+
+.archive-cadence {
+  margin-bottom: 1.75rem;
+  padding: 1.15rem 1.35rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface) 76%, var(--background));
+}
+.cadence-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+.cadence-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.65rem;
+}
+.cadence-kicker,
+.cadence-summary,
+.cadence-legend,
+.cadence-axis,
+.cadence-year {
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+}
+.cadence-kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.cadence-summary {
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+}
+.cadence-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+}
+.cadence-legend .cadence-cell {
+  width: 0.68rem;
+  height: 0.68rem;
+}
+.cadence-grid {
+  display: grid;
+  gap: 0.32rem;
+}
+.cadence-axis,
+.cadence-row {
+  display: grid;
+  grid-template-columns: 3.1rem repeat(12, minmax(0, 1fr));
+  align-items: center;
+  gap: 0.32rem;
+}
+.cadence-axis {
+  color: var(--muted-foreground);
+  font-size: 0.62rem;
+  text-align: center;
+}
+.cadence-year {
+  color: var(--foreground);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.cadence-year:hover,
+.cadence-year:focus-visible {
+  color: var(--accent);
+}
+.cadence-cell {
+  display: block;
+  height: 0.85rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.2rem;
+  background: var(--surface-subtle);
+}
+.cadence-cell[data-level="1"] {
+  border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+}
+.cadence-cell[data-level="2"] {
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  background: color-mix(in srgb, var(--accent) 45%, var(--surface));
+}
+.cadence-cell[data-level="3"] {
+  border-color: color-mix(in srgb, var(--accent) 64%, transparent);
+  background: color-mix(in srgb, var(--accent) 70%, var(--surface));
+}
+.cadence-cell[data-level="4"] {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+@media (max-width: 640px) {
+  .archive-cadence {
+    padding: 0.95rem;
+  }
+  .cadence-axis,
+  .cadence-row {
+    grid-template-columns: 2.5rem repeat(12, minmax(0, 1fr));
+    gap: 0.18rem;
+  }
+  .cadence-axis {
+    font-size: 0.56rem;
+  }
+  .cadence-year {
+    font-size: 0.68rem;
+  }
+  .cadence-cell {
+    height: 0.72rem;
+  }
+}

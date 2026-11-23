@@ -1,6 +1,6 @@
 ---
 title: "PsiTransfer DoS 漏洞分析与复现"
-description: "A PsiTransfer upload PATCH request for an uninitialized file can trigger an unhandled rejection and terminate the server. This note traces lib/store.js, reproduces the crash, and reviews the exception-handling fix."
+description: "An unauthenticated PATCH upload for an uninitialized file triggers an unhandled rejection in PsiTransfer's lib/store.js, crashing Node.js. Includes root cause and fix."
 date: 2026-02-05
 tags:
   - "psitransfer"

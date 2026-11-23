@@ -10,4 +10,14 @@ const t = ui(locale);
     <span aria-hidden="true">×</span>
   </button>
   <img data-image-full alt="" />
+  <div class="article-lightbox-bar" data-image-bar hidden>
+    <button type="button" class="article-lightbox-nav" data-image-prev aria-label={t.previousImage}>
+      <span aria-hidden="true">←</span>
+    </button>
+    <span class="article-lightbox-counter" data-image-counter></span>
+    <p class="article-lightbox-note" data-image-note></p>
+    <button type="button" class="article-lightbox-nav" data-image-next aria-label={t.nextImage}>
+      <span aria-hidden="true">→</span>
+    </button>
+  </div>
 </dialog>

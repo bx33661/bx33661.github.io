@@ -1,6 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
+import { performance } from "node:perf_hooks";
+import { banner, c, formatDuration, section, statusLine, table } from "./lib/cli-ui.mjs";
 
+const startedAt = performance.now();
 const failures = [];
 const warnings = [];
 
@@ -91,12 +94,12 @@ assertHasText(
 );
 assertHasText(
   path.join(repoRoot, "src/components/AcademicHome.astro"),
-  /Cybersecurity and Large Language Models \(LLMs\)[\s\S]*education-section/,
+  /the field of Computer Science[\s\S]*education-section/,
   "personal homepage missing focus or education section",
 );
 assertNoText(
   path.join(repoRoot, "src/components/AcademicHome.astro"),
-  /getProjectRoots|\/projects\//,
+  /getProjectRoots|\/projects\/[\w-]+/,
   "homepage still uses retired project routes",
 );
 assertHasText(
@@ -105,20 +108,28 @@ assertHasText(
   "Astro prefetch hover strategy not configured",
 );
 
-const summary = [`- Failures: ${failures.length}`, `- Warnings: ${warnings.length}`];
-
-console.log("Source smoke check summary:");
-for (const line of summary) console.log(line);
+const elapsed = formatDuration(performance.now() - startedAt);
+console.log(banner("Source Smoke Check", "Verifying critical routes, headers, collections & configs"));
+console.log(section("Summary"));
+console.log(
+  table([
+    [c.cyan("Failures"), failures.length === 0 ? c.green("0") : c.red(String(failures.length))],
+    [c.cyan("Warnings"), warnings.length === 0 ? c.green("0") : c.amber(String(warnings.length))],
+    [c.cyan("Elapsed"), elapsed],
+  ]),
+);
 
 for (const warning of warnings) {
-  console.warn(`[WARN] ${warning}`);
+  console.warn(statusLine("warn", "Warn", warning));
 }
 
 if (failures.length > 0) {
+  console.log(section("Failures"));
   for (const failure of failures) {
-    console.error(`[FAIL] ${failure}`);
+    console.error(statusLine("error", "Fail", failure));
   }
+  console.log("");
   process.exit(1);
 }
 
-console.log("[OK] source smoke checks passed");
+console.log(statusLine("ok", "Source smoke checks passed", elapsed));

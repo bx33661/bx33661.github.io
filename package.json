@@ -1,13 +1,20 @@
 {
-  "name": "bx-portfolio",
+  "name": "astro-orbit",
+  "description": "Astro Orbit — Bilingual editorial technical blog & personal knowledge base template built with Astro 7, Tailwind CSS 4, MDX, and Pagefind.",
   "type": "module",
   "version": "1.0.0",
   "engines": {
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "dev": "node scripts/dev.mjs",
+    "dev:force": "node scripts/dev.mjs --force",
+    "dev:stop": "node scripts/dev.mjs stop",
+    "dev:status": "node scripts/dev.mjs status",
+    "start": "node scripts/dev.mjs",
+    "cli": "node scripts/cli.mjs",
+    "orbit": "node scripts/cli.mjs",
+    "template:check": "node scripts/template-check.mjs",
     "typecheck": "NODE_OPTIONS=--max-old-space-size=8192 ASTRO_TELEMETRY_DISABLED=1 astro check",
     "lint": "eslint src scripts",
     "test": "npm run test:unit && npm run smoke:source",
@@ -21,6 +28,8 @@
     "preview": "astro preview",
     "sync": "astro sync",
     "gallery:optimize": "node scripts/optimize-gallery.mjs",
+    "friends:avatars": "node scripts/friend-avatars.mjs",
+    "github:contributions": "node scripts/github-contributions.mjs",
     "seo:check": "node scripts/seo-check.mjs",
     "baidu:push": "node scripts/baidu-push.mjs",
     "baidu:push:force": "node scripts/baidu-push.mjs --force",

@@ -1,17 +1,27 @@
 ---
+import { SITE } from "@/config.ts";
 import { FRIEND_LINKS, ORGANIZATION_LINKS, HNUSEC_MEMBER_LINKS } from "@/config/friends";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import FriendCard from "@/components/FriendCard.astro";
 import FriendNetwork from "@/components/FriendNetwork.astro";
+import friendAvatars from "@/data/friend-avatars.json";
 import "@/styles/friends.css";
 
 const info = {
-  name: "BX的博客",
-  address: "https://www.bx33661.com",
-  desc: "专注于安全研究和技术分享的个人博客",
-  avatar: "/brand/bx-logo-192.png",
+  name: SITE.friendCard.name,
+  address: SITE.href,
+  desc: SITE.friendCard.desc,
+  avatar: SITE.friendCard.avatar,
+};
+
+const siteUrl = info.address.replace(/\/$/, "");
+const absAvatar = `${siteUrl}${info.avatar}`;
+const friendPayloads = {
+  json: JSON.stringify({ name: info.name, url: siteUrl, desc: info.desc, avatar: absAvatar }, null, 2),
+  yaml: [`- name: ${info.name}`, `  url: ${siteUrl}`, `  desc: ${info.desc}`, `  avatar: ${absAvatar}`].join("\n"),
+  md: `[${info.name}](${siteUrl}) - ${info.desc}`,
 };
 
 const getHost = (url: string) => {
@@ -24,8 +34,11 @@ const getHost = (url: string) => {
 
 const getFallbackText = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
 
+const localAvatars: Record<string, string> = friendAvatars;
+
 const toCard = (item: (typeof FRIEND_LINKS)[number]) => ({
   ...item,
+  avatar: item.avatar ? (localAvatars[item.avatar] ?? item.avatar) : undefined,
   host: getHost(item.url),
   fallback: getFallbackText(item.name),
 });
@@ -49,7 +62,7 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
         <p class="fp-lead">Good people. Interesting corners of the web.</p>
         <div class="fp-hero-actions">
           <a href="#friend-blogs" class="fp-primary-link">Explore the network <span aria-hidden="true">↘</span></a>
-          <a href="mailto:bx33661@gmail.com?subject=友情链接申请" class="fp-apply-btn" aria-label="邮件申请互链">
+          <a href={`mailto:${SITE.email}?subject=友情链接申请`} class="fp-apply-btn" aria-label="邮件申请互链">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path
                 d="M1.75 3.5L7 7.875L12.25 3.5"
@@ -85,7 +98,7 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
           </h2>
         </div><p>Independent voices, experiments, and notes worth bookmarking.</p>
       </div>
-      <div class="fp-grid">
+      <div class="fp-grid" data-rem3={friendCards.length % 3} data-rem2={friendCards.length % 2}>
         {friendCards.map((friend, index) => <FriendCard {...friend} index={index} kind="PERSONAL BLOG" />)}
       </div>
     </section>
@@ -99,7 +112,7 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
           </h2>
         </div><p>People I have learned alongside in the security community.</p>
       </div>
-      <div class="fp-grid">
+      <div class="fp-grid" data-rem3={hnusecCards.length % 3} data-rem2={hnusecCards.length % 2}>
         {hnusecCards.map((friend, index) => <FriendCard {...friend} index={index} kind="HNUSEC MEMBER" />)}
       </div>
     </section>
@@ -113,7 +126,7 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
           </h2>
         </div><p>Teams building places to learn, compete, and collaborate.</p>
       </div>
-      <div class="fp-grid">
+      <div class="fp-grid" data-rem3={organizationCards.length % 3} data-rem2={organizationCards.length % 2}>
         {
           organizationCards.map((friend, index) => (
             <FriendCard {...friend} index={index} kind="SECURITY TEAM" isOrg={true} />
@@ -130,7 +143,7 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
         </p>
       </div>
       <div class="fp-exchange-action">
-        <a href="mailto:bx33661@gmail.com?subject=友情链接申请">Send your link <span aria-hidden="true">↗</span></a><p>
+        <a href={`mailto:${SITE.email}?subject=友情链接申请`}>Send your link <span aria-hidden="true">↗</span></a><p>
           Include your name, URL, one-line intro, and avatar.
         </p>
       </div>
@@ -164,8 +177,76 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
           </span>
         </div>
       </a>
+
+      <div class="self-copy-bar">
+        <span class="self-copy-label">QUICK COPY / 一键复制互链信息</span>
+        <div class="self-copy-actions">
+          <button
+            type="button"
+            class="self-copy-btn"
+            data-copy-friend="json"
+            data-payload={friendPayloads.json}
+            data-label="复制 JSON"
+          >
+            复制 JSON
+          </button>
+          <button
+            type="button"
+            class="self-copy-btn"
+            data-copy-friend="yaml"
+            data-payload={friendPayloads.yaml}
+            data-label="复制 YAML"
+          >
+            复制 YAML
+          </button>
+          <button
+            type="button"
+            class="self-copy-btn"
+            data-copy-friend="md"
+            data-payload={friendPayloads.md}
+            data-label="复制 Markdown"
+          >
+            复制 Markdown
+          </button>
+        </div>
+      </div>
     </section>
   </main>
 
   <Footer />
 </Layout>
+
+<script>
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
+
+  onAstroPage((signal) => {
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy-friend]")) {
+      const baseLabel = button.dataset.label || button.textContent?.trim() || "复制";
+      let timer = 0;
+      signal.addEventListener("abort", () => clearTimeout(timer), { once: true });
+
+      button.addEventListener(
+        "click",
+        async () => {
+          const payload = button.dataset.payload;
+          if (!payload || !navigator.clipboard?.writeText) return;
+          clearTimeout(timer);
+          try {
+            await navigator.clipboard.writeText(payload);
+            if (signal.aborted) return;
+            button.dataset.copied = "true";
+            button.textContent = "已复制 ✓";
+            timer = window.setTimeout(() => {
+              if (signal.aborted) return;
+              delete button.dataset.copied;
+              button.textContent = baseLabel;
+            }, 1800);
+          } catch {
+            /* Clipboard unavailable in restricted contexts. */
+          }
+        },
+        { signal },
+      );
+    }
+  });
+</script>

@@ -1,5 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import { performance } from "node:perf_hooks";
+import { banner, c, formatDuration, panel, section, statusLine, table } from "./lib/cli-ui.mjs";
 import { createDeterministicSlug, parseFrontmatter, walkMarkdownFiles } from "./lib/content-utils.mjs";
 
 const PUBLIC_ROOT = path.resolve("public");
@@ -210,33 +212,58 @@ function checkFile(filePath, errors, warnings, slugRegistry) {
 }
 
 function main() {
+  const startedAt = performance.now();
   const errors = [];
   const warnings = [];
   const slugRegistry = new Map();
+  const scannedCounts = {};
 
   for (const collection of COLLECTIONS) {
     const collectionDir = COLLECTION_PATHS[collection];
-    if (!fs.existsSync(collectionDir)) continue;
-    for (const filePath of walkMarkdownFiles(collectionDir)) {
+    if (!fs.existsSync(collectionDir)) {
+      scannedCounts[collection] = 0;
+      continue;
+    }
+    const files = walkMarkdownFiles(collectionDir);
+    scannedCounts[collection] = files.length;
+    for (const filePath of files) {
       checkFile(filePath, errors, warnings, slugRegistry);
     }
   }
 
-  console.log("Content check summary:");
-  console.log(`- Errors: ${errors.length}`);
-  console.log(`- Warnings: ${warnings.length}`);
+  const elapsed = formatDuration(performance.now() - startedAt);
+  console.log(banner("Content Check", "Frontmatter, slug uniqueness & local image verification"));
+  console.log(section("Summary"));
+  console.log(
+    table([
+      [
+        c.cyan("Scanned"),
+        `${scannedCounts.blog ?? 0} blog · ${scannedCounts.notes ?? 0} notes · ${scannedCounts.galleries ?? 0} galleries`,
+      ],
+      [c.cyan("Errors"), errors.length === 0 ? c.green("0") : c.red(String(errors.length))],
+      [c.cyan("Warnings"), warnings.length === 0 ? c.green("0") : c.amber(String(warnings.length))],
+      [c.cyan("Elapsed"), elapsed],
+    ]),
+  );
 
   if (errors.length > 0) {
-    console.log("");
-    for (const error of errors) console.error(`[FAIL] ${error}`);
+    console.log(section("Errors"));
+    for (const error of errors) console.error(statusLine("error", "Error", error));
   }
 
   if (warnings.length > 0) {
-    console.log("");
-    for (const warning of warnings) console.warn(`[WARN] ${warning}`);
+    console.log(section("Warnings"));
+    for (const warning of warnings) console.warn(statusLine("warn", "Warn", warning));
   }
 
-  if (errors.length > 0) process.exit(1);
+  console.log("");
+  if (errors.length > 0) {
+    console.log(
+      panel("Content Check Failed", [`Found ${errors.length} error(s) and ${warnings.length} warning(s).`], "error"),
+    );
+    process.exit(1);
+  }
+  console.log(statusLine("ok", "Content check passed", `${elapsed}`));
 }
 
 main();

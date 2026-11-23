@@ -19,6 +19,7 @@ const port = Number(process.env.HARNESS_PORT ?? 4339);
 const routes = [
   ["home", "/"],
   ["friends", "/friends/"],
+  ["projects", "/projects/"],
   ["article", "/blog/codeql-learning/"],
   ["cybergym", "/blog/cybergym-ai-security-agent-benchmark/"],
   ["search", "/search/"],

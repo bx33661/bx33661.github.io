@@ -90,6 +90,15 @@ const zh = {
   expandCode: (lines: number) => `展开完整代码（共 ${lines} 行）`,
   collapseCode: "收起代码",
   allTopics: "全部主题",
+  previousImage: "上一张图片",
+  nextImage: "下一张图片",
+  copyHeadingLink: "复制章节链接",
+  copiedShort: "已复制",
+  commentsTitle: "评论区",
+  commentsLead: "使用 GitHub Discussions 驱动，欢迎留言交流。",
+  archiveActivity: "写作节奏",
+  archiveActivitySummary: (years: number, posts: number) => `按月分布 · 近 ${years} 年共 ${posts} 篇`,
+  cadenceCell: (year: number, month: number, count: number) => `${year}年${month}月：${count} 篇`,
 };
 
 const en: typeof zh = {
@@ -181,6 +190,16 @@ const en: typeof zh = {
   expandCode: (lines) => `Expand code (${lines} lines)`,
   collapseCode: "Collapse code",
   allTopics: "All topics",
+  previousImage: "Previous image",
+  nextImage: "Next image",
+  copyHeadingLink: "Copy section link",
+  copiedShort: "Copied",
+  commentsTitle: "Comments",
+  commentsLead: "Powered by GitHub Discussions. Leave a comment below.",
+  archiveActivity: "Writing cadence",
+  archiveActivitySummary: (years, posts) => `Monthly distribution · ${posts} posts across ${years} years`,
+  cadenceCell: (year, month, count) =>
+    `${year}-${String(month).padStart(2, "0")}: ${count} ${count === 1 ? "post" : "posts"}`,
 };
 
 export function ui(locale: Locale) {

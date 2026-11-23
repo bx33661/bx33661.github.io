@@ -69,7 +69,7 @@ i {
     text-autospace: normal;
   }
   body {
-    @apply bg-background font-app text-foreground selection:bg-accent/75 selection:text-background flex min-h-svh flex-col;
+    @apply bg-background font-app text-foreground selection:bg-accent/20 selection:text-foreground flex min-h-svh flex-col;
   }
   a,
   button {
@@ -92,11 +92,18 @@ i {
 /* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */
 /* Anything that has been anchored to should have extra scroll margin */
 :target {
-  scroll-margin-block: 5rem;
+  scroll-margin-block: 5.5rem;
 }
 
 .entry-list {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* Consistent icon weight: Tabler outline glyphs read lighter and crisper at 1.75. */
+@layer base {
+  svg.icon-tabler {
+    stroke-width: 1.75;
+  }
 }

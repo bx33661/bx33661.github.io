@@ -48,6 +48,7 @@ export async function GET(context: APIContext) {
     { url: `${baseUrl}/notes/`, changefreq: "weekly", priority: "0.8" },
     { url: `${baseUrl}/galleries/`, changefreq: "weekly", priority: "0.8" },
     { url: `${baseUrl}/archives/`, changefreq: "weekly", priority: "0.7" },
+    { url: `${baseUrl}/projects/`, changefreq: "monthly", priority: "0.7" },
     { url: `${baseUrl}/friends/`, changefreq: "monthly", priority: "0.6" },
     { url: `${baseUrl}/notes/list/`, changefreq: "weekly", priority: "0.6" },
   ];

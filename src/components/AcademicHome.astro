@@ -1,217 +1,328 @@
 ---
 import { SITE } from "@/config.ts";
 import { localizedPath, type Locale } from "@/i18n";
-import { ui } from "@/i18n/ui";
 import { getAllNotes, getAllPosts } from "@/lib/data-utils";
-import { getArticleDates } from "@/utils/article-discovery";
-import { formatSiteDate } from "@/utils/date";
+import { getLocalizedTagPath } from "@/utils/tagPath";
 import { getPath } from "@/utils/getPath";
 import { resolveLegacyPostSlug } from "@/utils/legacySlug";
-import { isInteractivePost } from "@/utils/readingTime";
-import { getLocalizedTagPath } from "@/utils/tagPath";
+import { getArticleDates } from "@/utils/article-discovery";
+import { getSiteDateParts } from "@/utils/date";
+import { PROJECTS } from "@/data/projects";
 import "@/styles/academic-home.css";
+
 interface Props {
   locale?: Locale;
 }
+
 const { locale = "zh-CN" } = Astro.props;
-const t = ui(locale);
 const posts = await getAllPosts(locale);
 const notes = await getAllNotes(locale);
-const latestPosts = posts.slice(0, 4).map((post) => ({
-  title: post.data.title,
-  description: post.data.description,
-  href: localizedPath(getPath(post.id, post.filePath, true, resolveLegacyPostSlug(post)), locale),
-  date: getArticleDates(post.data.pubDatetime, post.data.modDatetime).latest,
-  interactive: isInteractivePost(post.body),
-}));
-const focusTopics = ["AI", "Web", "CTF", "Security"];
+const focusTopics = ["AI", "Security", "Web", "CTF"];
+const recentPosts = posts.slice(0, 5).map((post) => {
+  const latest = getArticleDates(post.data.pubDatetime, post.data.modDatetime).latest;
+  const parts = getSiteDateParts(latest);
+  return {
+    title: post.data.title,
+    href: localizedPath(getPath(post.id, post.filePath, true, resolveLegacyPostSlug(post)), locale),
+    iso: latest.toISOString(),
+    day: `${String(parts.month + 1).padStart(2, "0")}.${String(parts.day).padStart(2, "0")}`,
+    year: parts.year,
+    tag: post.data.tags?.[0],
+  };
+});
 ---
 
+<!-- Template customization: update focusTopics above plus hero, intro copy, and education entries below -->
 <main id="main-content" class="app-layout academic-home" lang="en">
-  <section class="intro-heading" aria-labelledby="home-title">
-    <div class="hero-copy">
-      <p class="eyebrow">A LITTLE CORNER OF THE INTERNET</p>
-      <h1 id="home-title">Hey, I'm <span>bx.</span></h1>
-      <p class="welcome">Welcome to my blog!</p>
-      <p class="hero-coordinate" aria-hidden="true"><span></span> CURIOSITY, IN ORBIT.</p>
-    </div>
-    <div class="star-map" data-star-map aria-hidden="true">
-      <div class="star-map-atmosphere">
-        <canvas data-star-map-canvas style="width: 100%; height: 100%;"></canvas>
-      </div>
-      <div class="field-label"><span>BX / EXPLORATIONS</span><span class="field-mark">✦</span></div>
-      <svg viewBox="0 0 480 340" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="orb-glass" cx=".32" cy=".24" r=".85"
-            ><stop stop-color="#e3f1ff" stop-opacity=".2"></stop><stop
-              offset=".65"
-              stop-color="#b4d4ed"
-              stop-opacity=".03"></stop><stop offset="1" stop-color="#091226" stop-opacity=".28"></stop></radialGradient
-          >
-          <linearGradient id="orb-rim" x1="130" y1="80" x2="330" y2="260" gradientUnits="userSpaceOnUse"
-            ><stop stop-color="#d6edff" stop-opacity=".7"></stop><stop
-              offset=".5"
-              stop-color="#d6edff"
-              stop-opacity=".08"></stop><stop offset="1" stop-color="#d6edff" stop-opacity=".4"></stop></linearGradient
-          >
-        </defs>
-        <circle class="outer-orbit" cx="240" cy="170" r="139"></circle>
-        <path class="field-axis" d="M240 16V48M240 292V324M86 170H118M362 170H394"></path>
-        <circle cx="240" cy="170" r="91" fill="url(#orb-glass)" stroke="url(#orb-rim)"></circle>
-        <ellipse class="orbit" cx="240" cy="170" rx="154" ry="48" transform="rotate(-29 240 170)"></ellipse>
-        <ellipse class="orbit orbit-secondary" cx="240" cy="170" rx="154" ry="48" transform="rotate(49 240 170)"
-        ></ellipse>
-        <path class="constellation" d="M133 222L195 140L252 190L313 89L359 145"></path>
-        <g class="star-points"
-          ><circle cx="133" cy="222" r="2.5"></circle><circle cx="195" cy="140" r="3"></circle><circle
-            cx="252"
-            cy="190"
-            r="2.5"></circle><circle cx="359" cy="145" r="2.5"></circle><circle cx="79" cy="92" r="1.5"></circle><circle
-            cx="376"
-            cy="249"
-            r="1.5"></circle><circle cx="163" cy="278" r="1.5"></circle><circle cx="324" cy="279" r="1"></circle></g
-        >
-        <path class="north-star" d="M313 77L316 86L325 89L316 92L313 101L310 92L301 89L310 86Z"></path>
-        <circle class="satellite" cx="373" cy="96" r="4"></circle>
-      </svg>
-      <div class="field-caption"><span>CYBERSECURITY / LLMS</span><span>01 — OPEN FIELD</span></div>
-    </div>
-  </section>
-
-  <div class="home-grid">
-    <div class="intro-body">
-      <p class="intro-focus">
-        I'm currently focused on <strong>Cybersecurity and Large Language Models (LLMs)</strong>, while staying curious
-        about interesting technologies and the unknown.
-      </p>
-      <div class="intro-prose">
-        <p>
-          This is my little corner of the internet where I document what I learn, explore, and think about. Most of the
-          content revolves around technology, including study notes, hands-on experiences, and scattered thoughts.
-          Occasionally, I'll also share things beyond the world of tech.
+  <div class="home-stage">
+    <!-- Left Column: Personal Monograph & Sea-of-Stars Letter -->
+    <div class="home-monograph">
+      <header class="hero-copy" aria-labelledby="home-title">
+        <p class="eyebrow">
+          <span class="eyebrow-spark" aria-hidden="true">✦</span>
+          A LITTLE CORNER OF THE INTERNET
         </p>
-        <p>
-          I don't expect every post to have all the answers. More often than not, what I write simply reflects my
-          understanding at a particular point in time. As I continue to explore and learn, my perspectives may shift, my
-          understanding will evolve, and I'll revisit, refine, and update what I've written along the way.
-        </p>
-        <p>
-          I hope this blog becomes a space where ideas and experiences gradually accumulate, leaving traces of my
-          explorations and capturing my growth along the journey.
-        </p>
-        <p>
-          Feel free to look around! If something here helps you, sparks a thought, or gives you a different perspective,
-          I'd love to hear from you.
-        </p>
-      </div>
-      <p class="closing">
-        <strong>Let's explore the stars and beyond together. <span class="closing-star">🌟</span></strong>
-      </p>
-      <nav class="home-links" aria-label="Explore the blog">
-        <a class="read-link" href={localizedPath("/blog/", locale)}>Read the blog <span aria-hidden="true">↗</span></a>
-        <a href={localizedPath("/notes/", locale)}>Notes <span aria-hidden="true">↗</span></a>
-        <a href={SITE.profile} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-      </nav>
-    </div>
-
-    <aside class="home-sidebar">
-      <section class="education-section" aria-labelledby="education-title">
-        <h2 id="education-title">Education</h2>
-        <ul class="education-list">
-          <li>
-            <img src="/schools/hainan-university-emblem.webp" width="40" height="40" alt="" loading="lazy" />
-            <div>
-              <span class="school-abbr">HNU</span><h3>Hainan University</h3><p>
-                Bachelor's studies in Information Security
-              </p>
-            </div>
-          </li>
-          <li>
-            <img src="/schools/ucas-emblem.webp" width="40" height="40" alt="" loading="lazy" />
-            <div>
-              <span class="school-abbr">UCAS</span><h3>University of Chinese Academy of Sciences</h3><p>
-                Master's studies
-              </p>
-            </div>
-          </li>
-        </ul>
-      </section>
-
-      <section class="focus-section" aria-labelledby="focus-title">
-        <h2 id="focus-title">Focus</h2>
-        <div class="focus-chips">
-          {
-            focusTopics.map((topic) => (
-              <a href={getLocalizedTagPath(topic, locale)} class="focus-chip">
-                {topic}
-              </a>
-            ))
-          }
+        <h1 id="home-title">Hey, I'm <span>bx.</span></h1>
+        <p class="welcome">Welcome to my blog!</p>
+        <div class="horizon-rule" aria-hidden="true">
+          <span class="horizon-line"></span>
+          <span class="horizon-tag">CURIOSITY, IN ORBIT</span>
+          <span class="horizon-line horizon-line--fade"></span>
         </div>
-        <div class="focus-stats">
-          <a href={localizedPath("/blog/", locale)} class="focus-stat">
-            <strong>{posts.length}</strong>
-            <span>{posts.length === 1 ? "Post" : "Posts"}</span>
-          </a>
-          <a href={localizedPath("/notes/", locale)} class="focus-stat">
-            <strong>{notes.length}</strong>
-            <span>{notes.length === 1 ? "Note" : "Notes"}</span>
-          </a>
+      </header>
+
+      <div class="intro-body">
+        <p class="intro-focus">
+          I'm currently focused on <strong>the field of Computer Science</strong>, while staying curious about
+          interesting technologies and the unknown.
+        </p>
+
+        <div class="intro-prose">
+          <p>
+            This is my little corner of the internet where I document what I learn, explore, and think about. Most of
+            the content revolves around technology, including study notes, hands-on experiences, and scattered thoughts.
+            Occasionally, I'll also share things beyond the world of tech.
+          </p>
+          <p>
+            I don't expect every post to have all the answers. More often than not, what I write simply reflects my
+            understanding at a particular point in time. As I continue to explore and learn, my perspectives may shift,
+            my understanding will evolve, and I'll revisit, refine, and update what I've written along the way.
+          </p>
+          <p>
+            I hope this blog becomes a space where ideas and experiences gradually accumulate, leaving traces of my
+            explorations and capturing my growth along the journey.
+          </p>
+          <p>
+            Feel free to look around! If something here helps you, sparks a thought, or gives you a different
+            perspective, I'd love to hear from you.
+          </p>
         </div>
-      </section>
+
+        <p class="closing">
+          <strong>Let's explore the stars and beyond together. <span class="closing-star">🌟</span></strong>
+        </p>
+
+        <nav class="home-links" aria-label="Explore the blog">
+          <a class="read-link" href={localizedPath("/blog/", locale)}>
+            Read the blog <span aria-hidden="true">↗</span>
+          </a>
+          <a class="secondary-link" href={localizedPath("/notes/", locale)}>
+            Notes <span aria-hidden="true">↗</span>
+          </a>
+          <a class="secondary-link" href={SITE.profile} target="_blank" rel="noopener noreferrer">
+            GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Right Column: Unified Deep-Space Observatory & Profile Dossier -->
+    <aside class="observatory-dossier">
+      <div class="star-map" data-star-map aria-hidden="true">
+        <div class="star-map-atmosphere">
+          <canvas data-star-map-canvas style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div class="star-map-spotlight"></div>
+
+        <div class="field-label">
+          <span>BX // DEEP FIELD</span>
+          <span class="field-beacon"><i class="beacon-dot"></i>IN ORBIT</span>
+        </div>
+
+        <svg viewBox="0 0 460 310" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="orb-glass" cx=".34" cy=".26" r=".82">
+              <stop stop-color="#e8f4ff" stop-opacity=".24"></stop>
+              <stop offset=".55" stop-color="#7dc4e8" stop-opacity=".06"></stop>
+              <stop offset="1" stop-color="#061024" stop-opacity=".42"></stop>
+            </radialGradient>
+            <linearGradient id="orb-rim" x1="148" y1="74" x2="316" y2="236" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#e4f3ff" stop-opacity=".82"></stop>
+              <stop offset=".48" stop-color="#9ad4ff" stop-opacity=".12"></stop>
+              <stop offset="1" stop-color="#7ce0ee" stop-opacity=".48"></stop>
+            </linearGradient>
+            <linearGradient id="orbit-wake" x1="94" y1="196" x2="368" y2="96" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#7ce0ee" stop-opacity="0"></stop>
+              <stop offset=".52" stop-color="#9ad0ff" stop-opacity=".45"></stop>
+              <stop offset="1" stop-color="#ffffff" stop-opacity=".95"></stop>
+            </linearGradient>
+            <radialGradient id="polaris-halo" cx=".5" cy=".5" r=".5">
+              <stop stop-color="#ffffff" stop-opacity=".55"></stop>
+              <stop offset=".45" stop-color="#8ecaff" stop-opacity=".2"></stop>
+              <stop offset="1" stop-color="#8ecaff" stop-opacity="0"></stop>
+            </radialGradient>
+          </defs>
+
+          <!-- Background deep-field stars -->
+          <g class="parallax-far">
+            <circle class="dust-star" cx="58" cy="64" r="1.1"></circle>
+            <circle class="dust-star dust-star--twinkle" cx="108" cy="48" r="1.4"></circle>
+            <circle class="dust-star" cx="386" cy="58" r="1.2"></circle>
+            <circle class="dust-star dust-star--twinkle" cx="408" cy="138" r="1.5"></circle>
+            <circle class="dust-star" cx="68" cy="214" r="1.3"></circle>
+            <circle class="dust-star" cx="136" cy="258" r="1.1"></circle>
+            <circle class="dust-star dust-star--twinkle" cx="348" cy="248" r="1.4"></circle>
+            <circle class="dust-star" cx="294" cy="266" r="1"></circle>
+          </g>
+
+          <!-- Slowly rotating azimuth degree ring & crosshairs -->
+          <circle class="outer-orbit" cx="230" cy="155" r="126"></circle>
+          <circle class="inner-ticks" cx="230" cy="155" r="108"></circle>
+          <path class="field-axis" d="M230 16V40M230 270V294M78 155H104M356 155H382"></path>
+
+          <!-- Central celestial sphere + orbital rings -->
+          <g class="parallax-mid">
+            <circle cx="230" cy="155" r="78" fill="url(#orb-glass)" stroke="url(#orb-rim)" stroke-width="1.1"></circle>
+            <ellipse class="meridian" cx="230" cy="155" rx="78" ry="24" transform="rotate(-14 230 155)"></ellipse>
+            <ellipse class="orbit orbit-secondary" cx="230" cy="155" rx="148" ry="44" transform="rotate(44 230 155)"
+            ></ellipse>
+            <ellipse class="orbit" cx="230" cy="155" rx="152" ry="46" transform="rotate(-26 230 155)"></ellipse>
+            <ellipse
+              class="orbit-Highlight"
+              cx="230"
+              cy="155"
+              rx="152"
+              ry="46"
+              transform="rotate(-26 230 155)"
+              stroke="url(#orbit-wake)"></ellipse>
+          </g>
+
+          <!-- Foreground constellation & Polaris -->
+          <g class="parallax-near">
+            <path class="constellation" d="M126 202L184 128L242 172L302 82L348 132"></path>
+            <g class="star-points">
+              <circle cx="126" cy="202" r="2.4"></circle>
+              <circle cx="184" cy="128" r="2.9"></circle>
+              <circle cx="242" cy="172" r="2.4"></circle>
+              <circle cx="348" cy="132" r="2.4"></circle>
+            </g>
+            <circle class="polaris-glow" cx="302" cy="82" r="20" fill="url(#polaris-halo)"></circle>
+            <path class="north-star" d="M302 68L305.2 78.8L316 82L305.2 85.2L302 96L298.8 85.2L288 82L298.8 78.8Z"
+            ></path>
+            <circle class="satellite" cx="362" cy="90" r="3.6"></circle>
+          </g>
+        </svg>
+
+        <div class="field-caption">
+          <span>CYBERSECURITY · LLMS</span>
+          <span>AD ASTRA · 01</span>
+        </div>
+      </div>
+
+      <div class="dossier-body">
+        <section class="education-section" aria-labelledby="education-title">
+          <h2 id="education-title">Education</h2>
+          <ul class="education-list">
+            <li>
+              <img src="/schools/hainan-university-emblem.webp" width="40" height="40" alt="" loading="lazy" />
+              <div>
+                <span class="school-abbr">HNU</span>
+                <h3>Hainan University</h3>
+                <p>Bachelor's studies in Information Security</p>
+              </div>
+            </li>
+            <li>
+              <img src="/schools/ucas-emblem.webp" width="40" height="40" alt="" loading="lazy" />
+              <div>
+                <span class="school-abbr">UCAS</span>
+                <h3>University of Chinese Academy of Sciences</h3>
+                <p>Master's studies</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="focus-section" aria-labelledby="focus-title">
+          <h2 id="focus-title">Focus</h2>
+          <div class="focus-chips">
+            {
+              focusTopics.map((topic) => (
+                <a href={getLocalizedTagPath(topic, locale)} class="focus-chip">
+                  {topic}
+                </a>
+              ))
+            }
+          </div>
+          <div class="focus-stats">
+            <a href={localizedPath("/blog/", locale)} class="focus-stat">
+              <strong>{posts.length}</strong>
+              <span>{posts.length === 1 ? "Post" : "Posts"}</span>
+            </a>
+            <a href={localizedPath("/notes/", locale)} class="focus-stat">
+              <strong>{notes.length}</strong>
+              <span>{notes.length === 1 ? "Note" : "Notes"}</span>
+            </a>
+          </div>
+        </section>
+      </div>
     </aside>
   </div>
 
-  {
-    latestPosts.length > 0 && (
-      <section class="home-latest" aria-labelledby="latest-writing-title">
-        <header class="home-latest-head">
-          <div>
-            <p class="home-latest-kicker">LATEST / WRITING</p>
-            <h2 id="latest-writing-title">Latest writing</h2>
-          </div>
-          <a href={localizedPath("/blog/", locale)} class="home-latest-more">
-            All posts <span aria-hidden="true">↗</span>
-          </a>
-        </header>
-        <ul class="home-latest-list" lang={locale}>
-          {latestPosts.map((item) => (
-            <li class="home-latest-item">
-              <a href={item.href} class="home-latest-link">
-                <span class="home-latest-meta">
-                  <time datetime={item.date.toISOString()}>{formatSiteDate(item.date, locale)}</time>
-                  {item.interactive && (
-                    <span class="home-latest-badge">
-                      <span class="home-latest-dot" aria-hidden="true" />
-                      {t.interactive}
-                    </span>
-                  )}
-                </span>
-                <span class="home-latest-title">{item.title}</span>
-                <span class="home-latest-desc">{item.description}</span>
-                <span class="home-latest-arrow" aria-hidden="true">
-                  ↗
+  <div class="home-shelf">
+    <section class="shelf-panel" aria-labelledby="recent-title">
+      <div class="shelf-head">
+        <h2 id="recent-title">Recent writing</h2>
+        <a href={localizedPath("/blog/", locale)}>All posts <span aria-hidden="true">→</span></a>
+      </div>
+      <ol class="recent-list">
+        {
+          recentPosts.map((post) => (
+            <li>
+              <a href={post.href}>
+                <time datetime={post.iso}>
+                  <span>{post.day}</span>
+                  <small>{post.year}</small>
+                </time>
+                <span class="recent-title">{post.title}</span>
+                {post.tag && <span class="recent-tag">{post.tag}</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="shelf-panel" aria-labelledby="projects-title">
+      <div class="shelf-head">
+        <h2 id="projects-title">Projects</h2>
+        <a href="/projects/">All projects <span aria-hidden="true">→</span></a>
+      </div>
+      <ul class="project-tiles">
+        {
+          PROJECTS.map((project) => (
+            <li>
+              <a href={project.homepage ?? project.repo}>
+                <img src={project.logo} alt="" width="36" height="36" loading="lazy" decoding="async" />
+                <span>
+                  <strong>{project.name}</strong>
+                  <small>{project.kind}</small>
                 </span>
               </a>
             </li>
-          ))}
-        </ul>
-      </section>
-    )
-  }
+          ))
+        }
+      </ul>
+    </section>
+  </div>
 </main>
 
 <script>
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
   import { mountStarMaps } from "@/utils/starMap";
 
-  let cleanup: (() => void) | undefined;
-  const mount = () => {
-    cleanup?.();
-    cleanup = mountStarMaps(".academic-home [data-star-map]");
+  const setupParallax = (host: HTMLElement, signal: AbortSignal) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const onMove = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+      const rect = host.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const nx = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+      const ny = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+      const px = ((event.clientX - rect.left) / rect.width) * 100;
+      const py = ((event.clientY - rect.top) / rect.height) * 100;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        host.style.setProperty("--tilt-x", `${nx.toFixed(3)}`);
+        host.style.setProperty("--tilt-y", `${ny.toFixed(3)}`);
+        host.style.setProperty("--spot-x", `${px.toFixed(1)}%`);
+        host.style.setProperty("--spot-y", `${py.toFixed(1)}%`);
+      });
+    };
+    const onLeave = () => {
+      cancelAnimationFrame(raf);
+      host.style.setProperty("--tilt-x", "0");
+      host.style.setProperty("--tilt-y", "0");
+    };
+    host.addEventListener("pointermove", onMove, { passive: true, signal });
+    host.addEventListener("pointerleave", onLeave, { passive: true, signal });
+    signal.addEventListener("abort", () => cancelAnimationFrame(raf), { once: true });
   };
-  document.addEventListener("astro:page-load", mount);
-  document.addEventListener("astro:before-swap", () => {
-    cleanup?.();
-    cleanup = undefined;
+
+  onAstroPage((signal) => {
+    const unmountShaders = mountStarMaps(".academic-home [data-star-map]");
+    signal.addEventListener("abort", () => unmountShaders(), { once: true });
+    const starHost = document.querySelector<HTMLElement>(".academic-home [data-star-map]");
+    if (starHost) setupParallax(starHost, signal);
   });
 </script>

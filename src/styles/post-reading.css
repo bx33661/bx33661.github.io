@@ -146,6 +146,37 @@
   line-height: 1.5;
   scroll-margin-top: 6rem;
 }
+.post-page #article .heading-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  vertical-align: baseline;
+  color: var(--reading-muted);
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.82em;
+  font-weight: 600;
+  transition:
+    opacity 0.16s ease,
+    color 0.16s ease;
+}
+.post-page #article .heading-link:hover,
+.post-page #article .heading-link:focus-visible,
+.post-page #article .heading-link[data-copied="true"] {
+  color: var(--accent);
+  opacity: 1;
+}
+.post-page #article .heading-link[data-copied="true"]::after {
+  content: attr(data-copied-label);
+  padding: 0.08rem 0.42rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
 .post-page #article > h2 {
   margin: 2.8rem 0 1.2rem;
   padding-bottom: 0.6rem;
@@ -593,6 +624,70 @@ html[data-theme="dark"] .post-page #article .code-block-shell.is-collapsible:not
   outline: 2px solid white;
   outline-offset: 2px;
 }
+.article-lightbox-bar {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: min(92vw, 44rem);
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #f8fafc;
+  box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+}
+.article-lightbox-bar[hidden],
+.article-lightbox-nav[hidden],
+.article-lightbox-counter[hidden],
+.article-lightbox-note[hidden] {
+  display: none;
+}
+.article-lightbox-nav {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease;
+}
+.article-lightbox-nav:hover,
+.article-lightbox-nav:focus-visible {
+  border-color: rgba(120, 184, 255, 0.6);
+  background: rgba(120, 184, 255, 0.2);
+}
+.article-lightbox-counter {
+  flex: none;
+  color: #93c5fd;
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.article-lightbox-note {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .post-page .post-related {
   margin-block: 2rem;
@@ -719,5 +814,75 @@ html[data-theme="dark"] .post-page #article .code-block-shell.is-collapsible:not
   }
   .post-page {
     padding-bottom: 6rem;
+  }
+}
+
+@media print {
+  header,
+  footer,
+  .breadcrumb,
+  .progress-container,
+  .post-toc-rail,
+  .post-toc-mobile,
+  .post-toc-inline,
+  .back-button-wrap,
+  [data-back-to-top],
+  .copy-code,
+  .code-block-footer,
+  .heading-link,
+  .post-share,
+  .comments-panel,
+  .post-nav,
+  .post-series-nav,
+  #search-modal,
+  #article-lightbox,
+  #post-toc-dialog {
+    display: none !important;
+  }
+
+  html,
+  body,
+  .post-page {
+    background: #ffffff !important;
+    color: #111827 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .post-reading,
+  .post-reading-content {
+    display: block !important;
+    max-width: 100% !important;
+  }
+
+  .post-page #article .code-block-shell,
+  .post-page #article pre.astro-code,
+  .post-page #article pre.astro-code[data-code-collapsible="true"] {
+    max-height: none !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .post-page #article blockquote,
+  .post-page #article figure,
+  .post-page #article table,
+  .post-series {
+    break-inside: avoid;
+  }
+
+  .post-page #article :is(h1, h2, h3, h4) {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .post-page #article a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    color: #4b5563;
+    font-size: 0.78em;
+    font-weight: 400;
+    word-break: break-all;
   }
 }

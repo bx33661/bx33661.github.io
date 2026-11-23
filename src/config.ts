@@ -40,6 +40,24 @@ export const SITE = {
   locale: "zh-CN",
   location: "China",
   timezone: "Asia/Shanghai",
+  templateName: "astro-orbit",
+  email: "bx33661@gmail.com",
+  defaultAuthorId: "bx",
+  brandLogo: "/brand/bx-logo.svg",
+  ogKicker: "CYBERSECURITY / LLMS / NOTES",
+  footerTagline: {
+    zh: "记录网络安全与工程实践，持续分享真实可复现的技术经验。",
+    en: "Notes on cybersecurity and engineering, grounded in reproducible work.",
+  },
+  footerColophon: {
+    zh: "由热爱驱动，长期维护更新",
+    en: "Built with curiosity. Maintained over time.",
+  },
+  friendCard: {
+    name: "BX的博客",
+    desc: "专注于安全研究和技术分享的个人博客",
+    avatar: "/brand/bx-logo-192.png",
+  },
   introAudio: {
     enabled: false,
     src: "/audio/intro-web.mp3",

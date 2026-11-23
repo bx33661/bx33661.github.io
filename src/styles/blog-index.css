@@ -79,7 +79,7 @@ main.blog-index .blog-topic {
   gap: 0.3rem;
   padding: 0.35rem 0.65rem;
   border: 1px solid var(--border-subtle);
-  border-radius: 0.45rem;
+  border-radius: 999px;
   background: color-mix(in srgb, var(--surface) 70%, transparent);
   color: var(--foreground);
   font-size: 0.76rem;

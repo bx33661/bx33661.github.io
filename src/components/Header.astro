@@ -29,6 +29,7 @@ const navItems = [
   { label: "Posts", href: localizedPath("/blog/", locale), active: isActive("/blog") },
   { label: "Notes", href: localizedPath("/notes/", locale), active: isActive("/notes") },
   // Shared resources retain their existing URLs; no untranslated mirror pages.
+  { label: "Projects", href: "/projects/", active: isActive("/projects") },
   { label: "Friends", href: "/friends/", active: isActive("/friends") },
 ];
 
@@ -70,16 +71,15 @@ const brandText = SITE.title.trim();
 
 <header class="header-glass sticky top-0 z-40 w-full" data-header-surface={surface === "dark" ? "dark" : undefined}>
   <div class="app-layout">
-    <div id="top-nav-wrap" class="relative flex w-full items-center justify-between py-3 sm:py-4">
+    <div id="top-nav-wrap" class="nav-capsule">
       <!-- Logo -->
-      <a
-        href={localizedPath("/", locale)}
-        class="group relative z-20 flex items-center gap-2.5 text-xl font-bold tracking-tight sm:text-2xl"
-      >
+      <a href={localizedPath("/", locale)} class="nav-brand group" aria-label={`${brandText} home`}>
         <img
           src={siteLogo}
-          alt={`${SITE.title} logo`}
-          class="site-brand-logo border-border/35 size-8 rounded-md border bg-[#f4f0e6] object-contain"
+          alt=""
+          class="site-brand-logo bg-[#f4f0e6] object-contain"
+          width="32"
+          height="32"
           loading="eager"
           decoding="async"
         />
@@ -87,69 +87,69 @@ const brandText = SITE.title.trim();
       </a>
 
       <!-- Nav area -->
-      <nav id="nav-menu" class="flex items-center sm:gap-1">
+      <nav id="nav-menu" class="nav-area" aria-label="Primary">
         <!-- Desktop links -->
-        <ul class="hidden sm:flex sm:flex-row sm:items-center sm:gap-1">
-          {
-            navItems.map((item) => (
-              <li>
-                <a href={item.href} class:list={["nav-link", { "nav-active": item.active }]}>
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
+        <div class="nav-links" data-nav-links>
+          <span class="nav-bubble" aria-hidden="true" data-nav-bubble></span>
+          <ul class="nav-links-list">
+            {
+              navItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class:list={["nav-link", { "nav-active": item.active }]}
+                    aria-current={item.active ? "page" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
 
+        <div class="nav-tools">
           {
             quickItems.length > 0 && (
-              <li class="flex items-center">
-                <div class="nav-quick-switch" role="group" aria-label="Archive and gallery shortcuts">
-                  {quickItems.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <a
-                        href={item.href}
-                        title={item.label}
-                        aria-label={item.label}
-                        class:list={["nav-quick-btn", { active: item.active }]}
-                      >
-                        <Icon class="size-4.5" />
-                      </a>
-                    );
-                  })}
-                </div>
-              </li>
+              <div class="nav-quick-switch" role="group" aria-label="Archive and gallery shortcuts">
+                {quickItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <a
+                      href={item.href}
+                      title={item.label}
+                      aria-label={item.label}
+                      class:list={["nav-quick-btn", { active: item.active }]}
+                    >
+                      <Icon class="nav-glyph" />
+                    </a>
+                  );
+                })}
+              </div>
             )
           }
 
-          <li class="flex items-center px-1" aria-hidden="true">
-            <div class="bg-border/30 h-4 w-px"></div>
-          </li>
-
-          <li class="flex items-center">
-            <button data-search-trigger class="nav-search-btn" title="Search (⌘K)" aria-label="Open search">
-              <IconSearch class="size-4.5" />
-              <kbd class="nav-kbd">⌘K</kbd>
-            </button>
-          </li>
+          <button data-search-trigger class="nav-search-btn" title="Search (⌘K)" aria-label="Open search">
+            <IconSearch class="nav-glyph" />
+            <kbd class="nav-kbd">⌘K</kbd>
+          </button>
 
           {
             SITE.lightAndDarkMode && (
-              <li class="flex items-center">
-                <button
-                  id="theme-btn"
-                  class="nav-icon-btn relative"
-                  title="Toggle theme"
-                  aria-label="auto"
-                  aria-live="polite"
-                >
-                  <IconMoon class="absolute top-1/2 left-1/2 -translate-1/2 scale-100 rotate-0 transition-all duration-300 dark:scale-0 dark:-rotate-90" />
-                  <IconSunHigh class="absolute top-1/2 left-1/2 -translate-1/2 scale-0 rotate-90 transition-all duration-300 dark:scale-100 dark:rotate-0" />
-                </button>
-              </li>
+              <button
+                id="theme-btn"
+                class="nav-icon-btn relative"
+                title="Toggle theme"
+                aria-label="auto"
+                aria-live="polite"
+              >
+                <IconMoon class="nav-glyph absolute top-1/2 left-1/2 -translate-1/2 scale-100 rotate-0 transition-all duration-300 dark:scale-0 dark:-rotate-90" />
+                <IconSunHigh class="nav-glyph absolute top-1/2 left-1/2 -translate-1/2 scale-0 rotate-90 transition-all duration-300 dark:scale-100 dark:rotate-0" />
+              </button>
             )
           }
-        </ul>
+        </div>
+
         <a
           href={languageHref}
           class="language-switch"
@@ -179,55 +179,52 @@ const brandText = SITE.title.trim();
           <div class="hamburger-box">
             <span class="hamburger-line hamburger-line--1"></span>
             <span class="hamburger-line hamburger-line--2"></span>
-            <span class="hamburger-line hamburger-line--3"></span>
           </div>
         </button>
       </nav>
     </div>
-  </div>
 
-  <!-- Mobile dropdown menu -->
-  <div id="mobile-menu" class="mobile-menu sm:hidden" aria-hidden="true">
-    <div class="mobile-menu-inner app-layout">
-      <nav class="mobile-nav-links">
-        {
-          allMobileItems.map((item, index) => (
-            <a href={item.href} class:list={["mobile-nav-link", { active: item.active }]} style={`--i:${index}`}>
-              <span class="mobile-nav-indicator" />
-              <span>{item.label}</span>
-            </a>
-          ))
-        }
-      </nav>
+    <!-- Mobile dropdown menu -->
+    <div id="mobile-menu" class="mobile-menu sm:hidden" aria-hidden="true">
+      <div class="mobile-menu-inner">
+        <nav class="mobile-nav-links" aria-label="Mobile">
+          {
+            allMobileItems.map((item, index) => (
+              <a href={item.href} class:list={["mobile-nav-link", { active: item.active }]} style={`--i:${index}`}>
+                <span>{item.label}</span>
+                <span class="mobile-nav-indicator" />
+              </a>
+            ))
+          }
+        </nav>
 
-      <div class="mobile-menu-divider"></div>
+        <div class="mobile-menu-divider"></div>
 
-      <div class="mobile-menu-actions">
-        <button data-search-trigger class="mobile-action-btn" title="Search (⌘K)" aria-label="Open search">
-          <IconSearch class="size-4" />
-          <span>Search</span>
-        </button>
-        {
-          SITE.lightAndDarkMode && (
-            <button
-              id="theme-btn-mobile"
-              class="mobile-action-btn"
-              title="Toggle theme"
-              aria-label="auto"
-              aria-live="polite"
-            >
-              <IconMoon class="block size-4 dark:hidden" />
-              <IconSunHigh class="hidden size-4 dark:block" />
-              <span class="block dark:hidden">Dark mode</span>
-              <span class="hidden dark:block">Light mode</span>
-            </button>
-          )
-        }
+        <div class="mobile-menu-actions">
+          <button data-search-trigger class="mobile-action-btn" title="Search (⌘K)" aria-label="Open search">
+            <IconSearch class="size-4" />
+            <span>Search</span>
+          </button>
+          {
+            SITE.lightAndDarkMode && (
+              <button
+                id="theme-btn-mobile"
+                class="mobile-action-btn"
+                title="Toggle theme"
+                aria-label="auto"
+                aria-live="polite"
+              >
+                <IconMoon class="block size-4 dark:hidden" />
+                <IconSunHigh class="hidden size-4 dark:block" />
+                <span class="block dark:hidden">Dark mode</span>
+                <span class="hidden dark:block">Light mode</span>
+              </button>
+            )
+          }
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="header-border-line via-border/40 h-px w-full bg-linear-to-r from-transparent to-transparent"></div>
 </header>
 
 <script>
@@ -239,6 +236,52 @@ const brandText = SITE.title.trim();
       const syncScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 12);
       const schedule = onViewportScroll(signal, syncScroll);
       schedule();
+    }
+
+    // Liquid-glass bubble: idle until the pointer/keyboard enters the nav, so page
+    // loads and hash scrolling never wait on it. The active link has a CSS pill.
+    const links = document.querySelector<HTMLElement>("[data-nav-links]");
+    const bubble = links?.querySelector<HTMLElement>("[data-nav-bubble]");
+    if (links && bubble) {
+      const active = links.querySelector<HTMLElement>(".nav-active");
+      const place = (target: HTMLElement) => {
+        bubble.style.width = `${target.offsetWidth}px`;
+        bubble.style.transform = `translateX(${target.offsetLeft}px)`;
+      };
+      const engage = (target: HTMLElement) => {
+        if (!links.dataset.bubbleReady) {
+          bubble.classList.add("no-motion");
+          place(active ?? target);
+          bubble.style.opacity = active ? "1" : "0";
+          links.dataset.bubbleReady = "true";
+          void bubble.offsetWidth;
+          bubble.classList.remove("no-motion");
+        }
+        place(target);
+        bubble.style.opacity = "1";
+      };
+      const release = () => {
+        if (!links.dataset.bubbleReady) return;
+        if (active) place(active);
+        else bubble.style.opacity = "0";
+      };
+      bubble.addEventListener(
+        "transitionend",
+        (event) => {
+          if (event.propertyName !== "transform" || links.matches(":hover, :focus-within")) return;
+          delete links.dataset.bubbleReady;
+          bubble.style.opacity = "0";
+        },
+        { signal },
+      );
+      links.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
+        link.addEventListener("pointerenter", () => engage(link), { signal });
+        link.addEventListener("focus", () => engage(link), { signal });
+      });
+      links.addEventListener("pointerleave", release, { signal });
+      links.addEventListener("focusout", (event) => !links.contains(event.relatedTarget as Node) && release(), {
+        signal,
+      });
     }
 
     const menuBtn = document.querySelector<HTMLElement>("#menu-btn");

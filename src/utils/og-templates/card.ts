@@ -355,7 +355,7 @@ export async function ogImageForPost(post: CollectionEntry<"blog">): Promise<str
 }
 
 export async function ogImageForSite(): Promise<string> {
-  const kicker = "CYBERSECURITY / LLMS / NOTES";
+  const kicker = SITE.ogKicker;
   const fontText = `${SITE.title}${SITE.desc}${HOSTNAME}${kicker}`;
   return satori(
     {

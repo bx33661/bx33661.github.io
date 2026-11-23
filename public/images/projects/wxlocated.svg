@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="100 100 824 824"><rect x="100" y="100" width="824" height="824" rx="184" fill="#FFF9EF"/><g transform="translate(100 100) scale(3.21875)">
+<g stroke="#254B43" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M57 180C34 183 20 168 27 151C31 141 43 142 44 152" fill="#9DDEBE"/>
+<ellipse cx="89" cy="211" rx="20" ry="12" fill="#9DDEBE"/>
+<ellipse cx="164" cy="211" rx="20" ry="12" fill="#9DDEBE"/>
+<path d="M54 79L49 40Q47 27 60 34L91 53Q128 40 165 53L196 34Q209 27 207 40L202 79Q220 104 214 144C209 185 176 206 128 206C80 206 47 185 42 144Q36 105 54 79Z" fill="#AFE8CB"/>
+<path d="M61 51L66 77L81 65Z" fill="#FFC2AE" stroke="none"/>
+<path d="M194 51L179 65L191 76Z" fill="#FFC2AE" stroke="none"/>
+<ellipse cx="128" cy="176" rx="36" ry="22" fill="#FFF8E9" stroke="none"/>
+<path d="M117 167L107 175L117 183M139 167L149 175L139 183" fill="none" stroke-width="4"/>
+<ellipse cx="90" cy="120" rx="8" ry="11" fill="#254B43" stroke="none"/>
+<ellipse cx="164" cy="120" rx="9" ry="12" fill="#254B43" stroke="none"/>
+<circle cx="92" cy="116" r="2.5" fill="#FFFFFF" stroke="none"/>
+<circle cx="166" cy="116" r="3" fill="#FFFFFF" stroke="none"/>
+<ellipse cx="72" cy="139" rx="13" ry="8" fill="#FFB6A5" stroke="none"/>
+<ellipse cx="183" cy="139" rx="13" ry="8" fill="#FFB6A5" stroke="none"/>
+<path d="M121 132Q127 137 133 132" fill="none" stroke-width="4"/>
+<path d="M116 140Q121 150 128 143Q135 150 140 140" fill="none" stroke-width="4"/>
+<path d="M116 76L108 83L116 90M140 76L148 83L140 90" fill="none" stroke="#FFFFFF" stroke-width="5"/>
+<path d="M192 150L218 178" fill="none" stroke-width="20"/>
+<path d="M192 150L218 178" fill="none" stroke="#FFD082" stroke-width="10"/>
+<circle cx="167" cy="120" r="35" fill="none" stroke-width="14"/>
+<circle cx="167" cy="120" r="35" fill="none" stroke="#FFD082" stroke-width="7"/>
+<path d="M149 103Q155 95 166 95" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+<path d="M201 170Q203 159 213 164Q225 172 216 182Q208 187 201 178Z" fill="#AFE8CB" stroke-width="5"/>
+</g>
+<path d="M229 71L232 80L241 83L232 86L229 95L226 86L217 83L226 80Z" fill="#FFD082"/>
+</g></svg>

@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="docs/github-banner.png" alt="BX Blog" width="100%" />
+  <img src="docs/github-banner.png" alt="Astro Orbit" width="100%" />
 </p>
 
-<h1 align="center">BX Blog · Astro 博客模板</h1>
+<h1 align="center">Astro Orbit · 双语技术博客与知识库模板</h1>
 
 <p align="center">
-  一个正在使用的个人技术博客，也可作为 Astro 博客的起点<br/>
-  <a href="https://www.bx33661.com"><strong>www.bx33661.com</strong></a>
+  以纸感学术版式、轨道星图与双语阅读体验为核心的 Astro 7 个人博客模板<br/>
+  当前承载 <a href="https://www.bx33661.com"><strong>BX 的个人博客 (www.bx33661.com)</strong></a>
 </p>
 
 <p align="center">
@@ -48,40 +48,46 @@ npm run build          # dist/ + Pagefind
 npm run preview
 ```
 
-## 用作博客模板
+## 用作博客模板 (`astro-orbit`)
 
-1. Fork 本仓库，安装 `.nvmrc` 指定的 Node.js 版本，运行上面的本地命令。
-2. 修改 [`src/config.ts`](./src/config.ts) 中的站点地址、标题、作者、简介、GitHub 链接和文章编辑链接。`astro.config.ts` 的 `site` 取自这里；只改 `.env` 里的 `SITE` 不会替换它。
-3. 改写 [`src/components/AcademicHome.astro`](./src/components/AcademicHome.astro) 中的个人介绍、教育经历、联系方式和近期动态；项目与奖项分别在 `src/data/academic/projects/`、`src/data/academic/awards/`。按需要检查 `src/config/friends.ts`、页眉、页脚和头像等 `public/` 资源。
-4. 用自己的文章替换 `src/content/blog/`，笔记和相册在 `src/data/notes/`、`src/data/galleries/`。保留本仓库现有文章时，不要随意改动已发布的 slug 和图片 URL。
-5. 自定义域名时，修改 [`public/CNAME`](./public/CNAME) 和 `.env`/GitHub Variables 中的站点地址。使用 GitHub Pages 默认域名时，移除 `public/CNAME`；若站点位于仓库子路径，还需在 `astro.config.ts` 配置 Astro 的 `base`，并逐一检查目前以 `/` 开头的站内链接和资源路径。只设置 `BASE_URL` 环境变量不足以完成子路径部署。
-6. 按需配置评论、统计和百度推送；不用的服务保持关闭。配置项见 [`.env.example`](./.env.example)，密钥放在 GitHub Secrets，不写进仓库。
+1. Fork 本仓库，安装 `.nvmrc` 指定的 Node.js 版本，运行 `npm ci`。
+2. 优先编辑统一配置入口 [`src/config.ts`](./src/config.ts) 中的站点信息与身份字段：`website`、`title`、`author`、`email`、`defaultAuthorId`、`profile`、`brandLogo`、`ogKicker`、`footerTagline`、`footerColophon`、`friendCard`、`editPost` 等。`astro.config.ts` 的 `site` 与多个页面卡片均直接读取此处配置；仅改 `.env` 里的 `SITE` 不会覆盖它。
+3. 改写 [`src/components/AcademicHome.astro`](./src/components/AcademicHome.astro) 中的个人介绍、教育经历与 `focusTopics`；按需要更新 `src/config/friends.ts`、`src/data/article-series.ts`、`src/data/academic/` 以及 `public/` 头像/品牌图标资源。
+4. 用自己的文章替换 `src/content/blog/`，笔记和相册分别在 `src/data/notes/`、`src/data/galleries/`。保留本仓库现有文章时，请勿随意改动已发布的 slug 和图片 URL。
+5. 自定义域名时，修改 [`public/CNAME`](./public/CNAME) 和 `.env`/GitHub Variables 中的站点地址。使用 GitHub Pages 默认域名时，移除 `public/CNAME`；若站点位于仓库子路径，还需在 `astro.config.ts` 配置 Astro 的 `base`，并检查以 `/` 开头的站内路径。
+6. 运行 `npm run template:check` 审计尚未替换的模板默认字段（严格模式可加 `-- --strict`）；按需配置 `.env` 中的评论、统计与百度推送（详情见 [`.env.example`](./.env.example)）。
 
-仓库里仍有个人资料、文章和服务地址。公开自己的版本前，可运行 `rg -n 'bx33661|www\.bx33661\.com' src public .github` 检查遗留引用。模板改造应在自己的 Fork 中进行，不需要修改本站的已发布 URL。
-
-新文章可用：
+新文章或命令行工具可使用：
 
 ```bash
-npm run content:new -- --title "文章标题" --slug "your-post-slug"
-npm run verify:full
+npm run cli                                                   # 打开 astro-orbit 命令面板
+npm run content:new -- --title "文章标题" --slug "your-post-slug"  # 不传 --title 可进入交互向导
+npm run template:check                                        # 检查尚未定制的个人/域名默认配置
+npm run verify:full                                           # 完整质量与浏览器回归验证
 ```
 
-脚手架生成的文章默认是草稿；完善内容和元数据后再改为公开。完整验证需要可用的 Chrome/Playwright Chromium，本仓库 CI 会安装浏览器。
+脚手架生成的文章默认是草稿（`draft: true`）；完善内容和元数据后再改为公开。完整验证需要可用的 Chrome/Playwright Chromium，本仓库 CI 会安装浏览器。
 
 ## 常用脚本
 
 | 命令                       | 说明                                             |
 | -------------------------- | ------------------------------------------------ |
-| `npm run dev`              | 开发服务器                                       |
+| `npm run cli`              | `astro-orbit` CLI 工具总览与快捷入口             |
+| `npm run dev`              | 智能开发服务器（自动检测重复进程与锁文件状态）   |
+| `npm run dev:force`        | 强制接管已有端口/锁并重启开发服务器              |
+| `npm run dev:stop`         | 停止后台运行中的 Astro 开发服务器                |
+| `npm run dev:status`       | 查看当前开发服务器状态                           |
 | `npm run build`            | 生产构建 + Pagefind 搜索索引                     |
 | `npm run check`            | ESLint + 单元测试 + 源码冒烟检查                 |
 | `npm run harness:doctor`   | 运行环境、依赖、Git 状态与预览端口自检           |
 | `npm run verify:quick`     | ESLint、Astro 类型、单元测试、源码和内容检查     |
 | `npm run verify:full`      | 快速检查 + 构建、产物检查、桌面/移动端浏览器截图 |
+| `npm run template:check`   | 模板个性化定制检查（识别遗留默认身份/域名配置）  |
 | `npm run format`           | Prettier 代码与文档格式化                        |
 | `npm run format:check`     | Prettier 格式校验                                |
 | `npm run smoke:dist`       | 构建产物检查                                     |
-| `npm run content:new`      | 新建文章脚手架                                   |
+| `npm run content:new`      | 新建文章/笔记脚手架（支持交互式向导）            |
+| `npm run content:check`    | 内容元数据、本地图片与 slug 校验                 |
 | `npm run gallery:optimize` | 相册多尺寸优化                                   |
 | `npm run baidu:push`       | 百度收录推送（需 token）                         |
 

@@ -15,6 +15,7 @@ const footerLinks = [
   { label: t.posts, href: localizedPath("/blog/", locale) },
   { label: t.notes, href: localizedPath("/notes/", locale) },
   { label: t.archives, href: localizedPath("/archives/", locale) },
+  { label: isEnglish ? "Projects" : "项目", href: "/projects/" },
   { label: t.friends, href: "/friends/" },
 ];
 
@@ -38,20 +39,16 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
       <div class="flex flex-col items-center gap-3 sm:items-start">
         <a href={localizedPath("/", locale)} class="group flex items-center gap-2 text-lg font-bold tracking-tight">
           <img
-            src="/brand/bx-logo.svg"
+            src={SITE.brandLogo ?? "/brand/bx-logo.svg"}
             alt={`${SITE.title} logo`}
-            class="footer-brand-logo border-border-subtle group-hover:border-accent/40 size-7 rounded-md border bg-[#f4f0e6] object-contain transition-all duration-300 group-hover:scale-105"
+            class="footer-brand-logo border-border-subtle group-hover:border-accent/40 size-7 rounded-full border bg-[#f4f0e6] object-contain transition-all duration-300 group-hover:scale-105"
             loading="lazy"
             decoding="async"
           />
           <span class="footer-logo-text">{SITE.title}</span>
         </a>
-        <p class="text-muted-foreground max-w-xs text-center text-xs leading-relaxed sm:text-start">
-          {
-            isEnglish
-              ? "Notes on cybersecurity and engineering, grounded in reproducible work."
-              : "记录网络安全与工程实践，持续分享真实可复现的技术经验。"
-          }
+        <p class="text-muted-foreground max-w-sm text-center text-xs leading-relaxed text-balance sm:text-start">
+          {isEnglish ? SITE.footerTagline.en : SITE.footerTagline.zh}
         </p>
         <nav
           class="mt-0.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 sm:justify-start"
@@ -80,21 +77,21 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
             SOCIALS.map((social) => (
               <LinkButton
                 href={social.href}
-                class="footer-social-btn border-border-subtle bg-surface/75 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-accent/10 inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:shadow-sm"
+                class="footer-social-btn border-border-subtle bg-surface/60 text-muted-foreground hover:border-accent/35 hover:bg-accent/10 hover:text-accent inline-flex size-9 items-center justify-center rounded-full border transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
                 title={social.linkTitle}
               >
-                <social.icon class="size-4 fill-transparent stroke-current stroke-2" />
+                <social.icon class="size-[1.0625rem] fill-transparent stroke-current stroke-[1.75]" />
                 <span class="sr-only">{social.linkTitle}</span>
               </LinkButton>
             ))
           }
           <LinkButton
             href={isEnglish ? "/en/rss.xml" : "/rss.xml"}
-            class="footer-social-btn border-border-subtle bg-surface/75 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-accent/10 inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:shadow-sm"
+            class="footer-social-btn border-border-subtle bg-surface/60 text-muted-foreground hover:border-accent/35 hover:bg-accent/10 hover:text-accent inline-flex size-9 items-center justify-center rounded-full border transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
             title={t.rssFeed}
             aria-label={t.rssFeed}
           >
-            <IconRss class="size-4 fill-transparent stroke-current stroke-2" />
+            <IconRss class="size-[1.0625rem] fill-transparent stroke-current stroke-[1.75]" />
             <span class="sr-only">{t.rssFeed}</span>
           </LinkButton>
         </div>
@@ -111,7 +108,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
         &copy; {`${currentYear} ${SITE.title}. ${isEnglish ? "All rights reserved." : "保留所有权利。"}`}
       </p>
       <p class="font-cartograph text-[11px] tracking-wide">
-        {isEnglish ? "Built with curiosity. Maintained over time." : "由热爱驱动，长期维护更新"}
+        {isEnglish ? SITE.footerColophon.en : SITE.footerColophon.zh}
       </p>
     </div>
   </div>

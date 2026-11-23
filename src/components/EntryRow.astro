@@ -40,7 +40,9 @@ const formatDate = (value: Date) => formatSiteDate(value, locale);
   {
     variant === "blog" ? (
       <div class="entry-dates">
-        <span class="entry-date-label">{dates.updated ? t.updated : t.published}</span>
+        <span class="entry-date-label" data-kind={dates.updated ? "updated" : "published"}>
+          {dates.updated ? t.updated : t.published}
+        </span>
         <time datetime={dates.latest.toISOString()}>{formatDate(dates.latest)}</time>
         {dates.updated && (
           <span class="entry-original-date">
@@ -197,6 +199,24 @@ const formatDate = (value: Date) => formatSiteDate(value, locale);
   .entry-date-label {
     font-size: 0.68rem;
   }
+  /* A plain publish date speaks for itself; keep the label for assistive tech only. */
+  .entry-date-label[data-kind="published"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .entry-date-label[data-kind="updated"] {
+    align-self: flex-start;
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    color: var(--accent);
+    font-size: 0.64rem;
+    font-weight: 600;
+  }
   .entry-row--blog time {
     padding: 0;
     color: inherit;
@@ -248,7 +268,7 @@ const formatDate = (value: Date) => formatSiteDate(value, locale);
     display: block;
     padding: 0.18rem 0.5rem;
     border: 1px solid var(--border-subtle);
-    border-radius: 0.35rem;
+    border-radius: 999px;
     background: color-mix(in srgb, var(--surface) 60%, transparent);
     color: var(--entry-desc-color);
     font-size: 0.7rem;

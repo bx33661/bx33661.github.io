@@ -1,124 +1,205 @@
 .academic-home {
-  --home-muted: #555c63;
+  --home-muted: #4d545c;
   --home-rule: color-mix(in srgb, var(--foreground) 14%, transparent);
-  padding-top: clamp(2.5rem, 6vw, 5rem);
-  padding-bottom: clamp(3rem, 6vw, 6rem);
+  --home-cyan: #1b8fa8;
+  position: relative;
+  padding-top: clamp(2.25rem, 5vw, 4.25rem);
+  padding-bottom: clamp(3rem, 6vw, 5.25rem);
 }
 
 html[data-theme="dark"] .academic-home {
-  --home-muted: #aab5c3;
+  --home-muted: #aebac8;
+  --home-cyan: #72dce8;
 }
 
-.academic-home .intro-heading {
+/* Subtle unclipped ambient starlight wash behind the stage */
+.academic-home::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: min(36rem, 100%);
+  height: 24rem;
+  background: radial-gradient(
+    closest-side at 42% 45%,
+    color-mix(in srgb, var(--accent) 7%, transparent),
+    color-mix(in srgb, var(--home-cyan) 3%, transparent) 58%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.academic-home .home-stage {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  align-items: center;
-  gap: 2rem;
-  padding-bottom: 2.5rem;
-  border-bottom: 1px solid var(--home-rule);
+  grid-template-columns: minmax(0, 1.2fr) minmax(20rem, 0.85fr);
+  align-items: start;
+  gap: clamp(2.25rem, 4.5vw, 3.75rem);
 }
 
-.academic-home .hero-copy {
-  padding: 1rem 0;
-}
-
-.academic-home .hero-coordinate {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin: 2.4rem 0 0;
-  color: var(--home-muted);
-  font-family: var(--font-cartograph), monospace;
-  font-size: 0.61rem;
-  letter-spacing: 0.12em;
-}
-
-.academic-home .hero-coordinate span {
-  width: 0.3rem;
-  height: 0.3rem;
-  background: var(--accent);
-  border-radius: 50%;
+/* ==========================================================================
+   Left Column · Personal Monograph
+   ========================================================================== */
+.academic-home .home-monograph {
+  min-width: 0;
+  padding-top: 0.25rem;
 }
 
 .academic-home .eyebrow {
-  margin: 0 0 1.25rem;
-  color: var(--home-muted);
-  font-family: var(--font-cartograph), monospace;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  color: var(--accent);
+  font-family: var(--font-cartograph), ui-monospace, monospace;
   font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  line-height: 1.8;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+}
+
+.academic-home .eyebrow-spark {
+  font-size: 0.78rem;
+  color: var(--accent);
 }
 
 .academic-home h1 {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3rem, 7vw, 5rem);
-  line-height: 1.12;
+  font-size: clamp(3.15rem, 6.4vw, 4.7rem);
+  line-height: 1.06;
   font-weight: 400;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.045em;
+  color: var(--foreground);
 }
 
 .academic-home h1 span {
-  color: var(--accent);
-  font-family: var(--font-sans);
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
   font-weight: 600;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.03em;
+  padding-right: 0.06em;
+  color: var(--accent);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    color-mix(in srgb, var(--accent) 72%, var(--home-cyan)) 62%,
+    var(--home-cyan) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .academic-home .welcome {
-  margin: 0.85rem 0 0;
-  font-size: clamp(1.15rem, 2vw, 1.35rem);
-  line-height: 1.6;
-  font-weight: 400;
+  margin: 0.75rem 0 0;
+  font-size: clamp(1.12rem, 1.85vw, 1.3rem);
+  line-height: 1.55;
+  font-weight: 450;
   letter-spacing: -0.015em;
+  color: var(--foreground);
 }
 
-.academic-home .home-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 15rem;
-  gap: clamp(2rem, 5vw, 4rem);
-  padding-top: 2.5rem;
+.academic-home .horizon-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0 1.65rem;
+}
+
+.academic-home .horizon-line {
+  width: 2.25rem;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.65;
+}
+
+.academic-home .horizon-line--fade {
+  flex: 1;
+  max-width: 11rem;
+  background: linear-gradient(90deg, var(--home-rule), transparent);
+  opacity: 1;
+}
+
+.academic-home .horizon-tag {
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--home-muted);
+  white-space: nowrap;
 }
 
 .academic-home .intro-body {
   min-width: 0;
+  max-width: 42rem;
 }
 
 .academic-home .intro-focus {
-  margin: 0 0 1.75rem;
-  font-size: 1.12rem;
-  line-height: 1.85;
-  letter-spacing: -0.012em;
+  margin: 0 0 1.18rem;
+  font-size: 1.05rem;
+  line-height: 1.78;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
 }
 
 .academic-home .intro-focus strong {
   font-weight: 650;
+  color: var(--foreground);
+  background: linear-gradient(
+    transparent 67%,
+    color-mix(in srgb, var(--accent) 16%, transparent) 67%,
+    color-mix(in srgb, var(--home-cyan) 16%, transparent) 94%,
+    transparent 94%
+  );
+  padding-inline: 0.1em;
 }
 
 .academic-home .intro-prose {
   font-family: var(--font-sans);
   color: var(--home-muted);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 400;
-  line-height: 1.9;
+  line-height: 1.78;
   letter-spacing: 0.002em;
 }
 
 .academic-home .intro-prose p {
-  margin: 0 0 1.35rem;
+  margin: 0 0 0.96rem;
+}
+
+.academic-home .intro-prose p:last-child {
+  margin-bottom: 0;
 }
 
 .academic-home .closing {
-  margin: 2rem 0 0;
-  padding-left: 1rem;
-  border-left: 2px solid var(--accent);
-  font-size: 1rem;
-  line-height: 1.75;
+  position: relative;
+  margin: 1.65rem 0 0;
+  padding: 0.55rem 1rem 0.55rem 1.05rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 7%, transparent),
+    color-mix(in srgb, var(--home-cyan) 3%, transparent) 55%,
+    transparent
+  );
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--foreground);
+}
+
+.academic-home .closing::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 2.5px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--home-cyan));
 }
 
 .academic-home .closing strong {
-  font-weight: 550;
+  font-weight: 600;
 }
 
 .academic-home .closing-star {
@@ -130,93 +211,160 @@ html[data-theme="dark"] .academic-home {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem 1.6rem;
-  margin-top: 2rem;
+  gap: 0.7rem;
+  margin-top: 1.75rem;
 }
 
 .academic-home .home-links a {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  color: var(--accent);
+  gap: 0.5rem;
   font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
-  text-underline-offset: 4px;
-}
-
-.academic-home .home-links a:hover {
-  text-decoration: underline;
 }
 
 .academic-home .home-links .read-link {
-  padding: 0.72rem 1.05rem;
-  border: 1px solid var(--accent);
-  border-radius: 0.45rem;
-  background: var(--accent);
+  padding: 0.68rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 90%, #ffffff);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 82%, var(--home-cyan)) 100%);
   color: var(--background);
-  gap: 1.4rem;
-  box-shadow: 0 8px 22px -12px color-mix(in srgb, var(--accent) 55%, transparent);
+  gap: 0.75rem;
+  box-shadow:
+    0 10px 24px -12px color-mix(in srgb, var(--accent) 62%, transparent),
+    0 1px 0 rgb(255 255 255 / 0.28) inset;
   transition:
-    background-color 0.2s ease,
     transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.academic-home .home-links .read-link span {
-  transition: transform 0.2s ease;
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
 }
 
 .academic-home .home-links .read-link:hover {
-  text-decoration: none;
-  background: color-mix(in srgb, var(--accent) 88%, var(--foreground));
-  transform: translateY(-1px);
-  box-shadow: 0 12px 26px -12px color-mix(in srgb, var(--accent) 65%, transparent);
+  transform: translateY(-1.5px);
+  filter: brightness(1.05);
+  box-shadow:
+    0 14px 28px -12px color-mix(in srgb, var(--accent) 72%, transparent),
+    0 1px 0 rgb(255 255 255 / 0.35) inset;
 }
 
-.academic-home .home-links .read-link:hover span {
+.academic-home .home-links .secondary-link {
+  padding: 0.66rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface) 72%, var(--background));
+  color: var(--foreground);
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.academic-home .home-links .secondary-link:hover {
+  border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+  background: var(--surface);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.academic-home .home-links a span {
+  transition: transform 0.2s ease;
+}
+
+.academic-home .home-links a:hover span {
   transform: translate(2px, -2px);
 }
 
 .academic-home .home-links a:focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 5px;
+  outline-offset: 4px;
 }
 
-.academic-home .home-sidebar {
+/* ==========================================================================
+   Right Column · Unified Deep-Space Observatory Dossier
+   ========================================================================== */
+.academic-home .observatory-dossier {
   min-width: 0;
-  border-left: 1px solid var(--home-rule);
-  padding-left: 1.75rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 13%, transparent);
+  background: color-mix(in srgb, var(--surface) 84%, var(--background));
+  box-shadow:
+    0 24px 52px -34px rgb(12 28 54 / 0.28),
+    0 1px 0 rgb(255 255 255 / 0.55) inset;
+  overflow: hidden;
+}
+
+@media (min-width: 881px) {
+  .academic-home .observatory-dossier {
+    position: sticky;
+    top: 5.25rem;
+  }
+}
+
+html[data-theme="dark"] .academic-home .observatory-dossier {
+  border-color: color-mix(in srgb, var(--accent) 22%, var(--border));
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--surface) 94%, #1e2d42) 0%,
+    color-mix(in srgb, var(--surface-subtle) 96%, #0d141f) 100%
+  );
+  box-shadow:
+    0 26px 56px -32px rgb(0 0 0 / 0.72),
+    0 1px 0 rgb(255 255 255 / 0.06) inset;
 }
 
 .academic-home .star-map {
+  --tilt-x: 0;
+  --tilt-y: 0;
+  --spot-x: 65%;
+  --spot-y: 30%;
   position: relative;
   isolation: isolate;
-  min-height: 350px;
+  height: 306px;
+  margin: 0.58rem 0.58rem 0;
+  border-radius: 0.68rem;
   overflow: hidden;
-  border-radius: 2px 2px 56px 2px;
-  background: #172642;
-  color: #e0edfc;
-  border: 1px solid rgb(179 208 242 / 0.28);
-  box-shadow: 0 16px 44px -28px rgb(16 39 73 / 0.5);
+  background: #0b162c;
+  color: #e4f1ff;
+  border: 1px solid rgb(164 206 248 / 0.28);
+  box-shadow:
+    0 14px 32px -20px rgb(6 15 34 / 0.65),
+    0 0 0 1px rgb(255 255 255 / 0.06) inset;
 }
 
 .academic-home .star-map-atmosphere {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 76% 12%, #887bbd, transparent 54%),
-    radial-gradient(ellipse at 36% 75%, #3c879a, transparent 68%),
-    linear-gradient(135deg, #101d35, #344c7d 58%, #19263f);
+    radial-gradient(ellipse at 74% 16%, rgb(118 102 192 / 0.72), transparent 54%),
+    radial-gradient(ellipse at 26% 80%, rgb(38 144 168 / 0.65), transparent 64%),
+    radial-gradient(circle at 52% 48%, rgb(32 76 142 / 0.45), transparent 60%),
+    linear-gradient(140deg, #071022 0%, #162c52 52%, #0c1a30 100%);
 }
 
 .academic-home .star-map-atmosphere::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(7 15 32 / 0.48), transparent 27%, transparent 70%, rgb(7 15 32 / 0.5));
+  background:
+    linear-gradient(to right, rgb(186 218 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(186 218 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, rgb(5 12 26 / 0.5), transparent 26%, transparent 72%, rgb(5 12 26 / 0.58));
+  background-size:
+    26px 26px,
+    26px 26px,
+    100% 100%;
+}
+
+.academic-home .star-map-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(circle 150px at var(--spot-x) var(--spot-y), rgb(156 214 255 / 0.14), transparent 75%);
 }
 
 .academic-home .star-map-atmosphere canvas {
@@ -231,220 +379,384 @@ html[data-theme="dark"] .academic-home {
 
 .academic-home .star-map svg {
   position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  inset: 0;
+  pointer-events: none;
+}
+
+.academic-home .parallax-far {
+  transform: translate3d(calc(var(--tilt-x) * -3px), calc(var(--tilt-y) * -3px), 0);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.academic-home .parallax-mid {
+  transform: translate3d(calc(var(--tilt-x) * 4.5px), calc(var(--tilt-y) * 4.5px), 0);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.academic-home .parallax-near {
+  transform: translate3d(calc(var(--tilt-x) * 8px), calc(var(--tilt-y) * 8px), 0);
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .academic-home .field-label,
 .academic-home .field-caption {
   position: absolute;
-  inset-inline: 1.4rem;
+  inset-inline: 1rem;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #e0edfc;
+  color: rgb(228 241 255 / 0.88);
   font:
-    500 0.55rem/1.5 var(--font-cartograph),
+    600 0.55rem/1.4 var(--font-cartograph),
+    ui-monospace,
     monospace;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.12em;
 }
 
 .academic-home .field-label {
-  top: 1.1rem;
+  top: 0.85rem;
 }
 
-.academic-home .field-mark {
-  font-size: 1rem;
+.academic-home .field-beacon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgb(140 214 255 / 0.32);
+  background: rgb(12 28 54 / 0.55);
+  backdrop-filter: blur(4px);
+  color: #9be4f5;
+  font-size: 0.52rem;
+}
+
+.academic-home .beacon-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #7ce8f5;
+  box-shadow: 0 0 8px #7ce8f5;
+  animation: beacon-pulse 2.8s ease-in-out infinite;
 }
 
 .academic-home .field-caption {
-  bottom: 1.2rem;
-  font-size: 0.51rem;
-  letter-spacing: 0.07em;
+  bottom: 0.85rem;
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  color: rgb(214 232 252 / 0.78);
+}
+
+.academic-home .dust-star {
+  fill: #dbeeff;
+  fill-opacity: 0.55;
+}
+
+.academic-home .dust-star--twinkle {
+  animation: star-twinkle 4.2s ease-in-out infinite alternate;
 }
 
 .academic-home .outer-orbit {
-  stroke: #d5e6fc;
-  stroke-opacity: 0.24;
-  stroke-dasharray: 1 9;
+  stroke: #d5e8ff;
+  stroke-opacity: 0.26;
+  stroke-dasharray: 1.5 7.5;
+  transform-origin: 230px 155px;
+  animation: orbit-drift 96s linear infinite;
+}
+
+.academic-home .inner-ticks {
+  stroke: #9cd4ff;
+  stroke-opacity: 0.14;
+  stroke-dasharray: 1 14;
 }
 
 .academic-home .field-axis {
-  stroke: #d5e6fc;
-  stroke-opacity: 0.45;
-  stroke-width: 0.7;
-}
-
-.academic-home .orbit {
-  stroke: #e2edff;
-  stroke-opacity: 0.63;
+  stroke: #d5e8ff;
+  stroke-opacity: 0.42;
   stroke-width: 0.75;
 }
 
+.academic-home .meridian {
+  stroke: #cfe7ff;
+  stroke-opacity: 0.18;
+  stroke-dasharray: 3 5;
+}
+
+.academic-home .orbit {
+  stroke: #e2eeff;
+  stroke-opacity: 0.5;
+  stroke-width: 0.85;
+}
+
 .academic-home .orbit-secondary {
-  stroke-opacity: 0.25;
+  stroke-opacity: 0.24;
+}
+
+.academic-home .orbit-Highlight {
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-dasharray: 110 420;
+  animation: comet-glide 14s linear infinite;
 }
 
 .academic-home .constellation {
-  stroke: currentColor;
-  stroke-opacity: 0.5;
-  stroke-width: 0.7;
+  stroke: #b9e2ff;
+  stroke-opacity: 0.62;
+  stroke-width: 0.9;
+  stroke-dasharray: 2.5 2.5;
 }
 
-.academic-home .star-points,
-.academic-home .north-star,
-.academic-home .satellite {
-  fill: currentColor;
+.academic-home .star-points {
+  fill: #eef7ff;
+}
+
+.academic-home .north-star {
+  fill: #ffffff;
+  filter: drop-shadow(0 0 6px rgb(168 222 255 / 0.85));
+}
+
+.academic-home .polaris-glow {
+  transform-origin: 302px 82px;
+  animation: polaris-breathe 3.8s ease-in-out infinite;
 }
 
 .academic-home .satellite {
-  stroke: #d9e8ff;
+  fill: #8de8f7;
+  stroke: #d9f3ff;
   stroke-width: 5;
-  stroke-opacity: 0.18;
+  stroke-opacity: 0.22;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .academic-home .star-map-atmosphere canvas {
-    transition: none;
+@keyframes orbit-drift {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-.academic-home .education-section {
-  padding-top: 0.1rem;
+@keyframes comet-glide {
+  from {
+    stroke-dashoffset: 530;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
-.academic-home .education-section h2 {
-  margin: 0 0 1.75rem;
-  font-size: 0.7rem;
-  line-height: 1.5;
-  font-family: var(--font-cartograph), monospace;
+@keyframes polaris-breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes star-twinkle {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+
+@keyframes beacon-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academic-home .star-map-atmosphere canvas,
+  .academic-home .parallax-far,
+  .academic-home .parallax-mid,
+  .academic-home .parallax-near {
+    transition: none;
+  }
+
+  .academic-home .outer-orbit,
+  .academic-home .orbit-Highlight,
+  .academic-home .polaris-glow,
+  .academic-home .dust-star--twinkle,
+  .academic-home .beacon-dot {
+    animation: none;
+  }
+}
+
+/* Dossier Lower Body: Education + Focus */
+.academic-home .dossier-body {
+  padding: 1.3rem 1.35rem 1.4rem;
+}
+
+.academic-home .education-section h2,
+.academic-home .focus-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.95rem;
+  font-size: 0.66rem;
+  line-height: 1.4;
+  font-family: var(--font-cartograph), ui-monospace, monospace;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.13em;
   font-weight: 600;
   color: var(--home-muted);
 }
 
+.academic-home .education-section h2::after,
+.academic-home .focus-section h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--home-rule), transparent);
+}
+
 .academic-home .education-list {
+  position: relative;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+.academic-home .education-list::before {
+  content: "";
+  position: absolute;
+  top: 1.25rem;
+  bottom: 1.25rem;
+  left: 1.18rem;
+  width: 1px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 32%, transparent), var(--home-rule));
+}
+
 .academic-home .education-list li {
+  position: relative;
   display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1fr);
+  grid-template-columns: 2.4rem minmax(0, 1fr);
   gap: 0.8rem;
-  align-items: start;
+  align-items: center;
 }
 
 .academic-home .education-list li + li {
-  margin-top: 2rem;
+  margin-top: 1.05rem;
 }
 
 .academic-home .education-list img {
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0.2rem;
+  position: relative;
+  z-index: 1;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0.22rem;
   border-radius: 0.55rem;
   border: 1px solid var(--border-subtle);
-  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  background: #f6f4ec;
   object-fit: contain;
+  box-shadow: 0 2px 8px -4px rgb(0 0 0 / 0.12);
 }
 
 html[data-theme="dark"] .academic-home .education-list img {
-  background: #f4f0e6;
-  border-color: rgba(255, 255, 255, 0.16);
+  background: color-mix(in srgb, #f4f0e6 90%, var(--surface));
+  border-color: rgb(255 255 255 / 0.18);
 }
 
 .academic-home .school-abbr {
-  display: block;
-  margin-bottom: 0.3rem;
-  font-family: var(--font-cartograph), monospace;
+  display: inline-block;
+  margin-bottom: 0.12rem;
+  font-family: var(--font-cartograph), ui-monospace, monospace;
   color: var(--accent);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
 }
 
 .academic-home .education-list h3 {
   margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  font-weight: 600;
+  font-size: 0.88rem;
+  line-height: 1.42;
+  font-weight: 630;
   letter-spacing: -0.01em;
+  color: var(--foreground);
 }
 
 .academic-home .education-list p {
-  margin: 0.5rem 0 0;
+  margin: 0.18rem 0 0;
   color: var(--home-muted);
-  font-size: 0.8rem;
-  line-height: 1.7;
+  font-size: 0.77rem;
+  line-height: 1.55;
 }
 
 .academic-home .focus-section {
-  margin-top: 2rem;
-  padding-top: 1.75rem;
-  border-top: 1px solid var(--home-rule);
-}
-
-.academic-home .focus-section h2 {
-  margin: 0 0 1rem;
-  font-size: 0.7rem;
-  line-height: 1.5;
-  font-family: var(--font-cartograph), monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 600;
-  color: var(--home-muted);
+  margin-top: 1.3rem;
+  padding-top: 1.2rem;
+  border-top: 1px dashed var(--home-rule);
 }
 
 .academic-home .focus-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.42rem;
 }
 
 .academic-home .focus-chip {
   display: inline-flex;
   align-items: center;
-  padding: 0.28rem 0.65rem;
+  gap: 0.32rem;
+  padding: 0.26rem 0.66rem;
   border: 1px solid var(--border-subtle);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  background: color-mix(in srgb, var(--surface) 72%, var(--background));
   color: var(--foreground);
-  font-family: var(--font-cartograph), monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.69rem;
+  font-weight: 550;
   text-decoration: none;
   transition:
     border-color 0.18s ease,
     color 0.18s ease,
-    background-color 0.18s ease;
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.academic-home .focus-chip::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 70%, var(--home-cyan));
 }
 
 .academic-home .focus-chip:hover,
 .academic-home .focus-chip:focus-visible {
-  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
   color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .academic-home .focus-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.55rem;
-  margin-top: 1rem;
+  margin-top: 0.85rem;
 }
 
 .academic-home .focus-stat {
   display: flex;
-  flex-direction: column;
-  gap: 0.12rem;
-  padding: 0.65rem 0.75rem;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.52rem 0.72rem;
   border: 1px solid var(--border-subtle);
-  border-radius: 0.55rem;
-  background: color-mix(in srgb, var(--surface) 60%, var(--background));
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--background) 55%, var(--surface));
   color: inherit;
   text-decoration: none;
   transition:
@@ -453,17 +765,17 @@ html[data-theme="dark"] .academic-home .education-list img {
 }
 
 .academic-home .focus-stat strong {
-  font-family: var(--font-cartograph), monospace;
-  font-size: 1rem;
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.94rem;
   font-weight: 700;
   line-height: 1.2;
   color: var(--foreground);
 }
 
 .academic-home .focus-stat span {
-  font-family: var(--font-cartograph), monospace;
-  font-size: 0.64rem;
-  letter-spacing: 0.06em;
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.61rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--home-muted);
 }
@@ -478,262 +790,266 @@ html[data-theme="dark"] .academic-home .education-list img {
   color: var(--accent);
 }
 
-.academic-home .home-latest {
-  margin-top: 3rem;
-  padding-top: 2.25rem;
-  border-top: 1px solid var(--home-rule);
-}
-
-.academic-home .home-latest-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-
-.academic-home .home-latest-kicker {
-  margin: 0 0 0.35rem;
-  color: var(--accent);
-  font-family: var(--font-cartograph), monospace;
-  font-size: 0.64rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-}
-
-.academic-home .home-latest-head h2 {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 650;
-  letter-spacing: -0.025em;
-  color: var(--foreground);
-}
-
-.academic-home .home-latest-more {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  color: var(--accent);
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.academic-home .home-latest-more:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.academic-home .home-latest-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.85rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.academic-home .home-latest-item {
-  min-width: 0;
-}
-
-.academic-home .home-latest-link {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  height: 100%;
-  padding: 1.05rem 2.25rem 1.05rem 1.15rem;
-  border: 1px solid var(--border-subtle);
-  border-radius: 0.75rem;
-  background: color-mix(in srgb, var(--surface) 64%, var(--background));
-  color: inherit;
-  text-decoration: none;
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.academic-home .home-latest-link:hover,
-.academic-home .home-latest-link:focus-visible {
-  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
-  background: var(--surface);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 26px -18px color-mix(in srgb, var(--foreground) 22%, transparent);
-}
-
-.academic-home .home-latest-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-cartograph), monospace;
-  font-size: 0.68rem;
-  color: var(--home-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.academic-home .home-latest-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.1rem 0.45rem;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
-  color: var(--accent);
-  font-size: 0.63rem;
-  font-weight: 600;
-}
-
-.academic-home .home-latest-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.academic-home .home-latest-title {
-  color: var(--foreground);
-  font-size: 0.96rem;
-  font-weight: 620;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-
-.academic-home .home-latest-link:hover .home-latest-title {
-  color: var(--accent);
-}
-
-.academic-home .home-latest-desc {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  color: var(--home-muted);
-  font-size: 0.8rem;
-  line-height: 1.65;
-}
-
-.academic-home .home-latest-arrow {
-  position: absolute;
-  top: 1.05rem;
-  inset-inline-end: 1rem;
-  color: var(--accent);
-  font-size: 0.84rem;
-  transition: transform 0.2s ease;
-}
-
-.academic-home .home-latest-link:hover .home-latest-arrow {
-  transform: translate(2px, -2px);
-}
-
-@media (max-width: 760px) {
-  .academic-home .home-grid {
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 880px) {
+  .academic-home .home-stage {
     grid-template-columns: 1fr;
-    gap: 2.75rem;
+    gap: 2.5rem;
   }
 
-  .academic-home .home-sidebar {
-    padding: 0;
-    border-left: 0;
-  }
-
-  .academic-home .intro-heading {
-    grid-template-columns: 1fr;
-    gap: 1.8rem;
-  }
-
-  .academic-home .hero-copy {
-    padding: 0;
-  }
-
-  .academic-home .hero-coordinate {
-    margin-top: 1.4rem;
-  }
-
-  .academic-home .star-map {
-    min-height: 300px;
-  }
-
-  .academic-home .education-section {
-    padding-top: 1.75rem;
-    border-top: 1px solid var(--home-rule);
+  .academic-home .intro-body {
+    max-width: none;
   }
 
   .academic-home .education-list {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.15rem;
+  }
+
+  .academic-home .education-list::before {
+    display: none;
   }
 
   .academic-home .education-list li + li {
     margin-top: 0;
   }
-
-  .academic-home .home-latest-list {
-    grid-template-columns: 1fr;
-  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 540px) {
   .academic-home {
-    padding-top: 2rem;
+    padding-top: 1.75rem;
+    padding-bottom: 2.75rem;
   }
 
-  .academic-home .intro-heading {
-    padding-bottom: 1.75rem;
-    gap: 1.5rem;
+  .academic-home .eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.09em;
+  }
+
+  .academic-home .horizon-rule {
+    margin: 1.2rem 0 1.35rem;
+  }
+
+  .academic-home .intro-focus {
+    font-size: 1.01rem;
+    line-height: 1.78;
+  }
+
+  .academic-home .intro-prose {
+    font-size: 0.93rem;
+    line-height: 1.82;
   }
 
   .academic-home .star-map {
-    min-height: 265px;
-    border-bottom-right-radius: 40px;
+    height: 248px;
   }
 
   .academic-home .field-label,
   .academic-home .field-caption {
-    inset-inline: 1rem;
-  }
-
-  .academic-home .field-caption {
-    font-size: 0.45rem;
-  }
-
-  .academic-home .eyebrow {
-    font-size: 0.58rem;
-    letter-spacing: 0.09em;
-    margin-bottom: 1rem;
-  }
-
-  .academic-home .home-grid {
-    padding-top: 1.75rem;
-  }
-
-  .academic-home .intro-focus {
-    font-size: 1.05rem;
-    line-height: 1.8;
-  }
-
-  .academic-home .intro-prose {
-    font-size: 0.94rem;
-    line-height: 1.85;
-  }
-
-  .academic-home .closing {
-    font-size: 0.95rem;
+    inset-inline: 0.85rem;
   }
 
   .academic-home .education-list {
     grid-template-columns: 1fr;
-    gap: 1.75rem;
+    gap: 1rem;
   }
+}
 
-  .academic-home .home-latest {
-    margin-top: 2.25rem;
-    padding-top: 1.75rem;
+/* ─── Shelf: recent writing + projects ─── */
+.academic-home .home-shelf {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 1.25rem;
+  margin-top: 3.5rem;
+}
+
+.academic-home .shelf-panel {
+  padding: 1.25rem 1.25rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+
+.academic-home .shelf-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.academic-home .shelf-head h2 {
+  margin: 0;
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.academic-home .shelf-head a {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.academic-home .shelf-head a span {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.academic-home .shelf-head a:hover span {
+  transform: translateX(3px);
+}
+
+.academic-home .recent-list,
+.academic-home .project-tiles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.academic-home .recent-list li + li {
+  border-top: 1px dashed color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+
+.academic-home .recent-list a {
+  display: grid;
+  grid-template-columns: 3.4rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  margin-inline: -0.5rem;
+  padding: 0.7rem 0.5rem;
+  border-radius: 0.6rem;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: background-color 0.18s ease;
+}
+
+.academic-home .recent-list a:hover {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.academic-home .recent-list time {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-cartograph), monospace;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.academic-home .recent-list time span {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.academic-home .recent-list time small {
+  font-size: 0.62rem;
+  color: var(--muted-foreground);
+}
+
+.academic-home .recent-title {
+  overflow: hidden;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: color 0.18s ease;
+}
+
+.academic-home .recent-list a:hover .recent-title {
+  color: var(--accent);
+}
+
+.academic-home .recent-tag {
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: 0.66rem;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.academic-home .project-tiles {
+  display: grid;
+  gap: 0.25rem;
+  padding-bottom: 0.5rem;
+}
+
+.academic-home .project-tiles a {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-inline: -0.5rem;
+  padding: 0.55rem 0.5rem;
+  border-radius: 0.75rem;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: background-color 0.18s ease;
+}
+
+.academic-home .project-tiles a:hover {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.academic-home .project-tiles img {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: 0.6rem;
+  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--border-subtle);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.academic-home .project-tiles a:hover img {
+  transform: rotate(-5deg) scale(1.05);
+}
+
+.academic-home .project-tiles span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.academic-home .project-tiles strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.academic-home .project-tiles small {
+  font-size: 0.7rem;
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 880px) {
+  .academic-home .home-shelf {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 2.5rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .academic-home .recent-list a {
+    grid-template-columns: 3rem minmax(0, 1fr);
+  }
+  .academic-home .recent-tag {
+    display: none;
+  }
+  .academic-home .recent-title {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academic-home .project-tiles img,
+  .academic-home .shelf-head a span {
+    transition: none;
   }
 }

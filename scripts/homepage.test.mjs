@@ -14,7 +14,7 @@ const text = home
 const paragraphs = [
   "Hey, I'm bx.",
   "Welcome to my blog!",
-  "I'm currently focused on Cybersecurity and Large Language Models (LLMs), while staying curious about interesting technologies and the unknown.",
+  "I'm currently focused on the field of Computer Science, while staying curious about interesting technologies and the unknown.",
   "This is my little corner of the internet where I document what I learn, explore, and think about. Most of the content revolves around technology, including study notes, hands-on experiences, and scattered thoughts. Occasionally, I'll also share things beyond the world of tech.",
   "I don't expect every post to have all the answers. More often than not, what I write simply reflects my understanding at a particular point in time. As I continue to explore and learn, my perspectives may shift, my understanding will evolve, and I'll revisit, refine, and update what I've written along the way.",
   "I hope this blog becomes a space where ideas and experiences gradually accumulate, leaving traces of my explorations and capturing my growth along the journey.",

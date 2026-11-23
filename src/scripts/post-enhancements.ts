@@ -32,21 +32,61 @@ function setupProgressBar(article: HTMLElement, signal: AbortSignal) {
   schedule();
 }
 
-function attachHeadingLinks(article: HTMLElement) {
-  const prefix = document.documentElement.lang === "en" ? "Jump to: " : "跳转到：";
+function attachHeadingLinks(article: HTMLElement, signal: AbortSignal) {
+  const isEnglish = document.documentElement.lang === "en";
+  const labelPrefix = isEnglish ? "Copy section link: " : "复制章节链接：";
+  const copiedLabel = isEnglish ? "Copied" : "已复制";
+
   for (const heading of article.querySelectorAll<HTMLElement>(":scope > :is(h2,h3,h4,h5,h6)[id]")) {
-    if (heading.querySelector(".heading-link")) continue;
-    heading.classList.add("group");
-    const link = document.createElement("a");
-    link.className =
-      "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
-    link.href = `#${heading.id}`;
-    link.setAttribute("aria-label", `${prefix}${heading.textContent?.trim()}`);
-    const span = document.createElement("span");
-    span.ariaHidden = "true";
-    span.textContent = "#";
-    link.appendChild(span);
-    heading.appendChild(link);
+    let link = heading.querySelector<HTMLAnchorElement>(".heading-link");
+    if (!link) {
+      heading.classList.add("group");
+      link = document.createElement("a");
+      link.className =
+        "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
+      link.href = `#${heading.id}`;
+      const cleanTitle = heading.textContent?.replace(/#\s*$/, "").trim() ?? heading.id;
+      link.setAttribute("aria-label", `${labelPrefix}${cleanTitle}`);
+      link.setAttribute("title", `${labelPrefix}${cleanTitle}`);
+      const span = document.createElement("span");
+      span.ariaHidden = "true";
+      span.textContent = "#";
+      link.appendChild(span);
+      heading.appendChild(link);
+    }
+
+    const anchor = link;
+    anchor.dataset.copiedLabel = copiedLabel;
+    let timer = 0;
+    let sequence = 0;
+    signal.addEventListener("abort", () => clearTimeout(timer), { once: true });
+
+    anchor.addEventListener(
+      "click",
+      async (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        const targetHash = `#${heading.id}`;
+        history.replaceState(history.state, "", targetHash);
+        heading.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth", block: "start" });
+
+        const token = ++sequence;
+        clearTimeout(timer);
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(new URL(targetHash, window.location.href).href);
+          }
+          if (signal.aborted || token !== sequence) return;
+          anchor.dataset.copied = "true";
+          timer = window.setTimeout(() => {
+            if (!signal.aborted && token === sequence) delete anchor.dataset.copied;
+          }, 1800);
+        } catch {
+          /* Clipboard may be restricted in non-HTTPS or denied contexts; hash navigation still succeeded. */
+        }
+      },
+      { signal },
+    );
   }
 }
 
@@ -221,7 +261,7 @@ export function mountPostEnhancements(signal: AbortSignal) {
   if (!article) return;
   setupProgressBar(article, signal);
   setupArticleFormatting(article);
-  attachHeadingLinks(article);
+  attachHeadingLinks(article, signal);
   attachCopyButtons(article, signal);
   setupArticleToc(signal);
   setupArticleLightbox(signal);

@@ -39,6 +39,33 @@ const years = Array.from(byYear.entries())
     count: Array.from(months.values()).reduce((sum, entries) => sum + entries.length, 0),
   }));
 const monthCount = years.reduce((sum, year) => sum + year.months.length, 0);
+const maxMonthlyCount = Math.max(
+  1,
+  ...years.flatMap((yearItem) => yearItem.months.map((group) => group.entries.length)),
+);
+const toCadenceLevel = (count: number) => {
+  if (count <= 0) return 0;
+  const ratio = count / maxMonthlyCount;
+  if (ratio <= 0.25) return 1;
+  if (ratio <= 0.5) return 2;
+  if (ratio <= 0.75) return 3;
+  return 4;
+};
+const cadenceRows = years.map((item) => {
+  const counts = new Map(item.months.map((group) => [group.month, group.entries.length]));
+  return {
+    year: item.year,
+    total: item.count,
+    cells: Array.from({ length: 12 }, (_, monthIndex) => {
+      const count = counts.get(monthIndex) ?? 0;
+      return {
+        month: monthIndex + 1,
+        count,
+        level: toCadenceLevel(count),
+      };
+    }),
+  };
+});
 ---
 
 <Layout
@@ -70,6 +97,51 @@ const monthCount = years.reduce((sum, year) => sum + year.months.length, 0);
         <span>{t.monthsUnit}</span>
       </div>
     </header>
+
+    {
+      posts.length > 0 && (
+        <section class="archive-cadence" aria-label={t.archiveActivity}>
+          <div class="cadence-head">
+            <div class="cadence-title-row">
+              <p class="cadence-kicker">CADENCE / ACTIVITY</p>
+              <span class="cadence-summary">{t.archiveActivitySummary(years.length, posts.length)}</span>
+            </div>
+            <div class="cadence-legend" aria-hidden="true">
+              <span>0</span>
+              <span class="cadence-cell" data-level="0" />
+              <span class="cadence-cell" data-level="1" />
+              <span class="cadence-cell" data-level="2" />
+              <span class="cadence-cell" data-level="3" />
+              <span class="cadence-cell" data-level="4" />
+              <span>{maxMonthlyCount}</span>
+            </div>
+          </div>
+          <div class="cadence-grid">
+            <div class="cadence-axis" aria-hidden="true">
+              <span />
+              {Array.from({ length: 12 }, (_, m) => (
+                <span>{String(m + 1).padStart(2, "0")}</span>
+              ))}
+            </div>
+            {cadenceRows.map((row) => (
+              <div class="cadence-row">
+                <a class="cadence-year" href={`#year-${row.year}`}>
+                  {row.year}
+                </a>
+                {row.cells.map((cell) => (
+                  <span
+                    class="cadence-cell"
+                    data-level={cell.level}
+                    title={t.cadenceCell(row.year, cell.month, cell.count)}
+                    aria-label={t.cadenceCell(row.year, cell.month, cell.count)}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
 
     {!posts.length && <ContentEmpty kind="posts" />}
     <div class="archive-layout">

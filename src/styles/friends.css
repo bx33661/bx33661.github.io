@@ -293,8 +293,20 @@ html[data-theme="dark"] .fp-network-field {
 }
 .fp-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 1rem;
+}
+.fp-grid > * {
+  grid-column: span 2;
+}
+/* Balance a short final row instead of leaving a lone card. */
+@media (min-width: 901px) {
+  .fp-grid[data-rem3="1"] > .fc:last-child {
+    grid-column: span 6;
+  }
+  .fp-grid[data-rem3="2"] > .fc:nth-last-child(-n + 2) {
+    grid-column: span 3;
+  }
 }
 
 /* Compact avatar-led cards: one pointer glow for each active card, no GPU here. */
@@ -517,9 +529,9 @@ html[data-theme="dark"] .fc-avatar-fb[data-avatar-tone="5"] {
   margin-top: 0.5rem;
 }
 .fc-tag {
-  padding: 0.08rem 0.3rem;
+  padding: 0.08rem 0.4rem;
   border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-  border-radius: 0.25rem;
+  border-radius: 999px;
   background: color-mix(in srgb, var(--accent) 6%, transparent);
   color: var(--accent);
   font-size: 0.55rem;
@@ -582,8 +594,8 @@ html[data-theme="dark"] .fc-avatar-fb[data-avatar-tone="5"] {
 .fp-exchange-action a {
   display: inline-flex;
   gap: 1.5rem;
-  padding: 0.65rem 0.9rem;
-  border-radius: 0.4rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
   background: var(--accent);
   color: var(--background);
   font-size: 0.79rem;
@@ -656,10 +668,65 @@ html[data-theme="dark"] .fc-avatar-fb[data-avatar-tone="5"] {
   outline: 2px solid var(--accent);
   outline-offset: 5px;
 }
+.self-copy-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  padding: 0.8rem 1.05rem;
+  border: 1px solid var(--fc-rule);
+  border-radius: 0.85rem;
+  background: var(--surface);
+}
+.self-copy-label {
+  color: var(--fc-text-2);
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+.self-copy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.self-copy-btn {
+  padding: 0.34rem 0.78rem;
+  border: 1px solid var(--fc-rule);
+  border-radius: 999px;
+  background: var(--surface-subtle);
+  color: var(--foreground);
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease,
+    background-color 0.16s ease;
+}
+.self-copy-btn:hover,
+.self-copy-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--surface);
+}
+.self-copy-btn[data-copied="true"] {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+}
 
 @media (max-width: 900px) {
   .fp-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fp-grid > * {
+    grid-column: span 1;
+  }
+  .fp-grid[data-rem2="1"] > .fc:last-child {
+    grid-column: span 2;
   }
 }
 @media (max-width: 780px) {
@@ -707,6 +774,10 @@ html[data-theme="dark"] .fc-avatar-fb[data-avatar-tone="5"] {
   .fp-grid {
     grid-template-columns: 1fr;
     gap: 0.75rem;
+  }
+  .fp-grid > *,
+  .fp-grid[data-rem2="1"] > .fc:last-child {
+    grid-column: auto;
   }
   .fc {
     padding: 1.05rem;

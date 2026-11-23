@@ -29,10 +29,6 @@
       @apply text-foreground mb-3;
     }
 
-    h3 {
-      @apply font-sriracha italic;
-    }
-
     p,
     strong,
     ol,
@@ -114,7 +110,7 @@
     }
 
     summary {
-      @apply font-cartograph text-foreground hover:text-accent focus-visible:outline-accent flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium tracking-wide transition-colors duration-200 select-none focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-dashed;
+      @apply font-cartograph text-foreground hover:text-accent focus-visible:outline-accent flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium tracking-wide transition-colors duration-200 select-none focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid;
     }
 
     summary:hover::before,
@@ -230,7 +226,7 @@
     }
 
     pre {
-      @apply focus-visible:outline-accent focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed;
+      @apply focus-visible:outline-accent focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-solid;
     }
   }
 

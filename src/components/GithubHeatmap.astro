@@ -1,0 +1,133 @@
+---
+import contributions from "@/data/github-contributions.json";
+
+interface Props {
+  profile: string;
+}
+
+const { profile } = Astro.props;
+
+type Day = { date: string; count: number; level: number };
+
+const DAY_MS = 86_400_000;
+const start = new Date(`${contributions.start}T00:00:00Z`);
+const days: Day[] = contributions.days.map(([count, level], i) => ({
+  date: new Date(start.getTime() + i * DAY_MS).toISOString().slice(0, 10),
+  count,
+  level,
+}));
+
+// GitHub-style columns: one week per column, Sunday on top.
+const offset = start.getUTCDay();
+const weeks: (Day | null)[][] = [];
+for (let i = 0; i < offset + days.length; i += 1) {
+  const col = Math.floor(i / 7);
+  (weeks[col] ??= []).push(i < offset ? null : days[i - offset]);
+}
+
+const CELL = 10;
+const GAP = 3;
+const STEP = CELL + GAP;
+const LEFT = 30;
+const TOP = 18;
+const width = LEFT + weeks.length * STEP;
+const height = TOP + 7 * STEP;
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const monthLabels: { x: number; label: string }[] = [];
+let lastMonth = -1;
+weeks.forEach((week, col) => {
+  const first = week.find(Boolean);
+  if (!first) return;
+  const month = Number(first.date.slice(5, 7)) - 1;
+  if (month !== lastMonth) {
+    const x = LEFT + col * STEP;
+    // Skip a label that would collide with the previous one at the edge.
+    if (!monthLabels.length || x - monthLabels[monthLabels.length - 1].x >= STEP * 3) {
+      monthLabels.push({ x, label: MONTHS[month] });
+    }
+    lastMonth = month;
+  }
+});
+
+// Summary numbers.
+const activeDays = days.filter((d) => d.count > 0).length;
+const best = days.reduce((a, b) => (b.count > a.count ? b : a), days[0]);
+let longest = 0;
+let run = 0;
+for (const day of days) {
+  run = day.count > 0 ? run + 1 : 0;
+  longest = Math.max(longest, run);
+}
+const summary = [
+  { value: contributions.total.toLocaleString("en-US"), label: "contributions in the last year" },
+  { value: String(activeDays), label: "active days" },
+  { value: `${longest}d`, label: "longest streak" },
+  { value: String(best.count), label: `busiest day · ${best.date}` },
+];
+
+const plural = (n: number) => `${n} contribution${n === 1 ? "" : "s"}`;
+---
+
+<div class="gh-heatmap">
+  <div class="gh-summary">
+    {
+      summary.map((item) => (
+        <div class="gh-summary-item">
+          <span class="gh-summary-value">{item.value}</span>
+          <span class="gh-summary-label">{item.label}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <a class="gh-graph" href={profile} aria-label={`GitHub 贡献热力图：过去一年 ${contributions.total} 次贡献`}>
+    <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height} role="img" aria-hidden="true">
+      {
+        monthLabels.map((m) => (
+          <text x={m.x} y="10" class="gh-label">
+            {m.label}
+          </text>
+        ))
+      }
+      {
+        [
+          [1, "Mon"],
+          [3, "Wed"],
+          [5, "Fri"],
+        ].map(([row, label]) => (
+          <text x="0" y={TOP + Number(row) * STEP + CELL - 1} class="gh-label">
+            {label}
+          </text>
+        ))
+      }
+      {
+        weeks.map((week, col) =>
+          week.map((day, row) =>
+            day ? (
+              <rect
+                x={LEFT + col * STEP}
+                y={TOP + row * STEP}
+                width={CELL}
+                height={CELL}
+                rx="2"
+                class={`gh-cell gh-l${day.level}`}
+              >
+                <title>{`${plural(day.count)} on ${day.date}`}</title>
+              </rect>
+            ) : null,
+          ),
+        )
+      }
+    </svg>
+  </a>
+
+  <div class="gh-foot">
+    <span>GitHub · @{contributions.login} · snapshot {contributions.generatedAt}</span>
+    <span class="gh-legend" aria-hidden="true">
+      Less
+      {[0, 1, 2, 3, 4].map((level) => <i class={`gh-l${level}`} />)}
+      More
+    </span>
+  </div>
+</div>
