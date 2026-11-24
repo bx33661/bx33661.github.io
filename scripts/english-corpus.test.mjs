@@ -60,7 +60,7 @@ for (const pair of pairs) {
 }
 
 test("English corpus covers every public Chinese blog and note exactly once", () => {
-  assert.equal(pairs.filter((p) => p.source.startsWith("src/content/blog/")).length, 56);
+  assert.equal(pairs.filter((p) => p.source.startsWith("src/content/blog/")).length, 57);
   assert.equal(pairs.filter((p) => p.source.startsWith("src/data/notes/")).length, 9);
   for (const dir of ["src/content/blog", "src/data/notes"]) {
     const source = fs
@@ -79,7 +79,7 @@ test("English corpus covers every public Chinese blog and note exactly once", ()
         .sort(),
     );
   }
-  assert.equal(new Set(pairs.map((p) => p.target)).size, 65);
+  assert.equal(new Set(pairs.map((p) => p.target)).size, 66);
 });
 
 test("Article components share translated server and client copy", () => {

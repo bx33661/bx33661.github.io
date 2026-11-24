@@ -453,5 +453,12 @@
     "key": "wifi-security-notes",
     "slug": "wifi-security-notes-en",
     "sourceBodySha256": "6886126480bf4cee9bbe589ffccd8285d049d1e35fda179320df8d07d956f9c4"
+  },
+  {
+    "source": "src/content/blog/introducing-pinwhy.md",
+    "target": "src/content/blog/introducing-pinwhy-en.md",
+    "key": "introducing-pinwhy",
+    "slug": "introducing-pinwhy-en",
+    "sourceBodySha256": "4d06eb5153835b8b15c3dc49664d76a9cec5f6ae4fa685f5276dfdf0e42707ae"
   }
 ]
