@@ -48,8 +48,6 @@ for (const file of [
   "image-sitemap.xml",
   "_headers",
   "_redirects",
-  "schools/ucas-emblem.webp",
-  "schools/hainan-university-emblem.webp",
   "blog/cybergym-ai-security-agent-benchmark/02-dataset-metadata.png",
   "pagefind/pagefind.js",
 ]) {
@@ -75,17 +73,9 @@ if (home !== null) {
       "I hope this blog becomes a space",
       "Feel free to look around!",
       "Let's explore the stars and beyond together.",
-      "Education",
-      "Hainan University",
-      "University of Chinese Academy of Sciences",
-      "UCAS",
-      "HNU",
-      "Bachelor's studies in Information Security",
-      "Master's studies",
-      "/schools/ucas-emblem.webp",
-      "/schools/hainan-university-emblem.webp",
+      "Focus",
       'lang="en"',
-      'aria-labelledby="education-title"',
+      'aria-labelledby="focus-title"',
     ],
     "personal homepage missing",
   );
@@ -107,6 +97,14 @@ if (home !== null) {
     "awards-list",
     "18768921736",
     "bx33661@qq.com",
+    "Education",
+    "Hainan University",
+    "University of Chinese Academy of Sciences",
+    "UCAS",
+    "HNU",
+    "Bachelor's studies",
+    "Master's studies",
+    "/schools/",
   ]) {
     if (homeMain.includes(removed)) failures.push(`personal homepage retains removed content: ${removed}`);
   }
@@ -181,14 +179,12 @@ for (const [file, requiredMarkers, prefix, forbidden] of [
   ],
   [
     "about/index.html",
-    [
-      "Hey, I'm",
-      "the field of Computer Science",
-      "Education",
-      "University of Chinese Academy of Sciences",
-    ],
+    ["Hey, I'm", "the field of Computer Science", 'aria-labelledby="focus-title"'],
     "about alias missing",
-    [],
+    [
+      ["Hainan University", "about page still shows removed school info"],
+      ["University of Chinese Academy of Sciences", "about page still shows removed school info"],
+    ],
   ],
   [
     "blog/wechat-miniapp-security-audit/index.html",
@@ -261,6 +257,7 @@ if (blogTagsIndex !== null && (!blogTagsIndex.includes("/blog/#topics") || blogT
   failures.push("old tag overview does not redirect to blog topics");
 
 if (fs.existsSync(path.join(distDir, "fonts/crt"))) failures.push("removed CRT fonts are still present in dist");
+if (fs.existsSync(path.join(distDir, "schools"))) failures.push("removed school emblems are still present in dist");
 // /projects/ is a single showcase page; the retired per-project docs library (/projects/<slug>/) must stay gone.
 const projectsDist = path.join(distDir, "projects");
 if (fs.existsSync(projectsDist)) {

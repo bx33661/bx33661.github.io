@@ -20,10 +20,8 @@ function main() {
     {
       area: "Homepage bio",
       file: "src/components/AcademicHome.astro",
-      isDefault: /Hey, I'm <span>bx\.<\/span>|Hainan University|University of Chinese Academy of Sciences/.test(
-        readIfExists("src/components/AcademicHome.astro"),
-      ),
-      hint: "Replace hero copy, intro bio, focusTopics, and education entries",
+      isDefault: /Hey, I'm <span>bx\.<\/span>/.test(readIfExists("src/components/AcademicHome.astro")),
+      hint: "Replace hero copy, intro bio, and focusTopics",
     },
     {
       area: "Custom domain",

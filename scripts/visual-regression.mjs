@@ -31,12 +31,11 @@ const failures = [];
 const passedFlows = [];
 
 async function checkHomePage(page, base, labelPrefix) {
-  const labels = await page.locator(".education-section").allTextContents();
-  if (
-    !labels.join(" ").includes("Bachelor's studies in Information Security") ||
-    !labels.join(" ").includes("Master's studies")
-  ) {
-    failures.push(`${labelPrefix}: degree labels missing`);
+  if ((await page.locator(".education-section").count()) > 0) {
+    failures.push(`${labelPrefix}: removed education section remains`);
+  }
+  if ((await page.locator(".focus-section .focus-chip").count()) < 4) {
+    failures.push(`${labelPrefix}: focus topics missing`);
   }
 
   const contrast = await page.evaluate(() => {
@@ -61,25 +60,14 @@ async function checkHomePage(page, base, labelPrefix) {
   if (contrast < 4.5) failures.push(`${labelPrefix}: secondary text contrast ${contrast.toFixed(2)}:1`);
   if ((await page.locator(".intro-prose p").count()) !== 4)
     failures.push(`${labelPrefix}: introduction paragraphs missing`);
-  if ((await page.locator(".education-list li").count()) !== 2)
-    failures.push(`${labelPrefix}: expected two education entries`);
-
-  for (const image of await page.locator(".education-list img").all()) {
-    await image.scrollIntoViewIfNeeded();
-    const ok = await image.evaluate(async (element) => {
-      try {
-        await element.decode();
-        return element.naturalWidth > 0;
-      } catch {
-        return false;
-      }
-    });
-    if (!ok) failures.push(`${labelPrefix}: school emblem failed to load`);
-  }
 
   const mainText = await page.locator("main").innerText();
-  if (/Zhang Boxiang|张博翔|2023|2027|Honors & awards|Research interests/.test(mainText)) {
-    failures.push(`${labelPrefix}: removed resume content remains`);
+  if (
+    /Zhang Boxiang|张博翔|2023|2027|Honors & awards|Research interests|Hainan University|University of Chinese Academy of Sciences|Bachelor's studies|Master's studies/.test(
+      mainText,
+    )
+  ) {
+    failures.push(`${labelPrefix}: removed resume or school content remains`);
   }
   await page.locator(".read-link").click();
   await page.waitForURL(`${base}/blog/`);

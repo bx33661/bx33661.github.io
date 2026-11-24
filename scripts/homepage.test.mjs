@@ -34,21 +34,25 @@ test("homepage preserves the entire approved introduction in order", () => {
   assert.match(home, /<main[^>]+lang="en"/);
 });
 
-test("homepage keeps only the requested education details, without dates or resume sections", () => {
-  for (const marker of [
+test("homepage removes personal education and resume details while keeping focus metadata", () => {
+  for (const removed of [
+    "Education",
     "Hainan University",
     "HNU",
-    "Bachelor's studies in Information Security",
+    "Bachelor's studies",
     "University of Chinese Academy of Sciences",
     "UCAS",
     "Master's studies",
+    "education-section",
+    "education-title",
+    "/schools/",
   ]) {
-    assert.ok(text.includes(marker), `Missing education detail: ${marker}`);
+    assert.ok(!home.includes(removed) && !text.includes(removed), `Unexpected education detail remains: ${removed}`);
   }
   assert.doesNotMatch(text, /2023|2027|Zhang Boxiang|张博翔|Honors|Research interests|Selected work/);
   assert.doesNotMatch(home, /mailto:|research-proof|awards-list/);
   assert.equal((home.match(/<h1\b/g) ?? []).length, 1);
-  assert.match(home, /aria-labelledby="education-title"/);
+  assert.match(home, /aria-labelledby="focus-title"/);
 });
 
 test("homepage keeps existing reader entry routes and uses bx metadata", () => {

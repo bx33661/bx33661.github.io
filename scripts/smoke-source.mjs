@@ -94,8 +94,13 @@ assertHasText(
 );
 assertHasText(
   path.join(repoRoot, "src/components/AcademicHome.astro"),
-  /the field of Computer Science[\s\S]*education-section/,
-  "personal homepage missing focus or education section",
+  /the field of Computer Science[\s\S]*focus-section/,
+  "personal homepage missing focus section",
+);
+assertNoText(
+  path.join(repoRoot, "src/components/AcademicHome.astro"),
+  /education-section|\/schools\/|Hainan University|University of Chinese Academy of Sciences/,
+  "homepage still includes removed school details",
 );
 assertNoText(
   path.join(repoRoot, "src/components/AcademicHome.astro"),

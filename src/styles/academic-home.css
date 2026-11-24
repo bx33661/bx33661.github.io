@@ -592,12 +592,11 @@ html[data-theme="dark"] .academic-home .observatory-dossier {
   }
 }
 
-/* Dossier Lower Body: Education + Focus */
+/* Dossier Lower Body: Focus */
 .academic-home .dossier-body {
   padding: 1.3rem 1.35rem 1.4rem;
 }
 
-.academic-home .education-section h2,
 .academic-home .focus-section h2 {
   display: flex;
   align-items: center;
@@ -612,91 +611,11 @@ html[data-theme="dark"] .academic-home .observatory-dossier {
   color: var(--home-muted);
 }
 
-.academic-home .education-section h2::after,
 .academic-home .focus-section h2::after {
   content: "";
   flex: 1;
   height: 1px;
   background: linear-gradient(90deg, var(--home-rule), transparent);
-}
-
-.academic-home .education-list {
-  position: relative;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.academic-home .education-list::before {
-  content: "";
-  position: absolute;
-  top: 1.25rem;
-  bottom: 1.25rem;
-  left: 1.18rem;
-  width: 1px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 32%, transparent), var(--home-rule));
-}
-
-.academic-home .education-list li {
-  position: relative;
-  display: grid;
-  grid-template-columns: 2.4rem minmax(0, 1fr);
-  gap: 0.8rem;
-  align-items: center;
-}
-
-.academic-home .education-list li + li {
-  margin-top: 1.05rem;
-}
-
-.academic-home .education-list img {
-  position: relative;
-  z-index: 1;
-  width: 2.4rem;
-  height: 2.4rem;
-  padding: 0.22rem;
-  border-radius: 0.55rem;
-  border: 1px solid var(--border-subtle);
-  background: #f6f4ec;
-  object-fit: contain;
-  box-shadow: 0 2px 8px -4px rgb(0 0 0 / 0.12);
-}
-
-html[data-theme="dark"] .academic-home .education-list img {
-  background: color-mix(in srgb, #f4f0e6 90%, var(--surface));
-  border-color: rgb(255 255 255 / 0.18);
-}
-
-.academic-home .school-abbr {
-  display: inline-block;
-  margin-bottom: 0.12rem;
-  font-family: var(--font-cartograph), ui-monospace, monospace;
-  color: var(--accent);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-}
-
-.academic-home .education-list h3 {
-  margin: 0;
-  font-size: 0.88rem;
-  line-height: 1.42;
-  font-weight: 630;
-  letter-spacing: -0.01em;
-  color: var(--foreground);
-}
-
-.academic-home .education-list p {
-  margin: 0.18rem 0 0;
-  color: var(--home-muted);
-  font-size: 0.77rem;
-  line-height: 1.55;
-}
-
-.academic-home .focus-section {
-  margin-top: 1.3rem;
-  padding-top: 1.2rem;
-  border-top: 1px dashed var(--home-rule);
 }
 
 .academic-home .focus-chips {
@@ -802,20 +721,6 @@ html[data-theme="dark"] .academic-home .education-list img {
   .academic-home .intro-body {
     max-width: none;
   }
-
-  .academic-home .education-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.15rem;
-  }
-
-  .academic-home .education-list::before {
-    display: none;
-  }
-
-  .academic-home .education-list li + li {
-    margin-top: 0;
-  }
 }
 
 @media (max-width: 540px) {
@@ -850,11 +755,6 @@ html[data-theme="dark"] .academic-home .education-list img {
   .academic-home .field-label,
   .academic-home .field-caption {
     inset-inline: 0.85rem;
-  }
-
-  .academic-home .education-list {
-    grid-template-columns: 1fr;
-    gap: 1rem;
   }
 }
 
