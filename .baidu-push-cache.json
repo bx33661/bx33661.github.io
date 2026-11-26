@@ -17,7 +17,6 @@
     "https://www.bx33661.com/blog/k8s-goat-walkthrough/",
     "https://www.bx33661.com/blog/redis-lua-script-part2/",
     "https://www.bx33661.com/blog/redis-core-guide/",
-    "https://www.bx33661.com/en/notes/list/",
     "https://www.bx33661.com/blog/hnuctf-2026-ops/",
     "https://www.bx33661.com/blog/dos-at-psitransfer/",
     "https://www.bx33661.com/blog/n8n-cve-2025-68613-analysis/",
@@ -27,7 +26,18 @@
     "https://www.bx33661.com/blog/llm-attack-hackergame/",
     "https://www.bx33661.com/blog/spring-learning-analysis/",
     "https://www.bx33661.com/blog/dify-coze-workflow/",
-    "https://www.bx33661.com/blog/p2p-bittorrent-protocol-deep-dive/"
+    "https://www.bx33661.com/blog/p2p-bittorrent-protocol-deep-dive/",
+    "https://www.bx33661.com/en/notes/list/",
+    "https://www.bx33661.com/blog/ntlm-protocol-and-attack-techniques/",
+    "https://www.bx33661.com/blog/ssji-learning/",
+    "https://www.bx33661.com/blog/csp-bypass-analysis/",
+    "https://www.bx33661.com/blog/nginx-cache-poisoning/",
+    "https://www.bx33661.com/blog/htb-challenge/",
+    "https://www.bx33661.com/blog/htb-ctf/",
+    "https://www.bx33661.com/blog/claude-code/",
+    "https://www.bx33661.com/blog/mcp-security/",
+    "https://www.bx33661.com/blog/juice-shop/",
+    "https://www.bx33661.com/blog/jenkins-credential-crack/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/galleries/": "23e672b3aaa0be4a02a08745a56e8b31899ec73a1e5841367c8df60adeda55e8",
@@ -47,7 +57,6 @@
     "https://www.bx33661.com/blog/k8s-goat-walkthrough/": "d2924927a34501839d3d69cd9cace57115749184f105902e35473da0da2a30c4",
     "https://www.bx33661.com/blog/redis-lua-script-part2/": "050c67287652623521f3a49a20b4d46d34f43eaea8adf570b0e18087ca0d05a2",
     "https://www.bx33661.com/blog/redis-core-guide/": "a74853850a4284222ebc44d6c8ea261e3dea989610152176f00f69407c6896e2",
-    "https://www.bx33661.com/en/notes/list/": "3ec205991717927b2b8bd99f595d7618afdb2abb41d9465eb12fcf93b6a605a7",
     "https://www.bx33661.com/blog/hnuctf-2026-ops/": "01d527132376cdedb45486dd8770267131887705fb077902d2ce3d1232dcc2ac",
     "https://www.bx33661.com/blog/dos-at-psitransfer/": "68baef8728cb2631ea9764a6ec23dfa1982aeb4a64edaba76aa01d37dee92252",
     "https://www.bx33661.com/blog/n8n-cve-2025-68613-analysis/": "b998728805f1cfac835dcbd6d55801daf5b189462015ccd282a645ac36df92cc",
@@ -57,8 +66,19 @@
     "https://www.bx33661.com/blog/llm-attack-hackergame/": "dd7bf9cfbc720dc8cdffbffbd93c038fd711f7f6174ec566e5a52da21c2d6359",
     "https://www.bx33661.com/blog/spring-learning-analysis/": "fcae129dab3d76e5b3a767f52b78c2111d0c355c5787239f182d32f04c81fce3",
     "https://www.bx33661.com/blog/dify-coze-workflow/": "ad5a0850e561adebd17222c7bb17dd47e2ea403aa0fbe5b596f570ed0c063b0b",
-    "https://www.bx33661.com/blog/p2p-bittorrent-protocol-deep-dive/": "18ed90a6eb08666212c7ed62346838b1e87e59df2f0764c4882f8381c2b4ef5e"
+    "https://www.bx33661.com/blog/p2p-bittorrent-protocol-deep-dive/": "18ed90a6eb08666212c7ed62346838b1e87e59df2f0764c4882f8381c2b4ef5e",
+    "https://www.bx33661.com/en/notes/list/": "3ec205991717927b2b8bd99f595d7618afdb2abb41d9465eb12fcf93b6a605a7",
+    "https://www.bx33661.com/blog/ntlm-protocol-and-attack-techniques/": "db5b645c53a1bbe48c68cf0d0b683c4ecea9f237ad94302a36df033c59777573",
+    "https://www.bx33661.com/blog/ssji-learning/": "038996b81671037b19a239f129f115a52821d5ed3549a4bc11f99dcf8a482a0f",
+    "https://www.bx33661.com/blog/csp-bypass-analysis/": "3e4f2a5d2545bff17ea5e882cfae6d80633346cd1bfec9c4f017d6ac6fa60927",
+    "https://www.bx33661.com/blog/nginx-cache-poisoning/": "769abea3424827b57ad72a892676757e16f9057b7699ddaa0e8575781c662e1f",
+    "https://www.bx33661.com/blog/htb-challenge/": "cc82afb769ba5684538cc1116db63352d700184b408669f4840880015948ac80",
+    "https://www.bx33661.com/blog/htb-ctf/": "e2b87fb1bd7f951c7352a8c0354e64d8a39eb4e428b5dc4ddff85026b6224f5c",
+    "https://www.bx33661.com/blog/claude-code/": "5fd94712807dc1ae825486031a095bd00bf2b29483e9728882c691e9df9638b3",
+    "https://www.bx33661.com/blog/mcp-security/": "d57c212c1f41ea5baabb8a109d76c9f56a9689989fe9ad0e021eaaa23e491f61",
+    "https://www.bx33661.com/blog/juice-shop/": "c3690a88b23a9c5d78c86c42180a4a9e19047bc32c6136ad09b72f499ce7fd57",
+    "https://www.bx33661.com/blog/jenkins-credential-crack/": "04879830e5f69aa7012a4e757db106a2a8958ce10e71993da10f5ab919868bcb"
   },
-  "lastPushAt": "2026-11-25T11:28:01.235Z",
+  "lastPushAt": "2026-11-26T11:03:13.676Z",
   "ledgerVersion": 1
 }
