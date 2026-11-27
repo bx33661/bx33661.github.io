@@ -27,7 +27,6 @@
     "https://www.bx33661.com/blog/spring-learning-analysis/",
     "https://www.bx33661.com/blog/dify-coze-workflow/",
     "https://www.bx33661.com/blog/p2p-bittorrent-protocol-deep-dive/",
-    "https://www.bx33661.com/en/notes/list/",
     "https://www.bx33661.com/blog/ntlm-protocol-and-attack-techniques/",
     "https://www.bx33661.com/blog/ssji-learning/",
     "https://www.bx33661.com/blog/csp-bypass-analysis/",
@@ -37,7 +36,18 @@
     "https://www.bx33661.com/blog/claude-code/",
     "https://www.bx33661.com/blog/mcp-security/",
     "https://www.bx33661.com/blog/juice-shop/",
-    "https://www.bx33661.com/blog/jenkins-credential-crack/"
+    "https://www.bx33661.com/blog/jenkins-credential-crack/",
+    "https://www.bx33661.com/en/notes/list/",
+    "https://www.bx33661.com/blog/mcp1/",
+    "https://www.bx33661.com/blog/passthehash/",
+    "https://www.bx33661.com/blog/tsclient/",
+    "https://www.bx33661.com/blog/brute4road/",
+    "https://www.bx33661.com/blog/bxhttpSplit/",
+    "https://www.bx33661.com/blog/bx1go/",
+    "https://www.bx33661.com/blog/bx33661http/",
+    "https://www.bx33661.com/blog/bx33661xpath/",
+    "https://www.bx33661.com/blog/z8x9w23/",
+    "https://www.bx33661.com/blog/OpenHarmonyCTF/"
   ],
   "fingerprints": {
     "https://www.bx33661.com/galleries/": "23e672b3aaa0be4a02a08745a56e8b31899ec73a1e5841367c8df60adeda55e8",
@@ -67,7 +77,6 @@
     "https://www.bx33661.com/blog/spring-learning-analysis/": "fcae129dab3d76e5b3a767f52b78c2111d0c355c5787239f182d32f04c81fce3",
     "https://www.bx33661.com/blog/dify-coze-workflow/": "ad5a0850e561adebd17222c7bb17dd47e2ea403aa0fbe5b596f570ed0c063b0b",
     "https://www.bx33661.com/blog/p2p-bittorrent-protocol-deep-dive/": "18ed90a6eb08666212c7ed62346838b1e87e59df2f0764c4882f8381c2b4ef5e",
-    "https://www.bx33661.com/en/notes/list/": "3ec205991717927b2b8bd99f595d7618afdb2abb41d9465eb12fcf93b6a605a7",
     "https://www.bx33661.com/blog/ntlm-protocol-and-attack-techniques/": "db5b645c53a1bbe48c68cf0d0b683c4ecea9f237ad94302a36df033c59777573",
     "https://www.bx33661.com/blog/ssji-learning/": "038996b81671037b19a239f129f115a52821d5ed3549a4bc11f99dcf8a482a0f",
     "https://www.bx33661.com/blog/csp-bypass-analysis/": "3e4f2a5d2545bff17ea5e882cfae6d80633346cd1bfec9c4f017d6ac6fa60927",
@@ -77,8 +86,19 @@
     "https://www.bx33661.com/blog/claude-code/": "5fd94712807dc1ae825486031a095bd00bf2b29483e9728882c691e9df9638b3",
     "https://www.bx33661.com/blog/mcp-security/": "d57c212c1f41ea5baabb8a109d76c9f56a9689989fe9ad0e021eaaa23e491f61",
     "https://www.bx33661.com/blog/juice-shop/": "c3690a88b23a9c5d78c86c42180a4a9e19047bc32c6136ad09b72f499ce7fd57",
-    "https://www.bx33661.com/blog/jenkins-credential-crack/": "04879830e5f69aa7012a4e757db106a2a8958ce10e71993da10f5ab919868bcb"
+    "https://www.bx33661.com/blog/jenkins-credential-crack/": "04879830e5f69aa7012a4e757db106a2a8958ce10e71993da10f5ab919868bcb",
+    "https://www.bx33661.com/en/notes/list/": "3ec205991717927b2b8bd99f595d7618afdb2abb41d9465eb12fcf93b6a605a7",
+    "https://www.bx33661.com/blog/mcp1/": "93203a066de067af3b5a070c3239aae0fa2de76a8b4738aecae5e1eef9999283",
+    "https://www.bx33661.com/blog/passthehash/": "607e2b62ed19641229b7df518535164868da1595c0024422e5bd40f56228cc8d",
+    "https://www.bx33661.com/blog/tsclient/": "9b995b8bec8b82c50d84b6df54df379b0e8dd54cbe9e4dba017d9717c6fdc584",
+    "https://www.bx33661.com/blog/brute4road/": "eb88539820170fb42005a485aba896c9c3600a0fc361c3bdbad038420f0badd8",
+    "https://www.bx33661.com/blog/bxhttpSplit/": "70dd6b73c187d4899a5a374050f9723759449960c8aa80cd68a0ed4746c5e40d",
+    "https://www.bx33661.com/blog/bx1go/": "47976a1c16357286dee23c32431b154d54f6fcfc24bd9097981ca89c60f2a8c3",
+    "https://www.bx33661.com/blog/bx33661http/": "400d578ea31c44f6d4015697789ac3b0b00c45e36ab2f37281ebb4dc50308cef",
+    "https://www.bx33661.com/blog/bx33661xpath/": "8e5827b9f85de167b540f0cd9540c021e72ccf9b35a3bd622e65351d502740b3",
+    "https://www.bx33661.com/blog/z8x9w23/": "a7328ec52572127d1e78641247880ab94584fd1e4c7468261ec6ac8bc5b5b010",
+    "https://www.bx33661.com/blog/OpenHarmonyCTF/": "128f32433ce9e67273a22883eed14cf9c95b9e8f453be144e1c5c3b65131f4df"
   },
-  "lastPushAt": "2026-11-26T11:03:13.676Z",
+  "lastPushAt": "2026-11-27T11:00:31.642Z",
   "ledgerVersion": 1
 }
