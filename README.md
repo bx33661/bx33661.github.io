@@ -10,7 +10,7 @@
   </p>
 
   <p>
-    <a href="https://bx33661.github.io/astro-orbit/">Live Demo</a> ·
+    <a href="https://www.bx33661.com/astro-orbit/">Live Demo</a> ·
     <a href="#quick-start">Quick Start</a> ·
     <a href="./docs/CUSTOMIZATION.md">Customization Guide</a> ·
     <a href="https://github.com/bx33661/astro-orbit/issues/new?template=bug_report.yml">Report Bug</a>
@@ -27,7 +27,7 @@
 </div>
 
 <p align="center">
-  <a href="https://bx33661.github.io/astro-orbit/">
+  <a href="https://www.bx33661.com/astro-orbit/">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="./docs/screenshots/hero-dark.png" />
       <source media="(prefers-color-scheme: light)" srcset="./docs/screenshots/hero-light.png" />
