@@ -87,7 +87,16 @@ test("callouts render five distinct labels without rewriting ordinary quotes", a
   }
   const ordinary = await renderer.render("> Ordinary quote mentioning [!NOTE] inline.\n\n> [!UNKNOWN]\n> Preserved");
   assert.doesNotMatch(ordinary.code, /data-callout/);
+  assert.doesNotMatch(ordinary.code, /post-resources/);
   assert.match(ordinary.code, /\[!UNKNOWN\]/);
+
+  const projectHeader = await renderer.render(
+    "> **GitHub 仓库**：[github.com/Fruit-Guardians/pinwhy](https://github.com/Fruit-Guardians/pinwhy)\n>\n> **官方网站与在线演示**：[pinwhy.bx33661.com](https://pinwhy.bx33661.com)\n\n正文第一段。",
+  );
+  assert.match(projectHeader.code, /class="post-resources not-prose"/);
+  assert.match(projectHeader.code, /data-resource-kind="github"/);
+  assert.match(projectHeader.code, /data-resource-kind="demo"/);
+  assert.doesNotMatch(projectHeader.code, /<blockquote/);
 });
 
 test("format wrapping is idempotent and skips component-owned regions", () => {

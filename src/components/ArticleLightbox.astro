@@ -16,6 +16,17 @@ const t = ui(locale);
     </button>
     <span class="article-lightbox-counter" data-image-counter></span>
     <p class="article-lightbox-note" data-image-note></p>
+    <button
+      type="button"
+      class="article-lightbox-zoom"
+      data-image-zoom
+      data-label-in={t.zoomInImage}
+      data-label-out={t.zoomOutImage}
+      aria-label={t.zoomInImage}
+      title={t.zoomInImage}
+    >
+      1×
+    </button>
     <button type="button" class="article-lightbox-nav" data-image-next aria-label={t.nextImage}>
       <span aria-hidden="true">→</span>
     </button>

@@ -1,7 +1,26 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { estimateReadingMinutes, isInteractivePost } from "../src/utils/readingTime.ts";
+import {
+  cleanArticleMarkdownForCopy,
+  countReadingWords,
+  estimateReadingMinutes,
+  isInteractivePost,
+} from "../src/utils/readingTime.ts";
 import { transformerLongCode } from "../src/utils/transformers/longCode.ts";
+
+test("countReadingWords and cleanArticleMarkdownForCopy strip frontmatter, imports, and link URLs cleanly", () => {
+  assert.equal(countReadingWords(undefined), 0);
+  assert.equal(countReadingWords("---\ntitle: Demo\n---\nimport Box from './Box.astro';\n\n你好 [Pinwhy](https://example.com) world!"), 4);
+
+  const md = cleanArticleMarkdownForCopy(
+    "Pinwhy Guide",
+    "https://www.bx33661.com/blog/introducing-pinwhy/",
+    "---\ntitle: Pinwhy\n---\nimport Foo from '@/components/Foo.astro';\n\n\n## Intro\n\nBody `<script>` safe.",
+  );
+  assert.match(md, /^# Pinwhy Guide\n\n> Source: https:\/\/www\.bx33661\.com\/blog\/introducing-pinwhy\/\n\n## Intro/);
+  assert.doesNotMatch(md, /import Foo/);
+  assert.match(md, /Body `<script>` safe\./);
+});
 
 test("estimateReadingMinutes handles empty, short, CJK, English and mixed content", () => {
   assert.equal(estimateReadingMinutes(undefined), 1);

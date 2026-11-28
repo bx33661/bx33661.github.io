@@ -94,6 +94,49 @@ const brandText = SITE.title.trim();
         <span class="nav-logo-word">{brandText}</span>
       </a>
 
+      <!-- Adaptive article reading bar (active when scrolled past post header) -->
+      <div class="nav-reading-bar" data-reading-bar aria-hidden="true" data-pagefind-ignore>
+        <div class="reading-bar-left">
+          <a href={localizedPath("/blog/", locale)} class="reading-bar-back" data-reading-bar-back>
+            <span aria-hidden="true">←</span>
+            <span>{t.backToPosts}</span>
+          </a>
+          <button type="button" class="reading-bar-title" data-reading-bar-top title={t.backToTop}></button>
+          <span class="reading-bar-sep" data-reading-bar-sep aria-hidden="true">/</span>
+          <div class="reading-bar-chapter-wrap" data-reading-bar-chapter-wrap>
+            <button
+              type="button"
+              class="reading-bar-chapter"
+              data-reading-bar-chapter
+              aria-expanded="false"
+              aria-controls="reading-bar-popover"
+            >
+              <span class="reading-bar-chapter-icon" aria-hidden="true">☰</span>
+              <span class="reading-bar-chapter-text" data-reading-bar-chapter-text>{t.toc}</span>
+              <span class="reading-bar-chapter-caret" aria-hidden="true">▾</span>
+            </button>
+          </div>
+        </div>
+        <div class="reading-bar-right">
+          <span class="reading-bar-progress">
+            <span class="reading-bar-ring" data-reading-bar-ring aria-hidden="true"></span>
+            <span class="reading-bar-pct" data-reading-bar-pct></span>
+          </span>
+          <button
+            type="button"
+            class="reading-bar-copy-btn"
+            data-copy-article-md
+            data-label-default={t.copyMarkdown}
+            data-label-copied={t.copiedCheck}
+            title={t.copyArticleMarkdown}
+            aria-label={t.copyArticleMarkdown}
+            hidden
+          >
+            <span data-copy-md-text>{t.copyMarkdown}</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Nav area -->
       <nav id="nav-menu" class="nav-area" aria-label={t.primaryNav}>
         <!-- Desktop links -->
@@ -211,6 +254,15 @@ const brandText = SITE.title.trim();
           </div>
         </button>
       </nav>
+    </div>
+
+    <!-- Floating chapter popover for reading bar -->
+    <div id="reading-bar-popover" class="reading-bar-popover" data-reading-bar-popover hidden data-pagefind-ignore>
+      <div class="reading-bar-popover-head">
+        <span>{t.toc}</span>
+        <span class="reading-bar-popover-pct" data-reading-bar-popover-pct>0%</span>
+      </div>
+      <nav class="reading-bar-popover-nav" aria-label={t.tocQuick} data-reading-bar-toc></nav>
     </div>
 
     <!-- Mobile dropdown menu -->
