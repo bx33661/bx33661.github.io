@@ -1,0 +1,94 @@
+---
+type Props = {
+  url: string;
+  name: string;
+  description: string;
+  avatar?: string;
+  host: string;
+  fallback: string;
+  index: number;
+  isOrg?: boolean;
+  kind?: string;
+  tags?: string[];
+};
+
+const {
+  url,
+  name,
+  description,
+  avatar,
+  host,
+  fallback,
+  index,
+  isOrg = false,
+  kind = "PERSONAL BLOG",
+  tags = [],
+} = Astro.props;
+
+const toneIndex = [...name].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % 6;
+---
+
+<a
+  class:list={["fc", { "fc--org": isOrg }]}
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label={`Visit ${name}`}
+  style={`--i:${index}`}
+>
+  <div class="fc-back" aria-hidden="true">
+    <div class="fc-avatar-area">
+      <span class="fc-avatar-fb" data-avatar-tone={toneIndex}>{fallback}</span>
+      {
+        avatar && (
+          <img class="fc-avatar" src={avatar} alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+        )
+      }
+    </div>
+  </div>
+  <div class="fc-front">
+    <div class="fc-body">
+      <div class="fc-meta">
+        <span class="fc-kind">{kind}</span><span class="fc-index">{String(index + 1).padStart(2, "0")}</span>
+      </div>
+      <h3 class="fc-name">{name}</h3>
+      <p class="fc-desc">{description}</p>
+      {
+        tags.length > 0 && (
+          <div class="fc-tag-row" aria-label="Site topics">
+            {tags.slice(0, 3).map((tag) => (
+              <span class="fc-tag">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    <div class="fc-foot">
+      <span class="fc-host-pill">{host}</span>
+      <span class="fc-arrow" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path
+            d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5"
+            stroke="currentColor"
+            stroke-width="1.3"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </span>
+    </div>
+  </div>
+</a>
+
+<script>
+  function bindFriendAvatarFallbacks() {
+    document.querySelectorAll<HTMLImageElement>(".fc-avatar").forEach((image) => {
+      if (image.dataset.fallbackBound === "true") return;
+      image.dataset.fallbackBound = "true";
+      const showFallback = () => image.classList.add("fc-avatar--failed");
+      if (image.complete && image.naturalWidth === 0) showFallback();
+      else image.addEventListener("error", showFallback, { once: true });
+    });
+  }
+
+  document.addEventListener("astro:page-load", bindFriendAvatarFallbacks);
+</script>

@@ -1,0 +1,22 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostDetails from "@/layouts/PostDetails.astro";
+import { DEFAULT_LOCALE } from "@/i18n";
+import { getAllPosts, getAllPostSlugs } from "@/lib/data-utils";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+export async function getStaticPaths() {
+  return (await getAllPostSlugs(DEFAULT_LOCALE)).map(({ slug, post }) => ({
+    params: { slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const sortedPosts = await getAllPosts(DEFAULT_LOCALE);
+---
+
+<PostDetails {post} posts={sortedPosts} />

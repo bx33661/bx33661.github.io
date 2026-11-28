@@ -1,0 +1,113 @@
+---
+import type { Page } from "astro";
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import ContentEmpty from "@/components/ContentEmpty.astro";
+import "@/styles/blog-index.css";
+import { type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import EntryRow from "@/components/EntryRow.astro";
+import Pagination from "@/components/Pagination.astro";
+import { groupPostsByTag } from "@/utils/getUniqueTags";
+import { getLocalizedTagPath, getVisiblePostTags } from "@/utils/tagPath";
+import { SITE } from "@/config.ts";
+import { getAllPosts } from "@/lib/data-utils";
+import { getPath } from "@/utils/getPath";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { isInteractivePost } from "@/utils/readingTime";
+import { readingTransition } from "@/utils/reading-motion";
+
+interface Props {
+  page: Page<CollectionEntry<"blog">>;
+}
+const { page } = Astro.props;
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+const totalPosts = page.total;
+const pageData = page.data;
+const topicPosts = page.currentPage === 1 ? await getAllPosts(locale) : [];
+const topics = groupPostsByTag(topicPosts)
+  .map(({ tag, tagName, posts }) => ({ tag, tagName, count: posts.length }))
+  .filter(({ count }) => count >= SITE.topicMinPosts)
+  .sort((a, b) => b.count - a.count || a.tagName.localeCompare(b.tagName, locale))
+  .slice(0, 8);
+---
+
+<Layout
+  title={`${t.posts} | ${SITE.title}`}
+  description={t.blogDescription}
+  noindex={page.total === 0 || page.currentPage > 1}
+>
+  <Header />
+  <Breadcrumb />
+
+  <main
+    id="main-content"
+    class="blog-index app-layout pb-4"
+    transition:name="reading-surface"
+    transition:animate={readingTransition}
+  >
+    <header class="blog-head">
+      <p class="blog-kicker">POSTS / ARCHIVE</p>
+      <h1 class="blog-title">{t.posts}</h1>
+      <p class="blog-desc">{t.blogLead}</p>
+      <p class="blog-meta">
+        <span>{t.postCount(totalPosts)}</span>
+        {
+          page.lastPage > 1 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{t.pageCount(page.currentPage, page.lastPage)}</span>
+            </>
+          )
+        }
+      </p>
+    </header>
+
+    {
+      topics.length > 0 && (
+        <nav id="topics" class="blog-topics" aria-label={t.browseTopics}>
+          <span class="blog-topics-label">{t.browseTopics}</span>
+          <ul class="blog-topics-list">
+            {topics.map(({ tag, tagName, count }) => (
+              <li>
+                <a href={getLocalizedTagPath(tag, locale)} class="blog-topic">
+                  <span>{tagName}</span>
+                  <span class="blog-topic-count">{count}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    {page.total === 0 && <ContentEmpty kind="posts" />}
+    <ul class="entry-list">
+      {
+        pageData.map((post) => (
+          <EntryRow
+            href={localizedPath(getPath(post.id, post.filePath, true, resolveLegacyPostSlug(post)), locale)}
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.pubDatetime}
+            updatedDate={post.data.modDatetime}
+            variant="blog"
+            interactive={isInteractivePost(post.body)}
+            tags={getVisiblePostTags(post.data.tags).map((tag) => ({
+              label: tag,
+              href: getLocalizedTagPath(tag, locale),
+            }))}
+          />
+        ))
+      }
+    </ul>
+  </main>
+
+  <Pagination {page} />
+
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>

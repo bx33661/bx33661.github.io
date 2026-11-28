@@ -1,0 +1,109 @@
+@import "tailwindcss";
+@import "./typography.css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root,
+html[data-theme="light"] {
+  --font-sans: var(--font-sans-native), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-cartograph: var(--font-mono-native), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sriracha: Georgia, serif;
+  color-scheme: light;
+  --background: #f2f5ec;
+  --foreground: #2e3136;
+  --muted-foreground: #555c63;
+  --accent: #1158d1;
+  --muted: #e3e8dc;
+  --border: #b5bfb1;
+  --border-subtle: color-mix(in srgb, var(--foreground) 12%, var(--background));
+  --surface: #ffffff;
+  --surface-subtle: #f7faf3;
+  --surface-raised: #ffffff;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #131922;
+  --foreground: #e9edf4;
+  --muted-foreground: #a7b3c2;
+  --accent: #78b8ff;
+  --muted: #222e3d;
+  --border: #435469;
+  --border-subtle: color-mix(in srgb, var(--foreground) 12%, var(--background));
+  --surface: #1a232f;
+  --surface-subtle: #161f2a;
+  --surface-raised: #222e3e;
+}
+
+@theme inline {
+  --font-app: var(--font-sans);
+  --font-sriracha: Georgia, serif;
+  --font-cartograph: var(--font-mono-native), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+}
+
+.italic,
+.prose em,
+em,
+i {
+  font-family: var(--font-sriracha);
+  font-style: italic;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-accent/75;
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+  html {
+    @apply overflow-y-scroll scroll-smooth;
+    text-autospace: normal;
+  }
+  body {
+    @apply bg-background font-app text-foreground selection:bg-accent/20 selection:text-foreground flex min-h-svh flex-col;
+  }
+  a,
+  button {
+    @apply outline-accent outline-offset-2 focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-solid;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility max-w-app {
+  @apply max-w-4xl xl:max-w-5xl;
+}
+
+@utility app-layout {
+  @apply max-w-app mx-auto w-full px-4;
+}
+
+/* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 5.5rem;
+}
+
+.entry-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Consistent icon weight: Tabler outline glyphs read lighter and crisper at 1.75. */
+@layer base {
+  svg.icon-tabler {
+    stroke-width: 1.75;
+  }
+}

@@ -1,0 +1,96 @@
+---
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+import type { CollectionEntry } from "astro:content";
+import { articleSeries } from "@/data/article-series";
+import { getArticleSeries, getRelatedArticles, type ArticleSummary } from "@/utils/article-discovery";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { getPath } from "@/utils/getPath";
+
+type Props = {
+  post: CollectionEntry<"blog">;
+  posts: CollectionEntry<"blog">[];
+};
+const { post, posts } = Astro.props;
+const summarize = (entry: CollectionEntry<"blog">): ArticleSummary => ({
+  id: entry.id,
+  slug: resolveLegacyPostSlug(entry),
+  title: entry.data.title,
+  href: localizedPath(getPath(entry.id, entry.filePath, true, resolveLegacyPostSlug(entry)), locale),
+  tags: entry.data.tags,
+  publishedAt: entry.data.pubDatetime,
+  updatedAt: entry.data.modDatetime,
+  draft: entry.data.draft,
+});
+const current = summarize(post);
+const summaries = posts.map(summarize);
+const related = getRelatedArticles(current, summaries);
+const series = getArticleSeries(current, summaries, articleSeries);
+---
+
+{
+  series && (
+    <section class="post-series" aria-labelledby="post-series-title" data-pagefind-ignore>
+      <div class="post-discovery-heading">
+        <h2 id="post-series-title">{series.title}</h2>
+        <span>{t.seriesPosition(series.position, series.chapters.length)}</span>
+      </div>
+      <ol class="post-series-chapters">
+        {series.chapters.map((chapter, index) => (
+          <li>
+            <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            {chapter.id === current.id ? (
+              <span aria-current="page">
+                {chapter.title}
+                <small>{t.readingNow}</small>
+              </span>
+            ) : (
+              <a href={chapter.href} data-reading-link data-reading-title>
+                {chapter.title}
+              </a>
+            )}
+          </li>
+        ))}
+      </ol>
+      <nav class="post-series-nav" aria-label={t.seriesNav}>
+        {series.previous && (
+          <a href={series.previous.href} data-reading-link>
+            <span>← {t.seriesPrevious}</span>
+            <span data-reading-title>{series.previous.title}</span>
+          </a>
+        )}
+        {series.next && (
+          <a href={series.next.href} data-reading-link>
+            <span>{t.seriesNext} →</span>
+            <span data-reading-title>{series.next.title}</span>
+          </a>
+        )}
+      </nav>
+    </section>
+  )
+}
+
+{
+  related.length > 0 && (
+    <section class="post-related" aria-labelledby="post-related-title" data-pagefind-ignore>
+      <div class="post-discovery-heading">
+        <>
+          <h2 id="post-related-title">{t.continueReading}</h2>
+          <span>{t.sameTopic}</span>
+        </>
+      </div>
+      <ul>
+        {related.map((item) => (
+          <li>
+            <a href={item.href} data-reading-link>
+              <span data-reading-title>{item.title}</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

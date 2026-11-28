@@ -1,0 +1,229 @@
+---
+import { ClientRouter } from "astro:transitions";
+import { Font } from "astro:assets";
+import { SITE } from "@/config.ts";
+import { serializeJsonLd } from "@/utils/serializeJsonLd";
+import SearchModal from "@/components/SearchModal.astro";
+import SiteBackdrop from "@/components/SiteBackdrop.astro";
+import Analytics from "@/components/Analytics.astro";
+import "@/styles/global.css";
+import "@/styles/reading-motion.css";
+import { ENABLE_COMMENTS, getEnabledAnalyticsOrigins } from "@/config/env";
+import { BILINGUAL_ENABLED, defaultDescriptionForLocale, localeFromPath, localizedPath } from "@/i18n";
+import { hasLocaleContent, languagePaths } from "@/i18n/content";
+import { resolveThemeAccent } from "@/utils/theme-presets";
+import { getBasePath, withBase } from "@/utils/url";
+
+const locale = localeFromPath(Astro.url.pathname);
+const alternates = await languagePaths(Astro.url.pathname);
+const searchEmpty = BILINGUAL_ENABLED && locale !== SITE.i18n.defaultLocale && !(await hasLocaleContent(locale));
+const themeAccent = resolveThemeAccent();
+const analyticsOrigins = getEnabledAnalyticsOrigins();
+const scriptSources = [
+  "'self'",
+  "'unsafe-inline'",
+  "'wasm-unsafe-eval'",
+  ...(ENABLE_COMMENTS ? ["https://giscus.app"] : []),
+  ...analyticsOrigins,
+].join(" ");
+const connectSources = [
+  "'self'",
+  ...(ENABLE_COMMENTS ? ["https://giscus.app"] : []),
+  ...analyticsOrigins,
+].join(" ");
+const frameSources = [...(ENABLE_COMMENTS ? ["https://giscus.app"] : []), "https://player.bilibili.com"].join(" ");
+const cspContent = [
+  "default-src 'self'",
+  `script-src ${scriptSources}`,
+  "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+  "font-src 'self' data:",
+  "img-src 'self' data: https:",
+  `connect-src ${connectSources}`,
+  `frame-src ${frameSources}`,
+  "base-uri 'self'",
+  "object-src 'none'",
+].join("; ");
+
+type Props = {
+  title?: string;
+  author?: string;
+  profile?: string;
+  description?: string;
+  ogImage?: string;
+  canonicalURL?: string;
+  pubDatetime?: Date;
+  modDatetime?: Date | null;
+  scrollSmooth?: boolean;
+  noindex?: boolean;
+  referrerPolicy?: string;
+  schemaType?: "BlogPosting" | "CollectionPage";
+};
+
+const {
+  title = SITE.title,
+  author = SITE.author,
+  profile = SITE.profile,
+  description = defaultDescriptionForLocale(locale),
+  ogImage = SITE.ogImage ? `/${SITE.ogImage}` : "/og.png",
+  canonicalURL = new URL(Astro.url.pathname, Astro.url),
+  pubDatetime,
+  modDatetime,
+  scrollSmooth = false,
+  noindex = false,
+  referrerPolicy = "strict-origin-when-cross-origin",
+  schemaType = "BlogPosting",
+} = Astro.props;
+
+const socialImageURL = new URL(withBase(ogImage), Astro.url);
+const basePath = getBasePath();
+const searchEndpoint = localizedPath("/search.json", locale);
+const rssTitle = locale === SITE.i18n.defaultLocale ? SITE.title : `${SITE.title} — ${locale === "en" ? "English" : "中文"}`;
+
+const structuredData = pubDatetime
+  ? {
+      "@context": "https://schema.org",
+      "@type": schemaType,
+      headline: `${title}`,
+      description,
+      inLanguage: locale,
+      image: `${socialImageURL}`,
+      datePublished: pubDatetime.toISOString(),
+      ...(modDatetime && { dateModified: modDatetime.toISOString() }),
+      author: [
+        {
+          "@type": "Person",
+          name: `${author}`,
+          ...(profile && { url: profile }),
+        },
+      ],
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: `${SITE.title}`,
+      url: new URL(localizedPath("/", locale), Astro.site ?? Astro.url).toString(),
+      description,
+      inLanguage: locale,
+    };
+---
+
+<!doctype html>
+<html
+  dir={SITE.dir}
+  lang={locale}
+  data-base-url={basePath}
+  data-search-endpoint={searchEndpoint}
+  data-search-empty={searchEmpty ? "true" : undefined}
+  data-default-theme={SITE.theme.defaultMode}
+  class:list={[{ "scroll-smooth": scrollSmooth }]}
+>
+  <head>
+    <Font cssVariable="--font-sans-native" preload />
+    <Font cssVariable="--font-mono-native" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" sizes="32x32" href={withBase(SITE.faviconPng)} />
+    <link rel="icon" type="image/svg+xml" href={withBase(SITE.faviconSvg)} />
+    <link rel="shortcut icon" href={withBase(SITE.faviconIco)} />
+    <link rel="apple-touch-icon" href={withBase(SITE.appleTouchIcon)} />
+    <link rel="manifest" href={withBase("/site.webmanifest")} />
+    <link rel="canonical" href={canonicalURL} />
+    {
+      Object.keys(alternates).length === 2 &&
+        Object.entries(alternates).map(([language, path]) => (
+          <link rel="alternate" hreflang={language} href={new URL(path!, Astro.site ?? Astro.url)} />
+        ))
+    }
+    <meta
+      name="robots"
+      content={`${noindex ? "noindex" : "index"}, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1`}
+    />
+    {SITE.siteVerification.google && <meta name="google-site-verification" content={SITE.siteVerification.google} />}
+    {SITE.siteVerification.baidu && <meta name="baidu-site-verification" content={SITE.siteVerification.baidu} />}
+    <meta name="generator" content={Astro.generator} />
+    <meta name="referrer" content={referrerPolicy} />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content={cspContent}
+    />
+
+    <!-- General Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    <link rel="sitemap" href={withBase("/sitemap-index.xml")} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={locale === "en" ? "en_US" : "zh_CN"} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={socialImageURL} />
+
+    <!-- Article Published/Modified time -->
+    {pubDatetime && <meta property="article:published_time" content={pubDatetime.toISOString()} />}
+    {modDatetime && <meta property="article:modified_time" content={modDatetime.toISOString()} />}
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={socialImageURL} />
+
+    <!-- Google JSON-LD Structured data -->
+    <script type="application/ld+json" is:inline set:html={serializeJsonLd(structuredData)} />
+
+    <!-- RSS feed auto-discovery -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={rssTitle}
+      href={new URL(localizedPath("/rss.xml", locale), Astro.site ?? Astro.url)}
+    />
+
+    <meta name="theme-color" content="" />
+
+    <ClientRouter />
+
+    <style
+      is:inline
+      set:html={`:root,html[data-theme="light"]{--accent:${themeAccent.light};}html[data-theme="dark"]{--accent:${themeAccent.dark};}`}
+    />
+
+    <Analytics />
+
+    <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
+    <script is:inline>
+      (function () {
+        let storedTheme = null;
+        try {
+          storedTheme = localStorage.getItem("theme");
+        } catch {
+          // A denied store must not interrupt first-paint theme selection.
+        }
+        const defaultMode = document.documentElement.dataset.defaultTheme;
+        const themeValue =
+          storedTheme === "light" || storedTheme === "dark"
+            ? storedTheme
+            : defaultMode === "light" || defaultMode === "dark"
+              ? defaultMode
+              : window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+        document.documentElement.setAttribute("data-theme", themeValue);
+      })();
+    </script>
+  </head>
+  <body>
+    <SiteBackdrop />
+
+    <slot />
+
+    {SITE.features.search && <SearchModal />}
+    <script src="../scripts/theme.ts"></script>
+    <script src="../scripts/reading-navigation.ts"></script>
+    {SITE.features.pwa && <script src="../scripts/register-sw.ts"></script>}
+  </body>
+</html>

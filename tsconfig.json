@@ -1,0 +1,24 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": [
+    "dist",
+    "public/pagefind",
+    ".tmp",
+    ".tmp/**",
+    ".visual-artifacts",
+    ".task-artifacts",
+    ".agents",
+    // Local design reference only — not part of the Astro site (see .gitignore).
+    "retro-crt-portfolio",
+    "retro-crt-portfolio/**"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  }
+}

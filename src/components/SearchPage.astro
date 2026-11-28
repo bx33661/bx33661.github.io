@@ -1,0 +1,153 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import { SITE } from "@/config.ts";
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+---
+
+<Layout title={`${t.search} | ${SITE.title}`} noindex>
+  <Header />
+  <Breadcrumb />
+
+  <main id="main-content" class="app-layout search-main">
+    <header class="search-head">
+      <p class="search-kicker">SEARCH / INDEX</p>
+      <h1>{t.search}</h1>
+      <p>{t.searchLead}</p>
+    </header>
+
+    <section class="search-surface" aria-label={t.siteSearch}>
+      <div class="search-surface-head">
+        <span>{t.siteSearch}</span>
+        <span class="search-keyboard"><kbd>⌘</kbd><kbd>K</kbd> {t.quickOpen}</span>
+      </div>
+      <div id="pagefind-search" class="search-results pagefind-surface"></div>
+      <div class="search-surface-foot">
+        <span>{t.searchHint}</span>
+        <a href={localizedPath("/blog/", locale)}>{t.browsePosts} <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script src="../scripts/search-page.ts"></script>
+
+<style>
+  .search-main {
+    padding-bottom: 5rem;
+  }
+  .search-head {
+    margin: 0.4rem 0 1.75rem;
+  }
+  .search-kicker {
+    margin: 0 0 0.45rem;
+    color: var(--accent);
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .search-head h1 {
+    margin: 0;
+    color: var(--foreground);
+    font-size: clamp(1.85rem, 3.5vw, 2.35rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .search-head > p:last-child {
+    margin: 0.55rem 0 0;
+    color: color-mix(in srgb, var(--foreground) 62%, transparent);
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+  .search-surface {
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem;
+    background: var(--surface);
+    box-shadow: 0 12px 36px -24px color-mix(in srgb, var(--foreground) 18%, transparent);
+  }
+  .search-surface-head,
+  .search-surface-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem 1.15rem;
+    background: var(--surface-subtle);
+    color: var(--muted-foreground);
+    font-size: 0.78rem;
+  }
+  .search-surface-head {
+    border-bottom: 1px solid var(--border-subtle);
+    font-weight: 600;
+  }
+  .search-surface-foot {
+    border-top: 1px solid var(--border-subtle);
+  }
+  .search-surface-foot a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .search-surface-foot a:hover {
+    text-decoration: underline;
+  }
+  .search-keyboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    font-weight: 400;
+  }
+  .search-keyboard kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    padding: 0.08rem 0.3rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.25rem;
+    background: var(--surface);
+    box-shadow: 0 1px 0 var(--border-subtle);
+    text-align: center;
+    font-family: var(--font-cartograph), monospace;
+    font-size: 0.68rem;
+  }
+  .search-results {
+    min-height: 13rem;
+    padding: 1rem 1.15rem 1.5rem;
+  }
+  #pagefind-search {
+    --pagefind-ui-scale: 0.9;
+    --pf-result-py: 1rem;
+    --pf-title-size: 1rem;
+    --pf-excerpt-size: 0.88rem;
+    --pf-excerpt-mt: 0.4rem;
+    --pf-excerpt-lh: 1.6;
+    --pf-excerpt-alpha: 65%;
+    --pf-mark-alpha: 18%;
+    --pf-nested-mt: 0.45rem;
+    --pf-nested-pl: 0.9rem;
+    --pf-fallback-mt: 0.6rem;
+    --pf-status-mt: 1rem;
+    --pf-status-size: 0.85rem;
+    --pf-status-alpha: 60%;
+  }
+  @media (max-width: 640px) {
+    .search-surface-head,
+    .search-surface-foot,
+    .search-results {
+      padding-inline: 0.9rem;
+    }
+    .search-keyboard {
+      display: none;
+    }
+  }
+</style>

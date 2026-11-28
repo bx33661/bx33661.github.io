@@ -1,0 +1,155 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import "katex/dist/katex.min.css";
+import "@/styles/post-reading.css";
+import "@/styles/markdown-reading.css";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import BackButton from "@/components/BackButton.astro";
+import BackToTopButton from "@/components/BackToTopButton.astro";
+import PostToc from "@/components/PostToc.astro";
+import ArticleLightbox from "@/components/ArticleLightbox.astro";
+import IconArrowLeft from "@/assets/icons/IconArrowLeft.svg";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import { SITE } from "@/config.ts";
+import { resolveAuthor } from "@/utils/author";
+import { formatSiteDate } from "@/utils/date";
+import { getAdjacentNotes } from "@/utils/notes";
+import { estimateReadingMinutes } from "@/utils/readingTime";
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+
+interface Props {
+  note: CollectionEntry<"notes">;
+  slug: string;
+}
+const { note, slug } = Astro.props;
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+const { Content, headings } = await render(note);
+const tocHeadings = headings.filter((heading) => heading.depth <= 3 && heading.slug !== "footnote-label");
+const { prev, next } = await getAdjacentNotes(slug, locale);
+const author = resolveAuthor(note.data.authors);
+const readingMinutes = estimateReadingMinutes(note.body);
+const noteCategory = note.data.category || t.uncategorized;
+---
+
+<Layout
+  title={`${note.data.title} | ${SITE.title}`}
+  author={author}
+  description={note.data.description}
+  pubDatetime={note.data.date}
+  canonicalURL={Astro.url.toString()}
+  scrollSmooth={true}
+  referrerPolicy="no-referrer"
+>
+  <Header />
+  <BackButton currentTitle={note.data.title} />
+  <main
+    id="main-content"
+    class:list={["post-page app-layout relative pb-12", { "mt-8": !SITE.showBackButton }]}
+    data-pagefind-body
+  >
+    <header class="post-header">
+      <p class="post-kicker" data-pagefind-ignore>
+        <span aria-hidden="true"></span>{t.noteWriting}
+      </p>
+      <h1 class="post-title" data-pagefind-meta="title">{note.data.title}</h1>
+      <p class="post-description" data-note-summary>{note.data.description}</p>
+      <div class="post-meta">
+        <span>{author}</span>
+        <span aria-hidden="true">·</span>
+        <span>{noteCategory}</span>
+        <span aria-hidden="true">·</span>
+        <span class="post-date"
+          ><time datetime={note.data.date.toISOString()}>{formatSiteDate(note.data.date, locale)}</time></span
+        >
+        <span aria-hidden="true">·</span>
+        <span class="post-reading-time">{t.readingTime(readingMinutes)}</span>
+      </div>
+      {
+        note.data.tags && note.data.tags.length > 0 && (
+          <div class="post-header-tags">
+            {note.data.tags.map((tag: string) => (
+              <span class="post-tag-badge">
+                <span aria-hidden="true">#</span>
+                {tag}
+              </span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <div class="post-reading">
+      <div class="post-reading-content">
+        <PostToc headings={tocHeadings} variant="inline" />
+        <article
+          id="article"
+          class="app-prose max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg) w-full"
+        >
+          <Content />
+        </article>
+      </div>
+      <PostToc headings={tocHeadings} variant="sidebar" />
+    </div>
+
+    <div class="mt-10 flex items-center gap-3" aria-hidden="true">
+      <div class="from-accent/20 via-border/30 h-px flex-1 bg-linear-to-r to-transparent"></div>
+      <span class="font-cartograph text-accent/25 text-[10px] tracking-widest uppercase select-none">// {t.end}</span>
+      <div class="via-border/30 to-accent/20 h-px flex-1 bg-linear-to-r from-transparent"></div>
+    </div>
+
+    <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2" data-pagefind-ignore>
+      {
+        prev ? (
+          <a
+            href={localizedPath(`/notes/${prev.slug}/`, locale)}
+            class="post-nav-link group border-border/20 hover:border-accent/30 hover:shadow-accent/5 relative flex flex-col gap-1 rounded-2xl border px-5 py-4 transition-all duration-300 hover:shadow-lg"
+          >
+            <div class="flex items-center gap-1.5">
+              <IconArrowLeft
+                class="text-accent/50 size-3.5 transition-transform duration-300 group-hover:-translate-x-1 rtl:rotate-180"
+                aria-hidden="true"
+              />
+              <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase">
+                {t.previous}
+              </span>
+            </div>
+            <span class="text-foreground/80 group-hover:text-accent line-clamp-2 text-sm leading-snug font-medium transition-colors duration-200">
+              {prev.note.data.title}
+            </span>
+          </a>
+        ) : (
+          <div />
+        )
+      }
+      {
+        next && (
+          <a
+            href={localizedPath(`/notes/${next.slug}/`, locale)}
+            class="post-nav-link group border-border/20 hover:border-accent/30 hover:shadow-accent/5 relative flex flex-col items-end gap-1 rounded-2xl border px-5 py-4 text-end transition-all duration-300 hover:shadow-lg sm:col-start-2"
+          >
+            <div class="flex items-center gap-1.5">
+              <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase">{t.next}</span>
+              <IconArrowRight
+                class="text-accent/50 size-3.5 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180"
+                aria-hidden="true"
+              />
+            </div>
+            <span class="text-foreground/80 group-hover:text-accent line-clamp-2 text-sm leading-snug font-medium transition-colors duration-200">
+              {next.note.data.title}
+            </span>
+          </a>
+        )
+      }
+    </div>
+  </main>
+  <PostToc headings={tocHeadings} variant="mobile" />
+  <ArticleLightbox />
+  <BackToTopButton />
+  <Footer />
+</Layout>
+
+<script src="../scripts/post-enhancements.ts"></script>

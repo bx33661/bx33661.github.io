@@ -1,0 +1,350 @@
+---
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
+import IconArchive from "@/assets/icons/IconArchive.svg";
+import IconGallery from "@/assets/icons/IconGallery.svg";
+import { SITE } from "@/config.ts";
+import "@/styles/header.css";
+import { BILINGUAL_ENABLED, localeFromPath, localizedPath, stripLocalePrefix, switchDestination } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import { languagePaths } from "@/i18n/content";
+import { withBase } from "@/utils/url";
+
+interface Props {
+  surface?: "default" | "dark";
+}
+
+const { surface = "default" } = Astro.props;
+const { pathname } = Astro.url;
+const locale = localeFromPath(pathname);
+const t = ui(locale);
+const isEnglish = locale === "en";
+const languageRoutes = BILINGUAL_ENABLED ? await languagePaths(pathname) : {};
+const languageHref = switchDestination(pathname, languageRoutes);
+const exactLanguageSwitch = Object.keys(languageRoutes).length === 2;
+
+const sectionPath = stripLocalePrefix(pathname);
+const isActive = (path: string) => sectionPath === path || sectionPath.startsWith(`${path}/`);
+
+const navItems = [
+  { label: t.home, href: localizedPath("/", locale), active: sectionPath === "/" },
+  { label: t.posts, href: localizedPath("/blog/", locale), active: isActive("/blog") },
+  ...(SITE.features.notes
+    ? [{ label: t.notes, href: localizedPath("/notes/", locale), active: isActive("/notes") }]
+    : []),
+  ...(SITE.features.projects
+    ? [{ label: t.projects, href: withBase("/projects/"), active: isActive("/projects") }]
+    : []),
+  ...(SITE.features.friends
+    ? [{ label: t.friends, href: withBase("/friends/"), active: isActive("/friends") }]
+    : []),
+];
+
+const quickItems = [
+  ...(SITE.features.archives
+    ? [
+        {
+          label: t.archives,
+          href: localizedPath("/archives/", locale),
+          active: isActive("/archives"),
+          icon: IconArchive,
+        },
+      ]
+    : []),
+  ...(SITE.features.galleries
+    ? [
+        {
+          label: t.galleries,
+          href: withBase("/galleries/"),
+          active: isActive("/galleries"),
+          icon: IconGallery,
+        },
+      ]
+    : []),
+];
+
+const allMobileItems = [...navItems, ...quickItems];
+const siteLogo = withBase(SITE.brandLogo);
+const brandText = SITE.title.trim();
+---
+
+<a
+  id="skip-to-content"
+  href="#main-content"
+  class="bg-accent text-background absolute start-16 -top-full z-50 rounded-b-lg px-4 py-2 font-medium transition-all focus:top-0"
+>
+  {t.skipToContent}
+</a>
+
+<header class="header-glass sticky top-0 z-40 w-full" data-header-surface={surface === "dark" ? "dark" : undefined}>
+  <div class="app-layout">
+    <div id="top-nav-wrap" class="nav-capsule">
+      <!-- Logo -->
+      <a href={localizedPath("/", locale)} class="nav-brand group" aria-label={`${brandText} · ${t.home}`}>
+        <img
+          src={siteLogo}
+          alt=""
+          class="site-brand-logo bg-[#f4f0e6] object-contain"
+          width="32"
+          height="32"
+          loading="eager"
+          decoding="async"
+        />
+        <span class="nav-logo-word">{brandText}</span>
+      </a>
+
+      <!-- Nav area -->
+      <nav id="nav-menu" class="nav-area" aria-label={t.primaryNav}>
+        <!-- Desktop links -->
+        <div class="nav-links" data-nav-links>
+          <span class="nav-bubble" aria-hidden="true" data-nav-bubble></span>
+          <ul class="nav-links-list">
+            {
+              navItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class:list={["nav-link", { "nav-active": item.active }]}
+                    aria-current={item.active ? "page" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="nav-tools">
+          {
+            quickItems.length > 0 && (
+              <div class="nav-quick-switch" role="group" aria-label={t.quickShortcuts}>
+                {quickItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <a
+                      href={item.href}
+                      title={item.label}
+                      aria-label={item.label}
+                      class:list={["nav-quick-btn", { active: item.active }]}
+                    >
+                      <Icon class="nav-glyph" />
+                    </a>
+                  );
+                })}
+              </div>
+            )
+          }
+
+          {
+            SITE.features.search && (
+              <button data-search-trigger class="nav-search-btn" title={t.searchShortcutTitle} aria-label={t.openSearch}>
+                <IconSearch class="nav-glyph" />
+                <kbd class="nav-kbd">⌘K</kbd>
+              </button>
+            )
+          }
+
+          {
+            SITE.lightAndDarkMode && (
+              <button
+                id="theme-btn"
+                class="nav-icon-btn relative"
+                title={t.toggleTheme}
+                aria-label="auto"
+                aria-live="polite"
+              >
+                <IconMoon class="nav-glyph absolute top-1/2 left-1/2 -translate-1/2 scale-100 rotate-0 transition-all duration-300 dark:scale-0 dark:-rotate-90" />
+                <IconSunHigh class="nav-glyph absolute top-1/2 left-1/2 -translate-1/2 scale-0 rotate-90 transition-all duration-300 dark:scale-100 dark:rotate-0" />
+              </button>
+            )
+          }
+        </div>
+
+        {
+          BILINGUAL_ENABLED && (
+            <a
+              href={languageHref}
+              class="language-switch"
+              data-language-switch
+              lang={isEnglish ? "zh-CN" : "en"}
+              aria-label={
+                isEnglish
+                  ? exactLanguageSwitch
+                    ? "切换到中文"
+                    : "查看中文内容"
+                  : exactLanguageSwitch
+                    ? "Switch to English"
+                    : "Browse the English edition; this page has no English version"
+              }
+              title={
+                isEnglish ? "中文" : exactLanguageSwitch ? "English" : "English edition (no translation of this page)"
+              }
+            >
+              <span class="language-switch__label" data-current={!isEnglish} aria-hidden="true">
+                中
+              </span>
+              <span class="language-switch__divider" aria-hidden="true">
+                /
+              </span>
+              <span class="language-switch__label" data-current={isEnglish} aria-hidden="true">
+                EN
+              </span>
+            </a>
+          )
+        }
+
+        <!-- Mobile hamburger -->
+        <button
+          id="menu-btn"
+          class="hamburger-btn sm:hidden"
+          aria-label={t.openMenu}
+          data-label-open={t.openMenu}
+          data-label-close={t.closeMenu}
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <div class="hamburger-box">
+            <span class="hamburger-line hamburger-line--1"></span>
+            <span class="hamburger-line hamburger-line--2"></span>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Mobile dropdown menu -->
+    <div id="mobile-menu" class="mobile-menu sm:hidden" aria-hidden="true">
+      <div class="mobile-menu-inner">
+        <nav class="mobile-nav-links" aria-label={t.mobileNav}>
+          {
+            allMobileItems.map((item, index) => (
+              <a href={item.href} class:list={["mobile-nav-link", { active: item.active }]} style={`--i:${index}`}>
+                <span>{item.label}</span>
+                <span class="mobile-nav-indicator" />
+              </a>
+            ))
+          }
+        </nav>
+
+        <div class="mobile-menu-divider"></div>
+
+        <div class="mobile-menu-actions">
+          {
+            SITE.features.search && (
+              <button data-search-trigger class="mobile-action-btn" title={t.searchShortcutTitle} aria-label={t.openSearch}>
+                <IconSearch class="size-4" />
+                <span>{t.search}</span>
+              </button>
+            )
+          }
+          {
+            SITE.lightAndDarkMode && (
+              <button
+                id="theme-btn-mobile"
+                class="mobile-action-btn"
+                title={t.toggleTheme}
+                aria-label="auto"
+                aria-live="polite"
+              >
+                <IconMoon class="block size-4 dark:hidden" />
+                <IconSunHigh class="hidden size-4 dark:block" />
+                <span class="block dark:hidden">{t.darkMode}</span>
+                <span class="hidden dark:block">{t.lightMode}</span>
+              </button>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  import { onAstroPage, onViewportScroll } from "@/scripts/astro-lifecycle";
+
+  onAstroPage((signal) => {
+    const header = document.querySelector<HTMLElement>(".header-glass");
+    if (header) {
+      const syncScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 12);
+      const schedule = onViewportScroll(signal, syncScroll);
+      schedule();
+    }
+
+    const links = document.querySelector<HTMLElement>("[data-nav-links]");
+    const bubble = links?.querySelector<HTMLElement>("[data-nav-bubble]");
+    if (links && bubble) {
+      const active = links.querySelector<HTMLElement>(".nav-active");
+      const place = (target: HTMLElement) => {
+        bubble.style.width = `${target.offsetWidth}px`;
+        bubble.style.transform = `translateX(${target.offsetLeft}px)`;
+      };
+      const engage = (target: HTMLElement) => {
+        if (!links.dataset.bubbleReady) {
+          bubble.classList.add("no-motion");
+          place(active ?? target);
+          bubble.style.opacity = active ? "1" : "0";
+          links.dataset.bubbleReady = "true";
+          void bubble.offsetWidth;
+          bubble.classList.remove("no-motion");
+        }
+        place(target);
+        bubble.style.opacity = "1";
+      };
+      const release = () => {
+        if (!links.dataset.bubbleReady) return;
+        if (active) place(active);
+        else bubble.style.opacity = "0";
+      };
+      bubble.addEventListener(
+        "transitionend",
+        (event) => {
+          if (event.propertyName !== "transform" || links.matches(":hover, :focus-within")) return;
+          delete links.dataset.bubbleReady;
+          bubble.style.opacity = "0";
+        },
+        { signal },
+      );
+      links.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
+        link.addEventListener("pointerenter", () => engage(link), { signal });
+        link.addEventListener("focus", () => engage(link), { signal });
+      });
+      links.addEventListener("pointerleave", release, { signal });
+      links.addEventListener("focusout", (event) => !links.contains(event.relatedTarget as Node) && release(), {
+        signal,
+      });
+    }
+
+    const menuBtn = document.querySelector<HTMLElement>("#menu-btn");
+    const mobileMenu = document.querySelector<HTMLElement>("#mobile-menu");
+    if (!menuBtn || !mobileMenu) return;
+
+    const setMenuOpen = (open: boolean) => {
+      const openLabel = menuBtn.dataset.labelOpen || "Open menu";
+      const closeLabel = menuBtn.dataset.labelClose || "Close menu";
+      menuBtn.setAttribute("aria-expanded", String(open));
+      menuBtn.setAttribute("aria-label", open ? closeLabel : openLabel);
+      mobileMenu.classList.toggle("is-open", open);
+      mobileMenu.setAttribute("aria-hidden", String(!open));
+    };
+
+    setMenuOpen(false);
+
+    menuBtn.addEventListener("click", () => setMenuOpen(menuBtn.getAttribute("aria-expanded") !== "true"), { signal });
+
+    mobileMenu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => setMenuOpen(false), { signal });
+    });
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Escape" && mobileMenu.classList.contains("is-open")) {
+          setMenuOpen(false);
+          menuBtn.focus();
+        }
+      },
+      { signal },
+    );
+  });
+</script>

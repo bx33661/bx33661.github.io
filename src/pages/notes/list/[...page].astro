@@ -1,0 +1,16 @@
+---
+import type { GetStaticPaths } from "astro";
+import NotesList from "@/components/NotesList.astro";
+import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE } from "@/i18n";
+import { NOTES_PAGE_SIZE, getAllNotesWithSlugs } from "@/utils/notes";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  if (!SITE.features.notes) return [];
+  return paginate(await getAllNotesWithSlugs(DEFAULT_LOCALE), { pageSize: NOTES_PAGE_SIZE });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<NotesList {page} />

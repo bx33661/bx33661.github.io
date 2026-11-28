@@ -1,0 +1,18 @@
+---
+import NoteDetails from "@/layouts/NoteDetails.astro";
+import { SITE } from "@/config.ts";
+import { BILINGUAL_ENABLED, SECONDARY_LOCALE, SECONDARY_PREFIX } from "@/i18n";
+import { getAllNotesWithSlugs } from "@/utils/notes";
+
+export async function getStaticPaths() {
+  if (!BILINGUAL_ENABLED || !SITE.features.notes) return [];
+  return (await getAllNotesWithSlugs(SECONDARY_LOCALE)).map(({ note, slug }) => ({
+    params: { locale: SECONDARY_PREFIX, slug },
+    props: { note, slug },
+  }));
+}
+
+const { note, slug } = Astro.props;
+---
+
+<NoteDetails {note} {slug} />

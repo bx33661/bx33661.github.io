@@ -1,0 +1,247 @@
+---
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+import { render, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import "katex/dist/katex.min.css";
+import "@/styles/post-reading.css";
+import "@/styles/markdown-reading.css";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import EditPost from "@/components/EditPost.astro";
+import PostToc from "@/components/PostToc.astro";
+import PostDiscovery from "@/components/PostDiscovery.astro";
+import ArticleLightbox from "@/components/ArticleLightbox.astro";
+import { getArticleDates } from "@/utils/article-discovery";
+import { formatSiteDate } from "@/utils/date";
+import { estimateReadingMinutes } from "@/utils/readingTime";
+import { resolvePostOgImagePath } from "@/utils/generateOgImages";
+import ShareLinks from "@/components/ShareLinks.astro";
+import BackButton from "@/components/BackButton.astro";
+import BackToTopButton from "@/components/BackToTopButton.astro";
+import IconArrowLeft from "@/assets/icons/IconArrowLeft.svg";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import GiscusComments from "@/components/GiscusComments.astro";
+import { getPath } from "@/utils/getPath";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { articleTransitionName, readingTransition } from "@/utils/reading-motion";
+import { getLocalizedTagPath } from "@/utils/tagPath";
+import { SITE } from "@/config.ts";
+
+type Props = {
+  post: CollectionEntry<"blog">;
+  posts: CollectionEntry<"blog">[];
+};
+
+const { post, posts } = Astro.props;
+const postSlug = resolveLegacyPostSlug(post);
+const postPath = (id: string, filePath: string | undefined, slug: string) =>
+  localizedPath(getPath(id, filePath, true, slug), locale);
+
+const { title, author, description, canonicalURL, pubDatetime, modDatetime, tags, hideEditPost } = post.data;
+
+const { Content, headings } = await render(post);
+const tocHeadings = headings.filter((heading) => heading.depth <= 3 && heading.slug !== "footnote-label");
+const dates = getArticleDates(pubDatetime, modDatetime);
+const dateLabel = (date: Date) => formatSiteDate(date, locale);
+const readingMinutes = estimateReadingMinutes(post.body);
+
+const ogImagePath = resolvePostOgImagePath(post, postSlug, locale);
+const ogImage = ogImagePath ? new URL(ogImagePath, Astro.url.origin).href : undefined;
+
+const layoutProps = {
+  title: `${title} | ${SITE.title}`,
+  author,
+  description,
+  pubDatetime,
+  modDatetime,
+  canonicalURL,
+  ogImage,
+  scrollSmooth: true,
+  referrerPolicy: "no-referrer",
+};
+
+/* ========== Prev/Next Posts ========== */
+
+const allPosts = posts.map((item) => ({
+  id: item.id,
+  title: item.data.title,
+  filePath: item.filePath,
+  slug: resolveLegacyPostSlug(item),
+}));
+
+const currentPostIndex = allPosts.findIndex((a) => a.id === post.id);
+
+const prevPost = currentPostIndex > 0 ? allPosts[currentPostIndex - 1] : null;
+const nextPost =
+  currentPostIndex >= 0 && currentPostIndex < allPosts.length - 1 ? allPosts[currentPostIndex + 1] : null;
+---
+
+<Layout {...layoutProps}>
+  <Header />
+  <BackButton currentTitle={title} />
+  <main
+    id="main-content"
+    transition:name="reading-surface"
+    transition:animate={readingTransition}
+    class:list={["post-page app-layout relative pb-12", { "mt-8": !SITE.showBackButton }]}
+    data-pagefind-body
+  >
+    <!-- Post header section -->
+    <header class="post-header">
+      <p class="post-kicker" data-pagefind-ignore>
+        <span aria-hidden="true"></span>{t.writing}
+      </p>
+      <h1
+        transition:name={articleTransitionName(postPath(post.id, post.filePath, postSlug))}
+        transition:animate="initial"
+        data-article-title
+        class="post-title"
+      >
+        {title}
+      </h1>
+      <p class="post-description">{description}</p>
+      <div class="post-meta">
+        <span>{author}</span>
+        <span aria-hidden="true">·</span>
+        <span class="post-date"
+          >{t.published} <time datetime={dates.published.toISOString()}>{dateLabel(dates.published)}</time></span
+        >
+        {
+          dates.updated && (
+            <span class="post-date post-date-updated">
+              {t.updated} <time datetime={dates.updated.toISOString()}>{dateLabel(dates.updated)}</time>
+            </span>
+          )
+        }
+        <span aria-hidden="true">·</span>
+        <span class="post-reading-time">{t.readingTime(readingMinutes)}</span>
+      </div>
+      <div class="post-header-tags">
+        {
+          tags.slice(0, 3).map((tag: string) => (
+            <a href={getLocalizedTagPath(tag, locale)} class="post-tag-badge">
+              <span aria-hidden="true">#</span>
+              {tag}
+            </a>
+          ))
+        }
+        {tags.length > 3 && <span class="post-tag-more">{t.moreTags(tags.length)}</span>}
+      </div>
+    </header>
+
+    <div class="post-reading">
+      <div class="post-reading-content">
+        <PostToc headings={tocHeadings} variant="inline" />
+        <article
+          id="article"
+          class="app-prose max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg) w-full"
+        >
+          <Content />
+        </article>
+      </div>
+      <PostToc headings={tocHeadings} variant="sidebar" />
+    </div>
+
+    <!-- ═══════ Post footer section ═══════ -->
+    <div class="mt-10 flex items-center gap-3" aria-hidden="true">
+      <div class="from-accent/20 via-border/30 h-px flex-1 bg-linear-to-r to-transparent"></div>
+      <span class="font-cartograph text-accent/25 text-[10px] tracking-widest uppercase select-none">// {t.end}</span>
+      <div class="via-border/30 to-accent/20 h-px flex-1 bg-linear-to-r from-transparent"></div>
+    </div>
+
+    <EditPost class="mt-4" {hideEditPost} {post} />
+
+    <!-- Tags & Share row -->
+    <div class="mt-6 mb-8 flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
+      <!-- Tags -->
+      <div class="flex flex-wrap justify-center gap-2 sm:justify-start">
+        {
+          tags.map((tag: string) => (
+            <a
+              href={getLocalizedTagPath(tag, locale)}
+              class="border-border-subtle bg-surface/75 font-cartograph hover:border-accent/40 hover:bg-accent/5 hover:text-accent inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs transition-all duration-200"
+            >
+              <span class="opacity-45">#</span>
+              {tag}
+            </a>
+          ))
+        }
+      </div>
+
+      <!-- Share links -->
+      <ShareLinks />
+    </div>
+
+    <PostDiscovery {post} {posts} />
+
+    <GiscusComments />
+
+    <!-- Decorative separator before prev/next -->
+    <div class="my-6 flex items-center gap-3" aria-hidden="true">
+      <div class="via-border/30 h-px flex-1 bg-linear-to-r from-transparent to-transparent"></div>
+    </div>
+
+    <!-- Previous/Next Post Navigation -->
+    <div data-pagefind-ignore class="grid grid-cols-2 gap-3">
+      {
+        prevPost ? (
+          <a
+            href={postPath(prevPost.id, prevPost.filePath, prevPost.slug)}
+            data-reading-link
+            class="post-nav-link group border-border/20 hover:border-accent/30 hover:shadow-accent/5 relative flex flex-col gap-1 rounded-2xl border px-5 py-4 transition-all duration-300 hover:shadow-lg"
+          >
+            <div class="flex items-center gap-1.5">
+              <IconArrowLeft
+                class="text-accent/50 size-3.5 transition-transform duration-300 group-hover:-translate-x-1 rtl:rotate-180"
+                aria-hidden="true"
+              />
+              <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase">
+                {t.previous}
+              </span>
+            </div>
+            <span
+              data-reading-title
+              class="text-foreground/80 group-hover:text-accent line-clamp-2 text-sm leading-snug font-medium transition-colors duration-200"
+            >
+              {prevPost.title}
+            </span>
+          </a>
+        ) : (
+          <div />
+        )
+      }
+      {
+        nextPost && (
+          <a
+            href={postPath(nextPost.id, nextPost.filePath, nextPost.slug)}
+            data-reading-link
+            class="post-nav-link group border-border/20 hover:border-accent/30 hover:shadow-accent/5 relative col-start-2 flex flex-col items-end gap-1 rounded-2xl border px-5 py-4 text-end transition-all duration-300 hover:shadow-lg"
+          >
+            <div class="flex items-center gap-1.5">
+              <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase">{t.next}</span>
+              <IconArrowRight
+                class="text-accent/50 size-3.5 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180"
+                aria-hidden="true"
+              />
+            </div>
+            <span
+              data-reading-title
+              class="text-foreground/80 group-hover:text-accent line-clamp-2 text-sm leading-snug font-medium transition-colors duration-200"
+            >
+              {nextPost.title}
+            </span>
+          </a>
+        )
+      }
+    </div>
+  </main>
+  <PostToc headings={tocHeadings} variant="mobile" />
+  <ArticleLightbox />
+  <BackToTopButton />
+  <Footer />
+</Layout>
+
+<script src="../scripts/post-enhancements.ts"></script>

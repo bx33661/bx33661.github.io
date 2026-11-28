@@ -1,0 +1,176 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Datetime from "@/components/Datetime.astro";
+import Footer from "@/components/Footer.astro";
+import GalleryLightbox from "@/components/GalleryLightbox.astro";
+import Header from "@/components/Header.astro";
+import { SITE } from "@/config.ts";
+import { getGalleryFolderImages, getPublishedGalleries } from "@/data/gallery";
+import { DEFAULT_LOCALE } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import Layout from "@/layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  if (!SITE.features.galleries) return [];
+  const galleries = await getPublishedGalleries();
+  return galleries.map(({ slug, gallery }) => ({
+    params: { gallery: slug },
+    props: { gallery },
+  }));
+}
+
+interface Props {
+  gallery: CollectionEntry<"galleries">;
+}
+
+const { gallery } = Astro.props;
+const slug = Astro.params.gallery ?? "";
+const images = getGalleryFolderImages(slug, gallery.data.title);
+const t = ui(DEFAULT_LOCALE);
+---
+
+<Layout
+  title={`${gallery.data.title} | ${t.galleries} | ${SITE.title}`}
+  description={gallery.data.description}
+  pubDatetime={gallery.data.pubDatetime}
+  schemaType="CollectionPage"
+>
+  <Header />
+  <Breadcrumb />
+
+  <main id="main-content" class="app-layout pb-12">
+    <section class="border-border-subtle bg-surface/75 rounded-2xl border p-6 shadow-xs sm:p-7">
+      <p class="font-cartograph text-accent mb-2 text-xs font-semibold tracking-widest uppercase">
+        GALLERY / COLLECTION
+      </p>
+      <h1 class="text-foreground text-3xl font-bold tracking-tight">{gallery.data.title}</h1>
+      <p class="text-muted-foreground mt-3 leading-relaxed">{gallery.data.description}</p>
+      <div class="text-muted-foreground mt-4 flex flex-wrap items-center gap-3 text-xs sm:text-sm">
+        <Datetime pubDatetime={gallery.data.pubDatetime} />
+        <span class="border-border-subtle bg-surface-subtle font-cartograph rounded-full border px-3 py-0.5 text-xs">
+          {t.galleryCount(images.length)}
+        </span>
+      </div>
+    </section>
+
+    {
+      images.length > 0 ? (
+        <ul class="gallery-grid mt-8" role="list" aria-label={gallery.data.title}>
+          {images.map((image, index) => (
+            <li>
+              <button
+                class="gallery-item group"
+                type="button"
+                data-lightbox-trigger
+                data-gallery-target="gallery-lightbox"
+                data-src={image.src.src}
+                data-alt={image.alt}
+                aria-label={t.viewPhotoLabel(image.alt)}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  class="gallery-image"
+                  loading={index < 6 ? "eager" : "lazy"}
+                  widths={[400, 800, 1200]}
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+                <span class="gallery-caption" aria-hidden="true">
+                  {image.alt}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="border-border-subtle bg-surface/75 text-muted-foreground mt-8 rounded-xl border p-5">
+          {t.galleryEmpty}
+        </p>
+      )
+    }
+  </main>
+
+  <GalleryLightbox id="gallery-lightbox" mode="wrap" label="Image viewer" />
+  <Footer />
+</Layout>
+
+<style>
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 768px) {
+    .gallery-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .gallery-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .gallery-item {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.9rem;
+    overflow: hidden;
+    cursor: zoom-in;
+    background: color-mix(in srgb, var(--foreground) 5%, transparent);
+    transition:
+      border-color 0.22s ease,
+      box-shadow 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  .gallery-item:hover {
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow: 0 12px 26px -14px color-mix(in srgb, var(--foreground) 26%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .gallery-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  .gallery-item:hover .gallery-image {
+    transform: scale(1.04);
+  }
+
+  .gallery-caption {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    padding: 1.5rem 0.7rem 0.55rem;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.78), transparent);
+    color: #f8fafc;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    text-align: start;
+    opacity: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+
+  .gallery-item:hover .gallery-caption,
+  .gallery-item:focus-visible .gallery-caption {
+    opacity: 1;
+  }
+</style>

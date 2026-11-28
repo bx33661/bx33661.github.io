@@ -1,0 +1,263 @@
+@plugin "@tailwindcss/typography";
+
+@layer base {
+  /* ===== Override default Tailwind Typography styles ===== */
+  .app-prose {
+    @apply prose;
+
+    .katex-display {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-block: 0.25rem;
+    }
+
+    .katex {
+      color: var(--foreground);
+    }
+
+    pre.mermaid {
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    th {
+      @apply text-foreground mb-3;
+    }
+
+    p,
+    strong,
+    ol,
+    ul,
+    figcaption,
+    table,
+    code {
+      @apply text-foreground;
+    }
+
+    a {
+      @apply text-foreground hover:text-accent wrap-break-word decoration-dashed underline-offset-4 focus-visible:no-underline;
+    }
+
+    ul {
+      @apply overflow-x-clip;
+    }
+
+    li {
+      @apply marker:text-accent;
+    }
+
+    hr {
+      @apply border-border;
+    }
+
+    img {
+      @apply border-border mx-auto border;
+    }
+
+    figcaption {
+      @apply opacity-75;
+    }
+
+    table {
+      @apply w-full table-auto border-collapse;
+
+      th,
+      td {
+        @apply border-border border p-2;
+        word-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+        overflow-wrap: break-word;
+      }
+
+      th {
+        @apply py-1.5;
+      }
+
+      code {
+        @apply break-all sm:break-normal;
+      }
+    }
+
+    code {
+      @apply bg-muted/75 text-foreground rounded p-1 wrap-break-word before:content-none after:content-none;
+    }
+
+    .astro-code code {
+      @apply flex-[1_0_100%] bg-inherit p-0;
+    }
+
+    blockquote {
+      @apply border-s-accent/80 wrap-break-word opacity-80;
+    }
+
+    /* ===== Table of Contents (modern card) ===== */
+    details {
+      @apply border-border/20 bg-muted/5 text-foreground hover:border-accent/25 hover:shadow-accent/5 block w-full rounded-2xl border backdrop-blur-sm transition-all duration-300 ease-in-out hover:shadow-lg [&_ul]:my-0!;
+    }
+
+    details > :not(summary) {
+      @apply px-4 pb-3;
+    }
+
+    details[open] {
+      @apply border-accent/20 bg-muted/8 shadow-accent/5 shadow-md;
+    }
+
+    summary {
+      @apply font-cartograph text-foreground hover:text-accent focus-visible:outline-accent flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium tracking-wide transition-colors duration-200 select-none focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid;
+    }
+
+    summary:hover::before,
+    summary:hover::after {
+      background-color: var(--accent);
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::before {
+      content: "";
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='3' y1='6' x2='21' y2='6'/%3E%3Cline x1='3' y1='12' x2='15' y2='12'/%3E%3Cline x1='3' y1='18' x2='18' y2='18'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='3' y1='6' x2='21' y2='6'/%3E%3Cline x1='3' y1='12' x2='15' y2='12'/%3E%3Cline x1='3' y1='18' x2='18' y2='18'/%3E%3C/svg%3E");
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      background-color: var(--foreground);
+      opacity: 0.55;
+      transition:
+        opacity 0.2s,
+        background-color 0.2s;
+    }
+
+    details[open] > summary::before {
+      background-color: var(--accent);
+      opacity: 0.8;
+    }
+
+    summary::after {
+      content: "";
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-left: auto;
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      background-color: var(--foreground);
+      opacity: 0.45;
+      transition:
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.2s,
+        background-color 0.2s;
+    }
+
+    details[open] > summary::after {
+      transform: rotate(180deg);
+      background-color: var(--accent);
+      opacity: 0.7;
+    }
+
+    /* TOC inner list container */
+    details > ul {
+      @apply border-border/15 relative mx-0 mt-0 mb-0 border-t px-4 pt-2 pb-3;
+    }
+
+    details > ul > li {
+      @apply relative list-none py-0.5;
+    }
+
+    details > ul li {
+      @apply list-none;
+    }
+
+    details > ul li a {
+      @apply font-cartograph text-foreground/85 hover:bg-accent/8 hover:text-accent relative inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[13px] no-underline transition-all duration-200 hover:no-underline;
+    }
+
+    details > ul li a::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: color-mix(in srgb, var(--accent) 50%, transparent);
+      transition: all 0.2s;
+    }
+
+    details > ul li a:hover::before {
+      background: var(--accent);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+
+    /* Nested list (sub-items) */
+    details > ul ul {
+      @apply border-accent/15 my-0 ml-3 border-l-2 pl-2;
+    }
+
+    details > ul ul li a {
+      @apply text-foreground/70 text-[12px];
+    }
+
+    details > ul ul li a::before {
+      width: 4px;
+      height: 4px;
+      background: color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    details > ul ul li a:hover::before {
+      background: color-mix(in srgb, var(--accent) 70%, transparent);
+    }
+
+    pre {
+      @apply focus-visible:outline-accent focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-solid;
+    }
+  }
+
+  /* ===== Code Blocks & Syntax Highlighting ===== */
+  .astro-code,
+  code {
+    @apply font-cartograph;
+  }
+
+  .astro-code {
+    @apply outline-border flex border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);
+  }
+
+  html[data-theme="dark"] .astro-code {
+    @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
+  }
+
+  /* Styles for Shiki transformers */
+  /* https://shiki.style/packages/transformers */
+  .astro-code {
+    .line.diff.add {
+      @apply relative inline-block w-full bg-green-400/20 before:absolute before:-left-3 before:text-green-500 before:content-['+'];
+    }
+    .line.diff.remove {
+      @apply relative inline-block w-full bg-red-500/20 before:absolute before:-left-3 before:text-red-500 before:content-['-'];
+    }
+    .line.highlighted {
+      @apply inline-block w-full bg-slate-400/20;
+    }
+    .highlighted-word {
+      @apply border-border rounded-sm border px-0.5 py-px;
+    }
+  }
+}

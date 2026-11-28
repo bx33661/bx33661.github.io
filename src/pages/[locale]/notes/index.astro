@@ -1,0 +1,11 @@
+---
+import NotesIndex from "@/components/NotesIndex.astro";
+import { SITE } from "@/config.ts";
+import { BILINGUAL_ENABLED, SECONDARY_PREFIX } from "@/i18n";
+
+export function getStaticPaths() {
+  return BILINGUAL_ENABLED && SITE.features.notes ? [{ params: { locale: SECONDARY_PREFIX } }] : [];
+}
+---
+
+<NotesIndex />

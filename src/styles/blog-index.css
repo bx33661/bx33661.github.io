@@ -1,0 +1,115 @@
+main.blog-index {
+  --index-border: color-mix(in srgb, var(--foreground) 15%, var(--background));
+  --index-muted: color-mix(in srgb, var(--foreground) 72%, var(--background));
+  max-width: 58rem;
+}
+
+main.blog-index .blog-head {
+  margin: 2rem 0 2rem;
+  max-width: 40rem;
+}
+
+main.blog-index .blog-kicker {
+  margin: 0 0 0.85rem;
+  color: var(--accent);
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+main.blog-index .blog-title {
+  margin: 0;
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  color: var(--foreground);
+}
+
+main.blog-index .blog-desc {
+  margin: 0.9rem 0 0;
+  color: var(--index-muted);
+  font-size: 0.98rem;
+  line-height: 1.85;
+}
+
+main.blog-index .blog-meta {
+  margin: 0.7rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.55rem;
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.73rem;
+  letter-spacing: 0;
+  color: var(--index-muted);
+}
+
+main.blog-index .blog-topics {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.65rem 1rem;
+  margin: 0 0 0.6rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--index-border);
+  border-bottom: 1px solid var(--index-border);
+  scroll-margin-top: 6rem;
+}
+
+main.blog-index .blog-topics-label {
+  flex: none;
+  color: var(--index-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+main.blog-index .blog-topics-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+main.blog-index .blog-topic {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--foreground);
+  font-size: 0.76rem;
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+main.blog-index .blog-topic:hover,
+main.blog-index .blog-topic:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  color: var(--accent);
+}
+
+main.blog-index .blog-topic:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+main.blog-index .blog-topic-count {
+  color: var(--index-muted);
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 639px) {
+  main.blog-index .blog-head {
+    margin-top: 1.4rem;
+  }
+}

@@ -1,0 +1,84 @@
+---
+import { ENABLE_COMMENTS, GISCUS_CATEGORY, GISCUS_CATEGORY_ID, GISCUS_REPO, GISCUS_REPO_ID } from "@/config/env";
+import { SITE } from "@/config.ts";
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+
+const locale = localeFromPath(Astro.url.pathname);
+const isEnglish = locale === "en";
+const t = ui(locale);
+
+const requiredConfig = {
+  repo: GISCUS_REPO,
+  repoId: GISCUS_REPO_ID,
+  category: GISCUS_CATEGORY,
+  categoryId: GISCUS_CATEGORY_ID,
+} as const;
+
+const missingConfig = Object.entries(requiredConfig)
+  .filter(([, value]) => !value)
+  .map(([key]) => key);
+
+const isConfigured = missingConfig.length === 0;
+const shouldRenderComments = ENABLE_COMMENTS && isConfigured;
+const showDevNotice = ENABLE_COMMENTS && !isConfigured && import.meta.env.DEV;
+const giscusLang = isEnglish ? "en" : SITE.lang;
+---
+
+{
+  shouldRenderComments && (
+    <section id="comments" class="comments-panel border-border-subtle mt-10 scroll-mt-24 border-t pt-8">
+      <div class="comments-shell border-border-subtle bg-surface/75 rounded-2xl border px-5 py-6 sm:px-6">
+        <div class="mb-5">
+          <p class="font-cartograph text-accent m-0 text-[11px] font-semibold tracking-[0.12em] uppercase">
+            DISCUSSION / COMMENTS
+          </p>
+          <h2 class="mt-2 text-lg font-semibold tracking-tight">{t.commentsTitle}</h2>
+          <p class="text-muted-foreground mt-1 text-sm">{t.commentsLead}</p>
+        </div>
+
+        <div
+          data-giscus-host
+          data-repo={GISCUS_REPO}
+          data-repo-id={GISCUS_REPO_ID}
+          data-category={GISCUS_CATEGORY}
+          data-category-id={GISCUS_CATEGORY_ID}
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-lang={giscusLang}
+          data-loading="lazy"
+        />
+      </div>
+    </section>
+  )
+}
+
+{
+  showDevNotice && (
+    <section class="comments-panel mt-10">
+      <div class="text-foreground/80 rounded-2xl border border-amber-500/25 bg-amber-500/8 px-5 py-4 text-sm sm:px-6">
+        <p class="text-foreground font-medium">
+          {isEnglish ? "Giscus is enabled, but its configuration is incomplete." : "giscus 已开启，但配置还不完整。"}
+        </p>
+        <p class="mt-1">
+          {isEnglish ? "Missing environment variables:" : "缺少这些环境变量："}
+          <span class="font-cartograph text-xs text-amber-700 dark:text-amber-300">{missingConfig.join(", ")}</span>
+        </p>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import "@/scripts/giscus-comments";
+</script>
+
+<style>
+  .comments-panel :global(.giscus),
+  .comments-panel :global(.giscus-frame) {
+    width: 100%;
+  }
+</style>

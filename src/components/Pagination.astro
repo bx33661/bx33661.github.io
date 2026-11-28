@@ -1,0 +1,58 @@
+---
+import type { Page } from "astro";
+import IconArrowLeft from "@/assets/icons/IconArrowLeft.svg";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import LinkButton from "./LinkButton.astro";
+
+type Props = {
+  page: Pick<Page<unknown>, "currentPage" | "lastPage" | "url">;
+};
+
+const { page } = Astro.props;
+
+function withTrailingSlash(url: string | undefined): string | undefined {
+  if (!url || url.endsWith("/")) return url;
+  return `${url}/`;
+}
+
+const prevUrl = withTrailingSlash(page.url.prev);
+const nextUrl = withTrailingSlash(page.url.next);
+---
+
+{
+  page.lastPage > 1 && (
+    <nav
+      class="mt-auto mb-10 flex items-center justify-center gap-2.5"
+      role="navigation"
+      aria-label="Pagination Navigation"
+    >
+      <LinkButton
+        disabled={!prevUrl}
+        href={prevUrl}
+        class:list={[
+          "border-border-subtle bg-surface/80 inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-1.5 text-sm font-medium transition-all duration-150 select-none",
+          prevUrl ? "hover:border-accent/40 hover:bg-accent/5 hover:text-accent" : "opacity-45",
+        ]}
+        aria-label="Goto Previous Page"
+      >
+        <IconArrowLeft class="inline-block size-4 rtl:rotate-180" />
+        Prev
+      </LinkButton>
+      <span class="font-cartograph text-muted-foreground border-border-subtle bg-surface-subtle/70 rounded-lg border px-3 py-1.5 text-xs font-medium tabular-nums">
+        {page.currentPage} / {page.lastPage}
+      </span>
+      <LinkButton
+        disabled={!nextUrl}
+        href={nextUrl}
+        class:list={[
+          "border-border-subtle bg-surface/80 inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-1.5 text-sm font-medium transition-all duration-150 select-none",
+          nextUrl ? "hover:border-accent/40 hover:bg-accent/5 hover:text-accent" : "opacity-45",
+        ]}
+        aria-label="Goto Next Page"
+      >
+        Next
+        <IconArrowRight class="inline-block size-4 rtl:rotate-180" />
+      </LinkButton>
+    </nav>
+  )
+}

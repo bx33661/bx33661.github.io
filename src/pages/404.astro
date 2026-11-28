@@ -1,0 +1,66 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+
+const t = ui(DEFAULT_LOCALE);
+---
+
+<Layout title={`404 | ${SITE.title}`} noindex={true}>
+  <Header />
+
+  <main id="main-content" class="app-layout flex flex-1 items-center justify-center py-14">
+    <section
+      class="border-border-subtle bg-surface/85 w-full max-w-lg rounded-2xl border p-8 text-center shadow-sm sm:p-10"
+      aria-labelledby="not-found-title"
+    >
+      <div class="mx-auto mb-5 flex justify-center" aria-hidden="true">
+        <svg class="text-accent size-24" viewBox="0 0 120 120" fill="none">
+          <circle
+            cx="60"
+            cy="60"
+            r="48"
+            stroke="currentColor"
+            stroke-opacity="0.22"
+            stroke-width="1.2"
+            stroke-dasharray="3 7"></circle>
+          <ellipse
+            cx="60"
+            cy="60"
+            rx="50"
+            ry="18"
+            transform="rotate(-26 60 60)"
+            stroke="currentColor"
+            stroke-opacity="0.45"
+            stroke-width="1.3"></ellipse>
+          <path d="M60 10V24M60 96V110M10 60H24M96 60H110" stroke="currentColor" stroke-opacity="0.28"></path>
+          <circle cx="60" cy="60" r="14" stroke="currentColor" stroke-opacity="0.35" stroke-dasharray="18 8"></circle>
+          <path d="M88 30L90 35L95 37L90 39L88 44L86 39L81 37L86 35Z" fill="currentColor"></path>
+        </svg>
+      </div>
+      <p class="font-cartograph text-accent m-0 text-xs font-semibold tracking-[0.18em] uppercase">ERROR / 404</p>
+      <h1 id="not-found-title" class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{t.notFoundTitle}</h1>
+      <p class="text-muted-foreground mt-3 text-sm leading-relaxed sm:text-base">{t.notFoundLead}</p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+        <LinkButton
+          href={localizedPath("/", DEFAULT_LOCALE)}
+          class="bg-accent text-surface inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
+        >
+          {t.backHome}
+        </LinkButton>
+        <LinkButton
+          href={localizedPath("/blog/", DEFAULT_LOCALE)}
+          class="border-border-subtle bg-surface-subtle hover:border-accent/40 hover:text-accent inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-colors"
+        >
+          {t.browsePosts}
+        </LinkButton>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

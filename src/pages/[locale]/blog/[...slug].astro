@@ -1,0 +1,18 @@
+---
+import PostDetails from "@/layouts/PostDetails.astro";
+import { BILINGUAL_ENABLED, SECONDARY_LOCALE, SECONDARY_PREFIX } from "@/i18n";
+import { getAllPosts, getAllPostSlugs } from "@/lib/data-utils";
+
+export async function getStaticPaths() {
+  if (!BILINGUAL_ENABLED) return [];
+  return (await getAllPostSlugs(SECONDARY_LOCALE)).map(({ slug, post }) => ({
+    params: { locale: SECONDARY_PREFIX, slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const posts = await getAllPosts(SECONDARY_LOCALE);
+---
+
+<PostDetails {post} {posts} />

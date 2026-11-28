@@ -1,0 +1,14 @@
+dist
+.astro
+node_modules
+.tmp
+.visual-artifacts
+.task-artifacts
+public/pagefind
+public/vendor
+package-lock.json
+.baidu-push-cache.json
+src/shaders/**
+src/content/blog/**
+src/data/notes/**
+scripts/english-corpus.json

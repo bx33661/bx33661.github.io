@@ -1,0 +1,16 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import AcademicHome from "@/components/AcademicHome.astro";
+import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE, defaultDescriptionForLocale } from "@/i18n";
+
+const copy = DEFAULT_LOCALE === "zh-CN" ? SITE.home.zh : SITE.home.en;
+---
+
+<Layout title={copy.pageTitle} description={defaultDescriptionForLocale(DEFAULT_LOCALE)}>
+  <Header />
+  <AcademicHome locale={DEFAULT_LOCALE} />
+  <Footer />
+</Layout>

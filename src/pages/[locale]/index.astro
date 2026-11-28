@@ -1,0 +1,20 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import AcademicHome from "@/components/AcademicHome.astro";
+import { SITE } from "@/config.ts";
+import { BILINGUAL_ENABLED, SECONDARY_LOCALE, SECONDARY_PREFIX, defaultDescriptionForLocale } from "@/i18n";
+
+export function getStaticPaths() {
+  return BILINGUAL_ENABLED ? [{ params: { locale: SECONDARY_PREFIX } }] : [];
+}
+
+const copy = SECONDARY_LOCALE === "zh-CN" ? SITE.home.zh : SITE.home.en;
+---
+
+<Layout title={copy.pageTitle} description={defaultDescriptionForLocale(SECONDARY_LOCALE)}>
+  <Header />
+  <AcademicHome locale={SECONDARY_LOCALE} />
+  <Footer />
+</Layout>

@@ -1,0 +1,139 @@
+---
+import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
+import { localeFromPath, localizedPath, stripLocalePrefix } from "@/i18n";
+import { ui } from "@/i18n/ui";
+
+type Props = { embedded?: boolean; currentTitle?: string };
+const { embedded = false, currentTitle } = Astro.props;
+
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+const currentUrlPath = stripLocalePrefix(Astro.url.pathname);
+const breadcrumbList = currentUrlPath === "/" ? [] : currentUrlPath.slice(1).split("/").filter(Boolean);
+
+// Collapse /blog/tags/[tag]/[page] -> [tag] (page number)
+if (!embedded && breadcrumbList[0] === "blog" && breadcrumbList[1] === "tags" && !isNaN(Number(breadcrumbList[3]))) {
+  breadcrumbList.splice(
+    2,
+    2,
+    `${breadcrumbList[2]} ${Number(breadcrumbList[3]) === 1 ? "" : "(page " + breadcrumbList[3] + ")"}`,
+  );
+}
+
+const getBreadcrumbHref = (index: number) =>
+  !embedded && breadcrumbList[0] === "blog" && breadcrumbList[1] === "tags" && index === 1
+    ? `${localizedPath("/blog/", locale)}#topics`
+    : localizedPath(`/${breadcrumbList.slice(0, index + 1).join("/")}/`, locale);
+
+const routeLabelMap = new Map([
+  ["blog", "Blog"],
+  ["tags", locale === "en" ? "Topics" : "主题"],
+  ["notes", "Notes"],
+  ["archives", "Archives"],
+  ["galleries", "Galleries"],
+  ["about", "About"],
+  ["friends", "Friends"],
+  ["search", "Search"],
+]);
+
+const getBreadcrumbLabel = (segment: string, isLast: boolean) => {
+  if (isLast && currentTitle) return currentTitle;
+  if (embedded) return segment === "blog" ? t.posts : decodeURIComponent(segment);
+  return routeLabelMap.get(segment) ?? decodeURIComponent(segment);
+};
+
+const showNav = !embedded || breadcrumbList.length > 0;
+---
+
+{
+  showNav && (
+    <nav
+      class={embedded ? "breadcrumb-trail flex min-w-0 items-center gap-1 text-sm" : "app-layout mt-6 mb-2"}
+      aria-label="breadcrumb"
+    >
+      <div class={embedded ? "contents" : "breadcrumb-bar flex items-center gap-1 text-sm"}>
+        {embedded && (
+          <span class="breadcrumb-sep text-border/50 shrink-0" aria-hidden="true">
+            <IconChevronRight class="size-3.5" />
+          </span>
+        )}
+        <a
+          href={localizedPath("/", locale)}
+          class="breadcrumb-link hover:text-accent inline-flex shrink-0 items-center transition-colors duration-200"
+          aria-label={embedded ? t.backHome : "Home"}
+          title={embedded ? t.home : "Home"}
+        >
+          <svg
+            class="size-3.5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        </a>
+        {breadcrumbList.map((breadcrumb, index) => {
+          const isLast = index + 1 === breadcrumbList.length;
+          return (
+            <>
+              <span class="breadcrumb-sep text-border/40 shrink-0" aria-hidden="true">
+                <IconChevronRight class="size-3.5" />
+              </span>
+
+              {isLast ? (
+                <span
+                  class:list={[
+                    "breadcrumb-current text-accent/80 truncate font-medium",
+                    {
+                      capitalize: !embedded,
+                      lowercase: !embedded && index > 0 && !routeLabelMap.has(breadcrumb),
+                    },
+                  ]}
+                  aria-current="page"
+                >
+                  {getBreadcrumbLabel(breadcrumb, true)}
+                </span>
+              ) : (
+                <a
+                  href={getBreadcrumbHref(index)}
+                  class="breadcrumb-link hover:text-accent shrink-0 capitalize transition-colors duration-200"
+                >
+                  {getBreadcrumbLabel(breadcrumb, false)}
+                </a>
+              )}
+            </>
+          );
+        })}
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .breadcrumb-link {
+    color: color-mix(in srgb, var(--foreground) 55%, transparent);
+  }
+
+  .breadcrumb-link:hover {
+    color: var(--accent);
+  }
+
+  .breadcrumb-current {
+    max-width: 28ch;
+  }
+
+  .breadcrumb-trail .breadcrumb-current {
+    max-width: 22ch;
+  }
+
+  @media (max-width: 639px) {
+    .breadcrumb-trail {
+      display: none;
+    }
+  }
+</style>

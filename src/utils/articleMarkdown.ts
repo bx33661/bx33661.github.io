@@ -1,0 +1,49 @@
+import { unified, type ShikiConfig } from "@astrojs/markdown-remark";
+import remarkToc from "remark-toc";
+import remarkCollapse from "remark-collapse";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import {
+  transformerNotationDiff,
+  transformerNotationHighlight,
+  transformerNotationWordHighlight,
+} from "@shikijs/transformers";
+import { SITE } from "../config.ts";
+import { transformerFileName } from "./transformers/fileName.ts";
+import { transformerLongCode } from "./transformers/longCode.ts";
+import { rehypeDemoteHeadings } from "./rehypeDemoteHeadings.ts";
+import { rehypeArticleImages } from "./rehypeArticleImages.ts";
+import { remarkArticleCallouts } from "./remarkArticleCallouts.ts";
+import { rehypeArticleFormatting } from "./rehypeArticleFormatting.ts";
+
+const isZhDefault = SITE.i18n.defaultLocale === "zh-CN";
+
+/** Shared by the actual MD/MDX build and format regression fixtures. */
+export const articleMarkdown = {
+  processor: unified({
+    gfm: true,
+    remarkPlugins: [remarkMath, remarkArticleCallouts, remarkToc, [remarkCollapse, { test: "Table of contents" }]],
+    remarkRehype: {
+      footnoteLabel: isZhDefault ? "注释" : "Footnotes",
+      footnoteBackLabel: isZhDefault ? "返回正文" : "Back to content",
+    },
+    rehypePlugins: [
+      rehypeDemoteHeadings,
+      rehypeArticleImages,
+      [rehypeKatex, { output: "htmlAndMathml", trust: false }],
+      rehypeArticleFormatting,
+    ],
+  }),
+  shikiConfig: {
+    themes: { light: "min-light", dark: "github-dark-default" },
+    defaultColor: false,
+    wrap: false,
+    transformers: [
+      transformerFileName({ style: "v2", hideDot: false }),
+      transformerLongCode(36),
+      transformerNotationHighlight(),
+      transformerNotationWordHighlight(),
+      transformerNotationDiff({ matchAlgorithm: "v3" }),
+    ],
+  } satisfies ShikiConfig,
+};

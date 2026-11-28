@@ -1,0 +1,135 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { SOCIALS } from "@/constants";
+import IconRss from "@/assets/icons/IconRss.svg";
+import LinkButton from "./LinkButton.astro";
+import { SITE } from "@/config.ts";
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import { withBase } from "@/utils/url";
+
+const locale = localeFromPath(Astro.url.pathname);
+const isZh = locale === "zh-CN";
+const t = ui(locale);
+
+const footerLinks = [
+  { label: t.posts, href: localizedPath("/blog/", locale) },
+  ...(SITE.features.notes ? [{ label: t.notes, href: localizedPath("/notes/", locale) }] : []),
+  ...(SITE.features.archives ? [{ label: t.archives, href: localizedPath("/archives/", locale) }] : []),
+  ...(SITE.features.projects ? [{ label: t.projects, href: withBase("/projects/") }] : []),
+  ...(SITE.features.friends ? [{ label: t.friends, href: withBase("/friends/") }] : []),
+];
+
+const currentYear = new Date().getFullYear();
+
+type Props = {
+  noMarginTop?: boolean;
+} & HTMLAttributes<"footer">;
+
+const { noMarginTop = false, class: className, ...attrs } = Astro.props;
+---
+
+<footer class:list={["footer-wrapper", { "mt-auto": !noMarginTop }, className]} {...attrs}>
+  <div class="via-border/50 h-px w-full bg-linear-to-r from-transparent to-transparent"></div>
+
+  <div class="app-layout py-8 sm:py-10">
+    <div class="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
+      <div class="flex flex-col items-center gap-3 sm:items-start">
+        <a href={localizedPath("/", locale)} class="group flex items-center gap-2 text-lg font-bold tracking-tight">
+          <img
+            src={withBase(SITE.brandLogo)}
+            alt={`${SITE.title} logo`}
+            class="footer-brand-logo border-border-subtle group-hover:border-accent/40 size-7 rounded-full border bg-[#f4f0e6] object-contain transition-all duration-300 group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="footer-logo-text">{SITE.title}</span>
+        </a>
+        <p class="text-muted-foreground max-w-sm text-center text-xs leading-relaxed text-balance sm:text-start">
+          {isZh ? SITE.footerTagline.zh : SITE.footerTagline.en}
+        </p>
+        <nav
+          class="mt-0.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 sm:justify-start"
+          aria-label={t.footerNav}
+        >
+          {
+            footerLinks.map((item) => (
+              <a
+                href={item.href}
+                class="text-muted-foreground hover:text-accent text-xs font-medium transition-colors duration-150"
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+
+      <div class="flex flex-col items-center gap-2 sm:items-end">
+        <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase select-none"
+          >{isZh ? "联系与关注" : "Connect"}</span
+        >
+        <div class="flex items-center gap-1.5">
+          {
+            SOCIALS.map((social) => (
+              <LinkButton
+                href={social.href}
+                class="footer-social-btn border-border-subtle bg-surface/60 text-muted-foreground hover:border-accent/35 hover:bg-accent/10 hover:text-accent inline-flex size-9 items-center justify-center rounded-full border transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
+                title={social.linkTitle}
+              >
+                <social.icon class="size-[1.0625rem] fill-transparent stroke-current stroke-[1.75]" />
+                <span class="sr-only">{social.linkTitle}</span>
+              </LinkButton>
+            ))
+          }
+          <LinkButton
+            href={localizedPath("/rss.xml", locale)}
+            class="footer-social-btn border-border-subtle bg-surface/60 text-muted-foreground hover:border-accent/35 hover:bg-accent/10 hover:text-accent inline-flex size-9 items-center justify-center rounded-full border transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
+            title={t.rssFeed}
+            aria-label={t.rssFeed}
+          >
+            <IconRss class="size-[1.0625rem] fill-transparent stroke-current stroke-[1.75]" />
+            <span class="sr-only">{t.rssFeed}</span>
+          </LinkButton>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 flex items-center gap-3" aria-hidden="true">
+      <div class="via-border/40 h-px flex-1 bg-linear-to-r from-transparent to-transparent"></div>
+    </div>
+
+    <div class="text-muted-foreground mt-4 flex flex-col items-center justify-between gap-2 sm:flex-row">
+      <p class="font-cartograph text-[11px] tracking-wide">
+        &copy; {`${currentYear} ${SITE.title}. ${isZh ? "保留所有权利。" : "All rights reserved."}`}
+      </p>
+      <p class="font-cartograph text-[11px] tracking-wide">
+        {isZh ? SITE.footerColophon.zh : SITE.footerColophon.en}
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer-wrapper {
+    background: color-mix(in srgb, var(--background) 78%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .footer-logo-text {
+    background: linear-gradient(135deg, var(--foreground) 0%, var(--foreground) 60%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .footer-brand-logo {
+    box-shadow: 0 0 0 1px var(--border-subtle);
+  }
+
+  .footer-social-btn {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+</style>

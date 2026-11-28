@@ -1,0 +1,249 @@
+---
+import { SITE } from "@/config.ts";
+import { FRIEND_GROUPS, type FriendLink } from "@/config/friends";
+import { DEFAULT_LOCALE } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import FriendCard from "@/components/FriendCard.astro";
+import FriendNetwork from "@/components/FriendNetwork.astro";
+import friendAvatars from "@/data/friend-avatars.json";
+import { withBase } from "@/utils/url";
+import "@/styles/friends.css";
+
+const isZh = DEFAULT_LOCALE === "zh-CN";
+const copy = isZh ? SITE.friendsPage.zh : SITE.friendsPage.en;
+const t = ui(DEFAULT_LOCALE);
+
+const info = {
+  name: SITE.friendCard.name,
+  address: SITE.href,
+  desc: SITE.friendCard.desc,
+  avatar: withBase(SITE.friendCard.avatar),
+};
+
+const siteUrl = info.address.replace(/\/$/, "");
+const absAvatar = `${siteUrl}${info.avatar}`;
+const friendPayloads = {
+  json: JSON.stringify({ name: info.name, url: siteUrl, desc: info.desc, avatar: absAvatar }, null, 2),
+  yaml: [`- name: ${info.name}`, `  url: ${siteUrl}`, `  desc: ${info.desc}`, `  avatar: ${absAvatar}`].join("\n"),
+  md: `[${info.name}](${siteUrl}) - ${info.desc}`,
+};
+
+const getHost = (url: string) => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+};
+
+const getFallbackText = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
+const localAvatars: Record<string, string> = friendAvatars;
+
+const toCard = (item: FriendLink) => ({
+  ...item,
+  avatar: item.avatar ? withBase(localAvatars[item.avatar] ?? item.avatar) : undefined,
+  host: getHost(item.url),
+  fallback: getFallbackText(item.name),
+});
+
+const groups = FRIEND_GROUPS.map((group) => ({
+  ...group,
+  displayTitle: isZh ? group.title.zh : group.title.en,
+  displayDesc: isZh ? group.description.zh : group.description.en,
+  cards: group.items.map(toCard),
+}));
+
+const totalLinks = groups.reduce((sum, group) => sum + group.cards.length, 0);
+const firstGroupId = groups[0]?.id ?? "friends";
+---
+
+<Layout title={`${copy.title} | ${SITE.title}`} description={copy.description}>
+  <Header />
+
+  <main id="main-content" class="friends-main app-layout">
+    <header class="fp-hero fp-featured-intro">
+      <div class="fp-hero-copy">
+        <p class="fp-eyebrow"><span class="fp-signal" aria-hidden="true"></span> {copy.eyebrow}</p>
+        <h1 class="fp-heading">{copy.headingLine1}<br /><em>{copy.headingEmphasis}</em><span class="fp-period">.</span></h1>
+        <p class="fp-hero-cn">{copy.subtitle}</p>
+        <p class="fp-lead">{copy.lead}</p>
+        <div class="fp-hero-actions">
+          <a href={`#${firstGroupId}`} class="fp-primary-link">{t.exploreNetwork} <span aria-hidden="true">↘</span></a>
+          <a href={`mailto:${SITE.email}?subject=Friend Link Exchange`} class="fp-apply-btn" aria-label={t.exchangeLinksAria}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path
+                d="M1.75 3.5L7 7.875L12.25 3.5"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+              <rect x="1.75" y="2.625" width="10.5" height="8.75" rx="1.5" stroke="currentColor" stroke-width="1.2"
+              ></rect>
+            </svg>
+            {t.exchangeLinks}
+          </a>
+        </div>
+      </div>
+      <FriendNetwork />
+    </header>
+
+    <nav class="fp-index" aria-label={t.friendCategoriesAria}>
+      <span class="fp-index-label">DIRECTORY <span>{String(totalLinks).padStart(2, "0")}</span></span>
+      {
+        groups.map((group) => (
+          <a href={`#${group.id}`}>
+            {group.index} <strong>{group.displayTitle}</strong>
+            <span>{String(group.cards.length).padStart(2, "0")}</span>
+          </a>
+        ))
+      }
+    </nav>
+
+    {
+      groups.length > 0 ? (
+        groups.map((group) => (
+          <section id={group.id} class="fp-section" aria-label={group.displayTitle}>
+            <div class="fp-section-heading">
+              <div>
+                <p class="fp-section-index">{group.eyebrow}</p>
+                <h2 class="fp-section-label">
+                  {group.displayTitle} <span class="fp-count">{group.cards.length}</span>
+                </h2>
+              </div>
+              <p>{group.displayDesc}</p>
+            </div>
+            <div class="fp-grid" data-rem3={group.cards.length % 3} data-rem2={group.cards.length % 2}>
+              {group.cards.map((friend, index) => (
+                <FriendCard {...friend} index={index} kind={group.cardKind} isOrg={group.isOrg} />
+              ))}
+            </div>
+          </section>
+        ))
+      ) : (
+        <p class="border-border-subtle bg-surface/75 text-muted-foreground rounded-xl border p-6 text-sm">
+          {t.emptyFriends}
+        </p>
+      )
+    }
+
+    <aside class="fp-exchange" aria-labelledby="exchange-title">
+      <div>
+        <p class="fp-section-index">LET'S CONNECT</p>
+        <h2 id="exchange-title">{copy.exchangeTitle}</h2>
+        <p>{copy.exchangeDesc}</p>
+      </div>
+      <div class="fp-exchange-action">
+        <a href={`mailto:${SITE.email}?subject=Friend Link Exchange`}>{t.sendYourLink} <span aria-hidden="true">↗</span></a>
+        <p>{copy.exchangeHint}</p>
+      </div>
+    </aside>
+
+    <section class="fp-section fp-self-section" aria-label={t.thisSite}>
+      <div class="fp-section-heading">
+        <div>
+          <p class="fp-section-index">{String(groups.length + 1).padStart(2, "0")} / THIS SITE</p>
+          <h2 class="fp-section-label">{t.thisSite}</h2>
+        </div>
+        <p>{t.thisSiteDesc}</p>
+      </div>
+      <a class="self-banner" href={info.address} target="_blank" rel="noopener noreferrer">
+        <div class="self-banner-glow" aria-hidden="true"></div>
+        <img class="self-banner-avatar" src={info.avatar} alt={`${info.name} avatar`} loading="eager" decoding="async" />
+        <div class="self-banner-content">
+          <h3 class="self-banner-name">{info.name}</h3>
+          <p class="self-banner-desc">{info.desc}</p>
+        </div>
+        <div class="self-banner-link">
+          <span class="fc-host-pill">{getHost(info.address)}</span>
+          <span class="self-banner-arrow" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+              ><path
+                d="M4 10L10 4M10 4H5.5M10 4V8.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path></svg
+            >
+          </span>
+        </div>
+      </a>
+
+      <div class="self-copy-bar">
+        <span class="self-copy-label">{t.quickCopy}</span>
+        <div class="self-copy-actions">
+          <button
+            type="button"
+            class="self-copy-btn"
+            data-copy-friend="json"
+            data-payload={friendPayloads.json}
+            data-label={t.copyJson}
+            data-copied-label={t.copiedCheck}
+          >
+            {t.copyJson}
+          </button>
+          <button
+            type="button"
+            class="self-copy-btn"
+            data-copy-friend="yaml"
+            data-payload={friendPayloads.yaml}
+            data-label={t.copyYaml}
+            data-copied-label={t.copiedCheck}
+          >
+            {t.copyYaml}
+          </button>
+          <button
+            type="button"
+            class="self-copy-btn"
+            data-copy-friend="md"
+            data-payload={friendPayloads.md}
+            data-label={t.copyMarkdown}
+            data-copied-label={t.copiedCheck}
+          >
+            {t.copyMarkdown}
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
+
+  onAstroPage((signal) => {
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy-friend]")) {
+      const baseLabel = button.dataset.label || button.textContent?.trim() || "Copy";
+      const copiedLabel = button.dataset.copiedLabel || "Copied ✓";
+      let timer = 0;
+      signal.addEventListener("abort", () => clearTimeout(timer), { once: true });
+
+      button.addEventListener(
+        "click",
+        async () => {
+          const payload = button.dataset.payload;
+          if (!payload || !navigator.clipboard?.writeText) return;
+          clearTimeout(timer);
+          try {
+            await navigator.clipboard.writeText(payload);
+            if (signal.aborted) return;
+            button.dataset.copied = "true";
+            button.textContent = copiedLabel;
+            timer = window.setTimeout(() => {
+              if (signal.aborted) return;
+              delete button.dataset.copied;
+              button.textContent = baseLabel;
+            }, 1800);
+          } catch {
+            /* Clipboard unavailable in restricted contexts. */
+          }
+        },
+        { signal },
+      );
+    }
+  });
+</script>

@@ -1,0 +1,18 @@
+---
+import NoteDetails from "@/layouts/NoteDetails.astro";
+import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE } from "@/i18n";
+import { getAllNotesWithSlugs } from "@/utils/notes";
+
+export async function getStaticPaths() {
+  if (!SITE.features.notes) return [];
+  return (await getAllNotesWithSlugs(DEFAULT_LOCALE)).map(({ note, slug }) => ({
+    params: { id: slug },
+    props: { note, slug },
+  }));
+}
+
+const { note, slug } = Astro.props;
+---
+
+<NoteDetails {note} {slug} />

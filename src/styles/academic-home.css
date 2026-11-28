@@ -1,0 +1,959 @@
+.academic-home {
+  --home-muted: #4d545c;
+  --home-rule: color-mix(in srgb, var(--foreground) 14%, transparent);
+  --home-cyan: #1b8fa8;
+  position: relative;
+  padding-top: clamp(2.25rem, 5vw, 4.25rem);
+  padding-bottom: clamp(3rem, 6vw, 5.25rem);
+}
+
+html[data-theme="dark"] .academic-home {
+  --home-muted: #aebac8;
+  --home-cyan: #72dce8;
+}
+
+/* Subtle unclipped ambient starlight wash behind the stage */
+.academic-home::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: min(36rem, 100%);
+  height: 24rem;
+  background: radial-gradient(
+    closest-side at 42% 45%,
+    color-mix(in srgb, var(--accent) 7%, transparent),
+    color-mix(in srgb, var(--home-cyan) 3%, transparent) 58%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.academic-home .home-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(20rem, 0.85fr);
+  align-items: start;
+  gap: clamp(2.25rem, 4.5vw, 3.75rem);
+}
+
+/* ==========================================================================
+   Left Column · Personal Monograph
+   ========================================================================== */
+.academic-home .home-monograph {
+  min-width: 0;
+  padding-top: 0.25rem;
+}
+
+.academic-home .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  color: var(--accent);
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+}
+
+.academic-home .eyebrow-spark {
+  font-size: 0.78rem;
+  color: var(--accent);
+}
+
+.academic-home h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(3.15rem, 6.4vw, 4.7rem);
+  line-height: 1.06;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  color: var(--foreground);
+}
+
+.academic-home h1 span {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  padding-right: 0.06em;
+  color: var(--accent);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    color-mix(in srgb, var(--accent) 72%, var(--home-cyan)) 62%,
+    var(--home-cyan) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.academic-home .welcome {
+  margin: 0.75rem 0 0;
+  font-size: clamp(1.12rem, 1.85vw, 1.3rem);
+  line-height: 1.55;
+  font-weight: 450;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+}
+
+.academic-home .horizon-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0 1.65rem;
+}
+
+.academic-home .horizon-line {
+  width: 2.25rem;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.65;
+}
+
+.academic-home .horizon-line--fade {
+  flex: 1;
+  max-width: 11rem;
+  background: linear-gradient(90deg, var(--home-rule), transparent);
+  opacity: 1;
+}
+
+.academic-home .horizon-tag {
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--home-muted);
+  white-space: nowrap;
+}
+
+.academic-home .intro-body {
+  min-width: 0;
+  max-width: 42rem;
+}
+
+.academic-home .intro-focus {
+  margin: 0 0 1.18rem;
+  font-size: 1.05rem;
+  line-height: 1.78;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+}
+
+.academic-home .intro-focus strong {
+  font-weight: 650;
+  color: var(--foreground);
+  background: linear-gradient(
+    transparent 67%,
+    color-mix(in srgb, var(--accent) 16%, transparent) 67%,
+    color-mix(in srgb, var(--home-cyan) 16%, transparent) 94%,
+    transparent 94%
+  );
+  padding-inline: 0.1em;
+}
+
+.academic-home .intro-prose {
+  font-family: var(--font-sans);
+  color: var(--home-muted);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.78;
+  letter-spacing: 0.002em;
+}
+
+.academic-home .intro-prose p {
+  margin: 0 0 0.96rem;
+}
+
+.academic-home .intro-prose p:last-child {
+  margin-bottom: 0;
+}
+
+.academic-home .closing {
+  position: relative;
+  margin: 1.65rem 0 0;
+  padding: 0.55rem 1rem 0.55rem 1.05rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 7%, transparent),
+    color-mix(in srgb, var(--home-cyan) 3%, transparent) 55%,
+    transparent
+  );
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--foreground);
+}
+
+.academic-home .closing::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 2.5px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--home-cyan));
+}
+
+.academic-home .closing strong {
+  font-weight: 600;
+}
+
+.academic-home .closing-star {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.academic-home .home-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 1.75rem;
+}
+
+.academic-home .home-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.academic-home .home-links .read-link {
+  padding: 0.68rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 90%, #ffffff);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 82%, var(--home-cyan)) 100%);
+  color: var(--background);
+  gap: 0.75rem;
+  box-shadow:
+    0 10px 24px -12px color-mix(in srgb, var(--accent) 62%, transparent),
+    0 1px 0 rgb(255 255 255 / 0.28) inset;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.academic-home .home-links .read-link:hover {
+  transform: translateY(-1.5px);
+  filter: brightness(1.05);
+  box-shadow:
+    0 14px 28px -12px color-mix(in srgb, var(--accent) 72%, transparent),
+    0 1px 0 rgb(255 255 255 / 0.35) inset;
+}
+
+.academic-home .home-links .secondary-link {
+  padding: 0.66rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--surface) 72%, var(--background));
+  color: var(--foreground);
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.academic-home .home-links .secondary-link:hover {
+  border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+  background: var(--surface);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.academic-home .home-links a span {
+  transition: transform 0.2s ease;
+}
+
+.academic-home .home-links a:hover span {
+  transform: translate(2px, -2px);
+}
+
+.academic-home .home-links a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* ==========================================================================
+   Right Column · Unified Deep-Space Observatory Dossier
+   ========================================================================== */
+.academic-home .observatory-dossier {
+  min-width: 0;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 13%, transparent);
+  background: color-mix(in srgb, var(--surface) 84%, var(--background));
+  box-shadow:
+    0 24px 52px -34px rgb(12 28 54 / 0.28),
+    0 1px 0 rgb(255 255 255 / 0.55) inset;
+  overflow: hidden;
+}
+
+@media (min-width: 881px) {
+  .academic-home .observatory-dossier {
+    position: sticky;
+    top: 5.25rem;
+  }
+}
+
+html[data-theme="dark"] .academic-home .observatory-dossier {
+  border-color: color-mix(in srgb, var(--accent) 22%, var(--border));
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--surface) 94%, #1e2d42) 0%,
+    color-mix(in srgb, var(--surface-subtle) 96%, #0d141f) 100%
+  );
+  box-shadow:
+    0 26px 56px -32px rgb(0 0 0 / 0.72),
+    0 1px 0 rgb(255 255 255 / 0.06) inset;
+}
+
+.academic-home .star-map {
+  --tilt-x: 0;
+  --tilt-y: 0;
+  --spot-x: 65%;
+  --spot-y: 30%;
+  position: relative;
+  isolation: isolate;
+  height: 306px;
+  margin: 0.58rem 0.58rem 0;
+  border-radius: 0.68rem;
+  overflow: hidden;
+  background: #0b162c;
+  color: #e4f1ff;
+  border: 1px solid rgb(164 206 248 / 0.28);
+  box-shadow:
+    0 14px 32px -20px rgb(6 15 34 / 0.65),
+    0 0 0 1px rgb(255 255 255 / 0.06) inset;
+}
+
+.academic-home .star-map-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 74% 16%, rgb(118 102 192 / 0.72), transparent 54%),
+    radial-gradient(ellipse at 26% 80%, rgb(38 144 168 / 0.65), transparent 64%),
+    radial-gradient(circle at 52% 48%, rgb(32 76 142 / 0.45), transparent 60%),
+    linear-gradient(140deg, #071022 0%, #162c52 52%, #0c1a30 100%);
+}
+
+.academic-home .star-map-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgb(186 218 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(186 218 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, rgb(5 12 26 / 0.5), transparent 26%, transparent 72%, rgb(5 12 26 / 0.58));
+  background-size:
+    26px 26px,
+    26px 26px,
+    100% 100%;
+}
+
+.academic-home .star-map-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(circle 150px at var(--spot-x) var(--spot-y), rgb(156 214 255 / 0.14), transparent 75%);
+}
+
+.academic-home .star-map-atmosphere canvas {
+  display: block;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.academic-home .star-map[data-shader-state="ready"] canvas {
+  opacity: 1;
+}
+
+.academic-home .star-map svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.academic-home .parallax-far {
+  transform: translate3d(calc(var(--tilt-x) * -3px), calc(var(--tilt-y) * -3px), 0);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.academic-home .parallax-mid {
+  transform: translate3d(calc(var(--tilt-x) * 4.5px), calc(var(--tilt-y) * 4.5px), 0);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.academic-home .parallax-near {
+  transform: translate3d(calc(var(--tilt-x) * 8px), calc(var(--tilt-y) * 8px), 0);
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.academic-home .field-label,
+.academic-home .field-caption {
+  position: absolute;
+  inset-inline: 1rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgb(228 241 255 / 0.88);
+  font:
+    600 0.55rem/1.4 var(--font-cartograph),
+    ui-monospace,
+    monospace;
+  letter-spacing: 0.12em;
+}
+
+.academic-home .field-label {
+  top: 0.85rem;
+}
+
+.academic-home .field-beacon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgb(140 214 255 / 0.32);
+  background: rgb(12 28 54 / 0.55);
+  backdrop-filter: blur(4px);
+  color: #9be4f5;
+  font-size: 0.52rem;
+}
+
+.academic-home .beacon-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #7ce8f5;
+  box-shadow: 0 0 8px #7ce8f5;
+  animation: beacon-pulse 2.8s ease-in-out infinite;
+}
+
+.academic-home .field-caption {
+  bottom: 0.85rem;
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  color: rgb(214 232 252 / 0.78);
+}
+
+.academic-home .dust-star {
+  fill: #dbeeff;
+  fill-opacity: 0.55;
+}
+
+.academic-home .dust-star--twinkle {
+  animation: star-twinkle 4.2s ease-in-out infinite alternate;
+}
+
+.academic-home .outer-orbit {
+  stroke: #d5e8ff;
+  stroke-opacity: 0.26;
+  stroke-dasharray: 1.5 7.5;
+  transform-origin: 230px 155px;
+  animation: orbit-drift 96s linear infinite;
+}
+
+.academic-home .inner-ticks {
+  stroke: #9cd4ff;
+  stroke-opacity: 0.14;
+  stroke-dasharray: 1 14;
+}
+
+.academic-home .field-axis {
+  stroke: #d5e8ff;
+  stroke-opacity: 0.42;
+  stroke-width: 0.75;
+}
+
+.academic-home .meridian {
+  stroke: #cfe7ff;
+  stroke-opacity: 0.18;
+  stroke-dasharray: 3 5;
+}
+
+.academic-home .orbit {
+  stroke: #e2eeff;
+  stroke-opacity: 0.5;
+  stroke-width: 0.85;
+}
+
+.academic-home .orbit-secondary {
+  stroke-opacity: 0.24;
+}
+
+.academic-home .orbit-Highlight {
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-dasharray: 110 420;
+  animation: comet-glide 14s linear infinite;
+}
+
+.academic-home .constellation {
+  stroke: #b9e2ff;
+  stroke-opacity: 0.62;
+  stroke-width: 0.9;
+  stroke-dasharray: 2.5 2.5;
+}
+
+.academic-home .star-points {
+  fill: #eef7ff;
+}
+
+.academic-home .north-star {
+  fill: #ffffff;
+  filter: drop-shadow(0 0 6px rgb(168 222 255 / 0.85));
+}
+
+.academic-home .polaris-glow {
+  transform-origin: 302px 82px;
+  animation: polaris-breathe 3.8s ease-in-out infinite;
+}
+
+.academic-home .satellite {
+  fill: #8de8f7;
+  stroke: #d9f3ff;
+  stroke-width: 5;
+  stroke-opacity: 0.22;
+}
+
+@keyframes orbit-drift {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes comet-glide {
+  from {
+    stroke-dashoffset: 530;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes polaris-breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes star-twinkle {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+
+@keyframes beacon-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academic-home .star-map-atmosphere canvas,
+  .academic-home .parallax-far,
+  .academic-home .parallax-mid,
+  .academic-home .parallax-near {
+    transition: none;
+  }
+
+  .academic-home .outer-orbit,
+  .academic-home .orbit-Highlight,
+  .academic-home .polaris-glow,
+  .academic-home .dust-star--twinkle,
+  .academic-home .beacon-dot {
+    animation: none;
+  }
+}
+
+/* Dossier Lower Body: Focus */
+.academic-home .dossier-body {
+  padding: 1.3rem 1.35rem 1.4rem;
+}
+
+.academic-home .focus-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.95rem;
+  font-size: 0.66rem;
+  line-height: 1.4;
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 600;
+  color: var(--home-muted);
+}
+
+.academic-home .focus-section h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--home-rule), transparent);
+}
+
+.academic-home .focus-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+}
+
+.academic-home .focus-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0.26rem 0.66rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 72%, var(--background));
+  color: var(--foreground);
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.69rem;
+  font-weight: 550;
+  text-decoration: none;
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.academic-home .focus-chip::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 70%, var(--home-cyan));
+}
+
+.academic-home .focus-chip:hover,
+.academic-home .focus-chip:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.academic-home .focus-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.academic-home .focus-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.52rem 0.72rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--background) 55%, var(--surface));
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.academic-home .focus-stat strong {
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+.academic-home .focus-stat span {
+  font-family: var(--font-cartograph), ui-monospace, monospace;
+  font-size: 0.61rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--home-muted);
+}
+
+.academic-home .focus-stat:hover,
+.academic-home .focus-stat:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--surface);
+}
+
+.academic-home .focus-stat:hover strong {
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 880px) {
+  .academic-home .home-stage {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .academic-home .intro-body {
+    max-width: none;
+  }
+}
+
+@media (max-width: 540px) {
+  .academic-home {
+    padding-top: 1.75rem;
+    padding-bottom: 2.75rem;
+  }
+
+  .academic-home .eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.09em;
+  }
+
+  .academic-home .horizon-rule {
+    margin: 1.2rem 0 1.35rem;
+  }
+
+  .academic-home .intro-focus {
+    font-size: 1.01rem;
+    line-height: 1.78;
+  }
+
+  .academic-home .intro-prose {
+    font-size: 0.93rem;
+    line-height: 1.82;
+  }
+
+  .academic-home .star-map {
+    height: 248px;
+  }
+
+  .academic-home .field-label,
+  .academic-home .field-caption {
+    inset-inline: 0.85rem;
+  }
+}
+
+/* ─── Shelf: recent writing + projects ─── */
+.academic-home .home-shelf {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 1.25rem;
+  margin-top: 3.5rem;
+}
+
+.academic-home .shelf-panel {
+  padding: 1.25rem 1.25rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+
+.academic-home .shelf-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.academic-home .shelf-head h2 {
+  margin: 0;
+  font-family: var(--font-cartograph), monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.academic-home .shelf-head a {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.academic-home .shelf-head a span {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.academic-home .home-shelf--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.academic-home .shelf-head a:hover span {
+  transform: translateX(3px);
+}
+
+.academic-home .recent-list,
+.academic-home .project-tiles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.academic-home .recent-list li + li {
+  border-top: 1px dashed color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+
+.academic-home .recent-list a {
+  display: grid;
+  grid-template-columns: 3.4rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  margin-inline: -0.5rem;
+  padding: 0.7rem 0.5rem;
+  border-radius: 0.6rem;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: background-color 0.18s ease;
+}
+
+.academic-home .recent-list a:hover {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.academic-home .recent-list time {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-cartograph), monospace;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.academic-home .recent-list time span {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.academic-home .recent-list time small {
+  font-size: 0.62rem;
+  color: var(--muted-foreground);
+}
+
+.academic-home .recent-title {
+  overflow: hidden;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: color 0.18s ease;
+}
+
+.academic-home .recent-list a:hover .recent-title {
+  color: var(--accent);
+}
+
+.academic-home .recent-tag {
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: 0.66rem;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.academic-home .project-tiles {
+  display: grid;
+  gap: 0.25rem;
+  padding-bottom: 0.5rem;
+}
+
+.academic-home .project-tiles a {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-inline: -0.5rem;
+  padding: 0.55rem 0.5rem;
+  border-radius: 0.75rem;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: background-color 0.18s ease;
+}
+
+.academic-home .project-tiles a:hover {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.academic-home .project-tiles img {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: 0.6rem;
+  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--border-subtle);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.academic-home .project-tiles a:hover img {
+  transform: rotate(-5deg) scale(1.05);
+}
+
+.academic-home .project-tiles span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.academic-home .project-tiles strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.academic-home .project-tiles small {
+  font-size: 0.7rem;
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 880px) {
+  .academic-home .home-shelf {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 2.5rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .academic-home .recent-list a {
+    grid-template-columns: 3rem minmax(0, 1fr);
+  }
+  .academic-home .recent-tag {
+    display: none;
+  }
+  .academic-home .recent-title {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academic-home .project-tiles img,
+  .academic-home .shelf-head a span {
+    transition: none;
+  }
+}

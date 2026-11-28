@@ -1,0 +1,239 @@
+---
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header.astro";
+import { SITE } from "@/config.ts";
+import Layout from "@/layouts/Layout.astro";
+import { getAllPosts } from "@/lib/data-utils";
+import { getSiteDateParts } from "@/utils/date";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import "@/styles/archive.css";
+
+import { localeFromPath, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import ContentEmpty from "@/components/ContentEmpty.astro";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+const posts = (await getAllPosts(locale)).slice().sort((a, b) => {
+  const diff = b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf();
+  return diff !== 0 ? diff : resolveLegacyPostSlug(a).localeCompare(resolveLegacyPostSlug(b));
+});
+
+const byYear = new Map<number, Map<number, typeof posts>>();
+for (const post of posts) {
+  const { year, month } = getSiteDateParts(post.data.pubDatetime);
+  const months = byYear.get(year) ?? new Map<number, typeof posts>();
+  const entries = months.get(month) ?? [];
+  entries.push(post);
+  months.set(month, entries);
+  byYear.set(year, months);
+}
+
+const years = Array.from(byYear.entries())
+  .sort(([a], [b]) => b - a)
+  .map(([year, months]) => ({
+    year,
+    months: Array.from(months.entries())
+      .sort(([a], [b]) => b - a)
+      .map(([month, entries]) => ({ month, entries })),
+    count: Array.from(months.values()).reduce((sum, entries) => sum + entries.length, 0),
+  }));
+const monthCount = years.reduce((sum, year) => sum + year.months.length, 0);
+const maxMonthlyCount = Math.max(
+  1,
+  ...years.flatMap((yearItem) => yearItem.months.map((group) => group.entries.length)),
+);
+const toCadenceLevel = (count: number) => {
+  if (count <= 0) return 0;
+  const ratio = count / maxMonthlyCount;
+  if (ratio <= 0.25) return 1;
+  if (ratio <= 0.5) return 2;
+  if (ratio <= 0.75) return 3;
+  return 4;
+};
+const cadenceRows = years.map((item) => {
+  const counts = new Map(item.months.map((group) => [group.month, group.entries.length]));
+  return {
+    year: item.year,
+    total: item.count,
+    cells: Array.from({ length: 12 }, (_, monthIndex) => {
+      const count = counts.get(monthIndex) ?? 0;
+      return {
+        month: monthIndex + 1,
+        count,
+        level: toCadenceLevel(count),
+      };
+    }),
+  };
+});
+---
+
+<Layout
+  title={`${t.archives} | ${SITE.title}`}
+  description={t.archiveDescription}
+  noindex={!posts.length}
+  canonicalURL={Astro.url.toString()}
+>
+  <Header />
+  <Breadcrumb />
+
+  <main id="main-content" class="app-layout archive-main">
+    <header class="archive-head">
+      <div>
+        <p class="archive-kicker">ARCHIVES / CHRONOLOGY</p>
+        <h1>{t.articleArchive}</h1>
+        <p class="archive-description">
+          {t.archiveLead}
+        </p>
+      </div>
+      <div class="archive-summary" aria-label={t.archiveStats}>
+        <strong>{posts.length}</strong>
+        <span>{t.postsUnit}</span>
+        <span class="summary-separator" aria-hidden="true">/</span>
+        <strong>{years.length}</strong>
+        <span>{t.yearsUnit}</span>
+        <span class="summary-separator" aria-hidden="true">/</span>
+        <strong>{monthCount}</strong>
+        <span>{t.monthsUnit}</span>
+      </div>
+    </header>
+
+    {
+      posts.length > 0 && (
+        <section class="archive-cadence" aria-label={t.archiveActivity}>
+          <div class="cadence-head">
+            <div class="cadence-title-row">
+              <p class="cadence-kicker">CADENCE / ACTIVITY</p>
+              <span class="cadence-summary">{t.archiveActivitySummary(years.length, posts.length)}</span>
+            </div>
+            <div class="cadence-legend" aria-hidden="true">
+              <span>0</span>
+              <span class="cadence-cell" data-level="0" />
+              <span class="cadence-cell" data-level="1" />
+              <span class="cadence-cell" data-level="2" />
+              <span class="cadence-cell" data-level="3" />
+              <span class="cadence-cell" data-level="4" />
+              <span>{maxMonthlyCount}</span>
+            </div>
+          </div>
+          <div class="cadence-grid">
+            <div class="cadence-axis" aria-hidden="true">
+              <span />
+              {Array.from({ length: 12 }, (_, m) => (
+                <span>{String(m + 1).padStart(2, "0")}</span>
+              ))}
+            </div>
+            {cadenceRows.map((row) => (
+              <div class="cadence-row">
+                <a class="cadence-year" href={`#year-${row.year}`}>
+                  {row.year}
+                </a>
+                {row.cells.map((cell) => (
+                  <span
+                    class="cadence-cell"
+                    data-level={cell.level}
+                    title={t.cadenceCell(row.year, cell.month, cell.count)}
+                    aria-label={t.cadenceCell(row.year, cell.month, cell.count)}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    {!posts.length && <ContentEmpty kind="posts" />}
+    <div class="archive-layout">
+      <nav class="year-index" aria-label={t.jumpToYear}>
+        <span class="index-label">{t.yearIndex}</span>
+        <ol>
+          {
+            years.map((item) => (
+              <li>
+                <a href={`#year-${item.year}`}>
+                  <span>{item.year}</span>
+                  <small>{item.count}</small>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+
+      <div class="archive-years">
+        {
+          years.map((item) => (
+            <section id={`year-${item.year}`} class="year-section" aria-labelledby={`heading-${item.year}`}>
+              <div class="year-heading">
+                <h2 id={`heading-${item.year}`}>{item.year}</h2>
+                <span>{t.recordCount(item.count)}</span>
+              </div>
+              <div class="year-months">
+                {item.months.map((group) => (
+                  <section class="month-group" aria-label={t.yearMonth(item.year, group.month + 1)}>
+                    <div class="month-heading">
+                      <h3>
+                        {String(group.month + 1).padStart(2, "0")} <span>{t.monthUnit}</span>
+                      </h3>
+                      <span class="month-count">{t.postCount(group.entries.length)}</span>
+                    </div>
+                    <ol class="month-entries">
+                      {group.entries.map((post) => (
+                        <li>
+                          <a href={localizedPath(`/blog/${resolveLegacyPostSlug(post)}/`, locale)}>
+                            <time datetime={post.data.pubDatetime.toISOString()}>
+                              {String(getSiteDateParts(post.data.pubDatetime).day).padStart(2, "0")}
+                            </time>
+                            <span class="entry-title">{post.data.title}</span>
+                            {post.data.tags?.[0] && <span class="entry-tag">{post.data.tags[0]}</span>}
+                            <span class="entry-arrow" aria-hidden="true">
+                              ↗
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+                    </ol>
+                  </section>
+                ))}
+              </div>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
+
+  onAstroPage((signal) => {
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".year-index a"));
+    const sections = Array.from(document.querySelectorAll<HTMLElement>(".year-section"));
+    if (!links.length || !sections.length) return;
+
+    let rafId = 0;
+    const updateCurrentYear = () => {
+      rafId = 0;
+      const current =
+        [...sections].reverse().find((section) => section.getBoundingClientRect().top <= 180) ?? sections[0];
+      for (const link of links) {
+        if (link.hash === `#${current.id}`) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      }
+    };
+
+    const scheduleUpdate = () => {
+      if (!rafId) rafId = window.requestAnimationFrame(updateCurrentYear);
+    };
+
+    window.addEventListener("scroll", scheduleUpdate, { passive: true, signal });
+    signal.addEventListener("abort", () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+    });
+    updateCurrentYear();
+  });
+</script>

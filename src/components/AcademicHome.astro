@@ -1,0 +1,305 @@
+---
+import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE, localizedPath, type Locale } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import { getAllNotes, getAllPosts } from "@/lib/data-utils";
+import { getLocalizedTagPath } from "@/utils/tagPath";
+import { getPath } from "@/utils/getPath";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { getArticleDates } from "@/utils/article-discovery";
+import { getSiteDateParts } from "@/utils/date";
+import { PROJECTS } from "@/data/projects";
+import { withBase } from "@/utils/url";
+import "@/styles/academic-home.css";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const isZh = locale === "zh-CN";
+const copy = isZh ? SITE.home.zh : SITE.home.en;
+const t = ui(locale);
+
+const posts = await getAllPosts(locale);
+const notes = SITE.features.notes ? await getAllNotes(locale) : [];
+const focusTopics = copy.focusTopics;
+const recentPosts = posts.slice(0, 5).map((post) => {
+  const latest = getArticleDates(post.data.pubDatetime, post.data.modDatetime).latest;
+  const parts = getSiteDateParts(latest);
+  return {
+    title: post.data.title,
+    href: localizedPath(getPath(post.id, post.filePath, true, resolveLegacyPostSlug(post)), locale),
+    iso: latest.toISOString(),
+    day: `${String(parts.month + 1).padStart(2, "0")}.${String(parts.day).padStart(2, "0")}`,
+    year: parts.year,
+    tag: post.data.tags?.[0],
+  };
+});
+const showProjects = SITE.features.projects && PROJECTS.length > 0;
+---
+
+<main id="main-content" class="app-layout academic-home" lang={locale}>
+  <div class="home-stage">
+    <!-- Left Column: Personal Monograph & Sea-of-Stars Letter -->
+    <div class="home-monograph">
+      <header class="hero-copy" aria-labelledby="home-title">
+        <p class="eyebrow">
+          <span class="eyebrow-spark" aria-hidden="true">✦</span>
+          {copy.eyebrow}
+        </p>
+        <h1 id="home-title">{copy.greetingPrefix}<span>{copy.greetingHighlight}</span></h1>
+        <p class="welcome">{copy.welcome}</p>
+        <div class="horizon-rule" aria-hidden="true">
+          <span class="horizon-line"></span>
+          <span class="horizon-tag">{copy.horizonTag}</span>
+          <span class="horizon-line horizon-line--fade"></span>
+        </div>
+      </header>
+
+      <div class="intro-body">
+        <p class="intro-focus">
+          {copy.focusLeadPrefix}<strong>{copy.focusLeadStrong}</strong>{copy.focusLeadSuffix}
+        </p>
+
+        <div class="intro-prose">
+          {copy.introParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+
+        <p class="closing">
+          <strong>{copy.closing} <span class="closing-star" aria-hidden="true">✦</span></strong>
+        </p>
+
+        <nav class="home-links" aria-label={t.searchNav}>
+          <a class="read-link" href={localizedPath("/blog/", locale)}>
+            {t.readBlog} <span aria-hidden="true">↗</span>
+          </a>
+          {
+            SITE.features.notes && (
+              <a class="secondary-link" href={localizedPath("/notes/", locale)}>
+                {t.readNotes} <span aria-hidden="true">↗</span>
+              </a>
+            )
+          }
+          <a class="secondary-link" href={SITE.profile} target="_blank" rel="noopener noreferrer">
+            GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Right Column: Unified Deep-Space Observatory & Profile Dossier -->
+    <aside class="observatory-dossier">
+      <div class="star-map" data-star-map aria-hidden="true">
+        <div class="star-map-atmosphere">
+          <canvas data-star-map-canvas style="width: 100%; height: 100%;"></canvas>
+        </div>
+        <div class="star-map-spotlight"></div>
+
+        <div class="field-label">
+          <span>{copy.observatoryTitle}</span>
+          <span class="field-beacon"><i class="beacon-dot"></i>{copy.observatoryStatus}</span>
+        </div>
+
+        <svg viewBox="0 0 460 310" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="orb-glass" cx=".34" cy=".26" r=".82">
+              <stop stop-color="#e8f4ff" stop-opacity=".24"></stop>
+              <stop offset=".55" stop-color="#7dc4e8" stop-opacity=".06"></stop>
+              <stop offset="1" stop-color="#061024" stop-opacity=".42"></stop>
+            </radialGradient>
+            <linearGradient id="orb-rim" x1="148" y1="74" x2="316" y2="236" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#e4f3ff" stop-opacity=".82"></stop>
+              <stop offset=".48" stop-color="#9ad4ff" stop-opacity=".12"></stop>
+              <stop offset="1" stop-color="#7ce0ee" stop-opacity=".48"></stop>
+            </linearGradient>
+            <linearGradient id="orbit-wake" x1="94" y1="196" x2="368" y2="96" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#7ce0ee" stop-opacity="0"></stop>
+              <stop offset=".52" stop-color="#9ad0ff" stop-opacity=".45"></stop>
+              <stop offset="1" stop-color="#ffffff" stop-opacity=".95"></stop>
+            </linearGradient>
+            <radialGradient id="polaris-halo" cx=".5" cy=".5" r=".5">
+              <stop stop-color="#ffffff" stop-opacity=".55"></stop>
+              <stop offset=".45" stop-color="#8ecaff" stop-opacity=".2"></stop>
+              <stop offset="1" stop-color="#8ecaff" stop-opacity="0"></stop>
+            </radialGradient>
+          </defs>
+
+          <g class="parallax-far">
+            <circle class="dust-star" cx="58" cy="64" r="1.1"></circle>
+            <circle class="dust-star dust-star--twinkle" cx="108" cy="48" r="1.4"></circle>
+            <circle class="dust-star" cx="386" cy="58" r="1.2"></circle>
+            <circle class="dust-star dust-star--twinkle" cx="408" cy="138" r="1.5"></circle>
+            <circle class="dust-star" cx="68" cy="214" r="1.3"></circle>
+            <circle class="dust-star" cx="136" cy="258" r="1.1"></circle>
+            <circle class="dust-star dust-star--twinkle" cx="348" cy="248" r="1.4"></circle>
+            <circle class="dust-star" cx="294" cy="266" r="1"></circle>
+          </g>
+
+          <circle class="outer-orbit" cx="230" cy="155" r="126"></circle>
+          <circle class="inner-ticks" cx="230" cy="155" r="108"></circle>
+          <path class="field-axis" d="M230 16V40M230 270V294M78 155H104M356 155H382"></path>
+
+          <g class="parallax-mid">
+            <circle cx="230" cy="155" r="78" fill="url(#orb-glass)" stroke="url(#orb-rim)" stroke-width="1.1"></circle>
+            <ellipse class="meridian" cx="230" cy="155" rx="78" ry="24" transform="rotate(-14 230 155)"></ellipse>
+            <ellipse class="orbit orbit-secondary" cx="230" cy="155" rx="148" ry="44" transform="rotate(44 230 155)"
+            ></ellipse>
+            <ellipse class="orbit" cx="230" cy="155" rx="152" ry="46" transform="rotate(-26 230 155)"></ellipse>
+            <ellipse
+              class="orbit-Highlight"
+              cx="230" cy="155"
+              rx="152"
+              ry="46"
+              transform="rotate(-26 230 155)"
+              stroke="url(#orbit-wake)"></ellipse>
+          </g>
+
+          <g class="parallax-near">
+            <path class="constellation" d="M126 202L184 128L242 172L302 82L348 132"></path>
+            <g class="star-points">
+              <circle cx="126" cy="202" r="2.4"></circle>
+              <circle cx="184" cy="128" r="2.9"></circle>
+              <circle cx="242" cy="172" r="2.4"></circle>
+              <circle cx="348" cy="132" r="2.4"></circle>
+            </g>
+            <circle class="polaris-glow" cx="302" cy="82" r="20" fill="url(#polaris-halo)"></circle>
+            <path class="north-star" d="M302 68L305.2 78.8L316 82L305.2 85.2L302 96L298.8 85.2L288 82L298.8 78.8Z"
+            ></path>
+            <circle class="satellite" cx="362" cy="90" r="3.6"></circle>
+          </g>
+        </svg>
+
+        <div class="field-caption">
+          <span>{copy.observatoryCaptionLeft}</span>
+          <span>{copy.observatoryCaptionRight}</span>
+        </div>
+      </div>
+
+      <div class="dossier-body">
+        <section class="focus-section" aria-labelledby="focus-title">
+          <h2 id="focus-title">{t.focusHeading}</h2>
+          <div class="focus-chips">
+            {
+              focusTopics.map((topic) => (
+                <a href={getLocalizedTagPath(topic, locale)} class="focus-chip">
+                  {topic}
+                </a>
+              ))
+            }
+          </div>
+          <div class="focus-stats">
+            <a href={localizedPath("/blog/", locale)} class="focus-stat">
+              <strong>{posts.length}</strong>
+              <span>{t.postUnit(posts.length)}</span>
+            </a>
+            {
+              SITE.features.notes && (
+                <a href={localizedPath("/notes/", locale)} class="focus-stat">
+                  <strong>{notes.length}</strong>
+                  <span>{t.noteUnit(notes.length)}</span>
+                </a>
+              )
+            }
+          </div>
+        </section>
+      </div>
+    </aside>
+  </div>
+
+  <div class:list={["home-shelf", { "home-shelf--single": !showProjects }]}>
+    <section class="shelf-panel" aria-labelledby="recent-title">
+      <div class="shelf-head">
+        <h2 id="recent-title">{t.latestWriting}</h2>
+        <a href={localizedPath("/blog/", locale)}>{t.viewAllPosts} <span aria-hidden="true">→</span></a>
+      </div>
+      {
+        recentPosts.length > 0 ? (
+          <ol class="recent-list">
+            {recentPosts.map((post) => (
+              <li>
+                <a href={post.href}>
+                  <time datetime={post.iso}>
+                    <span>{post.day}</span>
+                    <small>{post.year}</small>
+                  </time>
+                  <span class="recent-title">{post.title}</span>
+                  {post.tag && <span class="recent-tag">{post.tag}</span>}
+                </a>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="text-muted-foreground py-4 text-sm">{t.emptyRecentPosts}</p>
+        )
+      }
+    </section>
+
+    {
+      showProjects && (
+        <section class="shelf-panel" aria-labelledby="projects-title">
+          <div class="shelf-head">
+            <h2 id="projects-title">{t.projects}</h2>
+            <a href={withBase("/projects/")}>
+              {t.allProjects} <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <ul class="project-tiles">
+            {PROJECTS.map((project) => (
+              <li>
+                <a href={project.homepage ?? project.repo}>
+                  <img src={withBase(project.logo)} alt="" width="36" height="36" loading="lazy" decoding="async" />
+                  <span>
+                    <strong>{project.name}</strong>
+                    <small>{project.kind}</small>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </div>
+</main>
+
+<script>
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
+  import { mountStarMaps } from "@/utils/starMap";
+
+  const setupParallax = (host: HTMLElement, signal: AbortSignal) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const onMove = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+      const rect = host.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const nx = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+      const ny = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+      const px = ((event.clientX - rect.left) / rect.width) * 100;
+      const py = ((event.clientY - rect.top) / rect.height) * 100;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        host.style.setProperty("--tilt-x", `${nx.toFixed(3)}`);
+        host.style.setProperty("--tilt-y", `${ny.toFixed(3)}`);
+        host.style.setProperty("--spot-x", `${px.toFixed(1)}%`);
+        host.style.setProperty("--spot-y", `${py.toFixed(1)}%`);
+      });
+    };
+    const onLeave = () => {
+      cancelAnimationFrame(raf);
+      host.style.setProperty("--tilt-x", "0");
+      host.style.setProperty("--tilt-y", "0");
+    };
+    host.addEventListener("pointermove", onMove, { passive: true, signal });
+    host.addEventListener("pointerleave", onLeave, { passive: true, signal });
+    signal.addEventListener("abort", () => cancelAnimationFrame(raf), { once: true });
+  };
+
+  onAstroPage((signal) => {
+    const unmountShaders = mountStarMaps(".academic-home [data-star-map]");
+    signal.addEventListener("abort", () => unmountShaders(), { once: true });
+    const starHost = document.querySelector<HTMLElement>(".academic-home [data-star-map]");
+    if (starHost) setupParallax(starHost, signal);
+  });
+</script>

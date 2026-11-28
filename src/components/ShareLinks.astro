@@ -1,0 +1,125 @@
+---
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
+import { getShareLinks } from "@/constants";
+import LinkButton from "./LinkButton.astro";
+
+const URL = Astro.url;
+const shareLinks = getShareLinks(locale);
+---
+
+<div class="flex shrink-0 flex-col items-center gap-2 sm:items-end">
+  <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase select-none">
+    {t.share}
+  </span>
+  <div class="flex items-center gap-1.5">
+    <button
+      type="button"
+      data-copy-link
+      data-label-default={t.copyLink}
+      data-label-copied={t.linkCopied}
+      class="share-btn share-copy-btn border-border-subtle bg-surface/75 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-accent/10 inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:shadow-sm"
+      title={t.copyLink}
+      aria-label={t.copyLink}
+    >
+      <svg
+        class="share-copy-icon size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+      </svg>
+      <svg
+        class="share-check-icon size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    </button>
+    {
+      shareLinks.map((social) => (
+        <LinkButton
+          href={`${social.href + URL}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="share-btn border-border-subtle bg-surface/75 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-accent/10 inline-flex size-8 items-center justify-center rounded-lg border transition-all duration-200 hover:shadow-sm"
+          title={social.linkTitle}
+        >
+          <social.icon class="size-4 fill-transparent stroke-current stroke-2" />
+          <span class="sr-only">{social.linkTitle}</span>
+        </LinkButton>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .share-btn {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .share-check-icon {
+    display: none;
+  }
+  .share-copy-btn[data-copied="true"] {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    color: var(--accent);
+  }
+  .share-copy-btn[data-copied="true"] .share-copy-icon {
+    display: none;
+  }
+  .share-copy-btn[data-copied="true"] .share-check-icon {
+    display: block;
+  }
+</style>
+
+<script>
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
+
+  onAstroPage((signal) => {
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy-link]")) {
+      let timer = 0;
+      const defaultLabel = button.dataset.labelDefault || "Copy link";
+      const copiedLabel = button.dataset.labelCopied || "Copied";
+
+      button.addEventListener(
+        "click",
+        async () => {
+          try {
+            await navigator.clipboard.writeText(window.location.href);
+            if (signal.aborted) return;
+            clearTimeout(timer);
+            button.dataset.copied = "true";
+            button.setAttribute("aria-label", copiedLabel);
+            button.setAttribute("title", copiedLabel);
+            timer = window.setTimeout(() => {
+              delete button.dataset.copied;
+              button.setAttribute("aria-label", defaultLabel);
+              button.setAttribute("title", defaultLabel);
+            }, 1500);
+          } catch {
+            // Clipboard permission denied or unavailable; leave button state unchanged.
+          }
+        },
+        { signal },
+      );
+
+      signal.addEventListener("abort", () => clearTimeout(timer), { once: true });
+    }
+  });
+</script>

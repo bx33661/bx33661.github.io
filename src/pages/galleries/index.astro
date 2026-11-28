@@ -1,0 +1,102 @@
+---
+import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import Header from "@/components/Header.astro";
+import ArtGallerySlider from "@/components/react/art-gallery-slider";
+import { buildGallerySliderImages, getPublishedGalleries } from "@/data/gallery";
+import Layout from "@/layouts/Layout.astro";
+import { withBase } from "@/utils/url";
+import "@/styles/art-gallery-slider.css";
+
+const t = ui(DEFAULT_LOCALE);
+const galleryImages = buildGallerySliderImages();
+const galleryLinks = (await getPublishedGalleries()).map(({ slug, gallery }) => ({
+  slug,
+  title: gallery.data.title,
+}));
+---
+
+<Layout title={`${t.galleries} | ${SITE.title}`} description={t.galleryDescription}>
+  <div class="gallery-page-wrapper">
+    <Header surface="dark" />
+    <main id="main-content" class="gallery-fullscreen-container">
+      <h1 class="sr-only">{t.galleries}</h1>
+      <ArtGallerySlider images={galleryImages} locale={DEFAULT_LOCALE} client:load />
+
+      {
+        galleryLinks.length > 0 && (
+          <nav class="gallery-detail-links" aria-label={t.galleries}>
+            {galleryLinks.map((gallery) => (
+              <a class="gallery-detail-link" href={withBase(`/galleries/${gallery.slug}/`)}>
+                {gallery.title}
+              </a>
+            ))}
+          </nav>
+        )
+      }
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .gallery-page-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background: #000000;
+  }
+
+  .gallery-fullscreen-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .gallery-detail-links {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 4;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    max-width: min(90vw, 36rem);
+  }
+
+  .gallery-detail-link {
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: rgba(0, 0, 0, 0.45);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .gallery-detail-link:hover {
+    border-color: rgba(255, 255, 255, 0.48);
+    background: rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 1);
+  }
+
+  @media (max-width: 640px) {
+    .gallery-detail-links {
+      top: 4.6rem;
+      right: auto;
+      left: 0.75rem;
+      bottom: auto;
+      justify-content: flex-start;
+      max-width: calc(100vw - 7rem);
+    }
+  }
+</style>

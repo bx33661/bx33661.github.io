@@ -1,0 +1,19 @@
+---
+import type { GetStaticPaths } from "astro";
+import BlogIndex from "@/components/BlogIndex.astro";
+import { SITE } from "@/config.ts";
+import { BILINGUAL_ENABLED, SECONDARY_LOCALE, SECONDARY_PREFIX } from "@/i18n";
+import { getAllPosts } from "@/lib/data-utils";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  if (!BILINGUAL_ENABLED) return [];
+  return paginate(await getAllPosts(SECONDARY_LOCALE), {
+    params: { locale: SECONDARY_PREFIX },
+    pageSize: SITE.postPerPage,
+  });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<BlogIndex {page} />

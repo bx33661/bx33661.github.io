@@ -1,0 +1,113 @@
+---
+import type { GetStaticPaths } from "astro";
+import { readingTransition } from "@/utils/reading-motion";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import EntryRow from "@/components/EntryRow.astro";
+import Pagination from "@/components/Pagination.astro";
+import "@/styles/blog-index.css";
+import { groupPostsByTag } from "@/utils/getUniqueTags";
+import { getPath } from "@/utils/getPath";
+import { resolveLegacyPostSlug } from "@/utils/legacySlug";
+import { isInteractivePost } from "@/utils/readingTime";
+import { getLocalizedTagPath, getVisiblePostTags } from "@/utils/tagPath";
+import { DEFAULT_LOCALE, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import { SITE } from "@/config.ts";
+import { getAllPosts } from "@/lib/data-utils";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getAllPosts(DEFAULT_LOCALE);
+  return groupPostsByTag(posts).flatMap(({ tag, tagName, posts: tagPosts }) =>
+    paginate(tagPosts, {
+      params: { tag },
+      props: { tagName },
+      pageSize: SITE.postPerPage,
+    }),
+  );
+}) satisfies GetStaticPaths;
+
+const { tag } = Astro.params;
+const { page, tagName } = Astro.props;
+const t = ui(DEFAULT_LOCALE);
+const backUrl = SITE.showBackButton ? Astro.url.pathname : localizedPath("/", DEFAULT_LOCALE);
+---
+
+<Layout title={`${t.topicHeading(tagName)} | ${SITE.title}`} noindex>
+  <Header />
+  <Breadcrumb />
+
+  <main
+    id="main-content"
+    data-backUrl={backUrl}
+    class="blog-index app-layout pb-4"
+    transition:name="reading-surface"
+    transition:animate={readingTransition}
+  >
+    <header class="blog-head">
+      <p class="blog-kicker">TOPIC / TAG</p>
+      <h1 class="blog-title">
+        {DEFAULT_LOCALE === "zh-CN" ? "主题：" : "Topic: "}
+        <span transition:name={tag}>{tagName}</span>
+      </h1>
+      <p class="blog-desc">{t.topicLead(tagName)}</p>
+      <p class="blog-meta">
+        <span>{t.postCount(page.total)}</span>
+        {
+          page.lastPage > 1 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{t.pageCount(page.currentPage, page.lastPage)}</span>
+            </>
+          )
+        }
+        <span aria-hidden="true">·</span>
+        <a
+          href={`${localizedPath("/blog/", DEFAULT_LOCALE)}#topics`}
+          class="text-accent font-medium no-underline hover:underline"
+        >
+          ← {t.allTopics}
+        </a>
+      </p>
+    </header>
+
+    <ul class="entry-list">
+      {
+        page.data.map((post) => (
+          <EntryRow
+            href={localizedPath(getPath(post.id, post.filePath, true, resolveLegacyPostSlug(post)), DEFAULT_LOCALE)}
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.pubDatetime}
+            updatedDate={post.data.modDatetime}
+            variant="blog"
+            interactive={isInteractivePost(post.body)}
+            tags={getVisiblePostTags(post.data.tags).map((item) => ({
+              label: item,
+              href: getLocalizedTagPath(item, DEFAULT_LOCALE),
+            }))}
+          />
+        ))
+      }
+    </ul>
+  </main>
+
+  <Pagination {page} />
+
+  <Footer noMarginTop={page.lastPage > 1} />
+</Layout>
+
+<script>
+  import { onAstroPage } from "@/scripts/astro-lifecycle";
+  import { writeStorage } from "@/utils/browser-storage";
+
+  onAstroPage(() => {
+    const mainContent = document.querySelector<HTMLElement>("#main-content");
+    const backUrl = mainContent?.dataset?.backurl;
+    if (backUrl) {
+      writeStorage(() => sessionStorage, "backUrl", backUrl);
+    }
+  });
+</script>

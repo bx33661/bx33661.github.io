@@ -1,0 +1,69 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+
+const t = ui(DEFAULT_LOCALE);
+---
+
+<Layout title={`${t.offlineTitle} | ${SITE.title}`} noindex={true}>
+  <Header />
+
+  <main id="main-content" class="app-layout flex flex-1 items-center justify-center py-14">
+    <section
+      class="border-border-subtle bg-surface/85 w-full max-w-lg rounded-2xl border p-8 text-center shadow-sm sm:p-10"
+      aria-labelledby="offline-title"
+    >
+      <p class="font-cartograph text-accent m-0 text-xs font-semibold tracking-[0.18em] uppercase">OFFLINE / CACHE</p>
+      <h1 id="offline-title" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">{t.offlineTitle}</h1>
+      <p class="text-muted-foreground mt-3 text-sm leading-relaxed sm:text-base">{t.offlineLead}</p>
+      <p id="network-status" class="font-cartograph text-muted-foreground mt-4 text-xs" aria-live="polite"></p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <button
+          id="offline-retry"
+          type="button"
+          class="bg-accent text-surface inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
+        >
+          {t.retryConnection}
+        </button>
+        <a
+          href={localizedPath("/", DEFAULT_LOCALE)}
+          class="border-border-subtle bg-surface-subtle hover:border-accent/40 hover:text-accent inline-flex items-center rounded-full border px-5 py-2.5 text-sm font-medium transition-colors"
+        >
+          {t.backHome}
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script>
+    import { onAstroPage } from "@/scripts/astro-lifecycle";
+
+    onAstroPage((signal) => {
+      const statusEl = document.getElementById("network-status");
+      const retryBtn = document.getElementById("offline-retry");
+      if (!statusEl) return;
+
+      const isZh = document.documentElement.lang === "zh-CN";
+      const updateNetworkStatus = () => {
+        statusEl.textContent = navigator.onLine
+          ? isZh
+            ? "网络已连接，可点击“重新连接”刷新页面"
+            : "Connection restored — click Reconnect to reload."
+          : isZh
+            ? "网络未连接"
+            : "Network offline";
+      };
+
+      retryBtn?.addEventListener("click", () => location.reload(), { signal });
+      window.addEventListener("online", updateNetworkStatus, { signal });
+      window.addEventListener("offline", updateNetworkStatus, { signal });
+      updateNetworkStatus();
+    });
+  </script>
+</Layout>

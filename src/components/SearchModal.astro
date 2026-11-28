@@ -1,0 +1,74 @@
+---
+import "@pagefind/default-ui/css/ui.css";
+import "@/styles/search-modal.css";
+import { SITE } from "@/config.ts";
+import { localeFromPath, localizedPath } from "@/i18n";
+
+const locale = localeFromPath(Astro.url.pathname);
+const isZh = locale === "zh-CN";
+const suggestions = isZh ? SITE.searchSuggestions.zh : SITE.searchSuggestions.en;
+const copy = isZh
+  ? {
+      close: "关闭搜索",
+      title: "站内搜索",
+      trySearching: "试试搜索",
+      select: "选择",
+      open: "打开",
+      closeHint: "关闭",
+      fullSearch: "前往完整搜索",
+    }
+  : {
+      close: "Close search",
+      title: "Search this site",
+      trySearching: "Try searching",
+      select: "Select",
+      open: "Open",
+      closeHint: "Close",
+      fullSearch: "Full search",
+    };
+---
+
+<dialog id="search-modal" class="search-dialog" aria-labelledby="search-dialog-title">
+  <button class="search-backdrop" type="button" tabindex="-1" aria-label={copy.close} data-search-close></button>
+  <div class="search-dialog-card">
+    <header class="search-dialog-head">
+      <div>
+        <p class="search-dialog-kicker">SEARCH / QUICK FIND</p>
+        <h2 id="search-dialog-title">{copy.title}</h2>
+      </div>
+      <button class="search-dialog-close" type="button" aria-label={copy.close} data-search-close>
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <div class="search-dialog-body">
+      <div id="modal-pagefind-search" class="pagefind-surface"></div>
+      {
+        suggestions.length > 0 && (
+          <div class="search-suggestions" data-search-suggestions>
+            <span>{copy.trySearching}</span>
+            {suggestions.map((item) => (
+              <button type="button" data-search-suggestion={item}>
+                {item}
+              </button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    <footer class="search-dialog-foot">
+      <span class="search-kbd-list">
+        <span class="search-kbd-item"><kbd>↑</kbd><kbd>↓</kbd><span>{copy.select}</span></span>
+        <span class="search-kbd-item"><kbd>↵</kbd><span>{copy.open}</span></span>
+        <span class="search-kbd-item"><kbd>Esc</kbd><span>{copy.closeHint}</span></span>
+      </span>
+      <a href={localizedPath("/search/", locale)}>
+        {copy.fullSearch}
+        <span aria-hidden="true">↗</span>
+      </a>
+    </footer>
+  </div>
+</dialog>
+
+<script src="../scripts/search-modal.ts"></script>
