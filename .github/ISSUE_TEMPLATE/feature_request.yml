@@ -1,0 +1,19 @@
+name: Feature Request
+description: Suggest an improvement for readers or template adopters
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Use case / Motivation
+      description: Describe the reader or adopter problem you'd like solved.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How should this be configured or behave?
+    validations:
+      required: true

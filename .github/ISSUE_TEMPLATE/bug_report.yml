@@ -1,0 +1,36 @@
+name: Bug Report
+description: Report a rendering, build, or CLI issue in Astro Orbit
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and where it occurs.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Commands, configuration edits in src/config.ts, or route visited.
+      placeholder: |
+        1. Run `npm run setup` or edit ...
+        2. Run `npm run build`
+        3. Visit `/...`
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to see instead.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Node.js version, OS, and browser (if UI-related).
+      placeholder: Node 22.12, macOS 15, Chrome 131

@@ -3,8 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -13,23 +11,13 @@ permissions:
   id-token: write
 
 concurrency:
-  group: ${{ github.event_name == 'pull_request' && format('pages-pr-{0}', github.ref) || 'pages' }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    env:
-      SITE: ${{ vars.SITE }}
-      BASE_URL: ${{ vars.BASE_URL }}
-      PUBLIC_ENABLE_ANALYTICS: ${{ vars.PUBLIC_ENABLE_ANALYTICS }}
-      PUBLIC_ENABLE_COMMENTS: ${{ vars.PUBLIC_ENABLE_COMMENTS }}
-      PUBLIC_ENABLE_SEARCH: ${{ vars.PUBLIC_ENABLE_SEARCH }}
-      PUBLIC_GISCUS_REPO: ${{ vars.PUBLIC_GISCUS_REPO }}
-      PUBLIC_GISCUS_REPO_ID: ${{ vars.PUBLIC_GISCUS_REPO_ID }}
-      PUBLIC_GISCUS_CATEGORY: ${{ vars.PUBLIC_GISCUS_CATEGORY }}
-      PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.PUBLIC_GISCUS_CATEGORY_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,6 +29,7 @@ jobs:
           cache: "npm"
 
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v5
 
       - name: Install dependencies
@@ -50,9 +39,27 @@ jobs:
         run: npm run verify:quick
 
       - name: Build site and Pagefind index
+        env:
+          SITE: ${{ vars.SITE != '' && vars.SITE || format('{0}/', steps.pages.outputs.origin) }}
+          BASE_URL: ${{ vars.BASE_URL != '' && vars.BASE_URL || (steps.pages.outputs.base_path != '' && format('{0}/', steps.pages.outputs.base_path) || '/') }}
+          PUBLIC_ENABLE_ANALYTICS: ${{ vars.PUBLIC_ENABLE_ANALYTICS || 'false' }}
+          PUBLIC_ENABLE_COMMENTS: ${{ vars.PUBLIC_ENABLE_COMMENTS || 'false' }}
+          PUBLIC_ENABLE_SEARCH: ${{ vars.PUBLIC_ENABLE_SEARCH || 'true' }}
+          PUBLIC_GISCUS_REPO: ${{ vars.PUBLIC_GISCUS_REPO }}
+          PUBLIC_GISCUS_REPO_ID: ${{ vars.PUBLIC_GISCUS_REPO_ID }}
+          PUBLIC_GISCUS_CATEGORY: ${{ vars.PUBLIC_GISCUS_CATEGORY }}
+          PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.PUBLIC_GISCUS_CATEGORY_ID }}
+          PUBLIC_UMAMI_SCRIPT_URL: ${{ vars.PUBLIC_UMAMI_SCRIPT_URL }}
+          PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.PUBLIC_UMAMI_WEBSITE_ID }}
+          PUBLIC_PLAUSIBLE_DOMAIN: ${{ vars.PUBLIC_PLAUSIBLE_DOMAIN }}
+          PUBLIC_PLAUSIBLE_SCRIPT_URL: ${{ vars.PUBLIC_PLAUSIBLE_SCRIPT_URL }}
+          PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
         run: npm run build
 
       - name: Verify built output
+        env:
+          SITE: ${{ vars.SITE != '' && vars.SITE || format('{0}/', steps.pages.outputs.origin) }}
+          BASE_URL: ${{ vars.BASE_URL != '' && vars.BASE_URL || (steps.pages.outputs.base_path != '' && format('{0}/', steps.pages.outputs.base_path) || '/') }}
         run: npm run smoke:dist
 
       - name: Upload Pages artifact
@@ -66,7 +73,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

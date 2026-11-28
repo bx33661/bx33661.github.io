@@ -89,21 +89,21 @@ if (bilingual) {
 }
 
 // Privacy & upstream leak guard across built text artifacts
-const LEAK_PATTERN = new RegExp(
-  [
-    ["bx", "33661"].join(""),
-    ["hnu", "sec"].join(""),
-    ["codeva", "INhoFW40MU"].join("-"),
-    ["googlee", "8222"].join(""),
-    ["Zhang", "Boxiang"].join(" "),
-    ["张", "博翔"].join(""),
-    ["Hainan", "University"].join(" "),
-    ["海南", "大学"].join(""),
-    ["Wot", "fard"].join(""),
-    ["Carto", "graph CF"].join(""),
-  ].join("|"),
-  "i",
-);
+const activeSite = (process.env.SITE || "").toLowerCase();
+const repoOwner = ["bx", "33661"].join("");
+const leakTokens = [
+  ...(activeSite.includes(repoOwner) ? [] : [repoOwner]),
+  ["hnu", "sec"].join(""),
+  ["codeva", "INhoFW40MU"].join("-"),
+  ["googlee", "8222"].join(""),
+  ["Zhang", "Boxiang"].join(" "),
+  ["张", "博翔"].join(""),
+  ["Hainan", "University"].join(" "),
+  ["海南", "大学"].join(""),
+  ["Wot", "fard"].join(""),
+  ["Carto", "graph CF"].join(""),
+];
+const LEAK_PATTERN = new RegExp(leakTokens.join("|"), "i");
 
 function scanLeaks(dir) {
   if (!fs.existsSync(dir)) return;

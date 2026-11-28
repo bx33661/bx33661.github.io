@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Customization Guide
+    url: https://github.com/bx33661/astro-orbit/blob/main/docs/CUSTOMIZATION.md
+    about: Check setup, theme presets, analytics, i18n, and deployment recipes
