@@ -83,7 +83,7 @@ test("English corpus covers every public Chinese blog and note exactly once", ()
 });
 
 test("Article components share translated server and client copy", () => {
-  for (const name of ["TrustBoundarySimulator", "MiniappAuditFeature", "MiniappAuditDiagram", "Gist"]) {
+  for (const name of ["TrustBoundarySimulator", "MiniappAuditFeature", "MiniappAuditDiagram"]) {
     const source = fs.readFileSync(new URL(`src/components/${name}.astro`, root), "utf8");
     assert.match(source, /articleCopy/);
     assert.match(source, /localeFromPath/);

@@ -1,13 +1,23 @@
 import type { Root, Paragraph, RootContent } from "mdast";
 import type {} from "mdast-util-to-hast";
+import { SITE } from "../config.ts";
 
-const CALLOUT_LABELS = {
-  NOTE: "说明",
-  TIP: "提示",
-  IMPORTANT: "重要",
-  WARNING: "注意",
-  CAUTION: "警告",
-} as const;
+const CALLOUT_LABELS =
+  SITE.i18n.defaultLocale === "zh-CN"
+    ? ({
+        NOTE: "说明",
+        TIP: "提示",
+        IMPORTANT: "重要",
+        WARNING: "注意",
+        CAUTION: "警告",
+      } as const)
+    : ({
+        NOTE: "Note",
+        TIP: "Tip",
+        IMPORTANT: "Important",
+        WARNING: "Warning",
+        CAUTION: "Caution",
+      } as const);
 
 type CalloutKind = keyof typeof CALLOUT_LABELS;
 

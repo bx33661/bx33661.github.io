@@ -19,7 +19,7 @@ export function getArticleDates(publishedAt: Date, updatedAt?: Date | null) {
 
 const normalizeTag = (tag: string) => tag.trim().normalize("NFKC").toLowerCase();
 const topicTags = (tags: string[]) =>
-  new Set(tags.map(normalizeTag).filter((tag) => tag && !["bx", "others", "其他"].includes(tag)));
+  new Set(tags.map(normalizeTag).filter((tag) => tag && !["others", "其他"].includes(tag)));
 const isPublic = (post: ArticleSummary, now: Date) => !post.draft && post.publishedAt <= now;
 
 /** Rare shared topics rank above generic ones; no random ordering or cold-start filler. */

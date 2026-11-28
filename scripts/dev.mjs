@@ -69,9 +69,9 @@ function printDevTips(url) {
   console.log("");
   console.log(
     table([
-      [c.cyan("npm run dev:force"), "接管并重启当前开发服务器 (--force)"],
-      [c.cyan("npm run dev:stop"), "停止当前运行中的开发服务器"],
-      [c.cyan("npm run dev:status"), "查看当前端口与服务器状态"],
+      [c.cyan("npm run dev:force"), "Take over and restart the active dev server (--force)"],
+      [c.cyan("npm run dev:stop"), "Stop the running dev server"],
+      [c.cyan("npm run dev:status"), "Inspect current port and dev server status"],
       ...(url ? [[c.cyan("Open URL"), url]] : []),
     ]),
   );
@@ -82,7 +82,7 @@ async function promptConflictAction() {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   try {
     const answer = await rl.question(
-      `\n  ${c.bold("选择操作")}: [y] 接管重启 (--force) / [s] 停止旧服务 / [N] 保持运行: `,
+      `\n  ${c.bold("Action")}: [y] take over (--force) / [s] stop existing / [N] keep running: `,
     );
     return answer.trim().toLowerCase();
   } finally {

@@ -1,8 +1,13 @@
+---
+import { withBase } from "@/utils/url";
+const noiseUrl = withBase("/noise.png");
+---
+
 <div class="site-backdrop pointer-events-none" aria-hidden="true">
   <div class="site-grid"></div>
   <div class="site-glow"></div>
   <div class="site-cursor-glow"></div>
-  <div class="site-grain"></div>
+  <div class="site-grain" style={`--noise-url: url("${noiseUrl}")`}></div>
 </div>
 
 <script src="../scripts/cursor-glow.ts"></script>
@@ -82,7 +87,7 @@
   .site-grain {
     position: absolute;
     inset: 0;
-    background-image: url("/noise.png");
+    background-image: var(--noise-url);
     background-repeat: repeat;
     background-size: 64px 64px;
     opacity: 0.55;

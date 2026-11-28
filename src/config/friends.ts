@@ -1,10 +1,20 @@
-// 友链数据类型定义
 export interface FriendLink {
   name: string;
   url: string;
   description: string;
   avatar?: string;
   tags?: string[];
+}
+
+export interface FriendGroupConfig {
+  id: string;
+  index: string;
+  eyebrow: string;
+  title: { en: string; zh: string };
+  description: { en: string; zh: string };
+  cardKind: string;
+  isOrg?: boolean;
+  items: FriendLink[];
 }
 
 export const ORGANIZATION_LINKS: FriendLink[] = [
@@ -92,8 +102,6 @@ export const FRIEND_LINKS: FriendLink[] = [
 /**
  * HnuSec members with a personal site.
  * Sourced from https://www.hnusec.com/members (checked 2026-07-20).
- * Skipped: no personal blog, dead host, GitHub profile-only, Natro92,
- * CrazyCat / water / Shin (manual).
  */
 export const HNUSEC_MEMBER_LINKS: FriendLink[] = [
   {
@@ -151,5 +159,45 @@ export const HNUSEC_MEMBER_LINKS: FriendLink[] = [
     description: "粥p",
     avatar: "https://q1.qlogo.cn/g?b=qq&nk=1420970368&s=640",
     tags: ["2022", "Pwn"],
+  },
+];
+
+export const FRIEND_GROUPS: FriendGroupConfig[] = [
+  {
+    id: "friend-blogs",
+    index: "01",
+    eyebrow: "01 / BLOGS",
+    title: { en: "Personal Blogs", zh: "个人博客" },
+    description: {
+      en: "Independent writers, CTF teammates, and fellow builders.",
+      zh: "独立写作的朋友、同行者与技术探索者。",
+    },
+    cardKind: "PERSONAL BLOG",
+    items: FRIEND_LINKS,
+  },
+  {
+    id: "friend-hnusec",
+    index: "02",
+    eyebrow: "02 / TEAMMATES",
+    title: { en: "HnuSec Members", zh: "HnuSec 成员" },
+    description: {
+      en: "Members from the Hainan University Cybersecurity Team.",
+      zh: "海南大学网络空间安全校队成员个人站点。",
+    },
+    cardKind: "HNUSEC MEMBER",
+    items: HNUSEC_MEMBER_LINKS,
+  },
+  {
+    id: "friend-organizations",
+    index: "03",
+    eyebrow: "03 / ORGANIZATIONS",
+    title: { en: "Teams & Organizations", zh: "安全团队与组织" },
+    description: {
+      en: "Security research collectives and CTF teams.",
+      zh: "长期关注与同行的安全研究团队与社区组织。",
+    },
+    cardKind: "ORGANIZATION",
+    isOrg: true,
+    items: ORGANIZATION_LINKS,
   },
 ];

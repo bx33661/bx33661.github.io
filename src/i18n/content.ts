@@ -1,6 +1,15 @@
 import { getAllPostSlugs, getAllNoteSlugs, getAllPosts, getAllNotes } from "@/lib/data-utils";
 import { withCache } from "@/lib/cache-utils";
-import { LOCALES, entryAlternates, localizedPath, sectionAlternates, type LanguagePaths } from "./index";
+import {
+  BILINGUAL_ENABLED,
+  LOCALES,
+  entryAlternates,
+  localizedPath,
+  sectionAlternates,
+  stripLocalePrefix,
+  type LanguagePaths,
+  type Locale,
+} from "./index";
 
 function safeDecodeURI(value: string): string {
   try {
@@ -11,15 +20,17 @@ function safeDecodeURI(value: string): string {
 }
 
 export async function languagePaths(pathname: string): Promise<LanguagePaths> {
+  if (!BILINGUAL_ENABLED) return {};
+
   const sections = sectionAlternates(pathname);
   if (Object.keys(sections).length) return sections;
 
-  const normalizedPath = `${pathname.replace(/\/+$/, "")}/`;
-  const section = /^\/(?:en\/)?(blog|notes)\/[^/]+\/$/.exec(normalizedPath)?.[1];
+  const logicalPath = `${stripLocalePrefix(pathname).replace(/\/+$/, "")}/`;
+  const section = /^\/(blog|notes)\/[^/]+\/$/.exec(logicalPath)?.[1];
   if (!section) return {};
 
   return withCache(
-    `language-paths:${normalizedPath}`,
+    `language-paths:${pathname}`,
     async () => {
       const entries = (
         await Promise.all(
@@ -36,15 +47,15 @@ export async function languagePaths(pathname: string): Promise<LanguagePaths> {
         )
       ).flat();
 
-      const decodedPath = safeDecodeURI(normalizedPath);
-      const current = entries.find((entry) => safeDecodeURI(entry.path) === decodedPath);
+      const decodedTarget = safeDecodeURI(`${pathname.replace(/\/+$/, "")}/`);
+      const current = entries.find((entry) => safeDecodeURI(entry.path) === decodedTarget);
       return current ? entryAlternates(current, entries) : {};
     },
     import.meta.env.DEV ? 0 : undefined,
   );
 }
 
-export async function hasEnglishContent(): Promise<boolean> {
-  const [posts, notes] = await Promise.all([getAllPosts("en"), getAllNotes("en")]);
+export async function hasLocaleContent(locale: Locale): Promise<boolean> {
+  const [posts, notes] = await Promise.all([getAllPosts(locale), getAllNotes(locale)]);
   return posts.length + notes.length > 0;
 }

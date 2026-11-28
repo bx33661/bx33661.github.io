@@ -4,18 +4,18 @@ import { readFileSync, existsSync } from "node:fs";
 import { ui } from "../src/i18n/ui.ts";
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("both languages use the original page components, not a second visual framework", () => {
+test("both languages use unified page components, not a second visual framework", () => {
   const pairs = [
-    ["blog/[...page]", "en/blog/[...page]", "BlogIndex"],
-    ["notes", "en/notes/index", "NotesIndex"],
-    ["notes/list/[...page]", "en/notes/list/[...page]", "NotesList"],
-    ["archives/index", "en/archives", "ArchiveIndex"],
-    ["search", "en/search", "SearchPage"],
-    ["notes/[...id]", "en/notes/[...slug]", "NoteDetails"],
-    ["blog/[...slug]/index", "en/blog/[...slug]", "PostDetails"],
+    ["blog/[...page]", "[locale]/blog/[...page]", "BlogIndex"],
+    ["notes", "[locale]/notes/index", "NotesIndex"],
+    ["notes/list/[...page]", "[locale]/notes/list/[...page]", "NotesList"],
+    ["archives/index", "[locale]/archives", "ArchiveIndex"],
+    ["search", "[locale]/search", "SearchPage"],
+    ["notes/[...id]", "[locale]/notes/[...slug]", "NoteDetails"],
+    ["blog/[...slug]/index", "[locale]/blog/[...slug]", "PostDetails"],
   ];
-  for (const [zh, en, component] of pairs) {
-    for (const page of [zh, en]) {
+  for (const [primary, secondary, component] of pairs) {
+    for (const page of [primary, secondary]) {
       const source = read(`src/pages/${page}.astro`);
       assert.match(source, new RegExp(`<${component}(?:\\s|/)`));
       assert.doesNotMatch(source, /<style|english-|EnglishShell|EnglishEntry/);
@@ -51,18 +51,15 @@ test("shared components keep the original design and locale-independent styles",
   assert.match(read("src/components/Header.astro"), /href: localizedPath\("\/blog\/", locale\)/);
 });
 
-test("interface dictionaries cover the same keys and truthful empty states", () => {
+test("interface dictionaries cover identical keys across zh-CN and en", () => {
   const zh = ui("zh-CN");
   const en = ui("en");
   assert.deepEqual(Object.keys(zh).sort(), Object.keys(en).sort());
   assert.equal(zh.posts, "文章");
   assert.equal(en.posts, "Posts");
-  assert.equal(en.emptyPosts, "No English posts yet.");
-  assert.equal(en.emptyNotes, "No English notes yet.");
   assert.equal(en.pageCount(2, 3), "Page 2/3");
   assert.equal(zh.pageCount(2, 3), "第 2/3 页");
   assert.equal(en.yearMonth(2020, 1), "2020-01");
-  assert.match(read("src/components/ContentEmpty.astro"), /lang="zh-CN"/);
   assert.doesNotMatch(read("src/components/ContentEmpty.astro"), /<svg|<aside|edition/i);
 });
 

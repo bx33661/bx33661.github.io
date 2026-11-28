@@ -2,7 +2,7 @@
 import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import { SITE } from "@/config.ts";
-import { localeFromPath, localizedPath } from "@/i18n";
+import { DEFAULT_LOCALE, SECONDARY_PREFIX, localeFromPath, localizedPath } from "@/i18n";
 import { ui } from "@/i18n/ui";
 
 type Props = { currentTitle?: string };
@@ -10,6 +10,7 @@ const { currentTitle } = Astro.props;
 
 const locale = localeFromPath(Astro.url.pathname);
 const t = ui(locale);
+const isSecondary = locale !== DEFAULT_LOCALE;
 ---
 
 {
@@ -19,6 +20,8 @@ const t = ui(locale);
         <a
           id="back-button"
           href={localizedPath("/", locale)}
+          data-secondary-prefix={SECONDARY_PREFIX}
+          data-is-secondary={isSecondary ? "true" : "false"}
           class="back-btn group border-border/30 bg-muted/10 hover:border-accent/40 hover:bg-accent/5 hover:text-accent hover:shadow-accent/10 inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:shadow-sm"
         >
           <IconChevronLeft class="size-4 transition-transform duration-200 group-hover:-translate-x-0.5 rtl:rotate-180 rtl:group-hover:translate-x-0.5" />
@@ -44,11 +47,20 @@ const t = ui(locale);
 
   onAstroPage(() => {
     const backButton = document.querySelector<HTMLAnchorElement>("#back-button");
+    if (!backButton) return;
     const backUrl = internalBackPath(
       readStorage(() => sessionStorage, "backUrl"),
       location.origin,
     );
-    if (backUrl && backButton && /^\/en(?:\/|$)/.test(backUrl) === (document.documentElement.lang === "en")) {
+    if (!backUrl) return;
+
+    const base = (document.documentElement.dataset.baseUrl || "").replace(/\/+$/, "");
+    const relBack = base && backUrl.startsWith(`${base}/`) ? backUrl.slice(base.length) : backUrl;
+    const prefix = backButton.dataset.secondaryPrefix || "zh";
+    const backIsSecondary = new RegExp(`^/${prefix}(?:/|$)`).test(relBack);
+    const currentIsSecondary = backButton.dataset.isSecondary === "true";
+
+    if (backIsSecondary === currentIsSecondary) {
       backButton.href = backUrl;
     }
   });

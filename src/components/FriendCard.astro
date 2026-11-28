@@ -33,7 +33,7 @@ const toneIndex = [...name].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % 6;
   href={url}
   target="_blank"
   rel="noopener noreferrer"
-  aria-label={`访问 ${name}`}
+  aria-label={`Visit ${name}`}
   style={`--i:${index}`}
 >
   <div class="fc-back" aria-hidden="true">
@@ -55,7 +55,7 @@ const toneIndex = [...name].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % 6;
       <p class="fc-desc">{description}</p>
       {
         tags.length > 0 && (
-          <div class="fc-tag-row" aria-label="站点标签">
+          <div class="fc-tag-row" aria-label="Site topics">
             {tags.slice(0, 3).map((tag) => (
               <span class="fc-tag">{tag}</span>
             ))}

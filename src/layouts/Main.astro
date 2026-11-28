@@ -1,6 +1,7 @@
 ---
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import { SITE } from "@/config.ts";
+import { withBase } from "@/utils/url";
 
 type StringTitle = { pageTitle: string };
 type ArrayTitle = { pageTitle: [string, string]; titleTransition: string };
@@ -9,7 +10,7 @@ type Props = (StringTitle | ArrayTitle) & { pageDesc?: string };
 
 const { props } = Astro;
 
-const backUrl = SITE.showBackButton ? Astro.url.pathname : "/";
+const backUrl = SITE.showBackButton ? Astro.url.pathname : withBase("/");
 ---
 
 <Breadcrumb />

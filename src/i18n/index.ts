@@ -1,44 +1,90 @@
-/** Chinese URLs are the default edition; only English routes receive a prefix. */
-export type Locale = "zh-CN" | "en";
-export const LOCALES = ["zh-CN", "en"] as const satisfies readonly Locale[];
+import { SITE, type SiteLocale } from "../config.ts";
+import { stripBase, withBase } from "../utils/url.ts";
+
+export type Locale = SiteLocale;
+export const LOCALES = ["en", "zh-CN"] as const satisfies readonly Locale[];
+export const DEFAULT_LOCALE: Locale = SITE.i18n.defaultLocale;
+export const SECONDARY_LOCALE: Locale = DEFAULT_LOCALE === "en" ? "zh-CN" : "en";
+export const SECONDARY_PREFIX = SECONDARY_LOCALE === "en" ? "en" : "zh";
+export const BILINGUAL_ENABLED = SITE.i18n.bilingual;
+
 export type LanguagePaths = Partial<Record<Locale, string>>;
 
-export const englishDescription = "A personal blog about Cybersecurity, Large Language Models (LLMs), and learning.";
+export function defaultDescriptionForLocale(locale: Locale): string {
+  return locale === "zh-CN" ? SITE.descZh : SITE.desc;
+}
+
+const SECONDARY_ROUTE_RE = new RegExp(`^/${SECONDARY_PREFIX}(?:/|$)`);
+const STRIP_SECONDARY_RE = new RegExp(`^/${SECONDARY_PREFIX}(?=/|$)`);
 
 export function localeFromPath(pathname: string): Locale {
-  return /^\/en(?:\/|$)/.test(pathname) ? "en" : "zh-CN";
+  if (!BILINGUAL_ENABLED) return DEFAULT_LOCALE;
+  const clean = stripBase(pathname);
+  return SECONDARY_ROUTE_RE.test(clean) ? SECONDARY_LOCALE : DEFAULT_LOCALE;
 }
 
 export function stripLocalePrefix(pathname: string): string {
-  const normalized = pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
-  return normalized.replace(/^\/en(?=\/|$)/, "") || "/";
+  const clean = stripBase(pathname);
+  const normalized = clean.endsWith("/") && clean !== "/" ? clean.slice(0, -1) : clean;
+  if (!BILINGUAL_ENABLED) return normalized || "/";
+  return normalized.replace(STRIP_SECONDARY_RE, "") || "/";
 }
 
-export function localizedPath(path: string, locale: Locale): string {
+export function localizedPath(path: string, locale: Locale = DEFAULT_LOCALE): string {
   const normalized = path === "/" ? "/" : `/${path.replace(/^\/+|\/+$/g, "")}/`;
-  return locale === "en" ? `/en${normalized}` : normalized;
+  if (BILINGUAL_ENABLED && locale === SECONDARY_LOCALE) {
+    return withBase(normalized === "/" ? `/${SECONDARY_PREFIX}/` : `/${SECONDARY_PREFIX}${normalized}`);
+  }
+  return withBase(normalized);
 }
 
 export function isEntryLocale(data: { lang?: string }, locale: Locale): boolean {
-  return (data.lang ?? "zh-CN") === locale;
+  return (data.lang ?? DEFAULT_LOCALE) === locale;
 }
 
-/** Only these section pages have real counterparts, not arbitrary /en mirrors. */
+/** Only active bilingual section pages receive alternate links. */
 export function sectionAlternates(pathname: string): LanguagePaths {
-  const path = pathname === "/" ? "/" : `${pathname.replace(/\/+$/, "")}/`;
-  if (["/", "/about/", "/en/", "/en/about/"].includes(path)) return { "zh-CN": "/", en: "/en/" };
-  for (const section of ["blog", "notes", "archives", "search"]) {
-    if (path === `/${section}/` || path === `/en/${section}/`)
-      return { "zh-CN": `/${section}/`, en: `/en/${section}/` };
+  if (!BILINGUAL_ENABLED) return {};
+
+  const stripped = stripLocalePrefix(pathname);
+  const sectionPath = stripped === "/" ? "/" : `${stripped}/`;
+
+  if (sectionPath === "/") {
+    return {
+      [DEFAULT_LOCALE]: localizedPath("/", DEFAULT_LOCALE),
+      [SECONDARY_LOCALE]: localizedPath("/", SECONDARY_LOCALE),
+    };
   }
+
+  const enabledSections = [
+    "blog",
+    ...(SITE.features.notes ? ["notes"] : []),
+    ...(SITE.features.archives ? ["archives"] : []),
+    ...(SITE.features.search ? ["search"] : []),
+  ];
+
+  for (const section of enabledSections) {
+    if (sectionPath === `/${section}/`) {
+      return {
+        [DEFAULT_LOCALE]: localizedPath(`/${section}/`, DEFAULT_LOCALE),
+        [SECONDARY_LOCALE]: localizedPath(`/${section}/`, SECONDARY_LOCALE),
+      };
+    }
+  }
+
   return {};
 }
 
 export function switchDestination(pathname: string, paths: LanguagePaths): string {
-  const target = localeFromPath(pathname) === "en" ? "zh-CN" : "en";
+  const current = localeFromPath(pathname);
+  const target = current === DEFAULT_LOCALE ? SECONDARY_LOCALE : DEFAULT_LOCALE;
   if (paths[target]) return paths[target];
-  if (/^\/(?:en\/)?blog(?:\/|$)/.test(pathname)) return localizedPath("/blog/", target);
-  if (/^\/(?:en\/)?notes(?:\/|$)/.test(pathname)) return localizedPath("/notes/", target);
+
+  const section = stripLocalePrefix(pathname);
+  if (section === "/blog" || section.startsWith("/blog/")) return localizedPath("/blog/", target);
+  if ((section === "/notes" || section.startsWith("/notes/")) && SITE.features.notes) {
+    return localizedPath("/notes/", target);
+  }
   return localizedPath("/", target);
 }
 
@@ -47,10 +93,11 @@ export function entryAlternates(
   current: { lang?: string; translationKey?: string; path: string },
   entries: { lang?: string; translationKey?: string; path: string }[],
 ): LanguagePaths {
-  const locale = current.lang === "en" ? "en" : "zh-CN";
+  const locale: Locale = current.lang === "zh-CN" || current.lang === "en" ? current.lang : DEFAULT_LOCALE;
   const paths: LanguagePaths = { [locale]: current.path };
-  if (!current.translationKey) return paths;
-  const other = locale === "en" ? "zh-CN" : "en";
+  if (!BILINGUAL_ENABLED || !current.translationKey) return paths;
+
+  const other: Locale = locale === "en" ? "zh-CN" : "en";
   const matches = entries.filter(
     (entry) => entry.translationKey === current.translationKey && isEntryLocale(entry, other),
   );

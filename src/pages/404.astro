@@ -4,9 +4,13 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+
+const t = ui(DEFAULT_LOCALE);
 ---
 
-<Layout title={`404 页面不存在 | ${SITE.title}`} noindex={true}>
+<Layout title={`404 | ${SITE.title}`} noindex={true}>
   <Header />
 
   <main id="main-content" class="app-layout flex flex-1 items-center justify-center py-14">
@@ -38,39 +42,22 @@ import { SITE } from "@/config.ts";
           <path d="M88 30L90 35L95 37L90 39L88 44L86 39L81 37L86 35Z" fill="currentColor"></path>
         </svg>
       </div>
-      <p class="font-cartograph text-accent mb-2 text-xs font-semibold tracking-widest uppercase">
-        SIGNAL LOST / HTTP 404
-      </p>
-      <h1 id="not-found-title" class="text-foreground font-serif text-6xl font-bold tracking-tight sm:text-7xl">404</h1>
-      <p class="text-foreground mt-3 text-lg font-semibold sm:text-xl">页面偏离了轨道</p>
-      <p class="text-muted-foreground mt-2 text-sm leading-relaxed">
-        你访问的地址可能已被移动、归档，或者暂时不在此处。
-      </p>
-      <div class="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+      <p class="font-cartograph text-accent m-0 text-xs font-semibold tracking-[0.18em] uppercase">ERROR / 404</p>
+      <h1 id="not-found-title" class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{t.notFoundTitle}</h1>
+      <p class="text-muted-foreground mt-3 text-sm leading-relaxed sm:text-base">{t.notFoundLead}</p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
         <LinkButton
-          href="/"
-          class="bg-accent text-background hover:bg-accent/90 hover:!text-background rounded-lg px-4 py-2 text-sm font-semibold shadow-xs transition-all duration-150 hover:-translate-y-0.5"
+          href={localizedPath("/", DEFAULT_LOCALE)}
+          class="bg-accent text-surface inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
         >
-          返回首页
+          {t.backHome}
         </LinkButton>
         <LinkButton
-          href="/blog/"
-          class="border-border-subtle bg-surface-subtle hover:border-accent/40 hover:text-accent rounded-lg border px-4 py-2 text-sm font-medium transition-colors duration-150"
+          href={localizedPath("/blog/", DEFAULT_LOCALE)}
+          class="border-border-subtle bg-surface-subtle hover:border-accent/40 hover:text-accent inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-colors"
         >
-          浏览文章
+          {t.browsePosts}
         </LinkButton>
-        <button
-          type="button"
-          data-search-trigger
-          class="border-border-subtle bg-surface-subtle hover:border-accent/40 hover:text-accent inline-flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors duration-150"
-        >
-          <span>站内搜索</span>
-          <kbd
-            class="font-cartograph border-border-subtle bg-surface text-muted-foreground rounded border px-1.5 py-0.5 text-[11px] leading-none"
-          >
-            ⌘K
-          </kbd>
-        </button>
       </div>
     </section>
   </main>

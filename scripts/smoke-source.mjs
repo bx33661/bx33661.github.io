@@ -53,7 +53,7 @@ requireFile(path.join(repoRoot, "src/pages/tags/index.astro"));
 requireFile(path.join(repoRoot, "src/pages/tags/[tag].astro"));
 requireFile(path.join(repoRoot, "src/data/gallery.ts"));
 requireFile(path.join(repoRoot, "public/sw.js"));
-requireFile(path.join(repoRoot, "public/site.webmanifest"));
+requireFile(path.join(repoRoot, "src/pages/site.webmanifest.ts"));
 requireFile(path.join(repoRoot, "astro.config.ts"));
 
 assertHasText(
@@ -69,7 +69,7 @@ assertHasText(
 assertHasText(path.join(repoRoot, "public/_headers"), /giscus\.app/, "_headers CSP missing giscus.app allowlist");
 assertHasText(
   path.join(repoRoot, "src/layouts/Layout.astro"),
-  /frame-src[^"]*giscus\.app/,
+  /frame-src \$\{frameSources\}[\s\S]*giscus\.app|giscus\.app[\s\S]*frame-src/,
   "Layout CSP missing frame-src for giscus.app",
 );
 
@@ -93,8 +93,13 @@ assertHasText(
   "academic project-to-article references missing",
 );
 assertHasText(
+  path.join(repoRoot, "src/config.ts"),
+  /the field of Computer Science/,
+  "homepage config missing approved focus text",
+);
+assertHasText(
   path.join(repoRoot, "src/components/AcademicHome.astro"),
-  /the field of Computer Science[\s\S]*focus-section/,
+  /focus-section/,
   "personal homepage missing focus section",
 );
 assertNoText(

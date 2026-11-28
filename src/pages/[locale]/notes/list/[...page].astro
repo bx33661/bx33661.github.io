@@ -1,0 +1,19 @@
+---
+import type { GetStaticPaths } from "astro";
+import NotesList from "@/components/NotesList.astro";
+import { SITE } from "@/config.ts";
+import { BILINGUAL_ENABLED, SECONDARY_LOCALE, SECONDARY_PREFIX } from "@/i18n";
+import { NOTES_PAGE_SIZE, getAllNotesWithSlugs } from "@/utils/notes";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  if (!BILINGUAL_ENABLED || !SITE.features.notes) return [];
+  return paginate(await getAllNotesWithSlugs(SECONDARY_LOCALE), {
+    params: { locale: SECONDARY_PREFIX },
+    pageSize: NOTES_PAGE_SIZE,
+  });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<NotesList {page} />

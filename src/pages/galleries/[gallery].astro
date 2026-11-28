@@ -8,9 +8,12 @@ import GalleryLightbox from "@/components/GalleryLightbox.astro";
 import Header from "@/components/Header.astro";
 import { SITE } from "@/config.ts";
 import { getGalleryFolderImages, getPublishedGalleries } from "@/data/gallery";
+import { DEFAULT_LOCALE } from "@/i18n";
+import { ui } from "@/i18n/ui";
 import Layout from "@/layouts/Layout.astro";
 
 export async function getStaticPaths() {
+  if (!SITE.features.galleries) return [];
   const galleries = await getPublishedGalleries();
   return galleries.map(({ slug, gallery }) => ({
     params: { gallery: slug },
@@ -25,10 +28,11 @@ interface Props {
 const { gallery } = Astro.props;
 const slug = Astro.params.gallery ?? "";
 const images = getGalleryFolderImages(slug, gallery.data.title);
+const t = ui(DEFAULT_LOCALE);
 ---
 
 <Layout
-  title={`${gallery.data.title} | 画廊 | ${SITE.title}`}
+  title={`${gallery.data.title} | ${t.galleries} | ${SITE.title}`}
   description={gallery.data.description}
   pubDatetime={gallery.data.pubDatetime}
   schemaType="CollectionPage"
@@ -46,7 +50,7 @@ const images = getGalleryFolderImages(slug, gallery.data.title);
       <div class="text-muted-foreground mt-4 flex flex-wrap items-center gap-3 text-xs sm:text-sm">
         <Datetime pubDatetime={gallery.data.pubDatetime} />
         <span class="border-border-subtle bg-surface-subtle font-cartograph rounded-full border px-3 py-0.5 text-xs">
-          {images.length} 张图片
+          {t.galleryCount(images.length)}
         </span>
       </div>
     </section>
@@ -63,7 +67,7 @@ const images = getGalleryFolderImages(slug, gallery.data.title);
                 data-gallery-target="gallery-lightbox"
                 data-src={image.src.src}
                 data-alt={image.alt}
-                aria-label={`查看第 ${index + 1} 张图片`}
+                aria-label={t.viewPhotoLabel(image.alt)}
               >
                 <Image
                   src={image.src}
@@ -82,13 +86,13 @@ const images = getGalleryFolderImages(slug, gallery.data.title);
         </ul>
       ) : (
         <p class="border-border-subtle bg-surface/75 text-muted-foreground mt-8 rounded-xl border p-5">
-          这个图集暂时还没有图片。
+          {t.galleryEmpty}
         </p>
       )
     }
   </main>
 
-  <GalleryLightbox id="gallery-lightbox" mode="wrap" label="图片查看器" />
+  <GalleryLightbox id="gallery-lightbox" mode="wrap" label="Image viewer" />
   <Footer />
 </Layout>
 

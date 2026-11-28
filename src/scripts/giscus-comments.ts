@@ -17,7 +17,7 @@ function initGiscusComments(signal: AbortSignal) {
   const { repo, repoId, category, categoryId } = host.dataset;
   if (!repo || !repoId || !category || !categoryId) return;
 
-  const storageKey = `bx:giscus:return:${window.location.pathname}`;
+  const storageKey = `orbit:giscus:return:${window.location.pathname}`;
   let lastInteractionAt = 0;
 
   const markInteraction = () => {
@@ -66,7 +66,7 @@ function initGiscusComments(signal: AbortSignal) {
 
   const syncTheme = () => {
     const iframe = host.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
-    if (!iframe?.contentWindow || iframe.dataset.bxGiscusLoaded !== "true") return;
+    if (!iframe?.contentWindow || iframe.dataset.orbitGiscusLoaded !== "true") return;
 
     iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: getCurrentTheme() } } }, "https://giscus.app");
   };
@@ -74,16 +74,16 @@ function initGiscusComments(signal: AbortSignal) {
   const bindFrameLoad = () => {
     const frame = host.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
     if (!frame) return false;
-    if (frame.dataset.bxGiscusBound === "true") return true;
+    if (frame.dataset.orbitGiscusBound === "true") return true;
 
-    frame.dataset.bxGiscusBound = "true";
+    frame.dataset.orbitGiscusBound = "true";
     for (const evt of ["mouseenter", "pointerdown", "focus"] as const) {
       frame.addEventListener(evt, markInteraction, { signal });
     }
     frame.addEventListener(
       "load",
       () => {
-        frame.dataset.bxGiscusLoaded = "true";
+        frame.dataset.orbitGiscusLoaded = "true";
         syncTheme();
       },
       { signal },
@@ -109,7 +109,7 @@ function initGiscusComments(signal: AbortSignal) {
     "data-emit-metadata": host.dataset.emitMetadata ?? "0",
     "data-input-position": host.dataset.inputPosition ?? "top",
     "data-theme": getCurrentTheme(),
-    "data-lang": host.dataset.lang ?? "zh-CN",
+    "data-lang": host.dataset.lang ?? "en",
     "data-loading": host.dataset.loading ?? "lazy",
   };
   for (const [name, value] of Object.entries(giscusAttrs)) {
@@ -127,7 +127,7 @@ function initGiscusComments(signal: AbortSignal) {
     signal.addEventListener("abort", () => observer.disconnect(), { once: true });
   }
 
-  window.addEventListener("bx-theme-change", syncTheme, { signal });
+  window.addEventListener("orbit-theme-change", syncTheme, { signal });
   window.addEventListener("pagehide", persistReturnPosition, { signal });
   document.addEventListener(
     "visibilitychange",

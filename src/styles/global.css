@@ -5,8 +5,8 @@
 
 :root,
 html[data-theme="light"] {
-  --font-sans: var(--font-wotfard-native), "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-cartograph: var(--font-cartograph-native), ui-monospace, monospace;
+  --font-sans: var(--font-sans-native), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --font-cartograph: var(--font-mono-native), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-sriracha: Georgia, serif;
   color-scheme: light;
   --background: #f2f5ec;
@@ -38,7 +38,7 @@ html[data-theme="dark"] {
 @theme inline {
   --font-app: var(--font-sans);
   --font-sriracha: Georgia, serif;
-  --font-cartograph: var(--font-cartograph-native), ui-monospace, monospace;
+  --font-cartograph: var(--font-mono-native), ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted-foreground: var(--muted-foreground);

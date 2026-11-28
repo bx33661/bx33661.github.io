@@ -22,9 +22,17 @@ export function formatSiteDate(date: Date, locale: Locale | string, timeZone: st
   }).format(date);
 }
 
-/** Format a Date in Datetime display style (`22 Mar, 2025`) respecting timezone. */
-export function formatArticleDatetime(date: Date | string, timeZone: string = SITE.timezone): string {
+/** Format a Date in Datetime display style (`22 Mar, 2025` / `2025年3月22日`) respecting timezone & locale. */
+export function formatArticleDatetime(
+  date: Date | string,
+  timeZone: string = SITE.timezone,
+  locale: Locale | string = SITE.i18n.defaultLocale,
+): string {
   const value = date instanceof Date ? date : new Date(date);
+  if (locale === "zh-CN") {
+    const parts = getSiteDateParts(value, timeZone);
+    return `${parts.year}年${parts.month + 1}月${parts.day}日`;
+  }
   const parts = getDateFormatter("en-US", timeZone, {
     day: "numeric",
     month: "short",

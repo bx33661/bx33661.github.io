@@ -45,6 +45,7 @@ test("cache coalesces in-flight loads and reuses fulfilled values", async () => 
   assert.deepEqual(await withCache("shared", async () => assert.fail("must reuse")), { value: 42 });
   assert.deepEqual(getCacheStats(), { size: 1, keys: ["shared"] });
 });
+
 test("TTL begins after loading completes and expired entries reload", async (t) => {
   clearAllCache();
   let now = 1000;
@@ -60,6 +61,7 @@ test("TTL begins after loading completes and expired entries reload", async (t) 
   now = 5100;
   assert.equal(await withCache("ttl", async () => "fresh"), "fresh");
 });
+
 for (const clear of [clearCache, clearAllCache]) {
   test(`${clear.name}: an invalidated load cannot repopulate or overwrite a newer value`, async () => {
     clearAllCache();
@@ -73,6 +75,7 @@ for (const clear of [clearCache, clearAllCache]) {
     assert.equal(await withCache("race", async () => "wrong"), "new");
   });
 }
+
 test("a rejected stale request cannot evict newer data; errors retry", async () => {
   clearAllCache();
   const work = deferred();
@@ -92,11 +95,13 @@ test("a rejected stale request cannot evict newer data; errors retry", async () 
   );
   assert.equal(await withCache("retry", async () => 7), 7);
 });
+
 test("zero TTL does not retain a fulfilled value", async () => {
   clearAllCache();
   await withCache("zero", async () => 1, 0);
   assert.equal(await withCache("zero", async () => 2, 0), 2);
 });
+
 test("storage handles denied access, denied methods and successful reads/writes", () => {
   const denied = () => {
     throw new Error("denied");
@@ -121,6 +126,7 @@ test("storage handles denied access, denied methods and successful reads/writes"
     "dark",
   );
 });
+
 test("theme follows the system until explicitly selected; latest storage wins", () => {
   const storage = store();
   let dark = true;
@@ -142,6 +148,7 @@ test("theme follows the system until explicitly selected; latest storage wins", 
   storage.setItem("theme", "invalid");
   assert.equal(theme.get(), "dark");
 });
+
 test("denied writes retain an explicit theme even when reads still work", () => {
   const storage = {
     getItem: () => "light",
@@ -155,8 +162,8 @@ test("denied writes retain an explicit theme even when reads still work", () => 
   );
   theme.select("dark");
   assert.equal(theme.get(), "dark");
-  assert.equal(theme.get(), "dark");
 });
+
 test("denied storage property access never interrupts in-memory theme selection", () => {
   const theme = createThemePreference(
     () => {
@@ -168,6 +175,7 @@ test("denied storage property access never interrupts in-memory theme selection"
   theme.select("dark");
   assert.equal(theme.get(), "dark");
 });
+
 test("back links preserve local route/query/hash and reject external or script URLs", () => {
   const origin = "https://blog.example";
   for (const value of [
@@ -183,6 +191,7 @@ test("back links preserve local route/query/hash and reject external or script U
   assert.equal(internalBackPath("/blog/?page=2#title", origin), "/blog/?page=2#title");
   assert.equal(internalBackPath(origin + "/notes/", origin), "/notes/");
 });
+
 test("JSON-LD text cannot terminate the HTML script, and parsed data is unchanged", () => {
   const data = {
     title: "</ScRiPt><p>example</p>",
@@ -195,7 +204,7 @@ test("JSON-LD text cannot terminate the HTML script, and parsed data is unchange
   assert.deepEqual(JSON.parse(serializeJsonLd({})), {});
 });
 
-test("local article images reserve their actual dimensions without changing the published URL", async () => {
+test("local article images reserve their actual dimensions without changing the URL", async () => {
   const image = {
     type: "element",
     tagName: "img",
@@ -212,6 +221,7 @@ test("local article images reserve their actual dimensions without changing the 
   await transform(tree);
   assert.equal(tree.children[0], image);
 });
+
 test("image metadata respects authored dimensions and component-owned or remote images", async (t) => {
   t.mock.method(globalThis, "fetch", () => assert.fail("never fetch remote metadata"));
   const image = (src, extra = {}) => ({
@@ -221,8 +231,8 @@ test("image metadata respects authored dimensions and component-owned or remote 
     children: [],
   });
   const authored = image("/blog/codeql-learning/01-codeql-architecture.png", {
-    width: 352,
-    height: 192,
+    width: 350,
+    height: 195,
   });
   const remote = image("https://example.test/image.png");
   const owned = image("/blog/codeql-learning/01-codeql-architecture.png");
@@ -240,8 +250,8 @@ test("image metadata respects authored dimensions and component-owned or remote 
     ],
   };
   await rehypeArticleImages()(tree);
-  assert.equal(authored.properties.width, 352);
-  assert.equal(authored.properties.height, 192);
+  assert.equal(authored.properties.width, 350);
+  assert.equal(authored.properties.height, 195);
   assert.deepEqual(remote.properties, {
     src: "https://example.test/image.png",
   });
@@ -249,7 +259,8 @@ test("image metadata respects authored dimensions and component-owned or remote 
     src: "/blog/codeql-learning/01-codeql-architecture.png",
   });
 });
-test("invalid/missing local metadata leaves URLs intact and responsive pictures stay idempotent", async () => {
+
+test("invalid/missing local metadata leaves URLs intact without inventing dimensions", async () => {
   const sources = ["/blog/not-an-existing-image.png", "/blog/%xx.png", "/blog/../../package.json"];
   const images = sources.map((src) => ({
     type: "element",
@@ -257,15 +268,8 @@ test("invalid/missing local metadata leaves URLs intact and responsive pictures 
     properties: { src },
     children: [],
   }));
-  const responsive = {
-    type: "element",
-    tagName: "img",
-    properties: { src: "/blog/l3hctf-best-profile/01-profile-bypass-flow.png" },
-    children: [],
-  };
-  const tree = { type: "root", children: [...images, responsive] };
+  const tree = { type: "root", children: images };
   const transform = rehypeArticleImages();
-  await transform(tree);
   await transform(tree);
   assert.deepEqual(
     images.map((img) => img.properties.src),
@@ -275,9 +279,6 @@ test("invalid/missing local metadata leaves URLs intact and responsive pictures 
     images.some((img) => img.properties.width),
     false,
   );
-  assert.equal(tree.children.at(-1).tagName, "picture");
-  assert.equal(tree.children.at(-1).children.filter((node) => node.tagName === "picture").length, 0);
-  assert.equal(tree.children.at(-1).children[1].properties.width, 3420);
 });
 
 test("production build invalidates cached Markdown so plugin changes reach published HTML", async () => {

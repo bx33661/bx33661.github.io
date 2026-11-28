@@ -3,10 +3,12 @@ import satori from "satori";
 import { SITE } from "@/config.ts";
 import loadGoogleFonts from "../loadGoogleFont";
 import { getVisiblePostTags } from "../tagPath";
+import { resolveThemeAccent } from "../theme-presets.ts";
 
 const CARD_WIDTH = 1200;
 const CARD_HEIGHT = 630;
 const HOSTNAME = new URL(SITE.website).hostname;
+const THEME_ACCENT = resolveThemeAccent();
 
 type SatoriNode = Record<string, unknown>;
 
@@ -33,8 +35,7 @@ function renderOrbitalBackdrop(): SatoriNode[] {
           width: "620px",
           height: "620px",
           borderRadius: "100%",
-          background:
-            "radial-gradient(circle, rgba(120, 184, 255, 0.22) 0%, rgba(17, 88, 209, 0.08) 45%, transparent 72%)",
+          background: `radial-gradient(circle, ${THEME_ACCENT.ogGlow} 0%, rgba(17, 88, 209, 0.08) 45%, transparent 72%)`,
         },
       },
     },
@@ -72,7 +73,7 @@ function renderOrbitalBackdrop(): SatoriNode[] {
               cx: "230",
               cy: "230",
               r: "196",
-              stroke: "#78b8ff",
+              stroke: THEME_ACCENT.dark,
               strokeOpacity: "0.22",
               strokeWidth: "1.2",
               strokeDasharray: "2 10",
@@ -97,7 +98,7 @@ function renderOrbitalBackdrop(): SatoriNode[] {
               rx: "205",
               ry: "68",
               transform: "rotate(-28 230 230)",
-              stroke: "#78b8ff",
+              stroke: THEME_ACCENT.dark,
               strokeOpacity: "0.34",
               strokeWidth: "1.3",
             },
@@ -119,7 +120,7 @@ function renderOrbitalBackdrop(): SatoriNode[] {
             type: "path",
             props: {
               d: "M230 14V58M230 402V446M14 230H58M402 230H446",
-              stroke: "#78b8ff",
+              stroke: THEME_ACCENT.dark,
               strokeOpacity: "0.28",
               strokeWidth: "1.2",
             },
@@ -139,7 +140,7 @@ function renderOrbitalBackdrop(): SatoriNode[] {
           },
           {
             type: "circle",
-            props: { cx: "180", cy: "198", r: "4", fill: "#78b8ff" },
+            props: { cx: "180", cy: "198", r: "4", fill: THEME_ACCENT.dark },
           },
           {
             type: "circle",
@@ -147,13 +148,13 @@ function renderOrbitalBackdrop(): SatoriNode[] {
           },
           {
             type: "circle",
-            props: { cx: "368", cy: "202", r: "3.5", fill: "#78b8ff" },
+            props: { cx: "368", cy: "202", r: "3.5", fill: THEME_ACCENT.dark },
           },
           {
             type: "path",
             props: {
               d: "M318 126L322 138L334 142L322 146L318 158L314 146L302 142L314 138Z",
-              fill: "#78b8ff",
+              fill: THEME_ACCENT.dark,
             },
           },
         ],
@@ -183,7 +184,7 @@ function renderHostBadge(label: string): SatoriNode {
               width: "10px",
               height: "10px",
               borderRadius: "999px",
-              backgroundColor: "#78b8ff",
+              backgroundColor: THEME_ACCENT.dark,
             },
           },
         },
@@ -247,7 +248,7 @@ export async function ogImageForPost(post: CollectionEntry<"blog">): Promise<str
                     style: {
                       fontSize: 18,
                       fontWeight: 700,
-                      color: "#78b8ff",
+                      color: THEME_ACCENT.dark,
                       letterSpacing: "2.4px",
                     },
                     children: kicker,
@@ -329,7 +330,7 @@ export async function ogImageForPost(post: CollectionEntry<"blog">): Promise<str
                       width: "52px",
                       height: "3px",
                       borderRadius: "2px",
-                      backgroundColor: "#78b8ff",
+                      backgroundColor: THEME_ACCENT.dark,
                     },
                   },
                 },
@@ -393,7 +394,7 @@ export async function ogImageForSite(): Promise<string> {
                     style: {
                       fontSize: 18,
                       fontWeight: 700,
-                      color: "#78b8ff",
+                      color: THEME_ACCENT.dark,
                       letterSpacing: "2.4px",
                     },
                     children: kicker,
@@ -437,7 +438,7 @@ export async function ogImageForSite(): Promise<string> {
                 width: "72px",
                 height: "4px",
                 borderRadius: "2px",
-                backgroundColor: "#78b8ff",
+                backgroundColor: THEME_ACCENT.dark,
                 position: "relative",
               },
             },

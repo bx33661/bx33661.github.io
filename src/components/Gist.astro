@@ -1,12 +1,10 @@
 ---
-import { articleCopy } from "@/i18n/articles";
 import { localeFromPath } from "@/i18n";
 const locale = Astro.props.locale ?? localeFromPath(Astro.url.pathname);
-const t = (text: string) => articleCopy(locale, text);
 /**
- * Gist — 在文章中显示 GitHub Gist 代码片段的链接
+ * Gist — Display a GitHub Gist code snippet link inside Markdown/MDX posts.
  *
- * 使用方式:
+ * Usage:
  *   <Gist id="5672adaff13bc2bbae43f025faaebda2" />
  */
 
@@ -16,7 +14,7 @@ interface Props {
   title?: string;
 }
 
-const { id, title = t("完整代码") } = Astro.props;
+const { id, title = locale === "zh-CN" ? "完整代码" : "Full code" } = Astro.props;
 
 const gistUrl = `https://gist.github.com/${id}`;
 ---

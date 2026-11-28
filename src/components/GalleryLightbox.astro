@@ -2,6 +2,8 @@
 import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
 import IconX from "@/assets/icons/IconX.svg";
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
 
 interface Props {
   id: string;
@@ -10,10 +12,11 @@ interface Props {
 }
 
 const { id, mode, label } = Astro.props;
+const t = ui(localeFromPath(Astro.url.pathname));
 ---
 
 <dialog id={id} data-gallery-viewer={mode} class="gallery-lightbox" aria-label={label} aria-modal="true">
-  <button id={`${id}-close`} data-gallery-action="close" class="gallery-lightbox-close" type="button" aria-label="关闭">
+  <button id={`${id}-close`} data-gallery-action="close" class="gallery-lightbox-close" type="button" aria-label={t.close}>
     <IconX class="size-5" aria-hidden="true" />
   </button>
   <button
@@ -21,7 +24,7 @@ const { id, mode, label } = Astro.props;
     data-gallery-action="prev"
     class="gallery-lightbox-nav gallery-lightbox-prev"
     type="button"
-    aria-label="上一张"
+    aria-label={t.previousImage}
   >
     <IconChevronLeft class="size-5" aria-hidden="true" />
   </button>
@@ -35,7 +38,7 @@ const { id, mode, label } = Astro.props;
     data-gallery-action="next"
     class="gallery-lightbox-nav gallery-lightbox-next"
     type="button"
-    aria-label="下一张"
+    aria-label={t.nextImage}
   >
     <IconChevronRight class="size-5" aria-hidden="true" />
   </button>

@@ -30,15 +30,14 @@ const totalPosts = page.total;
 const pageData = page.data;
 const topicPosts = page.currentPage === 1 ? await getAllPosts(locale) : [];
 const topics = groupPostsByTag(topicPosts)
-  .filter(({ tag }) => tag !== "bx")
   .map(({ tag, tagName, posts }) => ({ tag, tagName, count: posts.length }))
-  .filter(({ count }) => count >= 4)
+  .filter(({ count }) => count >= SITE.topicMinPosts)
   .sort((a, b) => b.count - a.count || a.tagName.localeCompare(b.tagName, locale))
   .slice(0, 8);
 ---
 
 <Layout
-  title={`Blog | ${SITE.title}`}
+  title={`${t.posts} | ${SITE.title}`}
   description={t.blogDescription}
   noindex={page.total === 0 || page.currentPage > 1}
 >

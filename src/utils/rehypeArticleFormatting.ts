@@ -1,3 +1,4 @@
+import { SITE } from "../config.ts";
 import type { Element, Root } from "hast";
 
 const classes = (node: Element) => {
@@ -7,6 +8,13 @@ const classes = (node: Element) => {
 
 /** Server-rendered overflow regions; don't change KaTeX internals or MDX islands. */
 export function rehypeArticleFormatting() {
+  const isZh = SITE.i18n.defaultLocale === "zh-CN";
+  const labels = {
+    table: isZh ? "表格，可横向滚动" : "Table; scroll horizontally",
+    math: isZh ? "数学公式，可横向滚动" : "Math formula; scroll horizontally",
+    inlineMath: isZh ? "行内公式，可横向滚动" : "Inline formula; scroll horizontally",
+  };
+
   return (tree: Root) => {
     const visit = (node: Root | Element) => {
       node.children = node.children.map((child) => {
@@ -32,7 +40,7 @@ export function rehypeArticleFormatting() {
             className: [`article-${kind === "table" ? "table-scroll" : kind}`],
             tabIndex: 0,
             ...(inline ? {} : { role: "region" }),
-            ariaLabel: kind === "table" ? "表格，可横向滚动" : inline ? "行内公式，可横向滚动" : "数学公式，可横向滚动",
+            ariaLabel: kind === "table" ? labels.table : inline ? labels.inlineMath : labels.math,
           },
           children: [child],
         } satisfies Element;

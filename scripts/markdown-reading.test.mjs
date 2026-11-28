@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import fs from "node:fs/promises";
+import { SITE } from "../src/config.ts";
 import { articleMarkdown } from "../src/utils/articleMarkdown.ts";
 import { rehypeArticleFormatting } from "../src/utils/rehypeArticleFormatting.ts";
+
+const isZh = SITE.i18n.defaultLocale === "zh-CN";
 
 const shared = {
   shikiConfig: articleMarkdown.shikiConfig,
@@ -15,7 +18,7 @@ const fixture = await renderer.render(source);
 test("production Markdown pipeline renders accessible inline/display TeX, matrices and escaped literals", () => {
   assert.match(fixture.code, /class="article-inline-math"/);
   assert.match(fixture.code, /class="article-math-block"/);
-  assert.match(fixture.code, /<math xmlns="http:\/\/www.w3.org\/1998\/Math\/MathML"/);
+  assert.match(fixture.code, /<math xmlns="http:\/\/www\.w3\.org\/1998\/Math\/MathML"/);
   assert.match(fixture.code, /encoding="application\/x-tex"/);
   assert.match(fixture.code, /aria-hidden="true"/);
   assert.match(fixture.code, /\$99/);
@@ -63,26 +66,26 @@ test("fences retain Shiki themes, file labels, highlight and no-language text", 
   assert.match(fixture.code, /未指定语言的围栏代码/);
 });
 
-test("footnotes retain stable reference/backlinks and Chinese accessible labels", () => {
+test("footnotes retain stable reference/backlinks and accessible labels", () => {
   assert.match(fixture.code, /data-footnotes/);
-  assert.match(fixture.code, /id="footnote-label"[^>]*>注释/);
-  assert.match(fixture.code, /data-footnote-backref[^>]*aria-label="返回正文"/);
+  assert.match(fixture.code, new RegExp(`id="footnote-label"[^>]*>${isZh ? "注释" : "Footnotes"}`));
+  assert.match(
+    fixture.code,
+    new RegExp(`data-footnote-backref[^>]*aria-label="${isZh ? "返回正文" : "Back to content"}"`),
+  );
   assert.match(fixture.code, /href="#user-content-fn-note"/);
   assert.match(fixture.code, /href="#user-content-fnref-note"/);
 });
 
 test("callouts render five distinct labels without rewriting ordinary quotes", async () => {
-  for (const [kind, label] of Object.entries({
-    note: "说明",
-    tip: "提示",
-    important: "重要",
-    warning: "注意",
-    caution: "警告",
-  })) {
+  const expectedCallouts = isZh
+    ? { note: "说明", tip: "提示", important: "重要", warning: "注意", caution: "警告" }
+    : { note: "Note", tip: "Tip", important: "Important", warning: "Warning", caution: "Caution" };
+  for (const [kind, label] of Object.entries(expectedCallouts)) {
     assert.match(fixture.code, new RegExp(`data-callout="${kind}"`));
     assert.match(fixture.code, new RegExp(`class="article-callout-title">${label}`));
   }
-  const ordinary = await renderer.render("> 普通引用提到 [!NOTE] 但不是提示框。\n\n> [!UNKNOWN]\n> 原样保留");
+  const ordinary = await renderer.render("> Ordinary quote mentioning [!NOTE] inline.\n\n> [!UNKNOWN]\n> Preserved");
   assert.doesNotMatch(ordinary.code, /data-callout/);
   assert.match(ordinary.code, /\[!UNKNOWN\]/);
 });
@@ -136,7 +139,7 @@ test("the same production processor applies math, tables, alerts and footnotes t
     optimize: false,
   });
   const result = await mdx.process(
-    '## MDX\n\n行内 $x^2$。\n\n$$\n\\frac{1}{2}\n$$\n\n|A|B|\n|-|-|\n|1|2|\n\n> [!TIP]\n> MDX 提示\n\n正文[^a]\n\n[^a]: MDX 注释\n\n<div className="not-prose"><button>自有控件</button></div>',
+    '## MDX\n\nInline $x^2$.\n\n$$\n\\frac{1}{2}\n$$\n\n|A|B|\n|-|-|\n|1|2|\n\n> [!TIP]\n> MDX tip\n\nBody[^a]\n\n[^a]: MDX footnote\n\n<div className="not-prose"><button>Custom control</button></div>',
     "/format-fixture.mdx",
     {},
   );
@@ -146,7 +149,7 @@ test("the same production processor applies math, tables, alerts and footnotes t
     "article-table-scroll",
     "article-callout",
     "footnote-label",
-    "自有控件",
+    "Custom control",
   ])
     assert(result.code.includes(marker), marker);
 });

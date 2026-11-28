@@ -5,11 +5,13 @@ import { banner, c, panel, section, statusLine, table } from "./lib/cli-ui.mjs";
 import { walkMarkdownFiles } from "./lib/content-utils.mjs";
 
 const COMMAND_MAP = {
+  setup: ["scripts/setup.mjs"],
   dev: ["scripts/dev.mjs"],
   "dev:force": ["scripts/dev.mjs", "--force"],
   "dev:stop": ["scripts/dev.mjs", "stop"],
   "dev:status": ["scripts/dev.mjs", "status"],
   new: ["scripts/content-new.mjs"],
+  "clean:demo": ["scripts/clean-demo.mjs"],
   doctor: ["scripts/harness-doctor.mjs"],
   check: ["scripts/content-check.mjs"],
   template: ["scripts/template-check.mjs"],
@@ -22,7 +24,7 @@ const NPM_SCRIPT_MAP = {
   build: "build",
   format: "format",
   preview: "preview",
-  smoke: "smoke:source",
+  smoke: "smoke:dist",
 };
 
 function countEntries(dir) {
@@ -60,37 +62,38 @@ function printOverview() {
     `  ${c.dim("Node")} ${c.bold(process.version)}   ${c.dim("·")}   ${c.dim("Blog")} ${c.cyan(String(blogCount))}   ${c.dim("·")}   ${c.dim("Notes")} ${c.cyan(String(noteCount))}   ${c.dim("·")}   ${c.dim("Galleries")} ${c.cyan(String(galleryCount))}`,
   );
 
-  console.log(section("Development"));
+  console.log(section("Setup & Development"));
   console.log(
     table([
-      [c.cyan("npm run dev"), "启动本地开发服务器（智能处理重复实例与锁文件）"],
-      [c.cyan("npm run dev:force"), "强制替换已运行实例并启动开发服务器"],
-      [c.cyan("npm run dev:stop / status"), "停止或查看运行中的开发服务器"],
-      [c.cyan("npm run build / preview"), "生产构建 + Pagefind 全文索引 / 本地预览"],
+      [c.cyan("npm run setup"), "Interactive wizard to configure title, author, URL, and languages"],
+      [c.cyan("npm run dev"), "Start local dev server with lockfile & duplicate-process guard"],
+      [c.cyan("npm run dev:force / stop"), "Take over existing port or stop background dev server"],
+      [c.cyan("npm run build / preview"), "Build static dist/ + Pagefind index, or preview locally"],
     ]),
   );
 
   console.log(section("Authoring"));
   console.log(
     table([
-      [c.cyan("npm run content:new"), "新建文章或笔记草稿（不加参数进入交互向导）"],
-      [c.cyan("npm run content:check"), "校验 Frontmatter、slug 唯一性与本地图片"],
-      [c.cyan("npm run gallery:optimize"), "生成 AVIF / WebP / JPG 多尺寸画廊图片"],
+      [c.cyan("npm run content:new"), "Create a new blog post or note draft (interactive if no args)"],
+      [c.cyan("npm run content:check"), "Validate frontmatter, slug uniqueness, and local image paths"],
+      [c.cyan("npm run clean:demo"), "Remove starter demo posts, notes, and demo gallery assets"],
+      [c.cyan("npm run gallery:optimize"), "Generate responsive AVIF / WebP / JPG gallery renditions"],
     ]),
   );
 
   console.log(section("Verification & Template"));
   console.log(
     table([
-      [c.cyan("npm run harness:doctor"), "检查 Node 版本、依赖、工作区变更与预览端口"],
-      [c.cyan("npm run template:check"), "审计 Fork 模板个性化定制项（支持 --strict）"],
-      [c.cyan("npm run verify:quick"), "ESLint + astro check + 单元测试 + 源码与内容检查"],
-      [c.cyan("npm run verify:full"), "完整构建 + 产物校验 + 全站视觉与浏览器回归"],
+      [c.cyan("npm run harness:doctor"), "Check Node version, dependencies, worktree, and preview port"],
+      [c.cyan("npm run template:check"), "Audit placeholder defaults before deployment (--strict for CI)"],
+      [c.cyan("npm run verify:quick"), "ESLint + astro check + unit tests + content check"],
+      [c.cyan("npm run verify:full"), "Full quick checks + production build + dist smoke verification"],
     ]),
   );
 
   console.log("");
-  console.log(c.muted("  Quick dispatch: npm run cli -- <dev|new|doctor|check|verify|build|template> [...args]\n"));
+  console.log(c.muted("  Quick dispatch: npm run cli -- <setup|dev|new|doctor|check|verify|build|template> [...args]\n"));
 }
 
 async function main() {

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { test } from "node:test";
+import { ui } from "../src/i18n/ui.ts";
 
 test("article descriptions feed metadata and BlogPosting structured data", () => {
   const layout = fs.readFileSync("src/layouts/Layout.astro", "utf8");
@@ -21,7 +22,7 @@ test("note summaries are visible before article content and use the same metadat
 test("notes archive has a distinct description and localized paginated title", () => {
   const notes = fs.readFileSync("src/components/NotesList.astro", "utf8");
   assert.match(notes, /description=\{t\.notesArchiveDescription\}/);
-  assert.match(fs.readFileSync("src/i18n/ui.ts", "utf8"), /notesArchiveDescription: "BX 的技术笔记归档/);
+  assert.equal(ui("zh-CN").notesArchiveDescription, "BX 的技术笔记归档，按时间整理学习与工程实践记录。");
   assert.ok(!notes.includes("Notes List"));
   assert.match(notes, /page\.currentPage > 1/);
 });

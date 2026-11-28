@@ -120,18 +120,19 @@ test("route teardown releases events and animation frames; missing directory is 
   absent.cleanup();
 });
 
-test("home and friends mount their own scoped shader hosts, retaining the real directory", () => {
+test("home and friends mount their own scoped shader hosts, retaining the real directory", async () => {
   const network = fs.readFileSync(new URL("../src/components/FriendNetwork.astro", import.meta.url), "utf8");
   const home = fs.readFileSync(new URL("../src/components/AcademicHome.astro", import.meta.url), "utf8");
   const page = fs.readFileSync(new URL("../src/pages/friends.astro", import.meta.url), "utf8");
+  const { FRIEND_GROUPS } = await import("../src/config/friends.ts");
   assert.match(network, /mountStarMaps\("\.friends-main \[data-star-map\]"\)/);
   assert.match(home, /mountStarMaps\("\.academic-home \[data-star-map\]"\)/);
-  assert.match(network, /FRIEND_LINKS\.slice\(1, 3\)/);
-  assert.match(network, /HNUSEC_MEMBER_LINKS\.slice\(0, 2\)/);
-  assert.match(network, /ORGANIZATION_LINKS\.slice\(0, 2\)/);
-  assert.match(network, /href=\{friend.url\}/);
+  assert.match(network, /FRIEND_GROUPS\.flatMap/);
+  assert.match(network, /href=\{friend\.url\}/);
   assert.match(network, /rel="noopener noreferrer"/);
-  for (const group of ["friendCards", "hnusecCards", "organizationCards"])
-    assert.match(page, new RegExp(`${group}\\.map`));
-  for (const id of ["friend-blogs", "friend-hnusec", "friend-organizations"]) assert.ok(page.includes(`id="${id}"`));
+  assert.match(page, /groups\.map\(\(group\)/);
+  assert.deepEqual(
+    FRIEND_GROUPS.map((group) => group.id),
+    ["friend-blogs", "friend-hnusec", "friend-organizations"],
+  );
 });

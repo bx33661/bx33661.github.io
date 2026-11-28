@@ -1,8 +1,8 @@
 import { SITE } from "@/config.ts";
 
-const DEFAULT_AUTHOR_ALIASES = new Set(["bx", "bx33661"]);
+const DEFAULT_AUTHOR_ALIASES = new Set(SITE.authorAliases.map((alias) => alias.toLowerCase()));
 
-/** Normalize default author aliases to `SITE.author` while preserving distinct contributors. */
+/** Normalize configured author aliases to `SITE.author` while preserving distinct contributors. */
 export function resolveAuthor(authors?: readonly string[], fallback = SITE.author): string {
   const normalized = (authors ?? [])
     .map((name) => name.trim())

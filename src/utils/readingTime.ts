@@ -1,9 +1,4 @@
-const INTERACTIVE_MARKERS = [
-  "CyberGymFeature",
-  "TrustBoundarySimulator",
-  "MiniappAuditFeature",
-  "WifiSecurityDiagram",
-] as const;
+const INTERACTIVE_ISLAND_RE = /\bclient:(?:load|idle|visible|media|only)\b/;
 
 const CJK_CHAR_RE = /[\u3400-\u4dbf\u4e00-\u9fff]/g;
 const LATIN_WORD_RE = /[A-Za-z0-9_]+/g;
@@ -28,8 +23,8 @@ export function estimateReadingMinutes(body: string | undefined): number {
   return Math.max(1, Math.round(cjkCount / 320 + latinCount / 220));
 }
 
-/** True when a post uses one of the bespoke interactive diagrams/simulators. */
+/** True when a post embeds hydrated interactive MDX components. */
 export function isInteractivePost(body: string | undefined): boolean {
   if (!body) return false;
-  return INTERACTIVE_MARKERS.some((marker) => body.includes(marker));
+  return INTERACTIVE_ISLAND_RE.test(body);
 }

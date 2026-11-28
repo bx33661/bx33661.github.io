@@ -6,13 +6,14 @@ import { createDeterministicSlug } from "./lib/content-utils.mjs";
 
 const VALID_TYPES = new Set(["blog", "notes"]);
 
-function resolveDefaultAuthorId() {
+function resolveDefaultsFromConfig() {
   try {
     const configSource = fs.readFileSync(path.resolve("src/config.ts"), "utf8");
-    const match = configSource.match(/defaultAuthorId:\s*["']([^"']+)["']/);
-    return match?.[1] || "bx";
+    const authorId = configSource.match(/defaultAuthorId:\s*["']([^"']+)["']/)?.[1] || "orbit";
+    const defaultLocale = configSource.match(/DEFAULT_LOCALE(?::[^=]+)?\s*=\s*["']([^"']+)["']/)?.[1] || "en";
+    return { authorId, defaultLocale };
   } catch {
-    return "bx";
+    return { authorId: "orbit", defaultLocale: "en" };
   }
 }
 
@@ -80,7 +81,6 @@ function buildTemplate(type, { title, description, date, slug, tags, authorId, l
       ? "Write a concise summary for search and social preview."
       : "Write a concise summary for the note.";
   const safeDesc = escapeDoubleQuotes(description || defaultDesc);
-  const langLine = lang === "en" ? 'lang: "en"\n' : "";
 
   if (type === "blog") {
     return `---
@@ -93,13 +93,14 @@ authors:
   - "${escapeDoubleQuotes(authorId)}"
 draft: true
 slug: "${slug}"
-${langLine}---
+lang: "${lang}"
+---
 
-## Background
+## Table of contents
 
-## Key Points
+## Overview
 
-## Reproduction / Practice
+## Key Details
 
 ## Notes
 `;
@@ -109,14 +110,15 @@ ${langLine}---
 title: "${safeTitle}"
 description: "${safeDesc}"
 date: ${date}
-category: "learning"
+category: "engineering"
 tags:
 ${formatYamlTags(tags)}
 authors:
   - "${escapeDoubleQuotes(authorId)}"
 draft: true
 slug: "${slug}"
-${langLine}---
+lang: "${lang}"
+---
 
 ## Topic
 
@@ -126,7 +128,7 @@ ${langLine}---
 `;
 }
 
-async function promptInteractive(defaults) {
+async function promptInteractive(defaults, defaultLocale) {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   try {
     console.log(banner("Content Generator", "Interactive wizard for blog posts and notes"));
@@ -142,21 +144,31 @@ async function promptInteractive(defaults) {
     const suggestedSlug = createDeterministicSlug(title, type === "notes" ? "note" : "post", { datedFallback: true });
     const slug = await ask("URL slug", defaults.slug || suggestedSlug);
     const description = await ask("Description (40-180 chars)", defaults.description);
-    const tags = await ask("Tags (comma separated)", defaults.tags || (type === "notes" ? "notes" : "security"));
-    const lang = (await ask("Language [zh / en]", defaults.lang || "zh")).toLowerCase();
+    const tags = await ask("Tags (comma separated)", defaults.tags || (type === "notes" ? "notes" : "engineering"));
+    const lang = (await ask("Language [en / zh-CN]", defaults.lang || defaultLocale)).toLowerCase();
     const ext = (await ask("Format [md / mdx]", defaults.ext)).toLowerCase();
-    return { ...defaults, type, title, slug, description, tags, lang: lang === "en" ? "en" : "", ext };
+    return {
+      ...defaults,
+      type,
+      title,
+      slug,
+      description,
+      tags,
+      lang: lang === "zh" || lang === "zh-cn" ? "zh-CN" : "en",
+      ext,
+    };
   } finally {
     rl.close();
   }
 }
 
 async function main() {
+  const { authorId, defaultLocale } = resolveDefaultsFromConfig();
   let args = parseArgs(process.argv.slice(2));
   const isInteractive = !String(args.title || "").trim() && process.stdin.isTTY && process.stdout.isTTY;
 
   if (isInteractive) {
-    args = await promptInteractive(args);
+    args = await promptInteractive(args, defaultLocale);
   } else {
     console.log(banner("Content Generator", "Creating draft markdown scaffold"));
   }
@@ -170,7 +182,7 @@ async function main() {
   const title = String(args.title || "").trim();
   if (!title) {
     console.error(
-      statusLine("error", "Missing --title", 'Usage: npm run content:new -- --title "文章标题" [--type blog|notes]'),
+      statusLine("error", "Missing --title", 'Usage: npm run content:new -- --title "Post Title" [--type blog|notes]'),
     );
     process.exit(1);
   }
@@ -181,18 +193,18 @@ async function main() {
     process.exit(1);
   }
 
-  const lang = String(args.lang || "").toLowerCase();
-  if (lang && lang !== "zh" && lang !== "en") {
-    console.error(statusLine("error", "Invalid --lang", "Must be zh or en"));
+  const rawLang = String(args.lang || defaultLocale).toLowerCase();
+  const normalizedLang = rawLang === "zh" || rawLang === "zh-cn" ? "zh-CN" : rawLang === "en" ? "en" : "";
+  if (!normalizedLang) {
+    console.error(statusLine("error", "Invalid --lang", "Must be en or zh-CN"));
     process.exit(1);
   }
 
   const date = resolveDate(args.date);
   const slugPrefix = type === "notes" ? "note" : "post";
   const slug = createDeterministicSlug(String(args.slug || title), slugPrefix, { datedFallback: true });
-  const defaultTags = type === "notes" ? ["notes"] : ["security"];
+  const defaultTags = type === "notes" ? ["notes"] : ["engineering"];
   const tags = parseTagsList(args.tags, defaultTags);
-  const authorId = resolveDefaultAuthorId();
 
   const targetDir = type === "notes" ? path.resolve("src/data/notes") : path.resolve("src/content", type);
   fs.mkdirSync(targetDir, { recursive: true });
@@ -210,7 +222,7 @@ async function main() {
     slug,
     tags,
     authorId,
-    lang: lang === "en" ? "en" : "",
+    lang: normalizedLang,
   });
 
   fs.writeFileSync(targetPath, template, "utf8");
@@ -220,7 +232,7 @@ async function main() {
   console.log(
     panel(
       "Draft Scaffold Created",
-      [`File   ${relPath}`, `Slug   /${type}/${slug}/`, `Author ${authorId} (draft: true)`],
+      [`File   ${relPath}`, `Slug   /${type}/${slug}/`, `Author ${authorId} (lang: ${normalizedLang}, draft: true)`],
       "ok",
     ),
   );

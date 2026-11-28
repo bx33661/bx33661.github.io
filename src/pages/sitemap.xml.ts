@@ -1,17 +1,19 @@
 import type { APIContext } from "astro";
 import type { CollectionEntry } from "astro:content";
+import { SITE } from "@/config.ts";
 import { getPublishedGalleries } from "@/data/gallery";
-import { localizedPath, type Locale } from "@/i18n";
+import { BILINGUAL_ENABLED, DEFAULT_LOCALE, SECONDARY_LOCALE, localizedPath, type Locale } from "@/i18n";
 import { getAllNoteSlugs, getAllPostSlugs } from "@/lib/data-utils";
 import { getSiteBaseUrl, getSitemapLastmod, renderUrlEntry, xmlResponse, type SitemapUrl } from "@/utils/sitemap";
+import { withBase } from "@/utils/url";
 
 function mapPostUrls(
-  baseUrl: string,
+  origin: string,
   posts: Array<{ slug: string; post: CollectionEntry<"blog"> }>,
   locale: Locale,
 ): SitemapUrl[] {
   return posts.map(({ slug, post }) => ({
-    url: `${baseUrl}${localizedPath(`/blog/${encodeURIComponent(slug)}/`, locale)}`,
+    url: `${origin}${localizedPath(`/blog/${encodeURIComponent(slug)}/`, locale)}`,
     lastmod: getSitemapLastmod(post.data.pubDatetime, post.data.modDatetime),
     changefreq: "monthly",
     priority: "0.7",
@@ -19,12 +21,12 @@ function mapPostUrls(
 }
 
 function mapNoteUrls(
-  baseUrl: string,
+  origin: string,
   notes: Array<{ slug: string; note: CollectionEntry<"notes"> }>,
   locale: Locale,
 ): SitemapUrl[] {
   return notes.map(({ slug, note }) => ({
-    url: `${baseUrl}${localizedPath(`/notes/${encodeURIComponent(slug)}/`, locale)}`,
+    url: `${origin}${localizedPath(`/notes/${encodeURIComponent(slug)}/`, locale)}`,
     lastmod: note.data.date.toISOString(),
     changefreq: "monthly",
     priority: "0.6",
@@ -32,53 +34,72 @@ function mapNoteUrls(
 }
 
 export async function GET(context: APIContext) {
-  const [postSlugs, noteSlugs, galleries, englishPosts, englishNotes] = await Promise.all([
-    getAllPostSlugs(),
-    getAllNoteSlugs(),
-    getPublishedGalleries(),
-    getAllPostSlugs("en"),
-    getAllNoteSlugs("en"),
+  const [postSlugs, noteSlugs, galleries, secondaryPosts, secondaryNotes] = await Promise.all([
+    getAllPostSlugs(DEFAULT_LOCALE),
+    SITE.features.notes ? getAllNoteSlugs(DEFAULT_LOCALE) : Promise.resolve([]),
+    SITE.features.galleries ? getPublishedGalleries() : Promise.resolve([]),
+    BILINGUAL_ENABLED ? getAllPostSlugs(SECONDARY_LOCALE) : Promise.resolve([]),
+    BILINGUAL_ENABLED && SITE.features.notes ? getAllNoteSlugs(SECONDARY_LOCALE) : Promise.resolve([]),
   ]);
-  const baseUrl = getSiteBaseUrl(context.site);
+  const origin = new URL(getSiteBaseUrl(context.site)).origin;
 
-  // /blog/tags/* intentionally omitted — tags are UI filters (noindex), not SEO landing pages.
   const staticPages: SitemapUrl[] = [
-    { url: `${baseUrl}/`, changefreq: "daily", priority: "1.0" },
-    { url: `${baseUrl}/blog/`, changefreq: "daily", priority: "0.9" },
-    { url: `${baseUrl}/notes/`, changefreq: "weekly", priority: "0.8" },
-    { url: `${baseUrl}/galleries/`, changefreq: "weekly", priority: "0.8" },
-    { url: `${baseUrl}/archives/`, changefreq: "weekly", priority: "0.7" },
-    { url: `${baseUrl}/projects/`, changefreq: "monthly", priority: "0.7" },
-    { url: `${baseUrl}/friends/`, changefreq: "monthly", priority: "0.6" },
-    { url: `${baseUrl}/notes/list/`, changefreq: "weekly", priority: "0.6" },
+    { url: `${origin}${withBase("/")}`, changefreq: "daily", priority: "1.0" },
+    { url: `${origin}${withBase("/blog/")}`, changefreq: "daily", priority: "0.9" },
+    ...(SITE.features.notes
+      ? [
+          { url: `${origin}${withBase("/notes/")}`, changefreq: "weekly", priority: "0.8" },
+          { url: `${origin}${withBase("/notes/list/")}`, changefreq: "weekly", priority: "0.6" },
+        ]
+      : []),
+    ...(SITE.features.galleries
+      ? [{ url: `${origin}${withBase("/galleries/")}`, changefreq: "weekly", priority: "0.8" }]
+      : []),
+    ...(SITE.features.archives
+      ? [{ url: `${origin}${withBase("/archives/")}`, changefreq: "weekly", priority: "0.7" }]
+      : []),
+    ...(SITE.features.projects
+      ? [{ url: `${origin}${withBase("/projects/")}`, changefreq: "monthly", priority: "0.7" }]
+      : []),
+    ...(SITE.features.friends
+      ? [{ url: `${origin}${withBase("/friends/")}`, changefreq: "monthly", priority: "0.6" }]
+      : []),
   ];
 
   const galleryPages: SitemapUrl[] = galleries.map(({ slug, gallery }) => ({
-    url: `${baseUrl}/galleries/${encodeURIComponent(slug)}/`,
+    url: `${origin}${withBase(`/galleries/${encodeURIComponent(slug)}/`)}`,
     lastmod: getSitemapLastmod(gallery.data.pubDatetime),
     changefreq: "monthly",
     priority: "0.7",
   }));
 
-  // Empty English collection pages are noindex until real content exists.
-  const englishPages: SitemapUrl[] = [
-    "/en/",
-    ...(englishPosts.length ? ["/en/blog/", "/en/archives/"] : []),
-    ...(englishNotes.length ? ["/en/notes/", "/en/notes/list/"] : []),
-  ].map((path) => ({
-    url: `${baseUrl}${path}`,
-    changefreq: "weekly",
-    priority: "0.6",
-  }));
+  const secondaryPages: SitemapUrl[] = BILINGUAL_ENABLED
+    ? [
+        localizedPath("/", SECONDARY_LOCALE),
+        ...(secondaryPosts.length
+          ? [
+              localizedPath("/blog/", SECONDARY_LOCALE),
+              ...(SITE.features.archives ? [localizedPath("/archives/", SECONDARY_LOCALE)] : []),
+            ]
+          : []),
+        ...(secondaryNotes.length && SITE.features.notes
+          ? [localizedPath("/notes/", SECONDARY_LOCALE), localizedPath("/notes/list/", SECONDARY_LOCALE)]
+          : []),
+      ].map((path) => ({
+        url: `${origin}${path}`,
+        changefreq: "weekly",
+        priority: "0.6",
+      }))
+    : [];
 
   const allUrls: SitemapUrl[] = [
     ...staticPages,
     ...galleryPages,
-    ...mapPostUrls(baseUrl, postSlugs, "zh-CN"),
-    ...mapNoteUrls(baseUrl, noteSlugs, "zh-CN"),
-    ...englishPages,
-    ...mapPostUrls(baseUrl, englishPosts, "en"),
-    ...mapNoteUrls(baseUrl, englishNotes, "en"),
+    ...mapPostUrls(origin, postSlugs, DEFAULT_LOCALE),
+    ...mapNoteUrls(origin, noteSlugs, DEFAULT_LOCALE),
+    ...secondaryPages,
+    ...mapPostUrls(origin, secondaryPosts, SECONDARY_LOCALE),
+    ...mapNoteUrls(origin, secondaryNotes, SECONDARY_LOCALE),
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

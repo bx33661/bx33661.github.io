@@ -346,10 +346,10 @@ async function checkCancellationAndOnwardLinks(page, { base, prefix, articlePath
   }
 
   if (await page.locator("#menu-btn").isVisible()) {
-    await page.getByRole("button", { name: "Open menu", exact: true }).click();
-    await page.locator("#mobile-menu").getByRole("link", { name: "Posts", exact: true }).click();
+    await page.getByRole("button", { name: /^(Open menu|打开菜单)$/ }).click();
+    await page.locator("#mobile-menu").getByRole("link", { name: /^(Posts|文章)$/ }).click();
   } else {
-    await page.getByRole("link", { name: "Posts", exact: true }).click();
+    await page.getByRole("navigation", { name: /^(Primary navigation|主导航)$/ }).getByRole("link", { name: /^(Posts|文章)$/ }).click();
   }
   await page.waitForURL(`${base}/blog/`);
   assert.equal(await page.evaluate(() => window.__readingEntryAnimations.length), 0);

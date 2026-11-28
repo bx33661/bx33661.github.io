@@ -1,16 +1,18 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
+import { SITE } from "../src/config.ts";
 
 const home = fs.readFileSync(new URL("../src/components/AcademicHome.astro", import.meta.url), "utf8");
-const index = fs.readFileSync(new URL("../src/pages/index.astro", import.meta.url), "utf8");
-const text = home
-  .split("<style>")[0]
-  .replace(/<[^>]*>/g, " ")
-  .replace(/\s+/g, " ")
-  .trim();
+const copy = SITE.home.zh;
+const renderedIntro = [
+  `${copy.greetingPrefix}${copy.greetingHighlight}`,
+  copy.welcome,
+  `${copy.focusLeadPrefix}${copy.focusLeadStrong}${copy.focusLeadSuffix}`,
+  ...copy.introParagraphs,
+  `${copy.closing} ${copy.closingEmoji ?? "✦"}`,
+].join(" ");
 
-// Approved copy is a contract: a redesign must not summarize or invent biography.
 const paragraphs = [
   "Hey, I'm bx.",
   "Welcome to my blog!",
@@ -24,17 +26,18 @@ const paragraphs = [
 
 test("homepage preserves the entire approved introduction in order", () => {
   let position = 0;
+  const normalized = renderedIntro.replace(/\s+/g, " ").trim();
   for (const paragraph of paragraphs) {
-    // Inline elements may insert a space before punctuation.
-    const normalized = text.replace(/\s+([.,!])/g, "$1");
     const next = normalized.indexOf(paragraph, position);
     assert.ok(next >= position, `Missing or out-of-order copy: ${paragraph}`);
     position = next + paragraph.length;
   }
-  assert.match(home, /<main[^>]+lang="en"/);
+  assert.equal(copy.monographLang, "en");
+  assert.match(home, /<main[^>]+lang=\{monographLang\}/);
 });
 
 test("homepage removes personal education and resume details while keeping focus metadata", () => {
+  const combined = `${renderedIntro} ${home}`;
   for (const removed of [
     "Education",
     "Hainan University",
@@ -47,9 +50,9 @@ test("homepage removes personal education and resume details while keeping focus
     "education-title",
     "/schools/",
   ]) {
-    assert.ok(!home.includes(removed) && !text.includes(removed), `Unexpected education detail remains: ${removed}`);
+    assert.ok(!combined.includes(removed), `Unexpected education detail remains: ${removed}`);
   }
-  assert.doesNotMatch(text, /2023|2027|Zhang Boxiang|张博翔|Honors|Research interests|Selected work/);
+  assert.doesNotMatch(renderedIntro, /2023|2027|Zhang Boxiang|张博翔|Honors|Research interests|Selected work/);
   assert.doesNotMatch(home, /mailto:|research-proof|awards-list/);
   assert.equal((home.match(/<h1\b/g) ?? []).length, 1);
   assert.match(home, /aria-labelledby="focus-title"/);
@@ -58,7 +61,7 @@ test("homepage removes personal education and resume details while keeping focus
 test("homepage keeps existing reader entry routes and uses bx metadata", () => {
   assert.match(home, /localizedPath\("\/blog\/", locale\)/);
   assert.match(home, /localizedPath\("\/notes\/", locale\)/);
-  assert.match(home, /href=\{SITE.profile\}/);
-  assert.match(index, /title="bx · Cybersecurity, LLMs & Personal Notes"/);
-  assert.doesNotMatch(index, /Zhang Boxiang|张博翔/);
+  assert.match(home, /href=\{SITE\.profile\}/);
+  assert.equal(copy.pageTitle, "bx · Cybersecurity, LLMs & Personal Notes");
+  assert.doesNotMatch(copy.pageTitle, /Zhang Boxiang|张博翔/);
 });

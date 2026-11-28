@@ -1,140 +1,148 @@
 ---
 import { SITE } from "@/config.ts";
+import { SOCIALS } from "@/constants";
+import { DEFAULT_LOCALE, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import GithubHeatmap from "@/components/GithubHeatmap.astro";
+import IconRss from "@/assets/icons/IconRss.svg";
 import { PROJECTS } from "@/data/projects";
+import { withBase } from "@/utils/url";
 import "@/styles/projects.css";
 
-const handle = SITE.profile.replace(/\/$/, "").split("/").pop() ?? "bx33661";
+const isZh = DEFAULT_LOCALE === "zh-CN";
+const copy = isZh ? SITE.projectsPage.zh : SITE.projectsPage.en;
+const t = ui(DEFAULT_LOCALE);
+const handle = SITE.profile.replace(/\/$/, "").split("/").pop() || SITE.defaultAuthorId;
 ---
 
-<Layout title="项目" description="BX 维护的开源项目：Wireshark-MCP、pinwhy、WxLocated 与本站源码。">
+<Layout title={`${copy.title} | ${SITE.title}`} description={copy.description}>
   <Header />
 
   <main id="main-content" class="projects-main app-layout">
     <header class="pj-intro">
-      <img src={SITE.friendCard.avatar} alt={SITE.author} class="pj-avatar" width="96" height="96" />
+      <img src={withBase(SITE.friendCard.avatar)} alt={SITE.author} class="pj-avatar" width="96" height="96" />
       <div>
         <p class="pj-prompt" aria-hidden="true">&gt; ls ~/projects<span class="pj-caret">_</span></p>
         <h1 class="pj-title">{SITE.author} <span>@{handle}</span></h1>
-        <p class="pj-lead">Security researcher. Builder of small, sharp tools.</p>
-        <p class="pj-lead pj-lead-cn">围绕安全研究、AI Agent 与逆向分析，写一些自己每天都在用的工具。</p>
+        <p class="pj-lead">{copy.leadEn}</p>
+        <p class="pj-lead pj-lead-cn">{copy.leadSub}</p>
         <div class="pj-social">
-          <a href={SITE.profile} aria-label="GitHub" title="GitHub">
-            <svg viewBox="0 0 24 24" aria-hidden="true"
-              ><path
-                fill="currentColor"
-                d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.7 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"
-              ></path></svg
-            >
-          </a>
-          <a href={`mailto:${SITE.email}`} aria-label="Email" title="Email">
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"
-              ><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3.5 6.5 8.5 7 8.5-7"></path></svg
-            >
-          </a>
-          <a href="/rss.xml" aria-label="RSS" title="RSS">
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"
-              ><path d="M5 11a8 8 0 0 1 8 8M5 5a14 14 0 0 1 14 14"></path><circle
-                cx="6"
-                cy="18"
-                r="1.4"
-                fill="currentColor"></circle></svg
-            >
+          {
+            SOCIALS.map((social) => (
+              <a href={social.href} aria-label={social.name} title={social.linkTitle}>
+                <social.icon class="fill-transparent stroke-current stroke-[1.75]" />
+              </a>
+            ))
+          }
+          <a href={localizedPath("/rss.xml", DEFAULT_LOCALE)} aria-label={t.rssFeed} title={t.rssFeed}>
+            <IconRss class="fill-transparent stroke-current stroke-[1.75]" />
           </a>
         </div>
       </div>
     </header>
 
-    <section class="pj-section" aria-labelledby="pj-activity">
-      <h2 id="pj-activity" class="pj-eyebrow">Activity on GitHub</h2>
-      <GithubHeatmap profile={SITE.profile} />
-    </section>
+    {
+      SITE.features.githubHeatmap && (
+        <section class="pj-section" aria-labelledby="pj-activity">
+          <h2 id="pj-activity" class="pj-eyebrow">{t.activityOnGithub}</h2>
+          <GithubHeatmap profile={SITE.profile} />
+        </section>
+      )
+    }
 
     <section id="project-list" class="pj-section" aria-labelledby="pj-projects">
       <div class="pj-section-head">
         <div>
-          <h2 id="pj-projects" class="pj-eyebrow">Projects</h2>
-          <p class="pj-section-desc">The tools I spend most of my time building and maintaining.</p>
+          <h2 id="pj-projects" class="pj-eyebrow">{copy.title}</h2>
+          <p class="pj-section-desc">{copy.description}</p>
         </div>
-        <a class="pj-cta" href={SITE.profile}>All repositories <span aria-hidden="true">→</span></a>
+        <a class="pj-cta" href={SITE.profile}>{t.allRepositories} <span aria-hidden="true">→</span></a>
       </div>
 
-      <div class="pj-grid">
-        {
-          PROJECTS.map((project) => (
-            <article class="pj-card">
-              <a class="pj-card-link" href={project.homepage ?? project.repo} aria-label={`打开 ${project.name}`} />
-              <div class="pj-card-top">
-                <div class="pj-card-name">
-                  <img
-                    class="pj-logo"
-                    src={project.logo}
-                    alt=""
-                    width="40"
-                    height="40"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="pj-card-title">
-                    <h3>{project.name}</h3>
-                    <p class="pj-kind">{project.kind}</p>
+      {
+        PROJECTS.length > 0 ? (
+          <div class="pj-grid">
+            {PROJECTS.map((project) => (
+              <article class="pj-card">
+                <a class="pj-card-link" href={project.homepage ?? project.repo} aria-label={t.openProjectLabel(project.name)} />
+                <div class="pj-card-top">
+                  <div class="pj-card-name">
+                    <img
+                      class="pj-logo"
+                      src={withBase(project.logo)}
+                      alt=""
+                      width="40"
+                      height="40"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div class="pj-card-title">
+                      <h3>{project.name}</h3>
+                      <p class="pj-kind">{project.kind}</p>
+                    </div>
+                  </div>
+                  <svg class="pj-arrow" viewBox="0 0 16 16" aria-hidden="true">
+                    <path
+                      d="M5 11 11 5M6 5h5v5"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+                <p class="pj-summary">{project.summary}</p>
+                <p class="pj-desc">{project.description}</p>
+                <ul class="pj-topics" aria-label={t.topics}>
+                  {project.topics.map((topic) => (
+                    <li>{topic}</li>
+                  ))}
+                </ul>
+                <div class="pj-card-foot">
+                  <div class="pj-cmd">
+                    <code>
+                      <span aria-hidden="true">$ </span>
+                      {project.command}
+                    </code>
+                    <button
+                      type="button"
+                      class="pj-copy"
+                      data-copy={project.command}
+                      data-label-default={t.copyCmd}
+                      data-label-copied={t.copiedCmd}
+                      aria-label={t.copyCmdLabel(project.command)}
+                    >
+                      {t.copyCmd}
+                    </button>
+                  </div>
+                  <div class="pj-meta">
+                    <span class="pj-lang">
+                      <i style={`background:${project.languageColor}`} aria-hidden="true" />
+                      {project.language}
+                    </span>
+                    {project.license && <span>{project.license}</span>}
+                    <span>
+                      {t.updatedShort} <time datetime={project.updated}>{project.updated}</time>
+                    </span>
+                    <span class="pj-links">
+                      <a href={project.repo}>{t.repoLink}</a>
+                      {project.homepage && <a href={project.homepage}>{t.siteLink}</a>}
+                    </span>
                   </div>
                 </div>
-                <svg class="pj-arrow" viewBox="0 0 16 16" aria-hidden="true">
-                  <path
-                    d="M5 11 11 5M6 5h5v5"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-              <p class="pj-summary">{project.summary}</p>
-              <p class="pj-desc">{project.description}</p>
-              <ul class="pj-topics" aria-label="Topics">
-                {project.topics.map((topic) => (
-                  <li>{topic}</li>
-                ))}
-              </ul>
-              <div class="pj-card-foot">
-                <div class="pj-cmd">
-                  <code>
-                    <span aria-hidden="true">$ </span>
-                    {project.command}
-                  </code>
-                  <button
-                    type="button"
-                    class="pj-copy"
-                    data-copy={project.command}
-                    aria-label={`复制命令：${project.command}`}
-                  >
-                    copy
-                  </button>
-                </div>
-                <div class="pj-meta">
-                  <span class="pj-lang">
-                    <i style={`background:${project.languageColor}`} aria-hidden="true" />
-                    {project.language}
-                  </span>
-                  {project.license && <span>{project.license}</span>}
-                  <span>
-                    updated <time datetime={project.updated}>{project.updated}</time>
-                  </span>
-                  <span class="pj-links">
-                    <a href={project.repo}>repo</a>
-                    {project.homepage && <a href={project.homepage}>site</a>}
-                  </span>
-                </div>
-              </div>
-            </article>
-          ))
-        }
-      </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p class="border-border-subtle bg-surface/75 text-muted-foreground rounded-xl border p-6 text-sm">
+            {t.emptyProjects}
+          </p>
+        )
+      }
     </section>
   </main>
 
@@ -146,13 +154,15 @@ const handle = SITE.profile.replace(/\/$/, "").split("/").pop() ?? "bx33661";
     document.querySelectorAll<HTMLButtonElement>(".pj-copy[data-copy]").forEach((button) => {
       if (button.dataset.bound) return;
       button.dataset.bound = "true";
+      const defaultLabel = button.dataset.labelDefault || button.textContent?.trim() || "copy";
+      const copiedLabel = button.dataset.labelCopied || "copied";
       button.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(button.dataset.copy ?? "");
-          button.textContent = "copied";
+          button.textContent = copiedLabel;
           button.dataset.copied = "true";
           window.setTimeout(() => {
-            button.textContent = "copy";
+            button.textContent = defaultLabel;
             delete button.dataset.copied;
           }, 1600);
         } catch {

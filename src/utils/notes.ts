@@ -1,5 +1,5 @@
 import type { CollectionEntry } from "astro:content";
-import { isEntryLocale, type Locale } from "@/i18n";
+import { DEFAULT_LOCALE, isEntryLocale, type Locale } from "@/i18n";
 import { getAllNoteSlugs } from "@/lib/data-utils";
 
 export const NOTES_PAGE_SIZE = 10;
@@ -9,14 +9,14 @@ export type NoteWithSlug = {
   slug: string;
 };
 
-export async function getAllNotesWithSlugs(locale: Locale = "zh-CN"): Promise<NoteWithSlug[]> {
+export async function getAllNotesWithSlugs(locale: Locale = DEFAULT_LOCALE): Promise<NoteWithSlug[]> {
   const notes = await getAllNoteSlugs(locale);
   return notes.filter(({ note: { data } }) => isEntryLocale(data, locale));
 }
 
 export async function getAdjacentNotes(
   currentSlug: string,
-  locale: Locale = "zh-CN",
+  locale: Locale = DEFAULT_LOCALE,
 ): Promise<{ prev: NoteWithSlug | null; next: NoteWithSlug | null }> {
   const notes = await getAllNotesWithSlugs(locale);
   const currentIndex = notes.findIndex((item) => item.slug === currentSlug);

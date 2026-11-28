@@ -1,19 +1,17 @@
 import type { APIRoute } from "astro";
 import { SITE } from "@/config.ts";
+import { withBase } from "@/utils/url";
 
 export const GET: APIRoute = ({ site }) => {
-  const base = site ?? SITE.website;
+  const origin = new URL((site ?? SITE.website).toString()).origin;
   const sitemaps = ["sitemap-index.xml", "sitemap.xml", "image-sitemap.xml"].map(
-    (file) => `Sitemap: ${new URL(file, base).href}`,
+    (file) => `Sitemap: ${origin}${withBase(`/${file}`)}`,
   );
 
-  const body = `User-agent: Baiduspider
+  const offlinePath = withBase("/offline/");
+  const body = `User-agent: *
 Allow: /
-Disallow: /offline/
-
-User-agent: *
-Allow: /
-Disallow: /offline/
+Disallow: ${offlinePath}
 
 ${sitemaps.join("\n")}
 `;

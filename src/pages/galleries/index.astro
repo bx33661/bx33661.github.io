@@ -1,11 +1,15 @@
 ---
 import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE } from "@/i18n";
+import { ui } from "@/i18n/ui";
 import Header from "@/components/Header.astro";
 import ArtGallerySlider from "@/components/react/art-gallery-slider";
 import { buildGallerySliderImages, getPublishedGalleries } from "@/data/gallery";
 import Layout from "@/layouts/Layout.astro";
+import { withBase } from "@/utils/url";
 import "@/styles/art-gallery-slider.css";
 
+const t = ui(DEFAULT_LOCALE);
 const galleryImages = buildGallerySliderImages();
 const galleryLinks = (await getPublishedGalleries()).map(({ slug, gallery }) => ({
   slug,
@@ -13,18 +17,18 @@ const galleryLinks = (await getPublishedGalleries()).map(({ slug, gallery }) => 
 }));
 ---
 
-<Layout title={`画廊 | ${SITE.title}`} description="收录项目记录与日常瞬间的图像集合">
+<Layout title={`${t.galleries} | ${SITE.title}`} description={t.galleryDescription}>
   <div class="gallery-page-wrapper">
     <Header surface="dark" />
     <main id="main-content" class="gallery-fullscreen-container">
-      <h1 class="sr-only">画廊</h1>
-      <ArtGallerySlider images={galleryImages} client:load />
+      <h1 class="sr-only">{t.galleries}</h1>
+      <ArtGallerySlider images={galleryImages} locale={DEFAULT_LOCALE} client:load />
 
       {
         galleryLinks.length > 0 && (
-          <nav class="gallery-detail-links" aria-label="图集详情入口">
+          <nav class="gallery-detail-links" aria-label={t.galleries}>
             {galleryLinks.map((gallery) => (
-              <a class="gallery-detail-link" href={`/galleries/${gallery.slug}/`}>
+              <a class="gallery-detail-link" href={withBase(`/galleries/${gallery.slug}/`)}>
                 {gallery.title}
               </a>
             ))}

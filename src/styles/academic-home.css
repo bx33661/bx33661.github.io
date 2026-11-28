@@ -803,6 +803,10 @@ html[data-theme="dark"] .academic-home .observatory-dossier {
   transition: transform 0.2s ease;
 }
 
+.academic-home .home-shelf--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .academic-home .shelf-head a:hover span {
   transform: translateX(3px);
 }

@@ -1,0 +1,38 @@
+---
+import {
+  ENABLE_ANALYTICS,
+  GA_MEASUREMENT_ID,
+  PLAUSIBLE_DOMAIN,
+  PLAUSIBLE_SCRIPT_URL,
+  UMAMI_SCRIPT_URL,
+  UMAMI_WEBSITE_ID,
+  isProd,
+} from "@/config/env";
+
+const active = ENABLE_ANALYTICS && isProd;
+const hasUmami = active && Boolean(UMAMI_SCRIPT_URL && UMAMI_WEBSITE_ID);
+const hasPlausible = active && Boolean(PLAUSIBLE_DOMAIN && PLAUSIBLE_SCRIPT_URL);
+const hasGa = active && /^G-[A-Z0-9]+$/i.test(GA_MEASUREMENT_ID);
+---
+
+{
+  hasUmami && <script is:inline defer src={UMAMI_SCRIPT_URL} data-website-id={UMAMI_WEBSITE_ID} />
+}
+{
+  hasPlausible && <script is:inline defer data-domain={PLAUSIBLE_DOMAIN} src={PLAUSIBLE_SCRIPT_URL} />
+}
+{
+  hasGa && (
+    <>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_MEASUREMENT_ID)}`} />
+      <script is:inline define:vars={{ gaMeasurementId: GA_MEASUREMENT_ID }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          window.dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
+        gtag("config", gaMeasurementId);
+      </script>
+    </>
+  )
+}

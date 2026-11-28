@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { withCache } from "./cache-utils";
 import { getArticleDates } from "@/utils/article-discovery";
 import postFilter from "@/utils/postFilter";
-import { isEntryLocale, type Locale } from "@/i18n";
+import { DEFAULT_LOCALE, isEntryLocale, type Locale } from "@/i18n";
 import { resolveLegacyPostSlug, resolveLegacyNoteSlug } from "@/utils/legacySlug";
 
 function ensureUniqueSlug<T extends { id: string }>(desiredSlug: string, entry: T, slugMap: Map<string, T>): string {
@@ -36,7 +36,7 @@ function buildUniqueSlugEntries<T extends { id: string }>(
   return result;
 }
 
-export async function getAllPosts(locale: Locale = "zh-CN"): Promise<CollectionEntry<"blog">[]> {
+export async function getAllPosts(locale: Locale = DEFAULT_LOCALE): Promise<CollectionEntry<"blog">[]> {
   return withCache(
     `all-public-posts:${locale}`,
     async () => {
@@ -55,7 +55,7 @@ export async function getAllPosts(locale: Locale = "zh-CN"): Promise<CollectionE
 }
 
 export async function getAllPostSlugs(
-  locale: Locale = "zh-CN",
+  locale: Locale = DEFAULT_LOCALE,
 ): Promise<Array<{ slug: string; post: CollectionEntry<"blog"> }>> {
   return withCache(
     `all-post-slugs:${locale}`,
@@ -64,7 +64,7 @@ export async function getAllPostSlugs(
   );
 }
 
-export async function getAllNotes(locale: Locale = "zh-CN"): Promise<CollectionEntry<"notes">[]> {
+export async function getAllNotes(locale: Locale = DEFAULT_LOCALE): Promise<CollectionEntry<"notes">[]> {
   return withCache(
     `all-notes:${locale}`,
     async () => {
@@ -82,7 +82,7 @@ export async function getAllNotes(locale: Locale = "zh-CN"): Promise<CollectionE
 }
 
 export async function getAllNoteSlugs(
-  locale: Locale = "zh-CN",
+  locale: Locale = DEFAULT_LOCALE,
 ): Promise<Array<{ slug: string; note: CollectionEntry<"notes"> }>> {
   return withCache(
     `all-note-slugs:${locale}`,

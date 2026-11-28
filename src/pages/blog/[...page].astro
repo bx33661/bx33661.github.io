@@ -2,10 +2,11 @@
 import type { GetStaticPaths } from "astro";
 import BlogIndex from "@/components/BlogIndex.astro";
 import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE } from "@/i18n";
 import { getAllPosts } from "@/lib/data-utils";
 
 export const getStaticPaths = (async ({ paginate }) => {
-  return paginate(await getAllPosts("zh-CN"), { pageSize: SITE.postPerPage });
+  return paginate(await getAllPosts(DEFAULT_LOCALE), { pageSize: SITE.postPerPage });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;

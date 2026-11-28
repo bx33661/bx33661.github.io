@@ -1,10 +1,14 @@
 import { prefersReducedMotion } from "./reading-motion";
 import { finishThemeReveal, revealTheme } from "./theme-motion";
-import { createThemePreference, type Theme } from "../utils/theme-preference";
+import { createThemePreference, type Theme, type ThemeDefault } from "../utils/theme-preference";
+
+const rawDefault = document.documentElement.dataset.defaultTheme;
+const defaultMode: ThemeDefault = rawDefault === "light" || rawDefault === "dark" ? rawDefault : "system";
 
 const preference = createThemePreference(
   () => localStorage,
   () => window.matchMedia("(prefers-color-scheme: dark)").matches,
+  defaultMode,
 );
 let themeValue = preference.get();
 let themeMotionTimer = 0;
@@ -42,7 +46,7 @@ function reflectPreference(): void {
     document.querySelector("meta[name='theme-color']")?.setAttribute("content", bgColor);
   }
 
-  window.dispatchEvent(new CustomEvent("bx-theme-change", { detail: { theme: themeValue } }));
+  window.dispatchEvent(new CustomEvent("orbit-theme-change", { detail: { theme: themeValue } }));
 }
 
 // The inline script only sets first-paint CSS. This module owns the live API.

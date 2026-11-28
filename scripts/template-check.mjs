@@ -10,46 +10,38 @@ function readIfExists(relPath) {
 }
 
 function main() {
+  const config = readIfExists("src/config.ts");
+  const projects = readIfExists("src/data/projects.ts");
+  const friends = readIfExists("src/config/friends.ts");
+
   const checks = [
     {
-      area: "Site config",
+      area: "Site origin & identity",
       file: "src/config.ts",
-      isDefault: /bx33661|www\.bx33661\.com|author:\s*"BX"/.test(readIfExists("src/config.ts")),
-      hint: "Update SITE.website, title, author, email, defaultAuthorId, profile, friendCard",
+      isDefault: /astro-orbit\.example\.com|your-username|hello@example\.com|Orbit Author/.test(config),
+      hint: "Run `npm run setup` or update SITE_ORIGIN, author, email, profile in src/config.ts",
     },
     {
-      area: "Homepage bio",
-      file: "src/components/AcademicHome.astro",
-      isDefault: /Hey, I'm <span>bx\.<\/span>/.test(readIfExists("src/components/AcademicHome.astro")),
-      hint: "Replace hero copy, intro bio, and focusTopics",
-    },
-    {
-      area: "Custom domain",
-      file: "public/CNAME",
-      isDefault: readIfExists("public/CNAME").trim() === "www.bx33661.com",
-      hint: "Update domain or remove public/CNAME if hosting on <user>.github.io",
+      area: "Projects showcase",
+      file: "src/data/projects.ts",
+      isDefault: /your-username\/astro-orbit|astro-orbit\.example\.com/.test(projects),
+      hint: "Replace demo PROJECTS entries or disable `features.projects` in src/config.ts",
     },
     {
       area: "Friends directory",
       file: "src/config/friends.ts",
-      isDefault: /hnusec|bx33661/i.test(readIfExists("src/config/friends.ts")),
-      hint: "Replace FRIEND_LINKS / HNUSEC_MEMBER_LINKS / ORGANIZATION_LINKS",
-    },
-    {
-      area: "Series & academic data",
-      file: "src/data/article-series.ts",
-      isDefault: /redis-core-guide|chunqiu-Initial/.test(readIfExists("src/data/article-series.ts")),
-      hint: "Curate your own series slugs in article-series.ts and src/data/academic/",
+      isDefault: /docs\.astro\.build|starlight\.astro\.build/.test(friends),
+      hint: "Customize FRIEND_GROUPS in src/config/friends.ts or disable `features.friends`",
     },
   ];
 
   const defaultCount = checks.filter((item) => item.isDefault).length;
-  console.log(banner("Template Audit", "Checking fork readiness for astro-orbit"));
+  console.log(banner("Template Audit", "Checking customization readiness for astro-orbit"));
   console.log(section("Customization Status"));
   console.log(
     table(
       checks.map((item) => [
-        item.isDefault ? c.amber("! upstream default") : c.green("✓ customized"),
+        item.isDefault ? c.amber("! template default") : c.green("✓ customized"),
         c.bold(item.file),
         c.muted(item.hint),
       ]),
@@ -59,7 +51,7 @@ function main() {
 
   if (defaultCount === 0) {
     console.log(
-      panel("Template Customized", ["All primary identity and template configuration areas look customized."], "ok"),
+      panel("Template Customized", ["All primary identity and demo configuration areas look customized."], "ok"),
     );
     return;
   }
@@ -67,11 +59,11 @@ function main() {
   console.log(
     statusLine(
       strict ? "error" : "warn",
-      `${defaultCount} / ${checks.length} template areas still hold upstream author defaults`,
+      `${defaultCount} / ${checks.length} template areas still hold starter placeholders`,
       strict ? "Failing because --strict was specified" : "Informational mode; pass --strict to enforce in CI",
     ),
   );
-  console.log(statusLine("next", "Checklist", "See README.md '用作博客模板 (astro-orbit)' for step-by-step setup"));
+  console.log(statusLine("next", "Quick setup", "Run `npm run setup` or edit src/config.ts"));
   console.log("");
 
   if (strict) process.exit(1);

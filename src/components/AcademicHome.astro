@@ -1,6 +1,7 @@
 ---
 import { SITE } from "@/config.ts";
-import { localizedPath, type Locale } from "@/i18n";
+import { DEFAULT_LOCALE, localizedPath, type Locale } from "@/i18n";
+import { ui } from "@/i18n/ui";
 import { getAllNotes, getAllPosts } from "@/lib/data-utils";
 import { getLocalizedTagPath } from "@/utils/tagPath";
 import { getPath } from "@/utils/getPath";
@@ -8,16 +9,26 @@ import { resolveLegacyPostSlug } from "@/utils/legacySlug";
 import { getArticleDates } from "@/utils/article-discovery";
 import { getSiteDateParts } from "@/utils/date";
 import { PROJECTS } from "@/data/projects";
+import { withBase } from "@/utils/url";
 import "@/styles/academic-home.css";
 
 interface Props {
   locale?: Locale;
 }
 
-const { locale = "zh-CN" } = Astro.props;
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const isZh = locale === "zh-CN";
+const copy = isZh ? SITE.home.zh : SITE.home.en;
+const t = ui(locale);
+const monographLang = copy.monographLang ?? locale;
+const closingEmoji = copy.closingEmoji ?? "✦";
+const focusHeading = copy.focusHeading ?? t.focusHeading;
+const readBlogLabel = copy.readBlogLabel ?? t.readBlog;
+const readNotesLabel = copy.readNotesLabel ?? t.readNotes;
+
 const posts = await getAllPosts(locale);
-const notes = await getAllNotes(locale);
-const focusTopics = ["AI", "Security", "Web", "CTF"];
+const notes = SITE.features.notes ? await getAllNotes(locale) : [];
+const focusTopics = copy.focusTopics;
 const recentPosts = posts.slice(0, 5).map((post) => {
   const latest = getArticleDates(post.data.pubDatetime, post.data.modDatetime).latest;
   const parts = getSiteDateParts(latest);
@@ -30,65 +41,51 @@ const recentPosts = posts.slice(0, 5).map((post) => {
     tag: post.data.tags?.[0],
   };
 });
+const showProjects = SITE.features.projects && PROJECTS.length > 0;
 ---
 
-<!-- Template customization: update focusTopics above plus hero and intro copy below -->
-<main id="main-content" class="app-layout academic-home" lang="en">
+<main id="main-content" class="app-layout academic-home" lang={monographLang}>
   <div class="home-stage">
     <!-- Left Column: Personal Monograph & Sea-of-Stars Letter -->
     <div class="home-monograph">
       <header class="hero-copy" aria-labelledby="home-title">
         <p class="eyebrow">
           <span class="eyebrow-spark" aria-hidden="true">✦</span>
-          A LITTLE CORNER OF THE INTERNET
+          {copy.eyebrow}
         </p>
-        <h1 id="home-title">Hey, I'm <span>bx.</span></h1>
-        <p class="welcome">Welcome to my blog!</p>
+        <h1 id="home-title">{copy.greetingPrefix}<span>{copy.greetingHighlight}</span></h1>
+        <p class="welcome">{copy.welcome}</p>
         <div class="horizon-rule" aria-hidden="true">
           <span class="horizon-line"></span>
-          <span class="horizon-tag">CURIOSITY, IN ORBIT</span>
+          <span class="horizon-tag">{copy.horizonTag}</span>
           <span class="horizon-line horizon-line--fade"></span>
         </div>
       </header>
 
       <div class="intro-body">
         <p class="intro-focus">
-          I'm currently focused on <strong>the field of Computer Science</strong>, while staying curious about
-          interesting technologies and the unknown.
+          {copy.focusLeadPrefix}<strong>{copy.focusLeadStrong}</strong>{copy.focusLeadSuffix}
         </p>
 
         <div class="intro-prose">
-          <p>
-            This is my little corner of the internet where I document what I learn, explore, and think about. Most of
-            the content revolves around technology, including study notes, hands-on experiences, and scattered thoughts.
-            Occasionally, I'll also share things beyond the world of tech.
-          </p>
-          <p>
-            I don't expect every post to have all the answers. More often than not, what I write simply reflects my
-            understanding at a particular point in time. As I continue to explore and learn, my perspectives may shift,
-            my understanding will evolve, and I'll revisit, refine, and update what I've written along the way.
-          </p>
-          <p>
-            I hope this blog becomes a space where ideas and experiences gradually accumulate, leaving traces of my
-            explorations and capturing my growth along the journey.
-          </p>
-          <p>
-            Feel free to look around! If something here helps you, sparks a thought, or gives you a different
-            perspective, I'd love to hear from you.
-          </p>
+          {copy.introParagraphs.map((paragraph) => <p>{paragraph}</p>)}
         </div>
 
         <p class="closing">
-          <strong>Let's explore the stars and beyond together. <span class="closing-star">🌟</span></strong>
+          <strong>{copy.closing} <span class="closing-star" aria-hidden="true">{closingEmoji}</span></strong>
         </p>
 
-        <nav class="home-links" aria-label="Explore the blog">
+        <nav class="home-links" aria-label={t.searchNav}>
           <a class="read-link" href={localizedPath("/blog/", locale)}>
-            Read the blog <span aria-hidden="true">↗</span>
+            {readBlogLabel} <span aria-hidden="true">↗</span>
           </a>
-          <a class="secondary-link" href={localizedPath("/notes/", locale)}>
-            Notes <span aria-hidden="true">↗</span>
-          </a>
+          {
+            SITE.features.notes && (
+              <a class="secondary-link" href={localizedPath("/notes/", locale)}>
+                {readNotesLabel} <span aria-hidden="true">↗</span>
+              </a>
+            )
+          }
           <a class="secondary-link" href={SITE.profile} target="_blank" rel="noopener noreferrer">
             GitHub <span aria-hidden="true">↗</span>
           </a>
@@ -105,8 +102,8 @@ const recentPosts = posts.slice(0, 5).map((post) => {
         <div class="star-map-spotlight"></div>
 
         <div class="field-label">
-          <span>BX // DEEP FIELD</span>
-          <span class="field-beacon"><i class="beacon-dot"></i>IN ORBIT</span>
+          <span>{copy.observatoryTitle}</span>
+          <span class="field-beacon"><i class="beacon-dot"></i>{copy.observatoryStatus}</span>
         </div>
 
         <svg viewBox="0 0 460 310" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -133,7 +130,6 @@ const recentPosts = posts.slice(0, 5).map((post) => {
             </radialGradient>
           </defs>
 
-          <!-- Background deep-field stars -->
           <g class="parallax-far">
             <circle class="dust-star" cx="58" cy="64" r="1.1"></circle>
             <circle class="dust-star dust-star--twinkle" cx="108" cy="48" r="1.4"></circle>
@@ -145,12 +141,10 @@ const recentPosts = posts.slice(0, 5).map((post) => {
             <circle class="dust-star" cx="294" cy="266" r="1"></circle>
           </g>
 
-          <!-- Slowly rotating azimuth degree ring & crosshairs -->
           <circle class="outer-orbit" cx="230" cy="155" r="126"></circle>
           <circle class="inner-ticks" cx="230" cy="155" r="108"></circle>
           <path class="field-axis" d="M230 16V40M230 270V294M78 155H104M356 155H382"></path>
 
-          <!-- Central celestial sphere + orbital rings -->
           <g class="parallax-mid">
             <circle cx="230" cy="155" r="78" fill="url(#orb-glass)" stroke="url(#orb-rim)" stroke-width="1.1"></circle>
             <ellipse class="meridian" cx="230" cy="155" rx="78" ry="24" transform="rotate(-14 230 155)"></ellipse>
@@ -159,15 +153,13 @@ const recentPosts = posts.slice(0, 5).map((post) => {
             <ellipse class="orbit" cx="230" cy="155" rx="152" ry="46" transform="rotate(-26 230 155)"></ellipse>
             <ellipse
               class="orbit-Highlight"
-              cx="230"
-              cy="155"
+              cx="230" cy="155"
               rx="152"
               ry="46"
               transform="rotate(-26 230 155)"
               stroke="url(#orbit-wake)"></ellipse>
           </g>
 
-          <!-- Foreground constellation & Polaris -->
           <g class="parallax-near">
             <path class="constellation" d="M126 202L184 128L242 172L302 82L348 132"></path>
             <g class="star-points">
@@ -184,14 +176,14 @@ const recentPosts = posts.slice(0, 5).map((post) => {
         </svg>
 
         <div class="field-caption">
-          <span>CYBERSECURITY · LLMS</span>
-          <span>AD ASTRA · 01</span>
+          <span>{copy.observatoryCaptionLeft}</span>
+          <span>{copy.observatoryCaptionRight}</span>
         </div>
       </div>
 
       <div class="dossier-body">
         <section class="focus-section" aria-labelledby="focus-title">
-          <h2 id="focus-title">Focus</h2>
+          <h2 id="focus-title">{focusHeading}</h2>
           <div class="focus-chips">
             {
               focusTopics.map((topic) => (
@@ -204,63 +196,75 @@ const recentPosts = posts.slice(0, 5).map((post) => {
           <div class="focus-stats">
             <a href={localizedPath("/blog/", locale)} class="focus-stat">
               <strong>{posts.length}</strong>
-              <span>{posts.length === 1 ? "Post" : "Posts"}</span>
+              <span>{t.postUnit(posts.length)}</span>
             </a>
-            <a href={localizedPath("/notes/", locale)} class="focus-stat">
-              <strong>{notes.length}</strong>
-              <span>{notes.length === 1 ? "Note" : "Notes"}</span>
-            </a>
+            {
+              SITE.features.notes && (
+                <a href={localizedPath("/notes/", locale)} class="focus-stat">
+                  <strong>{notes.length}</strong>
+                  <span>{t.noteUnit(notes.length)}</span>
+                </a>
+              )
+            }
           </div>
         </section>
       </div>
     </aside>
   </div>
 
-  <div class="home-shelf">
+  <div class:list={["home-shelf", { "home-shelf--single": !showProjects }]}>
     <section class="shelf-panel" aria-labelledby="recent-title">
       <div class="shelf-head">
-        <h2 id="recent-title">Recent writing</h2>
-        <a href={localizedPath("/blog/", locale)}>All posts <span aria-hidden="true">→</span></a>
+        <h2 id="recent-title">{t.latestWriting}</h2>
+        <a href={localizedPath("/blog/", locale)}>{t.viewAllPosts} <span aria-hidden="true">→</span></a>
       </div>
-      <ol class="recent-list">
-        {
-          recentPosts.map((post) => (
-            <li>
-              <a href={post.href}>
-                <time datetime={post.iso}>
-                  <span>{post.day}</span>
-                  <small>{post.year}</small>
-                </time>
-                <span class="recent-title">{post.title}</span>
-                {post.tag && <span class="recent-tag">{post.tag}</span>}
-              </a>
-            </li>
-          ))
-        }
-      </ol>
+      {
+        recentPosts.length > 0 ? (
+          <ol class="recent-list">
+            {recentPosts.map((post) => (
+              <li>
+                <a href={post.href}>
+                  <time datetime={post.iso}>
+                    <span>{post.day}</span>
+                    <small>{post.year}</small>
+                  </time>
+                  <span class="recent-title">{post.title}</span>
+                  {post.tag && <span class="recent-tag">{post.tag}</span>}
+                </a>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="text-muted-foreground py-4 text-sm">{t.emptyRecentPosts}</p>
+        )
+      }
     </section>
 
-    <section class="shelf-panel" aria-labelledby="projects-title">
-      <div class="shelf-head">
-        <h2 id="projects-title">Projects</h2>
-        <a href="/projects/">All projects <span aria-hidden="true">→</span></a>
-      </div>
-      <ul class="project-tiles">
-        {
-          PROJECTS.map((project) => (
-            <li>
-              <a href={project.homepage ?? project.repo}>
-                <img src={project.logo} alt="" width="36" height="36" loading="lazy" decoding="async" />
-                <span>
-                  <strong>{project.name}</strong>
-                  <small>{project.kind}</small>
-                </span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+    {
+      showProjects && (
+        <section class="shelf-panel" aria-labelledby="projects-title">
+          <div class="shelf-head">
+            <h2 id="projects-title">{t.projects}</h2>
+            <a href={withBase("/projects/")}>
+              {t.allProjects} <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <ul class="project-tiles">
+            {PROJECTS.map((project) => (
+              <li>
+                <a href={project.homepage ?? project.repo}>
+                  <img src={withBase(project.logo)} alt="" width="36" height="36" loading="lazy" decoding="async" />
+                  <span>
+                    <strong>{project.name}</strong>
+                    <small>{project.kind}</small>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
   </div>
 </main>
 

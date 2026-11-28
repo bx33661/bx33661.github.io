@@ -8,28 +8,21 @@ test("estimateReadingMinutes handles empty, short, CJK, English and mixed conten
   assert.equal(estimateReadingMinutes(""), 1);
   assert.equal(estimateReadingMinutes("---\ntitle: Demo\n---\nHello world."), 1);
 
-  const cjk = "安全研究与代码审计笔记。".repeat(60); // 11 * 60 = 660 chars -> ~2 min
+  const cjk = "系统工程与架构设计笔记。".repeat(60);
   assert.equal(estimateReadingMinutes(cjk), 2);
 
-  const english = "security engineering reproducible notes ".repeat(110); // 440 words -> 2 min
+  const english = "software engineering reproducible notes ".repeat(110);
   assert.equal(estimateReadingMinutes(english), 2);
 
-  const mixed = `${"网络安全实践".repeat(60)}\n\n\`\`\`ts\n${"const token = value; ".repeat(60)}\n\`\`\``;
+  const mixed = `${"系统架构实践".repeat(60)}\n\n\`\`\`ts\n${"const token = value; ".repeat(60)}\n\`\`\``;
   assert.ok(estimateReadingMinutes(mixed) >= 2);
 });
 
-test("isInteractivePost detects bespoke interactive MDX diagrams", () => {
+test("isInteractivePost detects hydrated interactive MDX islands", () => {
   assert.equal(isInteractivePost(undefined), false);
   assert.equal(isInteractivePost("Regular markdown article with code blocks."), false);
-  assert.equal(
-    isInteractivePost(
-      'import WifiSecurityDiagram from "@/components/WifiSecurityDiagram.astro";\n<WifiSecurityDiagram />',
-    ),
-    true,
-  );
-  assert.equal(isInteractivePost("<CyberGymFeature />"), true);
-  assert.equal(isInteractivePost("<TrustBoundarySimulator />"), true);
-  assert.equal(isInteractivePost("<MiniappAuditFeature />"), true);
+  assert.equal(isInteractivePost("<DemoChart client:visible />"), true);
+  assert.equal(isInteractivePost("<Playground client:load />"), true);
 });
 
 test("transformerLongCode tags only blocks meeting minLines with metadata", () => {

@@ -6,8 +6,10 @@ import IconArchive from "@/assets/icons/IconArchive.svg";
 import IconGallery from "@/assets/icons/IconGallery.svg";
 import { SITE } from "@/config.ts";
 import "@/styles/header.css";
-import { localeFromPath, localizedPath, stripLocalePrefix, switchDestination } from "@/i18n";
+import { BILINGUAL_ENABLED, localeFromPath, localizedPath, stripLocalePrefix, switchDestination } from "@/i18n";
+import { ui } from "@/i18n/ui";
 import { languagePaths } from "@/i18n/content";
+import { withBase } from "@/utils/url";
 
 interface Props {
   surface?: "default" | "dark";
@@ -16,8 +18,9 @@ interface Props {
 const { surface = "default" } = Astro.props;
 const { pathname } = Astro.url;
 const locale = localeFromPath(pathname);
+const t = ui(locale);
 const isEnglish = locale === "en";
-const languageRoutes = await languagePaths(pathname);
+const languageRoutes = BILINGUAL_ENABLED ? await languagePaths(pathname) : {};
 const languageHref = switchDestination(pathname, languageRoutes);
 const exactLanguageSwitch = Object.keys(languageRoutes).length === 2;
 
@@ -25,31 +28,36 @@ const sectionPath = stripLocalePrefix(pathname);
 const isActive = (path: string) => sectionPath === path || sectionPath.startsWith(`${path}/`);
 
 const navItems = [
-  { label: "Home", href: localizedPath("/", locale), active: sectionPath === "/" || sectionPath === "/about" },
-  { label: "Posts", href: localizedPath("/blog/", locale), active: isActive("/blog") },
-  { label: "Notes", href: localizedPath("/notes/", locale), active: isActive("/notes") },
-  // Shared resources retain their existing URLs; no untranslated mirror pages.
-  { label: "Projects", href: "/projects/", active: isActive("/projects") },
-  { label: "Friends", href: "/friends/", active: isActive("/friends") },
+  { label: t.home, href: localizedPath("/", locale), active: sectionPath === "/" },
+  { label: t.posts, href: localizedPath("/blog/", locale), active: isActive("/blog") },
+  ...(SITE.features.notes
+    ? [{ label: t.notes, href: localizedPath("/notes/", locale), active: isActive("/notes") }]
+    : []),
+  ...(SITE.features.projects
+    ? [{ label: t.projects, href: withBase("/projects/"), active: isActive("/projects") }]
+    : []),
+  ...(SITE.features.friends
+    ? [{ label: t.friends, href: withBase("/friends/"), active: isActive("/friends") }]
+    : []),
 ];
 
 const quickItems = [
-  ...(SITE.showArchives
+  ...(SITE.features.archives
     ? [
         {
-          label: "Archives",
+          label: t.archives,
           href: localizedPath("/archives/", locale),
-          active: isActive("/archives") || isActive("/archive"),
+          active: isActive("/archives"),
           icon: IconArchive,
         },
       ]
     : []),
-  ...(SITE.showGalleries
+  ...(SITE.features.galleries
     ? [
         {
-          label: "Galleries",
-          href: "/galleries/",
-          active: isActive("/galleries") || isActive("/album"),
+          label: t.galleries,
+          href: withBase("/galleries/"),
+          active: isActive("/galleries"),
           icon: IconGallery,
         },
       ]
@@ -57,7 +65,7 @@ const quickItems = [
 ];
 
 const allMobileItems = [...navItems, ...quickItems];
-const siteLogo = "/brand/bx-logo.svg";
+const siteLogo = withBase(SITE.brandLogo);
 const brandText = SITE.title.trim();
 ---
 
@@ -66,14 +74,14 @@ const brandText = SITE.title.trim();
   href="#main-content"
   class="bg-accent text-background absolute start-16 -top-full z-50 rounded-b-lg px-4 py-2 font-medium transition-all focus:top-0"
 >
-  Skip to content
+  {t.skipToContent}
 </a>
 
 <header class="header-glass sticky top-0 z-40 w-full" data-header-surface={surface === "dark" ? "dark" : undefined}>
   <div class="app-layout">
     <div id="top-nav-wrap" class="nav-capsule">
       <!-- Logo -->
-      <a href={localizedPath("/", locale)} class="nav-brand group" aria-label={`${brandText} home`}>
+      <a href={localizedPath("/", locale)} class="nav-brand group" aria-label={`${brandText} · ${t.home}`}>
         <img
           src={siteLogo}
           alt=""
@@ -87,7 +95,7 @@ const brandText = SITE.title.trim();
       </a>
 
       <!-- Nav area -->
-      <nav id="nav-menu" class="nav-area" aria-label="Primary">
+      <nav id="nav-menu" class="nav-area" aria-label={t.primaryNav}>
         <!-- Desktop links -->
         <div class="nav-links" data-nav-links>
           <span class="nav-bubble" aria-hidden="true" data-nav-bubble></span>
@@ -111,7 +119,7 @@ const brandText = SITE.title.trim();
         <div class="nav-tools">
           {
             quickItems.length > 0 && (
-              <div class="nav-quick-switch" role="group" aria-label="Archive and gallery shortcuts">
+              <div class="nav-quick-switch" role="group" aria-label={t.quickShortcuts}>
                 {quickItems.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -129,17 +137,21 @@ const brandText = SITE.title.trim();
             )
           }
 
-          <button data-search-trigger class="nav-search-btn" title="Search (⌘K)" aria-label="Open search">
-            <IconSearch class="nav-glyph" />
-            <kbd class="nav-kbd">⌘K</kbd>
-          </button>
+          {
+            SITE.features.search && (
+              <button data-search-trigger class="nav-search-btn" title={t.searchShortcutTitle} aria-label={t.openSearch}>
+                <IconSearch class="nav-glyph" />
+                <kbd class="nav-kbd">⌘K</kbd>
+              </button>
+            )
+          }
 
           {
             SITE.lightAndDarkMode && (
               <button
                 id="theme-btn"
                 class="nav-icon-btn relative"
-                title="Toggle theme"
+                title={t.toggleTheme}
                 aria-label="auto"
                 aria-live="polite"
               >
@@ -150,29 +162,46 @@ const brandText = SITE.title.trim();
           }
         </div>
 
-        <a
-          href={languageHref}
-          class="language-switch"
-          data-language-switch
-          lang={isEnglish ? "zh-CN" : "en"}
-          aria-label={isEnglish
-            ? exactLanguageSwitch
-              ? "切换到中文"
-              : "查看中文内容"
-            : exactLanguageSwitch
-              ? "Switch to English"
-              : "Browse the English edition; this page has no English version"}
-          title={isEnglish ? "中文" : exactLanguageSwitch ? "English" : "English edition (no translation of this page)"}
-        >
-          <span class="language-switch__label" data-current={!isEnglish} aria-hidden="true">中</span>
-          <span class="language-switch__divider" aria-hidden="true">/</span>
-          <span class="language-switch__label" data-current={isEnglish} aria-hidden="true">EN</span>
-        </a>
+        {
+          BILINGUAL_ENABLED && (
+            <a
+              href={languageHref}
+              class="language-switch"
+              data-language-switch
+              lang={isEnglish ? "zh-CN" : "en"}
+              aria-label={
+                isEnglish
+                  ? exactLanguageSwitch
+                    ? "切换到中文"
+                    : "查看中文内容"
+                  : exactLanguageSwitch
+                    ? "Switch to English"
+                    : "Browse the English edition; this page has no English version"
+              }
+              title={
+                isEnglish ? "中文" : exactLanguageSwitch ? "English" : "English edition (no translation of this page)"
+              }
+            >
+              <span class="language-switch__label" data-current={!isEnglish} aria-hidden="true">
+                中
+              </span>
+              <span class="language-switch__divider" aria-hidden="true">
+                /
+              </span>
+              <span class="language-switch__label" data-current={isEnglish} aria-hidden="true">
+                EN
+              </span>
+            </a>
+          )
+        }
+
         <!-- Mobile hamburger -->
         <button
           id="menu-btn"
           class="hamburger-btn sm:hidden"
-          aria-label="Open menu"
+          aria-label={t.openMenu}
+          data-label-open={t.openMenu}
+          data-label-close={t.closeMenu}
           aria-expanded="false"
           aria-controls="mobile-menu"
         >
@@ -187,7 +216,7 @@ const brandText = SITE.title.trim();
     <!-- Mobile dropdown menu -->
     <div id="mobile-menu" class="mobile-menu sm:hidden" aria-hidden="true">
       <div class="mobile-menu-inner">
-        <nav class="mobile-nav-links" aria-label="Mobile">
+        <nav class="mobile-nav-links" aria-label={t.mobileNav}>
           {
             allMobileItems.map((item, index) => (
               <a href={item.href} class:list={["mobile-nav-link", { active: item.active }]} style={`--i:${index}`}>
@@ -201,23 +230,27 @@ const brandText = SITE.title.trim();
         <div class="mobile-menu-divider"></div>
 
         <div class="mobile-menu-actions">
-          <button data-search-trigger class="mobile-action-btn" title="Search (⌘K)" aria-label="Open search">
-            <IconSearch class="size-4" />
-            <span>Search</span>
-          </button>
+          {
+            SITE.features.search && (
+              <button data-search-trigger class="mobile-action-btn" title={t.searchShortcutTitle} aria-label={t.openSearch}>
+                <IconSearch class="size-4" />
+                <span>{t.search}</span>
+              </button>
+            )
+          }
           {
             SITE.lightAndDarkMode && (
               <button
                 id="theme-btn-mobile"
                 class="mobile-action-btn"
-                title="Toggle theme"
+                title={t.toggleTheme}
                 aria-label="auto"
                 aria-live="polite"
               >
                 <IconMoon class="block size-4 dark:hidden" />
                 <IconSunHigh class="hidden size-4 dark:block" />
-                <span class="block dark:hidden">Dark mode</span>
-                <span class="hidden dark:block">Light mode</span>
+                <span class="block dark:hidden">{t.darkMode}</span>
+                <span class="hidden dark:block">{t.lightMode}</span>
               </button>
             )
           }
@@ -238,8 +271,6 @@ const brandText = SITE.title.trim();
       schedule();
     }
 
-    // Liquid-glass bubble: idle until the pointer/keyboard enters the nav, so page
-    // loads and hash scrolling never wait on it. The active link has a CSS pill.
     const links = document.querySelector<HTMLElement>("[data-nav-links]");
     const bubble = links?.querySelector<HTMLElement>("[data-nav-bubble]");
     if (links && bubble) {
@@ -289,8 +320,10 @@ const brandText = SITE.title.trim();
     if (!menuBtn || !mobileMenu) return;
 
     const setMenuOpen = (open: boolean) => {
+      const openLabel = menuBtn.dataset.labelOpen || "Open menu";
+      const closeLabel = menuBtn.dataset.labelClose || "Close menu";
       menuBtn.setAttribute("aria-expanded", String(open));
-      menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      menuBtn.setAttribute("aria-label", open ? closeLabel : openLabel);
       mobileMenu.classList.toggle("is-open", open);
       mobileMenu.setAttribute("aria-hidden", String(!open));
     };

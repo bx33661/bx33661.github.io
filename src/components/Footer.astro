@@ -6,17 +6,18 @@ import LinkButton from "./LinkButton.astro";
 import { SITE } from "@/config.ts";
 import { localeFromPath, localizedPath } from "@/i18n";
 import { ui } from "@/i18n/ui";
+import { withBase } from "@/utils/url";
 
 const locale = localeFromPath(Astro.url.pathname);
-const isEnglish = locale === "en";
+const isZh = locale === "zh-CN";
 const t = ui(locale);
 
 const footerLinks = [
   { label: t.posts, href: localizedPath("/blog/", locale) },
-  { label: t.notes, href: localizedPath("/notes/", locale) },
-  { label: t.archives, href: localizedPath("/archives/", locale) },
-  { label: isEnglish ? "Projects" : "项目", href: "/projects/" },
-  { label: t.friends, href: "/friends/" },
+  ...(SITE.features.notes ? [{ label: t.notes, href: localizedPath("/notes/", locale) }] : []),
+  ...(SITE.features.archives ? [{ label: t.archives, href: localizedPath("/archives/", locale) }] : []),
+  ...(SITE.features.projects ? [{ label: t.projects, href: withBase("/projects/") }] : []),
+  ...(SITE.features.friends ? [{ label: t.friends, href: withBase("/friends/") }] : []),
 ];
 
 const currentYear = new Date().getFullYear();
@@ -29,17 +30,14 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
 ---
 
 <footer class:list={["footer-wrapper", { "mt-auto": !noMarginTop }, className]} {...attrs}>
-  <!-- Top gradient border -->
   <div class="via-border/50 h-px w-full bg-linear-to-r from-transparent to-transparent"></div>
 
   <div class="app-layout py-8 sm:py-10">
-    <!-- Main footer grid -->
     <div class="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
-      <!-- Brand column -->
       <div class="flex flex-col items-center gap-3 sm:items-start">
         <a href={localizedPath("/", locale)} class="group flex items-center gap-2 text-lg font-bold tracking-tight">
           <img
-            src={SITE.brandLogo ?? "/brand/bx-logo.svg"}
+            src={withBase(SITE.brandLogo)}
             alt={`${SITE.title} logo`}
             class="footer-brand-logo border-border-subtle group-hover:border-accent/40 size-7 rounded-full border bg-[#f4f0e6] object-contain transition-all duration-300 group-hover:scale-105"
             loading="lazy"
@@ -48,11 +46,11 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
           <span class="footer-logo-text">{SITE.title}</span>
         </a>
         <p class="text-muted-foreground max-w-sm text-center text-xs leading-relaxed text-balance sm:text-start">
-          {isEnglish ? SITE.footerTagline.en : SITE.footerTagline.zh}
+          {isZh ? SITE.footerTagline.zh : SITE.footerTagline.en}
         </p>
         <nav
           class="mt-0.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 sm:justify-start"
-          aria-label="Footer navigation"
+          aria-label={t.footerNav}
         >
           {
             footerLinks.map((item) => (
@@ -67,10 +65,9 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
         </nav>
       </div>
 
-      <!-- Social links -->
       <div class="flex flex-col items-center gap-2 sm:items-end">
         <span class="font-cartograph text-muted-foreground text-[10px] tracking-wider uppercase select-none"
-          >{isEnglish ? "Connect" : "联系与关注"}</span
+          >{isZh ? "联系与关注" : "Connect"}</span
         >
         <div class="flex items-center gap-1.5">
           {
@@ -86,7 +83,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
             ))
           }
           <LinkButton
-            href={isEnglish ? "/en/rss.xml" : "/rss.xml"}
+            href={localizedPath("/rss.xml", locale)}
             class="footer-social-btn border-border-subtle bg-surface/60 text-muted-foreground hover:border-accent/35 hover:bg-accent/10 hover:text-accent inline-flex size-9 items-center justify-center rounded-full border transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
             title={t.rssFeed}
             aria-label={t.rssFeed}
@@ -98,17 +95,16 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
       </div>
     </div>
 
-    <!-- Bottom bar -->
     <div class="mt-8 flex items-center gap-3" aria-hidden="true">
       <div class="via-border/40 h-px flex-1 bg-linear-to-r from-transparent to-transparent"></div>
     </div>
 
     <div class="text-muted-foreground mt-4 flex flex-col items-center justify-between gap-2 sm:flex-row">
       <p class="font-cartograph text-[11px] tracking-wide">
-        &copy; {`${currentYear} ${SITE.title}. ${isEnglish ? "All rights reserved." : "保留所有权利。"}`}
+        &copy; {`${currentYear} ${SITE.title}. ${isZh ? "保留所有权利。" : "All rights reserved."}`}
       </p>
       <p class="font-cartograph text-[11px] tracking-wide">
-        {isEnglish ? SITE.footerColophon.en : SITE.footerColophon.zh}
+        {isZh ? SITE.footerColophon.zh : SITE.footerColophon.en}
       </p>
     </div>
   </div>

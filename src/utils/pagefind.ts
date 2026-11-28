@@ -5,6 +5,7 @@ export type PagefindUIOptions = {
   element: string | HTMLElement;
   showImages?: boolean;
   showSubResults?: boolean;
+  bundlePath?: string;
   translations?: Record<string, string>;
   processTerm?: (term: string) => string;
 };
@@ -29,7 +30,7 @@ function createInputController(mount: HTMLElement, input: HTMLInputElement, sign
 
 /**
  * Canonical Pagefind loader and initializer.
- * Ensures uniform translation, accessibility, and configuration across modal and search pages.
+ * Ensures uniform translation, subpath support, and accessibility across modal and search pages.
  */
 export async function createPagefindUI(
   options: PagefindUIOptions,
@@ -38,21 +39,24 @@ export async function createPagefindUI(
   const mount =
     typeof options.element === "string" ? document.querySelector<HTMLElement>(options.element) : options.element;
   if (!mount?.isConnected || signal?.aborted) return null;
-  const isEnglish = document.documentElement.lang === "en";
-  // No English index exists until an English article is published. Never let
-  // Pagefind's language fallback accidentally search the Chinese index instead.
-  if (isEnglish && document.documentElement.dataset.searchEmpty === "true") {
+
+  const isChinese = document.documentElement.lang === "zh-CN";
+  if (document.documentElement.dataset.searchEmpty === "true") {
     const input = await mountDevSearch(mount, { entries: [], signal, onQueryChange: options.processTerm });
     if (!mount.isConnected || signal?.aborted) return null;
     return createInputController(mount, input, signal);
   }
-  // Dynamic import required: @pagefind/default-ui relies on browser DOM and cannot be bundled during static SSR build time.
+
+  const basePath = (document.documentElement.dataset.baseUrl || "").replace(/\/+$/, "");
+  const bundlePath = `${basePath}/pagefind/`;
+
   const { PagefindUI } = await import("@pagefind/default-ui");
   if (!mount.isConnected || signal?.aborted) return null;
   const search = new PagefindUI({
     showImages: false,
     showSubResults: true,
-    translations: isEnglish ? {} : pagefindTranslations,
+    bundlePath,
+    translations: isChinese ? pagefindTranslations : {},
     ...options,
     element: mount,
   });

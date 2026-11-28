@@ -1,19 +1,26 @@
 ---
 import { SITE } from "@/config.ts";
-import { FRIEND_LINKS, ORGANIZATION_LINKS, HNUSEC_MEMBER_LINKS } from "@/config/friends";
+import { FRIEND_GROUPS, type FriendLink } from "@/config/friends";
+import { DEFAULT_LOCALE } from "@/i18n";
+import { ui } from "@/i18n/ui";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import FriendCard from "@/components/FriendCard.astro";
 import FriendNetwork from "@/components/FriendNetwork.astro";
 import friendAvatars from "@/data/friend-avatars.json";
+import { withBase } from "@/utils/url";
 import "@/styles/friends.css";
+
+const isZh = DEFAULT_LOCALE === "zh-CN";
+const copy = isZh ? SITE.friendsPage.zh : SITE.friendsPage.en;
+const t = ui(DEFAULT_LOCALE);
 
 const info = {
   name: SITE.friendCard.name,
   address: SITE.href,
   desc: SITE.friendCard.desc,
-  avatar: SITE.friendCard.avatar,
+  avatar: withBase(SITE.friendCard.avatar),
 };
 
 const siteUrl = info.address.replace(/\/$/, "");
@@ -33,36 +40,39 @@ const getHost = (url: string) => {
 };
 
 const getFallbackText = (name: string) => name.trim().slice(0, 1).toUpperCase() || "?";
-
 const localAvatars: Record<string, string> = friendAvatars;
 
-const toCard = (item: (typeof FRIEND_LINKS)[number]) => ({
+const toCard = (item: FriendLink) => ({
   ...item,
-  avatar: item.avatar ? (localAvatars[item.avatar] ?? item.avatar) : undefined,
+  avatar: item.avatar ? withBase(localAvatars[item.avatar] ?? item.avatar) : undefined,
   host: getHost(item.url),
   fallback: getFallbackText(item.name),
 });
 
-const friendCards = FRIEND_LINKS.map(toCard);
-const hnusecCards = HNUSEC_MEMBER_LINKS.map(toCard);
-const organizationCards = ORGANIZATION_LINKS.map(toCard);
+const groups = FRIEND_GROUPS.map((group) => ({
+  ...group,
+  displayTitle: isZh ? group.title.zh : group.title.en,
+  displayDesc: isZh ? group.description.zh : group.description.en,
+  cards: group.items.map(toCard),
+}));
 
-const totalLinks = friendCards.length + hnusecCards.length + organizationCards.length;
+const totalLinks = groups.reduce((sum, group) => sum + group.cards.length, 0);
+const firstGroupId = groups[0]?.id ?? "friends";
 ---
 
-<Layout title="友情链接" description="技术站点与安全社区链接集合。">
+<Layout title={`${copy.title} | ${SITE.title}`} description={copy.description}>
   <Header />
 
   <main id="main-content" class="friends-main app-layout">
     <header class="fp-hero fp-featured-intro">
       <div class="fp-hero-copy">
-        <p class="fp-eyebrow"><span class="fp-signal" aria-hidden="true"></span> NETWORK / COMMUNITY</p>
-        <h1 class="fp-heading">Friends,<br /><em>in orbit</em><span class="fp-period">.</span></h1>
-        <p class="fp-hero-cn">朋友们 · 同行者 · 值得反复访问的站点</p>
-        <p class="fp-lead">Good people. Interesting corners of the web.</p>
+        <p class="fp-eyebrow"><span class="fp-signal" aria-hidden="true"></span> {copy.eyebrow}</p>
+        <h1 class="fp-heading">{copy.headingLine1}<br /><em>{copy.headingEmphasis}</em><span class="fp-period">.</span></h1>
+        <p class="fp-hero-cn">{copy.subtitle}</p>
+        <p class="fp-lead">{copy.lead}</p>
         <div class="fp-hero-actions">
-          <a href="#friend-blogs" class="fp-primary-link">Explore the network <span aria-hidden="true">↘</span></a>
-          <a href={`mailto:${SITE.email}?subject=友情链接申请`} class="fp-apply-btn" aria-label="邮件申请互链">
+          <a href={`#${firstGroupId}`} class="fp-primary-link">{t.exploreNetwork} <span aria-hidden="true">↘</span></a>
+          <a href={`mailto:${SITE.email}?subject=Friend Link Exchange`} class="fp-apply-btn" aria-label={t.exchangeLinksAria}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path
                 d="M1.75 3.5L7 7.875L12.25 3.5"
@@ -73,92 +83,75 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
               <rect x="1.75" y="2.625" width="10.5" height="8.75" rx="1.5" stroke="currentColor" stroke-width="1.2"
               ></rect>
             </svg>
-            Exchange links
+            {t.exchangeLinks}
           </a>
         </div>
       </div>
       <FriendNetwork />
     </header>
 
-    <nav class="fp-index" aria-label="友链分类导航">
+    <nav class="fp-index" aria-label={t.friendCategoriesAria}>
       <span class="fp-index-label">DIRECTORY <span>{String(totalLinks).padStart(2, "0")}</span></span>
-      <a href="#friend-blogs">01 <strong>Blogs</strong><span>{String(friendCards.length).padStart(2, "0")}</span></a>
-      <a href="#friend-hnusec">02 <strong>HNUSec</strong><span>{String(hnusecCards.length).padStart(2, "0")}</span></a>
-      <a href="#friend-organizations"
-        >03 <strong>Organizations</strong><span>{String(organizationCards.length).padStart(2, "0")}</span></a
-      >
+      {
+        groups.map((group) => (
+          <a href={`#${group.id}`}>
+            {group.index} <strong>{group.displayTitle}</strong>
+            <span>{String(group.cards.length).padStart(2, "0")}</span>
+          </a>
+        ))
+      }
     </nav>
 
-    <!-- Blog cards -->
-    <section id="friend-blogs" class="fp-section" aria-label="技术博客">
-      <div class="fp-section-heading">
-        <div>
-          <p class="fp-section-index">01 / PERSONAL SITES</p><h2 class="fp-section-label">
-            技术博客 <span class="fp-count">{friendCards.length}</span>
-          </h2>
-        </div><p>Independent voices, experiments, and notes worth bookmarking.</p>
-      </div>
-      <div class="fp-grid" data-rem3={friendCards.length % 3} data-rem2={friendCards.length % 2}>
-        {friendCards.map((friend, index) => <FriendCard {...friend} index={index} kind="PERSONAL BLOG" />)}
-      </div>
-    </section>
-
-    <!-- HNUSec member cards -->
-    <section id="friend-hnusec" class="fp-section" aria-label="HNUSec 战队成员">
-      <div class="fp-section-heading">
-        <div>
-          <p class="fp-section-index">02 / TEAMMATES</p><h2 class="fp-section-label">
-            HNUSec 战队成员 <span class="fp-count">{hnusecCards.length}</span>
-          </h2>
-        </div><p>People I have learned alongside in the security community.</p>
-      </div>
-      <div class="fp-grid" data-rem3={hnusecCards.length % 3} data-rem2={hnusecCards.length % 2}>
-        {hnusecCards.map((friend, index) => <FriendCard {...friend} index={index} kind="HNUSEC MEMBER" />)}
-      </div>
-    </section>
-
-    <!-- Organizations -->
-    <section id="friend-organizations" class="fp-section" aria-label="安全团队与组织">
-      <div class="fp-section-heading">
-        <div>
-          <p class="fp-section-index">03 / COMMUNITIES</p><h2 class="fp-section-label">
-            安全团队与组织 <span class="fp-count">{organizationCards.length}</span>
-          </h2>
-        </div><p>Teams building places to learn, compete, and collaborate.</p>
-      </div>
-      <div class="fp-grid" data-rem3={organizationCards.length % 3} data-rem2={organizationCards.length % 2}>
-        {
-          organizationCards.map((friend, index) => (
-            <FriendCard {...friend} index={index} kind="SECURITY TEAM" isOrg={true} />
-          ))
-        }
-      </div>
-    </section>
+    {
+      groups.length > 0 ? (
+        groups.map((group) => (
+          <section id={group.id} class="fp-section" aria-label={group.displayTitle}>
+            <div class="fp-section-heading">
+              <div>
+                <p class="fp-section-index">{group.eyebrow}</p>
+                <h2 class="fp-section-label">
+                  {group.displayTitle} <span class="fp-count">{group.cards.length}</span>
+                </h2>
+              </div>
+              <p>{group.displayDesc}</p>
+            </div>
+            <div class="fp-grid" data-rem3={group.cards.length % 3} data-rem2={group.cards.length % 2}>
+              {group.cards.map((friend, index) => (
+                <FriendCard {...friend} index={index} kind={group.cardKind} isOrg={group.isOrg} />
+              ))}
+            </div>
+          </section>
+        ))
+      ) : (
+        <p class="border-border-subtle bg-surface/75 text-muted-foreground rounded-xl border p-6 text-sm">
+          {t.emptyFriends}
+        </p>
+      )
+    }
 
     <aside class="fp-exchange" aria-labelledby="exchange-title">
       <div>
-        <p class="fp-section-index">LET'S CONNECT</p><h2 id="exchange-title">One more good corner?</h2><p>
-          If you write about security, engineering, or anything you care deeply about, I would love to discover your
-          site.
-        </p>
+        <p class="fp-section-index">LET'S CONNECT</p>
+        <h2 id="exchange-title">{copy.exchangeTitle}</h2>
+        <p>{copy.exchangeDesc}</p>
       </div>
       <div class="fp-exchange-action">
-        <a href={`mailto:${SITE.email}?subject=友情链接申请`}>Send your link <span aria-hidden="true">↗</span></a><p>
-          Include your name, URL, one-line intro, and avatar.
-        </p>
+        <a href={`mailto:${SITE.email}?subject=Friend Link Exchange`}>{t.sendYourLink} <span aria-hidden="true">↗</span></a>
+        <p>{copy.exchangeHint}</p>
       </div>
     </aside>
 
-    <!-- My link card -->
-    <section class="fp-section fp-self-section" aria-label="本站信息">
+    <section class="fp-section fp-self-section" aria-label={t.thisSite}>
       <div class="fp-section-heading">
-        <div><p class="fp-section-index">04 / THIS SITE</p><h2 class="fp-section-label">本站信息</h2></div><p>
-          Details for adding this site to your own directory.
-        </p>
+        <div>
+          <p class="fp-section-index">{String(groups.length + 1).padStart(2, "0")} / THIS SITE</p>
+          <h2 class="fp-section-label">{t.thisSite}</h2>
+        </div>
+        <p>{t.thisSiteDesc}</p>
       </div>
       <a class="self-banner" href={info.address} target="_blank" rel="noopener noreferrer">
         <div class="self-banner-glow" aria-hidden="true"></div>
-        <img class="self-banner-avatar" src={info.avatar} alt={`${info.name} 头像`} loading="eager" decoding="async" />
+        <img class="self-banner-avatar" src={info.avatar} alt={`${info.name} avatar`} loading="eager" decoding="async" />
         <div class="self-banner-content">
           <h3 class="self-banner-name">{info.name}</h3>
           <p class="self-banner-desc">{info.desc}</p>
@@ -179,34 +172,37 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
       </a>
 
       <div class="self-copy-bar">
-        <span class="self-copy-label">QUICK COPY / 一键复制互链信息</span>
+        <span class="self-copy-label">{t.quickCopy}</span>
         <div class="self-copy-actions">
           <button
             type="button"
             class="self-copy-btn"
             data-copy-friend="json"
             data-payload={friendPayloads.json}
-            data-label="复制 JSON"
+            data-label={t.copyJson}
+            data-copied-label={t.copiedCheck}
           >
-            复制 JSON
+            {t.copyJson}
           </button>
           <button
             type="button"
             class="self-copy-btn"
             data-copy-friend="yaml"
             data-payload={friendPayloads.yaml}
-            data-label="复制 YAML"
+            data-label={t.copyYaml}
+            data-copied-label={t.copiedCheck}
           >
-            复制 YAML
+            {t.copyYaml}
           </button>
           <button
             type="button"
             class="self-copy-btn"
             data-copy-friend="md"
             data-payload={friendPayloads.md}
-            data-label="复制 Markdown"
+            data-label={t.copyMarkdown}
+            data-copied-label={t.copiedCheck}
           >
-            复制 Markdown
+            {t.copyMarkdown}
           </button>
         </div>
       </div>
@@ -221,7 +217,8 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
 
   onAstroPage((signal) => {
     for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy-friend]")) {
-      const baseLabel = button.dataset.label || button.textContent?.trim() || "复制";
+      const baseLabel = button.dataset.label || button.textContent?.trim() || "Copy";
+      const copiedLabel = button.dataset.copiedLabel || "Copied ✓";
       let timer = 0;
       signal.addEventListener("abort", () => clearTimeout(timer), { once: true });
 
@@ -235,7 +232,7 @@ const totalLinks = friendCards.length + hnusecCards.length + organizationCards.l
             await navigator.clipboard.writeText(payload);
             if (signal.aborted) return;
             button.dataset.copied = "true";
-            button.textContent = "已复制 ✓";
+            button.textContent = copiedLabel;
             timer = window.setTimeout(() => {
               if (signal.aborted) return;
               delete button.dataset.copied;

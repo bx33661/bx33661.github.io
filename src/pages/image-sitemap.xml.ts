@@ -1,9 +1,11 @@
 import type { APIContext } from "astro";
 import { SITE } from "@/config.ts";
 import { GALLERY_IMAGES, buildGalleryImageSources } from "@/data/gallery";
+import { DEFAULT_LOCALE, localizedPath } from "@/i18n";
 import { getAllNoteSlugs, getAllPostSlugs } from "@/lib/data-utils";
 import { resolvePostOgImagePath } from "@/utils/generateOgImages";
 import { escapeXml, getSiteBaseUrl, xmlResponse } from "@/utils/sitemap";
+import { withBase } from "@/utils/url";
 
 interface SitemapImageEntry {
   loc: string;
@@ -11,16 +13,19 @@ interface SitemapImageEntry {
 }
 
 export async function GET(context: APIContext) {
-  const [postSlugs, notes] = await Promise.all([getAllPostSlugs(), getAllNoteSlugs()]);
-  const baseUrl = getSiteBaseUrl(context.site);
+  const [postSlugs, notes] = await Promise.all([
+    getAllPostSlugs(DEFAULT_LOCALE),
+    SITE.features.notes ? getAllNoteSlugs(DEFAULT_LOCALE) : Promise.resolve([]),
+  ]);
+  const origin = new URL(getSiteBaseUrl(context.site)).origin;
   const images: SitemapImageEntry[] = [];
 
   for (const { slug, post } of postSlugs) {
     const encodedSlug = encodeURIComponent(slug);
-    const ogPath = resolvePostOgImagePath(post, slug, "zh-CN") ?? `/${SITE.ogImage}`;
-    const ogLoc = new URL(ogPath, `${baseUrl}/`).href;
+    const ogPath = resolvePostOgImagePath(post, slug, DEFAULT_LOCALE) ?? withBase(`/${SITE.ogImage}`);
+    const ogLoc = ogPath.startsWith("http") ? ogPath : `${origin}${withBase(ogPath)}`;
     images.push({
-      loc: `${baseUrl}/blog/${encodedSlug}/`,
+      loc: `${origin}${localizedPath(`/blog/${encodedSlug}/`, DEFAULT_LOCALE)}`,
       image: [
         {
           loc: ogLoc,
@@ -31,21 +36,23 @@ export async function GET(context: APIContext) {
     });
   }
 
-  images.push({
-    loc: `${baseUrl}/galleries/`,
-    image: GALLERY_IMAGES.map((item) => ({
-      loc: `${baseUrl}${buildGalleryImageSources(item).originalSrc}`,
-      title: item.title,
-      caption: item.alt,
-    })),
-  });
+  if (SITE.features.galleries && GALLERY_IMAGES.length > 0) {
+    images.push({
+      loc: `${origin}${withBase("/galleries/")}`,
+      image: GALLERY_IMAGES.map((item) => ({
+        loc: `${origin}${buildGalleryImageSources(item).originalSrc}`,
+        title: item.title,
+        caption: item.alt,
+      })),
+    });
+  }
 
   for (const { slug, note } of notes) {
     images.push({
-      loc: `${baseUrl}/notes/${encodeURIComponent(slug)}/`,
+      loc: `${origin}${localizedPath(`/notes/${encodeURIComponent(slug)}/`, DEFAULT_LOCALE)}`,
       image: [
         {
-          loc: `${baseUrl}/${SITE.ogImage}`,
+          loc: `${origin}${withBase(`/${SITE.ogImage}`)}`,
           title: note.data.title,
           caption: note.data.description || note.data.title,
         },
@@ -54,17 +61,17 @@ export async function GET(context: APIContext) {
   }
 
   images.push({
-    loc: `${baseUrl}/`,
+    loc: `${origin}${withBase("/")}`,
     image: [
       {
-        loc: `${baseUrl}/brand/bx-logo-512.png`,
+        loc: `${origin}${withBase(`/${SITE.ogImage}`)}`,
         title: `${SITE.title} - Site Image`,
         caption: SITE.desc,
       },
       {
-        loc: `${baseUrl}/brand/bx-logo-192.png`,
+        loc: `${origin}${withBase(SITE.friendCard.avatar)}`,
         title: `${SITE.title} Logo`,
-        caption: `${SITE.title}网站标志`,
+        caption: `${SITE.title} emblem`,
       },
     ],
   });

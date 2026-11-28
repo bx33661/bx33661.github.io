@@ -5,9 +5,16 @@ interface NavigationDotsProps {
   current: number;
   onSelect: (index: number) => void;
   accent?: string;
+  getDotAriaLabel?: (index: number) => string;
 }
 
-function NavigationDotsComponent({ total, current, onSelect, accent = "#ffffff" }: NavigationDotsProps) {
+function NavigationDotsComponent({
+  total,
+  current,
+  onSelect,
+  accent = "#ffffff",
+  getDotAriaLabel = (index) => `Jump to photo ${index + 1}`,
+}: NavigationDotsProps) {
   return (
     <div className="gallery-navigation-dots">
       {Array.from({ length: total }).map((_, index) => {
@@ -18,7 +25,7 @@ function NavigationDotsComponent({ total, current, onSelect, accent = "#ffffff" 
             type="button"
             onClick={() => onSelect(index)}
             className={["gallery-nav-dot-button", active && "is-active"].filter(Boolean).join(" ")}
-            aria-label={`跳转到第 ${index + 1} 张照片`}
+            aria-label={getDotAriaLabel(index)}
             aria-current={active ? "true" : undefined}
           >
             <span className="gallery-nav-dot" style={active ? { backgroundColor: accent, width: 24 } : undefined} />

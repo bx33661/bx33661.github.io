@@ -29,5 +29,6 @@ test("search noindex is crawlable while offline remains excluded", () => {
   const robots = fs.readFileSync("src/pages/robots.txt.ts", "utf8");
   assert.match(search, /<Layout[^>]*noindex>/);
   assert.ok(!robots.includes("Disallow: /search/"));
-  assert.ok(robots.includes("Disallow: /offline/"));
+  assert.match(robots, /withBase\(["']\/offline\/["']\)/);
+  assert.match(robots, /Disallow:\s*\$\{offlinePath\}/);
 });

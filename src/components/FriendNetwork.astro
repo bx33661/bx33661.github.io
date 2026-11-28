@@ -1,6 +1,7 @@
 ---
-import { FRIEND_LINKS, HNUSEC_MEMBER_LINKS, ORGANIZATION_LINKS } from "@/config/friends";
-const portals = [...FRIEND_LINKS.slice(1, 3), ...HNUSEC_MEMBER_LINKS.slice(0, 2), ...ORGANIZATION_LINKS.slice(0, 2)];
+import { FRIEND_GROUPS } from "@/config/friends";
+
+const portals = FRIEND_GROUPS.flatMap((group) => group.items).slice(0, 6);
 const positions = [
   [23, 20],
   [77, 20],
@@ -33,7 +34,7 @@ const positions = [
       ></circle><circle cx="322" cy="256" r="1.2"></circle><circle cx="242" cy="48" r="1.2"></circle></g
     >
   </svg>
-  <nav class="fp-network-portals" aria-label="星图中的精选友链">
+  <nav class="fp-network-portals" aria-label="Featured friend portals">
     {
       portals.map((friend, index) => (
         <a
@@ -42,7 +43,7 @@ const positions = [
           target="_blank"
           rel="noopener noreferrer"
           style={`--portal-x:${positions[index][0]}%;--portal-y:${positions[index][1]}%`}
-          aria-label={`星图友链：${friend.name}`}
+          aria-label={`Visit ${friend.name}`}
         >
           <>
             <span class="fp-portal-dot" aria-hidden="true" />

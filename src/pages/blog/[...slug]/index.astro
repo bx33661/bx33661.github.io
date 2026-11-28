@@ -2,8 +2,10 @@
 import type { CollectionEntry } from "astro:content";
 import RedirectPage from "@/components/RedirectPage.astro";
 import PostDetails from "@/layouts/PostDetails.astro";
+import { DEFAULT_LOCALE } from "@/i18n";
 import { getAllPosts, getAllPostSlugs } from "@/lib/data-utils";
 import { getAllNotesWithSlugs } from "@/utils/notes";
+import { withBase } from "@/utils/url";
 
 interface Props {
   post?: CollectionEntry<"blog">;
@@ -11,7 +13,7 @@ interface Props {
 }
 
 export async function getStaticPaths() {
-  const [postSlugs, notes] = await Promise.all([getAllPostSlugs(), getAllNotesWithSlugs()]);
+  const [postSlugs, notes] = await Promise.all([getAllPostSlugs(DEFAULT_LOCALE), getAllNotesWithSlugs(DEFAULT_LOCALE)]);
   const posts = postSlugs.map(({ slug, post }) => ({
     params: { slug },
     props: { post },
@@ -21,7 +23,7 @@ export async function getStaticPaths() {
     .filter(({ note }) => note.data.formerBlogSlug)
     .map(({ note, slug }) => ({
       params: { slug: note.data.formerBlogSlug! },
-      props: { redirectTo: `/notes/${slug}/` },
+      props: { redirectTo: withBase(`/notes/${slug}/`) },
     }));
   for (const redirect of redirects) {
     if (oldSlugs.has(redirect.params.slug)) {
@@ -33,13 +35,17 @@ export async function getStaticPaths() {
 }
 
 const { post, redirectTo } = Astro.props;
-const sortedPosts = redirectTo ? [] : await getAllPosts();
+const sortedPosts = redirectTo ? [] : await getAllPosts(DEFAULT_LOCALE);
 ---
 
 {
   redirectTo ? (
-    <RedirectPage target={redirectTo} title="正在前往笔记" />
+    <RedirectPage
+      target={redirectTo}
+      title={DEFAULT_LOCALE === "zh-CN" ? "正在前往笔记" : "Redirecting to note"}
+      lang={DEFAULT_LOCALE}
+    />
   ) : (
-    post && <PostDetails post={post} posts={sortedPosts} />
+    post && <PostDetails {post} posts={sortedPosts} />
   )
 }

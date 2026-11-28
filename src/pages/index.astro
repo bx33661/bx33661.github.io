@@ -3,13 +3,14 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import AcademicHome from "@/components/AcademicHome.astro";
+import { SITE } from "@/config.ts";
+import { DEFAULT_LOCALE, defaultDescriptionForLocale } from "@/i18n";
 
-const description =
-  "Hey, I'm bx. A personal blog about Cybersecurity, Large Language Models (LLMs), and the things I learn, explore, and think about.";
+const copy = DEFAULT_LOCALE === "zh-CN" ? SITE.home.zh : SITE.home.en;
 ---
 
-<Layout title="bx · Cybersecurity, LLMs & Personal Notes" description={description}>
+<Layout title={copy.pageTitle} description={defaultDescriptionForLocale(DEFAULT_LOCALE)}>
   <Header />
-  <AcademicHome />
+  <AcademicHome locale={DEFAULT_LOCALE} />
   <Footer />
 </Layout>

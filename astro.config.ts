@@ -7,9 +7,9 @@ import { articleMarkdown } from "./src/utils/articleMarkdown";
 import { SITE } from "./src/config.ts";
 import securityToolbarIntegration from "./src/plugins/security-toolbar";
 
-// https://astro.build/config
 export default defineConfig({
-  site: SITE.website,
+  site: process.env.SITE || SITE.website,
+  base: process.env.BASE_URL || SITE.base || "/",
   prefetch: {
     defaultStrategy: "hover",
   },
@@ -21,14 +21,11 @@ export default defineConfig({
     }),
     securityToolbarIntegration(),
   ],
-  // Astro 7 defaults to Sätteri; keep unified so existing remark/rehype plugins still work.
   markdown: articleMarkdown,
   vite: {
     plugins: [tailwindcss()],
     build: {
-      // ClientRouter inserts a data: module barrier for inline modules. Keep
-      // generated JS same-origin/external so navigation respects our CSP;
-      // images and CSS retain Vite's normal inline-size behavior.
+      // Keep generated JS same-origin/external so ClientRouter respects strict CSP.
       assetsInlineLimit: (filePath) => (/\.m?js$/.test(filePath) ? false : undefined),
     },
     optimizeDeps: {
@@ -42,18 +39,40 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.local(),
-      name: "Wotfard",
-      cssVariable: "--font-wotfard-native",
+      name: "Plus Jakarta Sans",
+      cssVariable: "--font-sans-native",
       options: {
-        variants: [{ src: ["./src/assets/fonts/wotfard-regular-webfont.woff2"], weight: 400, style: "normal" }],
+        variants: [
+          {
+            src: ["./node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2"],
+            weight: "200 800",
+            style: "normal",
+          },
+          {
+            src: ["./node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-wght-normal.woff2"],
+            weight: "200 800",
+            style: "normal",
+          },
+        ],
       },
     },
     {
       provider: fontProviders.local(),
-      name: "Cartograph CF",
-      cssVariable: "--font-cartograph-native",
+      name: "JetBrains Mono",
+      cssVariable: "--font-mono-native",
       options: {
-        variants: [{ src: ["./src/assets/fonts/cartograph-cf-regular-webfont.woff2"], weight: 400, style: "normal" }],
+        variants: [
+          {
+            src: ["./node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2"],
+            weight: "100 800",
+            style: "normal",
+          },
+          {
+            src: ["./node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-ext-wght-normal.woff2"],
+            weight: "100 800",
+            style: "normal",
+          },
+        ],
       },
     },
   ],

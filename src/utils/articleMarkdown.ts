@@ -8,6 +8,7 @@ import {
   transformerNotationHighlight,
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
+import { SITE } from "../config.ts";
 import { transformerFileName } from "./transformers/fileName.ts";
 import { transformerLongCode } from "./transformers/longCode.ts";
 import { rehypeDemoteHeadings } from "./rehypeDemoteHeadings.ts";
@@ -15,14 +16,16 @@ import { rehypeArticleImages } from "./rehypeArticleImages.ts";
 import { remarkArticleCallouts } from "./remarkArticleCallouts.ts";
 import { rehypeArticleFormatting } from "./rehypeArticleFormatting.ts";
 
+const isZhDefault = SITE.i18n.defaultLocale === "zh-CN";
+
 /** Shared by the actual MD/MDX build and format regression fixtures. */
 export const articleMarkdown = {
   processor: unified({
     gfm: true,
     remarkPlugins: [remarkMath, remarkArticleCallouts, remarkToc, [remarkCollapse, { test: "Table of contents" }]],
     remarkRehype: {
-      footnoteLabel: "注释",
-      footnoteBackLabel: "返回正文",
+      footnoteLabel: isZhDefault ? "注释" : "Footnotes",
+      footnoteBackLabel: isZhDefault ? "返回正文" : "Back to content",
     },
     rehypePlugins: [
       rehypeDemoteHeadings,

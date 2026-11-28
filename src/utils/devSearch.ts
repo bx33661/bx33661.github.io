@@ -32,12 +32,13 @@ async function getEntries(endpoint: string): Promise<SearchEntry[]> {
   return entriesPromise;
 }
 
-/** Local development uses the existing JSON route; production uses Pagefind. */
+/** Local development uses the generated JSON route; production uses Pagefind. */
 export async function mountDevSearch(
   mount: HTMLElement,
   { initialQuery = "", limit = 8, onQueryChange, signal, entries: providedEntries }: SearchOptions = {},
 ): Promise<HTMLInputElement> {
   const isEnglish = document.documentElement.lang === "en";
+  const endpoint = document.documentElement.dataset.searchEndpoint || "/search.json";
   const form = document.createElement("form");
   form.className = "search-fallback-form";
   form.setAttribute("role", "search");
@@ -45,9 +46,9 @@ export async function mountDevSearch(
   const input = document.createElement("input");
   input.className = "search-fallback-input";
   input.type = "search";
-  input.placeholder = isEnglish ? "Search English articles, notes, or keywords…" : "搜索文章、标签或关键词…";
+  input.placeholder = isEnglish ? "Search articles, notes, or keywords…" : "搜索文章、标签或关键词…";
   input.autocomplete = "off";
-  input.setAttribute("aria-label", isEnglish ? "Search English content" : "站内搜索关键词");
+  input.setAttribute("aria-label", isEnglish ? "Search site content" : "站内搜索关键词");
   input.value = initialQuery;
   form.append(input);
 
@@ -61,7 +62,7 @@ export async function mountDevSearch(
 
   let entries: SearchEntry[] = [];
   try {
-    entries = providedEntries ?? (await getEntries(isEnglish ? "/en/search.json" : "/search.json"));
+    entries = providedEntries ?? (await getEntries(endpoint));
   } catch {
     if (!signal?.aborted && mount.isConnected)
       status.textContent = isEnglish
@@ -80,9 +81,11 @@ export async function mountDevSearch(
     if (!query) {
       status.textContent = isEnglish
         ? entries.length
-          ? "Enter a keyword to search English articles and notes."
-          : "No English articles or notes have been published yet."
-        : "输入关键词，查找博客文章与技术记录。";
+          ? "Enter a keyword to search articles and notes."
+          : "No articles or notes have been published yet."
+        : entries.length
+          ? "输入关键词，查找博客文章与技术记录。"
+          : "暂无可搜索的文章或笔记。";
       return;
     }
     const allMatches = entries.filter((entry) =>
@@ -97,7 +100,7 @@ export async function mountDevSearch(
         ? `${allMatches.length} results${allMatches.length > limit ? ` (showing ${limit})` : ""}`
         : entries.length
           ? "No matching content. Try a shorter keyword."
-          : "No English articles or notes have been published yet."
+          : "No articles or notes have been published yet."
       : matches.length
         ? `找到 ${allMatches.length} 条相关结果${allMatches.length > limit ? `（显示前 ${limit} 条）` : ""}`
         : "没有找到相关内容，试试更短的关键词。";

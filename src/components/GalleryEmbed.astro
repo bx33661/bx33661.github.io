@@ -1,11 +1,14 @@
 ---
 /**
  * GalleryEmbed — render an inline gallery grid inside an MDX post.
- * Usage: `<GalleryEmbed slug="bx-journey" />`
+ * Usage: `<GalleryEmbed slug="orbit-frames" />`
  */
 import { Image } from "astro:assets";
 import GalleryLightbox from "@/components/GalleryLightbox.astro";
 import { getGalleryFolderImages, getPublishedGalleries } from "@/data/gallery";
+import { localeFromPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+import { withBase } from "@/utils/url";
 
 interface Props {
   slug: string;
@@ -15,6 +18,8 @@ interface Props {
 }
 
 const { slug, limit = 6, showLink = true, cols = 3 } = Astro.props;
+const locale = localeFromPath(Astro.url.pathname);
+const t = ui(locale);
 const entry = (await getPublishedGalleries()).find((item) => item.slug === slug)?.gallery;
 const folderImages = entry ? getGalleryFolderImages(slug, entry.data.title) : [];
 const visibleImages = limit > 0 ? folderImages.slice(0, limit) : folderImages;
@@ -26,7 +31,7 @@ const gridClass = `ge-grid-${cols}`;
 {
   !entry ? (
     <div class="ge-error">
-      ⚠️ 未找到图集 <code>{slug}</code>。请确认存在 <code>src/data/galleries/{slug}/index.md</code>.
+      {t.galleryMissing(slug)}
     </div>
   ) : (
     <>
@@ -51,17 +56,17 @@ const gridClass = `ge-grid-${cols}`;
             <rect x="14" y="14" width="7" height="7" rx="1" />
           </svg>
           <span class="ge-title">{entry.data.title}</span>
-          {remaining > 0 && <span class="ge-count">+{remaining} 张</span>}
+          {remaining > 0 && <span class="ge-count">{t.galleryMoreCount(remaining)}</span>}
         </div>
 
         {visibleImages.length > 0 ? (
-          <ul class:list={["ge-grid", gridClass]} role="list" aria-label={`图集：${entry.data.title}`}>
+          <ul class:list={["ge-grid", gridClass]} role="list" aria-label={t.galleryAriaPrefix(entry.data.title)}>
             {visibleImages.map((img, idx) => (
               <li>
                 <button
                   class="ge-item group"
                   data-gallery-target={lbId}
-                  aria-label={`查看图片：${img.alt}`}
+                  aria-label={t.viewPhotoLabel(img.alt)}
                   type="button"
                 >
                   <Image
@@ -80,14 +85,14 @@ const gridClass = `ge-grid-${cols}`;
             ))}
           </ul>
         ) : (
-          <p class="ge-empty">这个图集暂时还没有图片。</p>
+          <p class="ge-empty">{t.galleryEmpty}</p>
         )}
 
         <figcaption class="ge-footer">
           {entry.data.description && <span class="ge-desc">{entry.data.description}</span>}
           {showLink && (
-            <a href={`/galleries/${slug}/`} class="ge-link">
-              查看完整图集
+            <a href={withBase(`/galleries/${slug}/`)} class="ge-link">
+              {t.viewFullGallery}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="14"
@@ -108,7 +113,7 @@ const gridClass = `ge-grid-${cols}`;
         </figcaption>
       </figure>
 
-      <GalleryLightbox id={lbId} mode="clamp" label={`图片查看器：${entry.data.title}`} />
+      <GalleryLightbox id={lbId} mode="clamp" label={t.imageViewerTitle(entry.data.title)} />
     </>
   )
 }

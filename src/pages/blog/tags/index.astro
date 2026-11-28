@@ -1,5 +1,9 @@
 ---
 import RedirectPage from "@/components/RedirectPage.astro";
+import { DEFAULT_LOCALE, localizedPath } from "@/i18n";
+import { ui } from "@/i18n/ui";
+
+const t = ui(DEFAULT_LOCALE);
 ---
 
-<RedirectPage target="/blog/#topics" title="正在前往文章主题" label="文章主题" />
+<RedirectPage target={`${localizedPath("/blog/", DEFAULT_LOCALE)}#topics`} title={t.allTopics} label={t.allTopics} />

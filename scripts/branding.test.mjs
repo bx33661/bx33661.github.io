@@ -2,14 +2,16 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import sharp from "sharp";
+import { SITE } from "../src/config.ts";
 
-test("brand master is a pure vector and header/footer preserve its proportions", async () => {
+test("brand master is a pure vector and header/footer bind SITE.brandLogo cleanly", async () => {
   const svg = await fs.readFile("public/brand/bx-logo.svg", "utf8");
   assert.equal((svg.match(/<path\b/g) ?? []).length, 24);
   assert.doesNotMatch(svg, /<image\b|<script\b|<foreignObject\b|data:/i);
+  assert.equal(SITE.brandLogo, "/brand/bx-logo.svg");
   for (const file of ["Header", "Footer"]) {
     const source = await fs.readFile(`src/components/${file}.astro`, "utf8");
-    assert.match(source, /\/brand\/bx-logo\.svg/);
+    assert.match(source, /SITE\.brandLogo/);
     assert.match(source, /object-contain/);
     assert.match(source, /bg-\[#f4f0e6\]/);
   }
@@ -32,15 +34,18 @@ test("platform icons have their declared sizes and opaque backgrounds", async ()
   assert.equal(ico.readUInt16LE(4), 3);
 });
 
-test("favicon, app manifest and social image reference the new brand assets", async () => {
+test("favicon, dynamic webmanifest and social image reference the brand assets", async () => {
   const layout = await fs.readFile("src/layouts/Layout.astro", "utf8");
-  assert.match(layout, /type="image\/svg\+xml" href="\/brand\/bx-logo\.svg"/);
-  assert.match(layout, /href="\/brand\/bx-logo-32\.png"/);
-  assert.match(layout, /href="\/brand\/apple-touch-icon\.png"/);
-  const manifest = JSON.parse(await fs.readFile("public/site.webmanifest", "utf8"));
-  for (const icon of manifest.icons) {
-    assert.ok(icon.src.startsWith("/brand/"));
-    await fs.access("public" + icon.src);
-  }
-  assert.match(await fs.readFile("src/config.ts", "utf8"), /ogImage: "brand\/bx-logo-512\.png"/);
+  assert.match(layout, /SITE\.faviconSvg/);
+  assert.match(layout, /SITE\.faviconPng/);
+  assert.match(layout, /SITE\.appleTouchIcon/);
+  assert.equal(SITE.faviconSvg, "/brand/bx-logo.svg");
+  assert.equal(SITE.faviconPng, "/brand/bx-logo-32.png");
+  assert.equal(SITE.appleTouchIcon, "/brand/apple-touch-icon.png");
+  assert.equal(SITE.ogImage, "brand/bx-logo-512.png");
+  const manifestRoute = await fs.readFile("src/pages/site.webmanifest.ts", "utf8");
+  assert.match(manifestRoute, /SITE\.friendCard\.avatar/);
+  assert.match(manifestRoute, /SITE\.ogImage/);
+  await fs.access("public/brand/bx-logo-192.png");
+  await fs.access("public/brand/bx-logo-512.png");
 });

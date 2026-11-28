@@ -1,28 +1,29 @@
 import type { Element, Root } from "hast";
+import { existsSync } from "node:fs";
 import { resolve, sep } from "node:path";
 import sharp from "sharp";
+import { withBase } from "./url.ts";
 
 /**
- * Keep published PNG URLs as fallbacks while serving responsive, lossless WebP
- * screenshots to browsers. All other article images are deferred until needed.
+ * Infer intrinsic width/height for local `/blog/` images from `public/` at build time,
+ * upgrade to responsive `-800.webp` / `-1600.webp` `<picture>` when variants exist on disk,
+ * and prefix URLs with Astro's configured `base`.
  */
-const responsive = new Map([
-  ["/blog/l3hctf-best-profile/01-profile-bypass-flow.png", [3420, 1736]],
-  ["/blog/miniapp-audit/08-xcode-development-ui.png", [3422, 2148]],
-  ["/blog/miniapp-audit/13-endpoints-parameters-analysis.png", [2788, 1786]],
-]);
-
 export function rehypeArticleImages() {
   const metadata = new Map<string, Promise<{ width: number; height: number } | null>>();
-  const dimensionsFor = (src: string) => {
+  const resolvePublicFile = (src: string) => {
     const publicRoot = resolve("public");
     let filename: string;
     try {
       filename = resolve(publicRoot, `.${decodeURIComponent(src.split(/[?#]/)[0])}`);
     } catch {
-      return Promise.resolve(null);
+      return null;
     }
-    if (!filename.startsWith(publicRoot + sep)) return Promise.resolve(null);
+    return filename.startsWith(publicRoot + sep) ? filename : null;
+  };
+  const dimensionsFor = (src: string) => {
+    const filename = resolvePublicFile(src);
+    if (!filename) return Promise.resolve(null);
     let pending = metadata.get(filename);
     if (!pending) {
       pending = sharp(filename)
@@ -51,10 +52,8 @@ export function rehypeArticleImages() {
           if (child.type === "element" && child.tagName === "img") {
             const src = child.properties?.src;
             if (typeof src === "string" && src.startsWith("/blog/")) {
-              const isFirstScreen = src === "/blog/l3hctf-best-profile/01-profile-bypass-flow.png";
-              child.properties.loading = isFirstScreen ? "eager" : "lazy";
-              child.properties.decoding = "async";
-              // Preserve authored aspect ratios; infer only missing local dimensions.
+              child.properties.loading ??= "lazy";
+              child.properties.decoding ??= "async";
               if (!child.properties.width || !child.properties.height) {
                 const size = await dimensionsFor(src);
                 if (size) {
@@ -62,12 +61,17 @@ export function rehypeArticleImages() {
                   child.properties.height ??= size.height;
                 }
               }
-              const dimensions = responsive.get(src);
-              if (dimensions && !(node.type === "element" && node.tagName === "picture")) {
-                const base = src.replace(/\.png$/, "");
-                child.properties.width = dimensions[0];
-                child.properties.height = dimensions[1];
-                if (isFirstScreen) child.properties.fetchPriority = "high";
+              const filename = resolvePublicFile(src);
+              const cleanSrc = src.split(/[?#]/)[0];
+              if (
+                filename &&
+                /\.png$/i.test(cleanSrc) &&
+                !(node.type === "element" && node.tagName === "picture") &&
+                existsSync(filename.replace(/\.png$/i, "-800.webp")) &&
+                existsSync(filename.replace(/\.png$/i, "-1600.webp"))
+              ) {
+                const base = cleanSrc.replace(/\.png$/i, "");
+                child.properties.src = withBase(src);
                 return {
                   type: "element",
                   tagName: "picture",
@@ -78,7 +82,7 @@ export function rehypeArticleImages() {
                       tagName: "source",
                       properties: {
                         type: "image/webp",
-                        srcSet: [800, 1600].map((width) => `${base}-${width}.webp ${width}w`).join(", "),
+                        srcSet: [800, 1600].map((width) => `${withBase(`${base}-${width}.webp`)} ${width}w`).join(", "),
                         sizes: "(max-width: 720px) calc(100vw - 2rem), 990px",
                       },
                       children: [],
@@ -87,6 +91,7 @@ export function rehypeArticleImages() {
                   ],
                 };
               }
+              child.properties.src = withBase(src);
             }
           }
           if (child.type === "element") await visit(child);

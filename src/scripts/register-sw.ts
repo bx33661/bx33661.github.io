@@ -1,5 +1,5 @@
-if ("serviceWorker" in navigator && !window.__BX_SW_REGISTERED__) {
-  window.__BX_SW_REGISTERED__ = true;
+if ("serviceWorker" in navigator && !window.__ORBIT_SW_REGISTERED__) {
+  window.__ORBIT_SW_REGISTERED__ = true;
   window.addEventListener(
     "load",
     () => {
@@ -8,8 +8,12 @@ if ("serviceWorker" in navigator && !window.__BX_SW_REGISTERED__) {
         return;
       }
 
+      const rawBase = import.meta.env.BASE_URL || "/";
+      const base = rawBase.endsWith("/") ? rawBase : `${rawBase}/`;
+      const swUrl = new URL("sw.js", new URL(base, window.location.origin)).pathname;
+
       navigator.serviceWorker
-        .register("/sw.js")
+        .register(swUrl, { scope: base })
         .then((registration) => registration.update().catch(() => {}))
         .catch(() => {});
     },

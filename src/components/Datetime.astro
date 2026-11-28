@@ -1,6 +1,8 @@
 ---
 import IconCalendar from "@/assets/icons/IconCalendar.svg";
 import { SITE } from "@/config.ts";
+import { localeFromPath, type Locale } from "@/i18n";
+import { ui } from "@/i18n/ui";
 import { formatArticleDatetime } from "@/utils/date";
 
 type Props = {
@@ -9,19 +11,30 @@ type Props = {
   pubDatetime: string | Date;
   timezone?: string;
   modDatetime?: string | Date | null;
+  locale?: Locale;
 };
 
-const { pubDatetime, modDatetime, size = "sm", class: className = "", timezone: postTimezone } = Astro.props;
+const {
+  pubDatetime,
+  modDatetime,
+  size = "sm",
+  class: className = "",
+  timezone: postTimezone,
+  locale: explicitLocale,
+} = Astro.props;
+
+const locale = explicitLocale ?? localeFromPath(Astro.url.pathname);
+const t = ui(locale);
 
 const pubDate = pubDatetime instanceof Date ? pubDatetime : new Date(pubDatetime);
 const modDate = modDatetime ? (modDatetime instanceof Date ? modDatetime : new Date(modDatetime)) : null;
 const isModified = Boolean(modDate && modDate > pubDate);
 const displayDate = isModified && modDate ? modDate : pubDate;
-const date = formatArticleDatetime(displayDate, postTimezone || SITE.timezone);
+const date = formatArticleDatetime(displayDate, postTimezone || SITE.timezone, locale);
 ---
 
 <div class:list={["flex items-center gap-x-2 opacity-80", className]}>
   <IconCalendar class:list={["inline-block size-6 min-w-5.5", { "scale-90": size === "sm" }]} />
-  {isModified && <span class:list={["text-sm", { "sm:text-base": size === "lg" }]}>Updated:</span>}
+  {isModified && <span class:list={["text-sm", { "sm:text-base": size === "lg" }]}>{t.updated}:</span>}
   <time class:list={["text-sm", { "sm:text-base": size === "lg" }]} datetime={displayDate.toISOString()}>{date}</time>
 </div>

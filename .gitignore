@@ -36,7 +36,8 @@ Desktop.ini
 
 # Editor and IDE scratch files
 .idea/
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 *.swp
 *.swo
 *~
