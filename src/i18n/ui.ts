@@ -1,4 +1,4 @@
-import { SITE } from "@/config.ts";
+import { SITE } from "../config.ts";
 import type { Locale } from "./index";
 
 const zh = {
@@ -54,6 +54,7 @@ const zh = {
   previous: "上一篇",
   next: "下一篇",
   back: "返回",
+  backToPosts: "返回文章",
   home: "首页",
   backHome: "回到首页",
   toc: "本文目录",
@@ -78,6 +79,17 @@ const zh = {
   imageViewer: "放大图片，点击图片或空白处关闭",
   closeImage: "关闭图片查看器",
   readingTime: (minutes: number) => `约 ${minutes} 分钟阅读`,
+  wordCount: (words: number) => `${words.toLocaleString("en-US")} 字`,
+  readInOtherLocale: "Read in English",
+  outdatedNotice: (years: number) =>
+    `本文最后更新于 ${years} 年前，文中涉及的部分工具版本或接口细节可能已随生态演进。`,
+  copyArticleMarkdown: "复制全文为 Markdown（适合笔记归档或 AI 研读）",
+  resourceLinksLabel: "项目与相关资源",
+  tocProgressIdle: "开始阅读",
+  tocProgressDone: "已读完 ✓",
+  jumpToComments: "评论区",
+  zoomInImage: "放大查看细节 (2×)",
+  zoomOutImage: "还原适应屏幕 (1×)",
   interactive: "交互图解",
   rssFeed: "RSS 订阅",
   latestWriting: "最新文章",
@@ -228,6 +240,7 @@ const en: typeof zh = {
   previous: "Previous post",
   next: "Next post",
   back: "Back",
+  backToPosts: "Back",
   home: "Home",
   backHome: "Back to home",
   toc: "On this page",
@@ -252,6 +265,17 @@ const en: typeof zh = {
   imageViewer: "Image viewer; click the image or background to close",
   closeImage: "Close image viewer",
   readingTime: (minutes) => `${minutes} min read`,
+  wordCount: (words) => `${words.toLocaleString("en-US")} ${words === 1 ? "word" : "words"}`,
+  readInOtherLocale: "阅读中文版",
+  outdatedNotice: (years) =>
+    `Last updated over ${years} ${years === 1 ? "year" : "years"} ago — some tool versions or APIs discussed below may have evolved.`,
+  copyArticleMarkdown: "Copy full article as Markdown",
+  resourceLinksLabel: "Project & resources",
+  tocProgressIdle: "Start reading",
+  tocProgressDone: "Completed ✓",
+  jumpToComments: "Comments",
+  zoomInImage: "Zoom in for details (2×)",
+  zoomOutImage: "Reset zoom (1×)",
   interactive: "Interactive",
   rssFeed: "RSS feed",
   latestWriting: "Recent writing",

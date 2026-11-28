@@ -316,6 +316,7 @@ html[data-theme-reveal]::view-transition {
   [data-post-toc]::before,
   .post-page .copy-code,
   .progress-bar,
+  .post-toc-meter > span,
   #btt-btn-container,
   [data-button="back-to-top"],
   [data-button="back-to-top"] svg,

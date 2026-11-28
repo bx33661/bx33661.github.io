@@ -28,6 +28,17 @@ const blog = defineCollection({
         description: z.string(),
         canonicalURL: z.string().optional(),
         hideEditPost: z.boolean().optional(),
+        evergreen: z.boolean().optional(),
+        links: z
+          .array(
+            z.object({
+              label: z.string().min(1),
+              url: z.url(),
+              note: z.string().optional(),
+              icon: z.enum(["github", "demo", "docs", "paper", "plugin", "link"]).optional(),
+            }),
+          )
+          .optional(),
         timezone: z.string().optional(),
         slug: z.string().optional(),
         authors: z.array(z.string()).optional(),

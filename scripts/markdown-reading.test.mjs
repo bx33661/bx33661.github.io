@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import fs from "node:fs/promises";
+import { SITE } from "../src/config.ts";
 import { articleMarkdown } from "../src/utils/articleMarkdown.ts";
 import { rehypeArticleFormatting } from "../src/utils/rehypeArticleFormatting.ts";
+
+const isZh = SITE.i18n.defaultLocale === "zh-CN";
 
 const shared = {
   shikiConfig: articleMarkdown.shikiConfig,
@@ -65,26 +68,35 @@ test("fences retain Shiki themes, file labels, highlight and no-language text", 
 
 test("footnotes retain stable reference/backlinks and accessible labels", () => {
   assert.match(fixture.code, /data-footnotes/);
-  assert.match(fixture.code, /id="footnote-label"[^>]*>Footnotes/);
-  assert.match(fixture.code, /data-footnote-backref[^>]*aria-label="Back to content"/);
+  assert.match(fixture.code, new RegExp(`id="footnote-label"[^>]*>${isZh ? "注释" : "Footnotes"}`));
+  assert.match(
+    fixture.code,
+    new RegExp(`data-footnote-backref[^>]*aria-label="${isZh ? "返回正文" : "Back to content"}"`),
+  );
   assert.match(fixture.code, /href="#user-content-fn-note"/);
   assert.match(fixture.code, /href="#user-content-fnref-note"/);
 });
 
 test("callouts render five distinct labels without rewriting ordinary quotes", async () => {
-  for (const [kind, label] of Object.entries({
-    note: "Note",
-    tip: "Tip",
-    important: "Important",
-    warning: "Warning",
-    caution: "Caution",
-  })) {
+  const expectedCallouts = isZh
+    ? { note: "说明", tip: "提示", important: "重要", warning: "注意", caution: "警告" }
+    : { note: "Note", tip: "Tip", important: "Important", warning: "Warning", caution: "Caution" };
+  for (const [kind, label] of Object.entries(expectedCallouts)) {
     assert.match(fixture.code, new RegExp(`data-callout="${kind}"`));
     assert.match(fixture.code, new RegExp(`class="article-callout-title">${label}`));
   }
   const ordinary = await renderer.render("> Ordinary quote mentioning [!NOTE] inline.\n\n> [!UNKNOWN]\n> Preserved");
   assert.doesNotMatch(ordinary.code, /data-callout/);
+  assert.doesNotMatch(ordinary.code, /post-resources/);
   assert.match(ordinary.code, /\[!UNKNOWN\]/);
+
+  const projectHeader = await renderer.render(
+    "> **GitHub 仓库**：[github.com/Fruit-Guardians/pinwhy](https://github.com/Fruit-Guardians/pinwhy)\n>\n> **官方网站与在线演示**：[pinwhy.bx33661.com](https://pinwhy.bx33661.com)\n\n正文第一段。",
+  );
+  assert.match(projectHeader.code, /class="post-resources not-prose"/);
+  assert.match(projectHeader.code, /data-resource-kind="github"/);
+  assert.match(projectHeader.code, /data-resource-kind="demo"/);
+  assert.doesNotMatch(projectHeader.code, /<blockquote/);
 });
 
 test("format wrapping is idempotent and skips component-owned regions", () => {

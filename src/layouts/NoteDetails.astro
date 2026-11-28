@@ -16,7 +16,7 @@ import { SITE } from "@/config.ts";
 import { resolveAuthor } from "@/utils/author";
 import { formatSiteDate } from "@/utils/date";
 import { getAdjacentNotes } from "@/utils/notes";
-import { estimateReadingMinutes } from "@/utils/readingTime";
+import { countReadingWords, estimateReadingMinutes } from "@/utils/readingTime";
 import { localeFromPath, localizedPath } from "@/i18n";
 import { ui } from "@/i18n/ui";
 
@@ -32,6 +32,7 @@ const tocHeadings = headings.filter((heading) => heading.depth <= 3 && heading.s
 const { prev, next } = await getAdjacentNotes(slug, locale);
 const author = resolveAuthor(note.data.authors);
 const readingMinutes = estimateReadingMinutes(note.body);
+const readingWords = countReadingWords(note.body);
 const noteCategory = note.data.category || t.uncategorized;
 ---
 
@@ -49,6 +50,8 @@ const noteCategory = note.data.category || t.uncategorized;
   <main
     id="main-content"
     class:list={["post-page app-layout relative pb-12", { "mt-8": !SITE.showBackButton }]}
+    data-reading-minutes={readingMinutes}
+    data-reading-back-default={localizedPath("/notes/", locale)}
     data-pagefind-body
   >
     <header class="post-header">
@@ -66,6 +69,14 @@ const noteCategory = note.data.category || t.uncategorized;
           ><time datetime={note.data.date.toISOString()}>{formatSiteDate(note.data.date, locale)}</time></span
         >
         <span aria-hidden="true">·</span>
+        {
+          readingWords > 0 && (
+            <>
+              <span class="post-word-count">{t.wordCount(readingWords)}</span>
+              <span aria-hidden="true">·</span>
+            </>
+          )
+        }
         <span class="post-reading-time">{t.readingTime(readingMinutes)}</span>
       </div>
       {
@@ -87,12 +98,11 @@ const noteCategory = note.data.category || t.uncategorized;
         <PostToc headings={tocHeadings} variant="inline" />
         <article
           id="article"
-          class="app-prose max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg) w-full"
+          class="app-prose prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg) w-full"
         >
           <Content />
         </article>
       </div>
-      <PostToc headings={tocHeadings} variant="sidebar" />
     </div>
 
     <div class="mt-10 flex items-center gap-3" aria-hidden="true">

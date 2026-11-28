@@ -65,6 +65,7 @@ export function revealTheme(button: HTMLElement, apply: () => void): boolean {
     return false;
   }
   reveal.transition = transition;
+  void transition.updateCallbackDone?.catch(() => {});
   void transition.ready.then(
     () => {
       if (active !== reveal) return;

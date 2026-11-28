@@ -6,9 +6,15 @@ const locale = localeFromPath(Astro.url.pathname);
 const t = ui(locale);
 
 type Heading = { depth: number; slug: string; text: string };
-type Props = { headings: Heading[]; variant: "inline" | "sidebar" | "mobile"; _listOnly?: boolean };
+type Props = {
+  headings: Heading[];
+  variant: "inline" | "sidebar" | "mobile";
+  readingMinutes?: number;
+  enableCopyMarkdown?: boolean;
+  _listOnly?: boolean;
+};
 
-const { headings, variant, _listOnly = false } = Astro.props;
+const { headings, variant, readingMinutes, enableCopyMarkdown = false, _listOnly = false } = Astro.props;
 ---
 
 {
@@ -17,7 +23,9 @@ const { headings, variant, _listOnly = false } = Astro.props;
       <ol>
         {headings.map((heading) => (
           <li class:list={[{ nested: heading.depth >= 3 }]}>
-            <a href={`#${heading.slug}`}>{heading.text}</a>
+            <a href={`#${heading.slug}`} title={heading.text}>
+              {heading.text}
+            </a>
           </li>
         ))}
       </ol>
@@ -31,17 +39,50 @@ const { headings, variant, _listOnly = false } = Astro.props;
         </nav>
       </details>
     ) : variant === "sidebar" ? (
-      <aside class="post-toc-sidebar" aria-label={t.tocQuick}>
-        <p>{t.toc}</p>
+      <aside class="post-toc-sidebar" aria-label={t.tocQuick} data-reading-minutes={readingMinutes}>
+        <div class="post-toc-head">
+          <p>{t.toc}</p>
+          <span
+            class="post-toc-progress-label"
+            data-toc-progress-label
+            data-idle-label={t.tocProgressIdle}
+            data-done-label={t.tocProgressDone}
+          >
+            0%
+          </span>
+        </div>
+        <div class="post-toc-meter" aria-hidden="true">
+          <span data-toc-progress-bar />
+        </div>
         <nav aria-label={t.tocSidebar} data-post-toc>
           <Astro.self headings={headings} variant={variant} _listOnly />
         </nav>
+        <div class="post-toc-actions" data-pagefind-ignore>
+          {enableCopyMarkdown && (
+            <button
+              type="button"
+              class="post-toc-action-btn"
+              data-copy-article-md
+              data-label-default={t.copyMarkdown}
+              data-label-copied={t.copiedCheck}
+              title={t.copyArticleMarkdown}
+            >
+              <span data-copy-md-text>{t.copyMarkdown}</span>
+            </button>
+          )}
+          <a href="#comments" class="post-toc-action-btn" data-toc-jump-comments hidden>
+            {t.jumpToComments}
+          </a>
+        </div>
       </aside>
     ) : (
       <div class="post-toc-mobile">
         <button type="button" data-post-toc-open aria-haspopup="dialog" aria-controls="post-toc-dialog">
           <span class="post-toc-mobile-label">{t.tocShort}</span>
           <span data-toc-current>{t.toc}</span>
+          <span class="post-toc-mobile-pct" data-toc-mobile-pct aria-hidden="true">
+            0%
+          </span>
         </button>
         <dialog id="post-toc-dialog" aria-labelledby="post-toc-dialog-title" data-pagefind-ignore>
           <header>
@@ -75,7 +116,7 @@ const { headings, variant, _listOnly = false } = Astro.props;
     font-weight: 400;
   }
   nav {
-    max-height: 65vh;
+    max-height: 62vh;
     overflow-y: auto;
     scrollbar-width: thin;
   }
@@ -85,24 +126,24 @@ const { headings, variant, _listOnly = false } = Astro.props;
     list-style: none;
   }
   li {
-    margin: 0.28rem 0;
+    margin: 0.18rem 0;
   }
   li.nested {
-    padding-left: 0.85rem;
+    padding-left: 0.75rem;
   }
   a {
     display: block;
     color: var(--muted-foreground);
     font-size: 0.78rem;
-    line-height: 1.45;
+    line-height: 1.48;
     text-decoration: none;
   }
   li:not(.nested) a {
     font-weight: 500;
   }
   li.nested a {
-    font-size: 0.74rem;
-    opacity: 0.92;
+    font-size: 0.735rem;
+    opacity: 0.9;
   }
   a:hover,
   a:focus-visible {
@@ -111,12 +152,65 @@ const { headings, variant, _listOnly = false } = Astro.props;
   .post-toc-sidebar {
     display: none;
   }
+  .post-toc-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.45rem;
+  }
   .post-toc-sidebar p {
-    margin: 0 0 0.65rem;
+    margin: 0;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+  }
+  .post-toc-progress-label {
+    font-family: var(--font-cartograph), ui-monospace, monospace;
+    font-size: 0.68rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+  }
+  .post-toc-progress-label[data-state="done"] {
+    color: var(--accent);
     font-weight: 600;
-    letter-spacing: 0.05em;
+  }
+  .post-toc-meter {
+    height: 2px;
+    width: 100%;
+    margin-bottom: 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--foreground) 10%, transparent);
+    overflow: hidden;
+  }
+  .post-toc-meter > span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 120ms linear;
   }
   .post-toc-sidebar ol {
-    padding: 0;
+    padding: 0.1rem 0;
+  }
+  .post-toc-sidebar a {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .post-toc-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  }
+  .post-toc-actions:empty {
+    display: none;
   }
 </style>
