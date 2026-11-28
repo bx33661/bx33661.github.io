@@ -20,6 +20,11 @@ const { locale = DEFAULT_LOCALE } = Astro.props;
 const isZh = locale === "zh-CN";
 const copy = isZh ? SITE.home.zh : SITE.home.en;
 const t = ui(locale);
+const monographLang = copy.monographLang ?? locale;
+const closingEmoji = copy.closingEmoji ?? "✦";
+const focusHeading = copy.focusHeading ?? t.focusHeading;
+const readBlogLabel = copy.readBlogLabel ?? t.readBlog;
+const readNotesLabel = copy.readNotesLabel ?? t.readNotes;
 
 const posts = await getAllPosts(locale);
 const notes = SITE.features.notes ? await getAllNotes(locale) : [];
@@ -39,7 +44,7 @@ const recentPosts = posts.slice(0, 5).map((post) => {
 const showProjects = SITE.features.projects && PROJECTS.length > 0;
 ---
 
-<main id="main-content" class="app-layout academic-home" lang={locale}>
+<main id="main-content" class="app-layout academic-home" lang={monographLang}>
   <div class="home-stage">
     <!-- Left Column: Personal Monograph & Sea-of-Stars Letter -->
     <div class="home-monograph">
@@ -67,17 +72,17 @@ const showProjects = SITE.features.projects && PROJECTS.length > 0;
         </div>
 
         <p class="closing">
-          <strong>{copy.closing} <span class="closing-star" aria-hidden="true">✦</span></strong>
+          <strong>{copy.closing} <span class="closing-star" aria-hidden="true">{closingEmoji}</span></strong>
         </p>
 
         <nav class="home-links" aria-label={t.searchNav}>
           <a class="read-link" href={localizedPath("/blog/", locale)}>
-            {t.readBlog} <span aria-hidden="true">↗</span>
+            {readBlogLabel} <span aria-hidden="true">↗</span>
           </a>
           {
             SITE.features.notes && (
               <a class="secondary-link" href={localizedPath("/notes/", locale)}>
-                {t.readNotes} <span aria-hidden="true">↗</span>
+                {readNotesLabel} <span aria-hidden="true">↗</span>
               </a>
             )
           }
@@ -178,7 +183,7 @@ const showProjects = SITE.features.projects && PROJECTS.length > 0;
 
       <div class="dossier-body">
         <section class="focus-section" aria-labelledby="focus-title">
-          <h2 id="focus-title">{t.focusHeading}</h2>
+          <h2 id="focus-title">{focusHeading}</h2>
           <div class="focus-chips">
             {
               focusTopics.map((topic) => (

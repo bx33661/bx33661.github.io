@@ -18,6 +18,30 @@ export interface SocialLinkConfig {
   label?: string;
 }
 
+export interface HomeLocaleCopy {
+  pageTitle: string;
+  eyebrow: string;
+  greetingPrefix: string;
+  greetingHighlight: string;
+  welcome: string;
+  horizonTag: string;
+  focusLeadPrefix: string;
+  focusLeadStrong: string;
+  focusLeadSuffix: string;
+  introParagraphs: readonly string[];
+  closing: string;
+  closingEmoji?: string;
+  monographLang?: SiteLocale;
+  focusHeading?: string;
+  readBlogLabel?: string;
+  readNotesLabel?: string;
+  observatoryTitle: string;
+  observatoryStatus: string;
+  observatoryCaptionLeft: string;
+  observatoryCaptionRight: string;
+  focusTopics: readonly string[];
+}
+
 const SITE_ORIGIN = "https://astro-orbit.example.com";
 const SITE_BASE = "/";
 const SITE_PROFILE = "https://github.com/your-username";
@@ -189,7 +213,7 @@ export const SITE = {
       observatoryCaptionRight: "AD ASTRA · 01",
       focusTopics: ["Astro", "Markdown", "工程实践", "指南"],
     },
-  },
+  } as { en: HomeLocaleCopy; zh: HomeLocaleCopy },
 
   /** Projects page copy (/projects/). */
   projectsPage: {
